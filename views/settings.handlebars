@@ -1,0 +1,41 @@
+<div class="form-container form__settings">
+   <h3 class="form__h3">Edit Profile</h3>
+   <form method="post" action="/settings" enctype="multipart/form-data">
+      <div class="form-container-2">
+         <div class="row">
+            <div class="col-lg-6">
+               <input class="form__input" type="text" placeholder="First name" name="firstname" value="{{user.firstname}}" />
+            </div>
+
+            <div class="col-lg-6">
+               <input class="form__input" type="text" placeholder="Last name" name="lastname" value="{{user.lastname}}" />
+            </div>
+         </div>
+         <input class="form__input" type="text" placeholder="Enter username" name="username" value="{{user.username}}" required autocapitalize="none" />
+         <input class="form__input" type="email" placeholder="Enter email address" name="email" value="{{user.email}}" required autocapitalize="none" />
+         <label for="profileimage" class="form__label">Change your profile header</label>
+         <input class="form__input" type="file" name="profileimage" value="{{user.profileimage}}" />
+         <input type="hidden" name="id" value="{{user.id}}">
+         <button class="form__sign-up-button" name="submit" type="submit">Submit Changes</button>
+     </div>
+   </form>
+   <p class="delete-link" id="modalBtn">I would like to delete my account</p>
+
+</div>
+
+<!-- Hidden Delete Modal -->
+<div id="popModal" class="modalBackground">
+  <div class="modal-content">
+    <div class="modal-header">
+      <p>Are You Sure?</p>
+    </div>
+    <div class="modal-body">
+      <p>Deleting your account is permanent and cannot be undone.</p>
+      <p><small>All of your projects and information will be deleted.</small></p>
+    </div>
+    <div class="modal-footer">
+      <a href="/delete/{{user.id}}" class="btn__secondary">Yes I'm Sure</a>
+      <span class="closeModal cancelBtn delModal btn__primary">Cancel</span>
+    </div>
+  </div>
+</div>

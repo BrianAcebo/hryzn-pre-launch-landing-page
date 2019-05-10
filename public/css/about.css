@@ -1,0 +1,134 @@
+.about-main__container {
+   width: 100%;
+   margin: 0 auto;
+   padding: 100px 0 0 0;
+}
+
+.footer__container {
+   width: 100%;
+   bottom: 0;
+   max-width: 900px;
+   padding: 25px;
+   display: flex;
+   flex-wrap: wrap;
+   justify-content: center;
+   align-items: center;
+   border-top: 1px solid #ccc;
+   margin: 0 auto;
+}
+
+.footer__container a {
+   color: #333;
+   font-size: 12px;
+   margin: 10px;
+}
+
+/***** Press *****/
+.press__top-container {
+   display: flex;
+   flex-direction: row;
+   padding: 100px;
+   max-width: 1200px;
+   margin: 0 auto;
+   justify-content: space-between;
+}
+
+.press__text-container {
+   width: 50%;
+   height: 400px;
+   display: flex;
+   margin-right: 50px;
+   justify-content: center;
+   flex-direction: column;
+}
+
+.press__img-container {
+   background-image: url("/img/site/press-hero.jpg");
+   width: 50%;
+   height: 400px;
+   border-radius: 0;
+   background-position: center;
+   background-repeat: no-repeat;
+   background-size: cover;
+   position: relative;
+}
+
+@media screen and (max-width: 1000px) {
+   .press__top-container {
+      flex-direction: column;
+      padding: 0 25px;
+   }
+
+   .press__text-container {
+      width: 100%;
+      border-radius: 0;
+   }
+
+   .press__img-container {
+      width: 100%;
+      max-width: 400px;
+      height: 400px;
+      margin: 0 auto;
+   }
+}
+
+.mission__container {
+   width: 100%;
+   max-width: 800px;
+   padding: 50px 25px;
+   margin: 0 0 0 5%;
+   display: flex;
+   justify-content: center;
+   flex-direction: column;
+}
+
+.partner__container {
+   width: 100%;
+   max-width: 800px;
+   padding: 50px 25px;
+   margin: 0 10% 0 0;
+   display: flex;
+   float: right;
+   text-align: right;
+   justify-content: center;
+   flex-direction: column;
+}
+
+.press-contact__container {
+   width: 100%;
+   max-width: 800px;
+   padding: 50px 25px;
+   margin: 0 auto;
+   display: flex;
+   text-align: center;
+   justify-content: center;
+   flex-direction: column;
+}
+
+.press-contact__container a {
+   color: #333;
+   font-weight: bold;
+}
+
+@media screen and (max-width: 768px) {
+   .mission__container,
+   .partner__container,
+   .press-contact__container {
+      margin: 0 auto;
+      text-align: left;
+      padding: 25px;
+   }
+}
+/**********/
+
+/***** Contact *****/
+.contact__container {
+   padding: 100px 25px;
+}
+
+@media screen and (max-width: 768px) {
+   .contact__container {
+      padding: 25px;
+   }
+}
+/**********/

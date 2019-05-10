@@ -1,0 +1,118 @@
+{{#if profile}}
+
+{{#if profile.profileimage}}
+<div class="hero__img-container">
+   <img class="hero__img" src="http://s3.amazonaws.com/hryzn-app-static-assets/{{profile.profileimage}}" />
+   <div class="hero__overlay"></div>
+   <p class="profile__name">{{profile.firstname}} {{profile.lastname}}</p>
+   <h3 class="profile__username">{{profile.username}}</h3>
+   {{#if can_see_private}}
+   <img id="settingsBtn" src="/icons/settings-menu-white.png" class="profile__settings" />
+   {{/if}}
+</div>
+{{else}}
+<div class="hero__img-container">
+   <img class="hero__img" src="/img/placeholders/hryzn-placeholder-01.jpg" />
+   <div class="hero__overlay"></div>
+   <p class="profile__name">{{profile.firstname}} {{profile.lastname}}</p>
+   <h3 class="profile__username">{{profile.username}}</h3>
+   {{#if can_see_private}}
+   <img id="settingsBtn" src="/icons/settings-menu-white.png" class="profile__settings" />
+   {{/if}}
+</div>
+{{/if}}
+
+<div class="profile-main__container">
+
+   <div class="profile__top">
+      <p class="profile__projects-p">
+         Projects
+      </p>
+      <div class="profile__follow-container">
+         <div class="followers__following">
+            <a href="/profile/{{profile.username}}/followers"><strong>{{amount_of_followers}}</strong> followers</a>
+            <a href="/profile/{{profile.username}}/following"><strong>{{amount_of_following}}</strong> following</a>
+         </div>
+         {{#if can_see_private}}
+         {{! This is the User of the profile, no need to follow }}
+         {{else}}
+            {{#if user_follows_profile}}
+
+            <form method="post" action="/profile/unfollow/{{profile._id}}">
+               <input type="hidden" name="user_username" value="{{user.username}}">
+               <input type="hidden" name="profile_username" value="{{profile.username}}">
+               <button class="profile__unfollow" name="submit" type="submit">Unfollow</button>
+            </form>
+
+            {{else}}
+
+            <form method="post" action="/profile/follow/{{profile._id}}">
+               <input type="hidden" name="user_username" value="{{user.username}}">
+               <input type="hidden" name="profile_username" value="{{profile.username}}">
+               <button class="profile__follow" name="submit" type="submit">Follow</button>
+            </form>
+
+            {{/if}}
+         {{/if}}
+      </div>
+   </div>
+
+   <div class="masonryContainer">
+      {{#if projects}}
+         {{#if can_see_private}}
+            {{#each projects}}
+            <div class="masonryItem">
+               <a href="/p/details/{{_id}}" class="projects__link">
+                  <div class="projects__card {{#if is_private}}private-project__card{{/if}}">
+                     <img src="http://s3.amazonaws.com/hryzn-app-static-assets/{{project_image}}" class="img-responsive" alt="{{project_title}}" />
+                     <p class="projects__card-title">
+                        {{project_title}}
+                        {{#if is_private}}
+                        <div class="projects__card-private">private</div>
+                        {{/if}}
+                     </p>
+                  </div>
+               </a>
+               {{#if is_private}}
+               {{else}}
+               <a href="/profile/{{project_owner}}"><p class="projects__card-owner">{{project_owner}}</p></a>
+               {{/if}}
+            </div>
+            {{/each}}
+         {{else}}
+         {{#each projects}}
+            {{#if is_private}}
+            {{! Can't show private projects to people other than logged in User }}
+            {{else}}
+               <div class="masonryItem">
+                  <a href="/p/details/{{_id}}" class="projects__link">
+                     <div class="projects__card">
+                        <img src="http://s3.amazonaws.com/hryzn-app-static-assets/{{project_image}}" class="img-responsive project-image" alt="{{project_title}}" />
+                        <p class="projects__card-title">{{project_title}}</p>
+                     </div>
+                  </a>
+                  <a href="/profile/{{project_owner}}"><p class="projects__card-owner">{{project_owner}}</p></a>
+               </div>
+            {{/if}}
+         {{/each}}
+         {{/if}}
+      {{else}}
+      <div class="row main__info-container">
+         <p class="main__info"><strong>No Projects</strong></p>
+      </div>
+      {{/if}}
+   </div>
+
+</div>
+
+{{! Settings Side Nav}}
+<div id="profileSideNav" class="profile__sidenav">
+  <a href="javascript:void(0)" id="settingsClose">&times;</a>
+  <h3 class="settings__header">Settings</h3>
+  <hr class="settings__underline" />
+  {{!<a href="/c/create-collection">Create Collection</a>}}
+  <a href="/settings">Edit Profile</a>
+  <a href="/logout">Logout</a>
+</div>
+
+{{/if}}

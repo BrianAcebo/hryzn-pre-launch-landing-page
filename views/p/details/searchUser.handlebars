@@ -1,0 +1,40 @@
+<form style="margin: 100px 0 50px 0;" action="/p/details/invite/search/{{project._id}}" method="get">
+   <div class="invite__container">
+      <input type="text" placeholder="Enter a username to become an admin" name="searchUser">
+      <button type="submit"><img src="/icons/search.png" class="mobile-nav__icon"/></button>
+   </div>
+</form>
+
+<div class="add-input">
+   <input type="hidden" name="id" value="{{project._id}}" />
+   <input type="hidden" name="project_title" value="{{project.project_title}}" />
+   <input type="hidden" name="is_private" value="{{project.is_private}}" />
+   <input type="hidden" name="project_image" value="{{project.project_image}}" />
+</div>
+
+{{#if user_found}}
+   <div class="row main__info-container">
+      <p class="main__info"><strong style="margin-top: 50px; display: block;">Please select a user</strong></p>
+   </div>
+   {{#each user_found}}
+   <form action="/addtoadminuser/{{username}}" method="post">
+      <div class="addInput">
+      </div>
+      <div class="invite__user">
+         <input type="hidden" name="user_id" value="{{_id}}" />
+         <button type="submit" class="hidden-btn">
+            <div class="invite__user-name">
+               <div class="topnav__profile-img-container">
+                  <img class="profile__img" {{#if user.profileimage}}src="http://s3.amazonaws.com/hryzn-app-static-assets/{{user.profileimage}}"{{else}}src="/img/placeholders/hryzn-placeholder-01.jpg"{{/if}} />
+               </div>
+               {{username}}
+            </div>
+         </button>
+      </div>
+   </form>
+   {{/each}}
+{{else}}
+<div class="row main__info-container">
+   <p class="main__info"><strong>Sorry, we couldn't find that person.</strong></p>
+</div>
+{{/if}}

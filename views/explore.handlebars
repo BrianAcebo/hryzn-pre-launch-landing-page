@@ -1,0 +1,69 @@
+<div class="loader__overlay">
+   <div class="loader__wrapper">
+      <div class="loader"></div>
+      <p class="loader__text loader__text-1"><strong>Our robots are looking for the cool stuff.</strong></p>
+      <p class="loader__text loader__text-2"><strong>Retrieving files... Accessing data... Planning world domination.</strong></p>
+      <p class="loader__text loader__text-3"><strong>Soon the computers will just take over.</strong></p>
+      <p class="loader__text loader__text-4"><strong>The things are doing the stuff.</strong></p>
+      <p class="loader__text loader__text-5"><strong>Your hair looks pretty.</strong></p>
+   </div>
+</div>
+
+<div class="explore-main__container">
+
+   {{#if user_searched_for_project}}
+   {{! Only run when user has searched for a project }}
+      {{#if projects}}
+      {{! If a project was found}}
+         <div class="masonryContainer">
+            {{#each projects}}
+               {{#if is_private}}
+               {{! Check if the project is a private project, we do not want to show private projects }}
+               {{else}}
+               <div class="masonryItem">
+                  <a href="/p/details/{{id}}" class="projects__link">
+                     <div class="projects__card">
+                        <img src="http://s3.amazonaws.com/hryzn-app-static-assets/{{project_image}}" class="img-responsive" alt="{{project_title}}" />
+                        <p class="projects__card-title">{{project_title}}</p>
+                     </div>
+                  </a>
+                  <a href="/profile/{{project_owner}}"><p class="projects__card-owner">{{project_owner}}</p></a>
+               </div>
+               {{/if}}
+            {{/each}}
+         </div>
+      {{else}}
+      {{! No project was found related to their search }}
+      <p class="error-message">
+         Sorry, we couldn't find any projects for this search.
+      </p>
+      {{/if}}
+   {{else}}
+      {{! Default Explore Page }}
+      {{#if projects}}
+         <div class="masonryContainer">
+            {{#each projects}}
+               {{#if is_private}}
+               {{! Check if the project is a private project, we do not want to show private projects }}
+               {{else}}
+               <div class="masonryItem">
+                  <a href="/p/details/{{id}}" class="projects__link">
+                     <div class="projects__card">
+                        <img src="http://s3.amazonaws.com/hryzn-app-static-assets/{{project_image}}" class="img-responsive" alt="{{project_title}}" />
+                        <p class="projects__card-title">{{project_title}}</p>
+                     </div>
+                  </a>
+                  <a href="/profile/{{project_owner}}"><p class="projects__card-owner">{{project_owner}}</p></a>
+               </div>
+               {{/if}}
+            {{/each}}
+         </div>
+      {{else}}
+      {{! Something went wrong}}
+      <p class="error-message">
+         Sorry, we couldn't find any projects.
+      </p>
+      {{/if}}
+   {{/if}}
+
+</div>

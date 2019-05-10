@@ -1,0 +1,249 @@
+.profile__name {
+   left: 50px;
+   text-align: center;
+   margin: 25px auto;
+   position: absolute;
+   bottom: 75px;
+   z-index: 777777;
+   letter-spacing: 2px;
+   color: #fff;
+   font-size: 14px;
+}
+
+.profile__username {
+   left: 50px;
+   z-index: 777777;
+   text-align: center;
+   margin: 25px auto;
+   position: absolute;
+   bottom: 35px;
+   color: #fff;
+   font-size: 35px;
+}
+
+.profile__settings {
+   right: 50px;
+   z-index: 777777;
+   margin: 25px auto;
+   position: absolute;
+   bottom: 35px;
+   cursor: pointer;
+   max-width: 25px;
+}
+
+.profile-main__container {
+   width: 100%;
+   background: #fff;
+   padding: 50px;
+   z-index: 77778;
+   position: relative;
+   margin-top: -35px;
+   border-top-left-radius: 35px;
+   border-top-right-radius: 35px;
+}
+
+.profile__top {
+   margin-bottom: 25px;
+}
+
+.profile__top,
+.profile__follow-container,
+.followers__following {
+   display: flex;
+   justify-content: space-between;
+   flex-direction: row;
+   align-items: center;
+}
+
+.profile__follow-container form {
+   width: 100%;
+}
+
+.profile__follow-container a {
+   margin: 0 15px;
+   color: #a8add0;
+   font-weight: 600;
+   text-transform: capitalize;
+   font-size: 14px;
+   text-align: center;
+}
+
+.profile__follow-container a strong {
+   margin-right: 5px;
+   color: #333;
+}
+
+.profile__follow,
+.profile__unfollow {
+   padding: 12px 50px;
+   font-size: 12px;
+   font-weight: bold;
+   text-transform: uppercase;
+   letter-spacing: 1px;
+   border: none;
+   border-radius: 35px;
+   cursor: pointer;
+   transition: 0.3s;
+   margin: 0 15px;
+}
+
+.profile__follow {
+   background: #f0d2cc;
+   color: #fff;
+}
+
+.profile__unfollow {
+   border: 1px solid #f0d2cc;
+   color: #f0d2cc;
+}
+
+.profile__follow:hover,
+.profile__unfollow:hover {
+   opacity: 0.8;
+}
+
+.profile__projects-p {
+   font-size: 14px;
+   font-weight: bold;
+   letter-spacing: 2px;
+   text-transform: uppercase;
+}
+
+@media screen and (max-width: 768px) {
+
+   .profile__name {
+      left: 25px;
+      font-size: 12px;
+   }
+
+   .profile__username {
+      left: 25px;
+      font-size: 25px;
+   }
+
+   .profile-main__container {
+      padding: 25px;
+   }
+
+   .profile__top,
+   .profile__follow-container {
+      flex-direction: column;
+      align-items: flex-start;
+      width: 100%;
+   }
+
+   .profile__follow-container a {
+      margin: 5px 15px;
+   }
+
+   .profile__follow-container a:first-child {
+      margin-left: 0;
+   }
+
+   .profile__follow,
+   .profile__unfollow {
+      padding: 12px 0;
+      width: 100%;
+      margin: 15px 0;
+   }
+}
+
+.profile__sidenav {
+   height: 100%;
+   width: 0;
+   position: fixed;
+   z-index: 9999999;
+   top: 0;
+   right: 0;
+   background-color: #fff;
+   overflow-x: hidden;
+   transition: 0.5s;
+   padding-top: 25px;
+}
+
+.settings__header {
+   font-size: 20px;
+   color: #333;
+   margin-left: 50px;
+}
+
+.settings__underline {
+   width: 50px;
+   height: 3px;
+   border: none;
+   background: #333;
+    margin: 25px 0 25px 50px;
+}
+
+.profile__sidenav a {
+   margin: 25px 0 25px 50px;
+   font-size: 14px;
+   color: #333;
+   display: block;
+   transition: 0.3s;
+}
+
+.profile__sidenav a:hover {
+   color: #707070;
+}
+
+.profile__sidenav #settingsClose {
+   position: absolute;
+   top: 15px;
+   right: 15px;
+   font-size: 36px;
+   margin-left: 50px;
+   cursor: pointer;
+}
+
+.profile__sidenav #settingsClose:hover {
+   color: #333;
+}
+
+.follower__profiles-section {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   flex-wrap: wrap;
+   flex-direction: row;
+}
+
+.follower__profiles-container {
+   padding: 150px 50px 0 50px;
+   margin: 0 auto;
+}
+
+.follower__profile {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   color: #333;
+   margin: 25px;
+   font-size: 16px;
+   font-weight: bold;
+   padding: 25px 50px;
+   border-radius: 35px;
+   border: 3px solid #f3dbd6;
+}
+
+.follower__profile-img-container {
+   width: 75px;
+   height: 75px;
+   border-radius: 50%;
+   text-align: center;
+   margin-right: 25px;
+   position: relative;
+   overflow: hidden;
+   border: 1px solid #394961;
+}
+
+@media screen and (max-width: 768px) {
+   .follower__profile {
+      font-size: 14px;
+   }
+
+   .follower__profile-img-container {
+      width: 50px;
+      height: 50px;
+   }
+}

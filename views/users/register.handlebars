@@ -1,0 +1,61 @@
+<div class="landing-main__container">
+   {{#if error_msg}}
+   <div class="error__msg-2">
+      <p>{{error_msg}}</p>
+      <p class="error__exit">&times;</p>
+   </div>
+   {{/if}}
+
+   {{#if errors}}
+      {{#each errors}}
+         <div class="error__msg-2">
+            <p>{{msg}}</p>
+            <p class="error__exit">&times;</p>
+         </div>
+      {{/each}}
+   {{/if}}
+
+   {{#if error}}
+      {{#each error}}
+         <div class="error__msg-2">
+            <p>{{this}}</p>
+            <p class="error__exit">&times;</p>
+         </div>
+      {{/each}}
+   {{/if}}
+
+   {{#if success_msg}}
+   <div class="success__msg-2">
+      <p>{{success_msg}}</p>
+      <p class="error__exit">&times;</p>
+   </div>
+   {{/if}}
+   <div class="form-container-2">
+      <h3 class="landing-title-faded">Sign Up</h3>
+      <form method="post" action="/users/register" enctype="multipart/form-data">
+         <div class="container">
+            <div class="row">
+               <div class="col-lg-6">
+                  <input class="form__input" type="text" placeholder="First name" name="firstname" value="{{firstname}}" />
+               </div>
+
+               <div class="col-lg-6">
+                  <input class="form__input" type="text" placeholder="Last name" name="lastname" value="{{lastname}}" />
+               </div>
+            </div>
+            <input class="form__input" type="text" placeholder="Enter username" name="username" value="{{username}}" required autocapitalize="none" />
+            <input class="form__input" type="email" placeholder="Enter email address" name="email" value="{{email}}" required autocapitalize="none" />
+            <input class="form__input" type="password" placeholder="Enter password" name="password" value="{{password}}" required autocapitalize="none" />
+            <input class="form__input" type="password" placeholder="Confirm password" name="password2" value="{{password2}}" required autocapitalize="none" />
+            <label for="profileimage" class="form__label">Select your profile header</label>
+            <input class="form__input" type="file" name="profileimage" value="{{profileimage}}" />
+            <button class="form__sign-up-button" name="submit" type="submit">Sign Up</button>
+        </div>
+      </form>
+      <div class="form__href-container">
+         <a class ="form__href" href="/users/login">
+            Have an account? Login
+         </a>
+      </div>
+   </div>
+</div>

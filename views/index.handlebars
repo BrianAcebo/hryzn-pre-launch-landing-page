@@ -1,0 +1,38 @@
+<div class="feed__container">
+   <div class="feed__container-text">
+      {{#if user.firstname}}
+      <h1 class="main__title">Hi {{user.firstname}},</h1>
+      {{else}}
+      <h1 class="main__title">Hi {{user.username}},</h1>
+      {{/if}}
+      {{#if projects}}
+      {{else}}
+      <p class="main__info feed__text">We see you're not following anyone, <a href="/explore"><strong>let's go explore.</strong></a></p>
+      {{/if}}
+   </div>
+</div>
+
+{{#if projects}}
+   <div class="masonryContainer">
+      {{#each projects}}
+         {{this.project_owner}}
+         {{#if this.is_private}}
+         {{! Check if the project is a private project, we do not want to show private projects }}
+         {{else}}
+         <div class="masonryItem">
+            <a href="/p/details/{{this._id}}" class="projects__link">
+               <div class="projects__card">
+                  <img src="http://s3.amazonaws.com/hryzn-app-static-assets/{{this.project_image}}" class="img-responsive" alt="{{project_title}}" />
+                  <p class="projects__card-title">{{this.project_title}}</p>
+               </div>
+            </a>
+            <a href="/profile/{{this.project_owner}}"><p class="projects__card-owner">{{this.project_owner}}</p></a>
+         </div>
+         {{/if}}
+      {{/each}}
+   </div>
+{{else}}
+{{! Something went wrong}}
+<p class="error-message">
+</p>
+{{/if}}

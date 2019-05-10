@@ -1,0 +1,43 @@
+{
+  "name": "hryzn-demo",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www",
+    "dev": "nodemon ./bin/www"
+  },
+  "dependencies": {
+    "aws-sdk": "*",
+    "bcryptjs": "*",
+    "body-parser": "*",
+    "connect-flash": "*",
+    "cookie-parser": "~1.4.3",
+    "debug": "~2.6.9",
+    "express": "~4.16.0",
+    "express-handlebars": "*",
+    "express-messages": "*",
+    "express-session": "*",
+    "express-validator": "*",
+    "gulp-cli": "^2.0.1",
+    "http-errors": "~1.6.2",
+    "mongodb": "*",
+    "mongoose": "*",
+    "morgan": "~1.9.0",
+    "multer": "*",
+    "multer-s3": "*",
+    "nodemon": "*",
+    "passport": "*",
+    "passport-http": "*",
+    "passport-local": "*",
+    "trumbowyg": "^2.15.2"
+  },
+  "devDependencies": {
+    "gulp": "*",
+    "gulp-autoprefixer": "*",
+    "gulp-concat": "*",
+    "gulp-minify-css": "*",
+    "gulp-rename": "*",
+    "gulp-uglify": "*",
+    "del": "*"
+  }
+}

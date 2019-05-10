@@ -1,0 +1,29 @@
+<div class="form-container form__settings">
+   <h3 class="form__h3">Let's begin creating the project</h3>
+   <form method="post" action="/p/create-project" enctype="multipart/form-data">
+      <div class="form__container">
+         <input class="form__input" type="text" placeholder="What is the name of the project?" name="project_title" value="{{project_title}}" required />
+         <label for="project_image" class="form__label" style="margin-top: 25px;">Select an image for project</label>
+         <input class="form__input" type="file" name="project_image" value="{{project_image}}" />
+         <input class="form__input" type="text" placeholder="Enter a Youtube or Vimeo link (optional)" name="project_video" value="{{project_video}}" />
+         <div class="checkbox__wrapper">
+            <label class="check__container">
+               <input id="isPrivateCheck" class="form__input-checkbox" type="checkbox">
+               <span class="checkmark">Private Project</span>
+            </label>
+            <label class="check__container">
+               <input id="isPublicCheck" class="form__input-checkbox checked" type="checkbox" checked>
+               <span class="checkmark">Public Project</span>
+            </label>
+         </div>
+         <br />
+         <p class="form__input-small" id="changeText">
+            A public project can be viewed by anyone
+         </p>
+         <input id="checkbox" type="hidden" name="is_private" value="false">
+         <input type="hidden" name="admin" value="{{user.username}}">
+         <input type="hidden" name="id" value="{{user._id}}">
+         <button class="form__sign-up-button" name="submit" type="submit">Next Step</button>
+     </div>
+   </form>
+</div>

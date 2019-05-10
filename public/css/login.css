@@ -1,0 +1,237 @@
+.form-container {
+   margin: 0 auto;
+   width: 80%;
+   max-width: 600px;
+   padding: 50px;
+   background: #fff;
+   box-shadow: 0 2px 4px 0 rgba(0,0,0,0.2);
+   box-sizing: border-box;
+}
+
+.form-container-2 {
+   margin: 0 auto;
+   width: 100%;
+   max-width: 600px;
+}
+
+@media screen and (max-width: 768px) {
+   .form-container-2 {
+      padding: 25px;
+   }
+}
+
+.form__settings {
+   box-shadow: none;
+   max-width: 700px;
+   width: 90%;
+}
+
+@media screen and (max-width: 595px) {
+   .form-container {
+      width: 90%;
+      padding: 25px;
+   }
+
+   .form-container-2 {
+      width: 100%;
+      padding: 25px 0;
+   }
+
+   .form__list {
+      padding: 25px 15px;
+      width: 100%;
+   }
+}
+
+.form__h1, .form__h3 {
+   font-size: 25px;
+   color: #333;
+   text-align: center;
+   font-weight: 700;
+   margin: 0 0 10px 0;
+}
+
+.form-container-2 .form__input {
+   width: 100%;
+   padding: 15px 0;
+   margin: 18px 10px 18px 0;
+   display: inline-block;
+   border: none;
+   border-radius: 0;
+   border-bottom: 1px solid #ccc;
+   outline: none!important;
+   background: transparent;
+   font-size: 12px;
+   letter-spacing: 1px;
+}
+
+.form-container-2 .form__textarea {
+   width: 100%;
+   padding: 15px 0;
+   height: 150px;
+   margin: 18px 10px 18px 0;
+   display: inline-block;
+   border: none;
+   background: transparent;
+   border-radius: 0;
+   border-bottom: 1px solid #ccc;
+   outline: none!important;
+   font-size: 12px;
+   letter-spacing: 1px;
+}
+
+.modal-title__faded {
+   color: #707070;
+   font-size: 14px;
+   letter-spacing: 2px;
+   margin-bottom: 25px;
+   text-align: center;
+   text-transform: uppercase;
+}
+
+.form__input {
+   width: 100%;
+   padding: 15px 20px;
+   margin: 18px 0;
+   display: inline-block;
+   border: 1px solid #ccc;
+   font-size: 12px;
+   border-radius: 5px;
+   letter-spacing: 1px;
+}
+
+.form__input-checkbox {
+   margin: 18px 25px 18px 0;
+   display: inline-block;
+}
+
+.form__label {
+   font-size: 12px;
+   color: #707070;
+}
+
+.form__sign-up-button {
+   background: #31375A;
+   font-size: 12px;
+   text-transform: uppercase;
+   letter-spacing: 1px;
+   color: #fff;
+   max-width: 400px;
+   padding: 15px 20px;
+   width: 100%;
+   margin: 20px auto;
+   display: flex;
+   justify-content: center;
+   text-align: center;
+   border: none;
+   cursor: pointer;
+   transition: 0.3s;
+}
+
+.form__sign-up-button:hover {
+  opacity: 0.8;
+}
+
+.form__href-container {
+   text-align: center;
+}
+
+.form__href {
+   color: #333;
+}
+
+.form__input-small {
+   font-size: 12px;
+   line-height: 22px;
+   max-width: 400px;
+   margin: 25px auto;
+   text-align: center;
+}
+
+.checkbox__wrapper {
+   display: flex;
+   flex-direction: row;
+   justify-content: center;
+   margin: 0 auto;
+}
+
+.check__container {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   margin: 15px 0 0 0;
+   position: relative;
+   min-width: 175px;
+   text-align: center;
+   cursor: pointer;
+   font-size: 14px;
+   -webkit-user-select: none;
+   -moz-user-select: none;
+   -ms-user-select: none;
+   user-select: none;
+}
+
+.check__container input {
+   opacity: 0;
+   cursor: pointer;
+}
+
+.checkmark {
+   position: absolute;
+   top: -3px;
+   left: 0;
+   right: 0;
+   padding: 15px 0;
+   transition: 0.3s;
+   margin: 0 10px;
+}
+
+.check__container:hover input ~ .checkmark {
+   background-color: #DADCEB;
+   color: #fff;
+   opacity: 0.8;
+}
+
+.check__container input.checked ~ .checkmark {
+   background-color: #a8add0;
+   color: #fff;
+   font-weight: bold;
+   border-radius: 15px;
+}
+
+.check__container input.checked ~ .checkmark:after {
+   display: block;
+}
+
+.delete-link {
+   font-size: 12px;
+   text-align: center;
+   color: #333;
+   margin: 50px auto;
+   cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+   .checkbox__wrapper {
+      flex-direction: column;
+   }
+
+   .check__container {
+      font-size: 14px;
+      margin: 12px 0;
+   }
+
+   .form__h3 {
+      font-size: 20px;
+   }
+
+   .form__input, .form__sign-up-button {
+      font-size: 10px;
+   }
+}
+
+@media screen and (max-width: 520px) {
+   .checkmark {
+      top: 5px;
+   }
+}
