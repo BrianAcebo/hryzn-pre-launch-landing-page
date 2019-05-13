@@ -38,8 +38,7 @@ window.onload = function(){
       useOwnImageLoader: false,
       mobileFirst: true,
       breakAt: {
-         992: 3,
-         768: 2
+         992: 3
       }
 	});
 	var masonryItemEl = masonryEl.querySelectorAll(".masonryItem");

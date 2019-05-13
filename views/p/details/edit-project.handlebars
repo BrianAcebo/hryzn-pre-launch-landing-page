@@ -44,14 +44,14 @@
       <div class="edit-project__list-container list-id">
          <label for="list_title" class="form__label" style="margin-top: 25px;">Make a List</label>
          <input class="form__input input-list-title" type="text" placeholder="Enter a title" name="list_title_1" value="{{project.list_title}}"/>
-         <div class="ticketItemCatch"></div>
+         <div class="listItemCatch"></div>
          <div class="container">
-            <div name="toDoList" class="ticket-items__container">
-               <input id="ticketItemInput" class="form__input" type="text" placeholder="Enter an item" name="ticketItem" value="{{project.list_item}}"/>
-               <div class="ticketAddBtn"><img src="/icons/add-white.png" class="mobile-nav__icon"/></div>
+            <div name="List" class="list-items__container">
+               <input id="listItemInput" class="form__input" type="text" placeholder="Enter an item" name="listItem" value="{{project.list_item}}"/>
+               <div class="listAddBtn"><img src="/icons/add-white.png" class="mobile-nav__icon"/></div>
             </div>
             <br/>
-            <ol class="ticket-items"></ol>
+            <ol class="list-items"></ol>
          </div>
       </div>
       {{else}}
@@ -60,20 +60,20 @@
             <div class="edit-project__list-container list-id">
                <label for="list_title" class="form__label" style="margin-top: 25px;">Make a List</label>
                <input class="form__input" type="text" placeholder="Enter a title" name="list_title_{{list_order}}" value="{{list_title}}"/>
-               <div class="ticketItemCatch" id="{{list_order}}">
+               <div class="listItemCatch" id="{{list_order}}">
                   {{#each list_items}}
                   <input class="list_items" id="{{this}}" type="hidden" name="list_items_{{list_order}}" value="{{this}}"/>
                   {{/each}}
                </div>
                <div class="container">
-                  <div name="toDoList" class="ticket-items__container">
-                     <input id="ticketItemInput" class="form__input" type="text" placeholder="Enter an item" name="ticketItem" value="{{project.list_item}}"/>
-                     <div class="ticketAddBtn"><img src="/icons/add-white.png" class="mobile-nav__icon"/></div>
+                  <div name="List" class="list-items__container">
+                     <input id="listItemInput" class="form__input" type="text" placeholder="Enter an item" name="listItem" value="{{project.list_item}}"/>
+                     <div class="listAddBtn"><img src="/icons/add-white.png" class="mobile-nav__icon"/></div>
                   </div>
                   <br/>
-                  <ol class="ticket-items">
+                  <ol class="list-items">
                      {{#each list_items}}
-                     <div class="ticket-item__self"><li>{{this}}</li><span class="close">&#10005;<span></div>
+                     <div class="list-item__self"><li>{{this}}</li><span class="close">&#10005;<span></div>
                      {{/each}}
                   </ol>
                </div>
@@ -81,7 +81,7 @@
          {{/if}}
       {{/each}}
       {{/if}}
-      <div class="edit-project__add-list" id="listAddBtn">
+      <div class="edit-project__add-list" id="newList">
          <img src="/icons/add-black.png" class="icon-reg" />
          <p>Make Another List</p>
       </div>

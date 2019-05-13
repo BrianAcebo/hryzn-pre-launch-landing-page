@@ -367,7 +367,7 @@ router.get('/delete/:id', (req, res, next) => {
 
          if(user.projects.length > 0) {
 
-            info = [];
+            var info = [];
 
             for (var i = 0, len = user.projects.length; i < len; i++) {
                info['projectId'] = user.projects[i]._id;
@@ -378,7 +378,6 @@ router.get('/delete/:id', (req, res, next) => {
 
                   // User would no longer have project saved
                   if(project.followers.length > 0) {
-
                      for (var i = 0, len = project.followers.length; i < len; i++) {
                         info['profileUsername'] = project.followers[i];
 
@@ -386,7 +385,6 @@ router.get('/delete/:id', (req, res, next) => {
                            if(err) throw err;
                         });
                      }
-
                   }
 
                   // User will no longer be an admin
@@ -400,6 +398,21 @@ router.get('/delete/:id', (req, res, next) => {
                      }
                   }
 
+                  // Delete project image
+                  var s3_instance = new aws.S3();
+                  var s3_params = {
+                     Bucket: 'hryzn-app-static-assets',
+                     Key: project.project_image
+                  };
+                  s3_instance.deleteObject(s3_params, (err, data) => {
+                     if(data) {
+                        console.log("File deleted");
+                     }
+                     else {
+                        console.log("No delete : " + err);
+                     }
+                  });
+
                   // Delete the project if owner
                   if(project.project_owner === req.user.username) {
                      Project.findByIdAndRemove(info['projectId'], (err) => {
@@ -410,6 +423,21 @@ router.get('/delete/:id', (req, res, next) => {
                });
             }
          }
+
+         // Delete profile image
+         var s3_instance = new aws.S3();
+         var s3_params = {
+            Bucket: 'hryzn-app-static-assets',
+            Key: user.profileimage
+         };
+         s3_instance.deleteObject(s3_params, (err, data) => {
+            if(data) {
+               console.log("File deleted");
+            }
+            else {
+               console.log("No delete : " + err);
+            }
+         });
 
          User.findByIdAndRemove(req.params.id, (err) => {
            if (err) throw err;

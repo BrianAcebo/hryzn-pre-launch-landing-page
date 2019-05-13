@@ -52,6 +52,12 @@ router.post('/create-project', upload.single('project_image'), (req, res, next) 
    var is_private = req.body.is_private;
    var id = req.body.id;
 
+   // Embed video
+   var project_video = '';
+   var url = req.body.project_video;
+   var is_youtube_video = url.search("https://www.youtube.com");
+   var is_vimeo_video = url.search("https://vimeo.com");
+
    // Check if it is Youtube video ->
    // Check if there's an unwanted playlist ->
    // Check if it's already an embedded video ->
@@ -164,7 +170,7 @@ router.post('/create-project', upload.single('project_image'), (req, res, next) 
                if(err) throw err;
             });
 
-            req.flash('success_msg', "Project was created. Now you can edit the project.");
+            req.flash('success_msg', "Project was created. Edit the project.");
             res.redirect('/p/details/edit/' + newProject._id);
 
          }
@@ -530,41 +536,67 @@ router.get('/details/delete/:id', (req, res, next) => {
       Project.findById(req.params.id, (err, project) => {
          if(err) throw err;
 
-         info = [];
+         if(project.admins.indexOf(req.user.username) === -1) {
 
-         // If project has followers
-         if(project.followers.length > 0) {
+            // Send them to the homepage
+            res.location('/');
+            res.redirect('/');
 
-            for (var i = 0, len = project.followers.length; i < len; i++) {
-               info['profileUsername'] = project.followers[i];
-               info['projectId'] = req.params.id;
+         } else {
 
-               User.unfollowProject(info, (err, user) => {
-                  if(err) throw err;
-               });
+            // Only delete if admin
+
+            info = [];
+
+            // If project has followers
+            if(project.followers.length > 0) {
+
+               for (var i = 0, len = project.followers.length; i < len; i++) {
+                  info['profileUsername'] = project.followers[i];
+                  info['projectId'] = req.params.id;
+
+                  User.unfollowProject(info, (err, user) => {
+                     if(err) throw err;
+                  });
+               }
+
             }
 
-         }
+            // If project has admins
+            if(project.admins.length > 0) {
+               for (var i = 0, len = project.admins.length; i < len; i++) {
+                  info['profileUsername'] = project.admins[i];
+                  info['projectId'] = req.params.id;
 
-         // If project has admins
-         if(project.admins.length > 0) {
-            for (var i = 0, len = project.admins.length; i < len; i++) {
-               info['profileUsername'] = project.admins[i];
-               info['projectId'] = req.params.id;
-
-               User.unfollowProject(info, (err, user) => {
-                  if(err) throw err;
-               });
+                  User.unfollowProject(info, (err, user) => {
+                     if(err) throw err;
+                  });
+               }
             }
-         }
 
-         // Delete the project
-         Project.findByIdAndRemove(req.params.id, (err) => {
-           if (err) throw err;
-           req.flash('success_msg', "Project Deleted");
-           res.location('/');
-           res.redirect('/');
-         });
+            // Delete project image
+            var s3_instance = new aws.S3();
+            var s3_params = {
+               Bucket: 'hryzn-app-static-assets',
+               Key: project.project_image
+            };
+            s3_instance.deleteObject(s3_params, (err, data) => {
+               if(data) {
+                  console.log("File deleted");
+               }
+               else {
+                  console.log("No delete : " + err);
+               }
+            });
+
+            // Delete the project
+            Project.findByIdAndRemove(req.params.id, (err) => {
+              if (err) throw err;
+              req.flash('success_msg', "Project Deleted");
+              res.location('/');
+              res.redirect('/');
+            });
+         }
 
       });
    } else {

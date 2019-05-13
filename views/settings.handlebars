@@ -19,12 +19,12 @@
          <button class="form__sign-up-button" name="submit" type="submit">Submit Changes</button>
      </div>
    </form>
-   <p class="delete-link" id="modalBtn">I would like to delete my account</p>
+   <p class="delete-link modalBtn">I would like to delete my account</p>
 
 </div>
 
 <!-- Hidden Delete Modal -->
-<div id="popModal" class="modalBackground">
+<div class="popModal modalBackground">
   <div class="modal-content">
     <div class="modal-header">
       <p>Are You Sure?</p>
@@ -35,7 +35,7 @@
     </div>
     <div class="modal-footer">
       <a href="/delete/{{user.id}}" class="btn__secondary">Yes I'm Sure</a>
-      <span class="closeModal cancelBtn delModal btn__primary">Cancel</span>
+      <span class="closeModal btn__primary">Cancel</span>
     </div>
   </div>
 </div>

@@ -227,7 +227,7 @@ blockquote {
 
 .error__exit {
    position: absolute;
-   right: 15px;
+   right: 0;
    font-size: 25px;
    cursor: pointer;
 }
@@ -250,11 +250,11 @@ blockquote {
 }
 
 .success__msg-2 {
-   width: 90%;
+   width: 100%;
    max-width: 600px;
    color: #69c893;
    margin: 0 auto;
-   padding: 15px;
+   padding: 15px 0;
    box-sizing: border-box;
    text-align: left;
    display: flex;
@@ -280,6 +280,10 @@ blockquote {
    position: relative;
    align-items: center;
    border-top: 3px solid #c2b5a1;
+}
+
+.changeTop {
+   top: 75px;
 }
 
 .regular__msg p:hover {
@@ -317,6 +321,10 @@ input {
 .noClick__btn {
    cursor: default!important;
    opacity: 0.5!important;
+}
+
+.btn__padding {
+   padding: 0 25px;
 }
 
 #mainBody {
@@ -542,6 +550,7 @@ input {
 .modal-footer span {
    padding: 8px 35px;
    transition: 0.3s;
+   line-height: 35px;
 }
 
 .modal-footer a:hover,
@@ -635,6 +644,7 @@ input {
 
    .main__info-container {
       margin: 0;
+      padding: 0 10px;
    }
 
    .main__info {

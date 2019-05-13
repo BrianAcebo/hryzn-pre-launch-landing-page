@@ -39,7 +39,9 @@ $(document).ready(function() {
       $(this).parent().remove();
    });
 
-   /**********//**********/
+   /**********/
+
+   /**********/
 
    // Go back when clicked
    $(".go-back").click(function() {
@@ -50,71 +52,40 @@ $(document).ready(function() {
 
    $window = $(window);
    $topNav = $('.topnav');
+   $flash_1 = $('.success__msg');
+   $flash_2 = $('.error__msg-4');
+
 
    $window.scroll(function() {
       if($window.scrollTop() >= 50){
          $topNav.addClass('shadow');
+         $flash_1.addClass('changeTop');
+         $flash_2.addClass('changeTop');
 		} else {
          $topNav.removeClass('shadow');
+         $flash_1.removeClass('changeTop');
+         $flash_2.removeClass('changeTop');
 		}
    });
 
    /**********/
 
    // Modal pop up
-   var $modal = $("#popModal");
-   var $modalBtn = $("#modalBtn");
+
+   var $modal = $(".popModal");
+   var $modalBtn = $(".modalBtn");
    var $closeBtn = $(".closeModal");
 
-   $modalBtn.click(function() {
-      $modal.css({ "display": "block" });
+   $modalBtn.each(function() {
+      $(this).click(function() {
+         $modal.css({ "display": "block" });
+      });
    });
 
    $closeBtn.click(function() {
       $modal.css({ "display": "none" });
    });
 
-   $window.click(function(event) {
-      if (event.target == $modal) {
-         $modal.css({ "display": "none" });
-      }
-   });
-
-   var $modal2 = $("#popModal2");
-   var $modalBtn2 = $("#modalBtn2");
-   var $closeBtn2 = $(".closeModal2");
-
-   $modalBtn2.click(function() {
-      $modal2.css({ "display": "block" });
-   });
-
-   $closeBtn2.click(function() {
-      $modal2.css({ "display": "none" });
-   });
-
-   $window.click(function(event) {
-      if (event.target == $modal2) {
-         $modal2.css({ "display": "none" });
-      }
-   });
-
-   var $modal3 = $("#popModal3");
-   var $modalBtn3 = $("#modalBtn3");
-   var $closeBtn3 = $(".closeModal3");
-
-   $modalBtn3.click(function() {
-      $modal3.css({ "display": "block" });
-   });
-
-   $closeBtn3.click(function() {
-      $modal3.css({ "display": "none" });
-   });
-
-   $window.click(function(event) {
-      if (event.target == $modal3) {
-         $modal3.css({ "display": "none" });
-      }
-   });
 
    /**********/
    // Edit Project
@@ -124,7 +95,7 @@ $(document).ready(function() {
    var total_list_amount = [1,2,3,4,5];
    var alreadyExists = [];
 
-   $('.ticketItemCatch').each(function() {
+   $('.listItemCatch').each(function() {
       ++list_starting_count;
       $(this).attr('id', list_starting_count);
       $(this).children('.list_items').each(function() {
@@ -133,54 +104,46 @@ $(document).ready(function() {
       // $(this).closest('.edit-project__list-container').children('.input-list-title').attr('name', 'list_title_' + list_starting_count);
    });
 
-   $('.ticketAddBtn').each(function() {
+   $('.listAddBtn').each(function() {
       $(this).click(function() {
          var toAdd = $(this).prev().val();
-         $(this).closest('.container').children('.ticket-items').append('<div class="ticket-item__self"><li>' + toAdd + '</li><span class="close">&#10005;<span></div>');
-         var list_order_number_for_input = $(this).closest('.edit-project__list-container').children('.ticketItemCatch').attr('id');
-         $(this).closest('.edit-project__list-container').children('.ticketItemCatch').append('<input id="' + toAdd + '"type="hidden" name="list_items_' + list_order_number_for_input +'[]" value="' + toAdd + '"/>');
-         $ticketItems.push(toAdd);
+         $(this).closest('.container').children('.list-items').append('<div class="list-item__self"><li>' + toAdd + '</li><span class="close">&#10005;<span></div>');
+         var list_order_number_for_input = $(this).closest('.edit-project__list-container').children('.listItemCatch').attr('id');
+         $(this).closest('.edit-project__list-container').children('.listItemCatch').append('<input id="' + toAdd + '"type="hidden" name="list_items_' + list_order_number_for_input +'[]" value="' + toAdd + '"/>');
       });
    });
 
-   $('#listAddBtn').click(function() {
+   $('#newList').click(function() {
       if(list_count < 5) {
          ++list_count;
 
          $('#listCount').val(list_count);
 
-         var newList = '<div class="edit-project__list-container list_id"><label for="list_title" class="form__label" style="margin-top: 25px;">Make a List</label><input class="form__input" type="text" placeholder="Enter a title" name="list_title_' + list_count + '" value=""/><div class="ticketItemCatch"></div><div class="container"><div name="toDoList" class="ticket-items__container"><input id="ticketItemInput" class="form__input" type="text" placeholder="Enter an item" name="ticketItem" value=""/><div class="ticketAddBtn"><img src="/icons/add-white.png" class="mobile-nav__icon"/></div></div><br/><ol class="ticket-items"></ol></div></div>';
+         var newList = '<div class="edit-project__list-container list_id"><label for="list_title" class="form__label" style="margin-top: 25px;">Make a List</label><input class="form__input" type="text" placeholder="Enter a title" name="list_title_' + list_count + '" value=""/><div class="listItemCatch"></div><div class="container"><div name="List" class="list-items__container"><input id="listItemInput" class="form__input" type="text" placeholder="Enter an item" name="listItem" value=""/><div class="listAddBtn"><img src="/icons/add-white.png" class="mobile-nav__icon"/></div></div><br/><ol class="list-items"></ol></div></div>';
 
-         $(newList).insertBefore('#listAddBtn');
-         $('.ticketAddBtn').each(function() {
+         $(newList).insertBefore('#newList');
+         $('.listAddBtn').each(function() {
             $(this).click(function() {
                var toAdd = $(this).prev().val();
-               $(this).closest('.container').children('.ticket-items').append('<div class="ticket-item__self"><li>' + toAdd + '</li><span class="close">&#10005;<span></div>');
-               $(this).closest('.edit-project__list-container').children('.ticketItemCatch').append('<input id="' + toAdd + '"type="hidden" name="list_items_' + list_count +'[]" value="' + toAdd + '"/>');
-               $ticketItems.push(toAdd);
+               $(this).closest('.container').children('.list-items').append('<div class="list-item__self"><li>' + toAdd + '</li><span class="close">&#10005;<span></div>');
+               $(this).closest('.edit-project__list-container').children('.listItemCatch').append('<input id="' + toAdd + '"type="hidden" name="list_items_' + list_count +'[]" value="' + toAdd + '"/>');
             });
          });
       } else {
-         $('#listAddBtn').text('Sorry, the maximum amount of lists is 5');
+         $('#newList').text('Sorry, the maximum amount of lists is 5');
       }
    });
 
-   $(document).on('dblclick','.ticket-item__self', function() {
+   $(document).on('dblclick','.list-item__self', function() {
       var item = $(this).children().first().text();
       $(this).remove();
-      $('.ticketItemCatch').find('input[value="' + item + '"]').remove();
+      $('.listItemCatch').find('input[value="' + item + '"]').remove();
    });
 
    $(document).on('click','.close', function() {
       var item = $(this).prev().text();
-      $('.ticketItemCatch').find('input[value="' + item + '"]').remove();
+      $('.listItemCatch').find('input[value="' + item + '"]').remove();
       $(this).parent().remove();
-   });
-
-   $(document).on('click','#ticketCancel', function() {
-      $('.ticket-items').children().remove();
-      $('#ticketItemInput').val('');
-      $('.ticketItemCatch').children().remove();
    });
 
    /**********/
@@ -188,17 +151,6 @@ $(document).ready(function() {
    // Add hidden input for search admin invite
    var addInput = $('.add-input').children();
    $('.addInput').append(addInput);
-
-   /**********/
-
-   // Add ticket items
-   $('#addTckItem').click(function() {
-      $('.addTckItemContainer').append('<div class="ticket__list-items"><input class="form__input" style="width: 90%" type="text" placeholder="Enter ticket item" name="ticketItems" value="" autocapitalize="none" /><p class="ticketLink ticketDel" title="Delete"><img src="/icons/delete-ticket-item.png" class="ticket__list-btn-2" /></p></div>');
-   });
-
-   $(document).on('click','.ticketDel', function() {
-      $(this).parent().remove();
-   });
 
    /**********/
 

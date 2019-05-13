@@ -56,7 +56,7 @@
          <div class="row project-admin__container">
             <a class="project-admin__item" href="/p/details/edit/{{project._id}}">Edit</a>
             <a href="/p/details/invite/{{project._id}}"><div class="project-admin__item middle-item">Invite</div></a>
-            <div id="modalBtn2" class="project-admin__item">Delete</div>
+            <div class="modalBtn project-admin__item">Delete</div>
          </div>
          {{else}}
             {{#if user_follows_project}}
@@ -127,7 +127,7 @@
          <div class="row project-admin__container">
             <a class="project-admin__item" href="/p/details/edit/{{project._id}}">Edit</a>
             <a href="/p/details/invite/{{project._id}}"><div class="project-admin__item middle-item">Invite</div></a>
-            <div id="modalBtn2" class="project-admin__item">Delete</div>
+            <div class="modalBtn project-admin__item">Delete</div>
          </div>
          {{else}}
             {{#if user_follows_project}}
@@ -186,34 +186,31 @@
 {{! ----- }}
 
 <section class="project__bottom-section">
-
    {{#if project.project_notes}}
    <div class="detail-project_notes">
       {{{project.project_notes}}}
    </div>
    {{/if}}
-
-   {{#if is_admin_of_project}}
-   {{! Hidden Delete Modal }}
-   <div id="popModal2" class="modalBackground">
-     <div class="modal-content">
-       <div class="modal-header">
-         <p>Are You Sure?</p>
-       </div>
-       <div class="modal-body">
-         <p>Deleting this is permanent and cannot be undone.
-       </div>
-       <div class="modal-footer">
-         <a href="/p/details/delete/{{project._id}}" class="btn__secondary">Yes I'm Sure</a>
-         <span class="closeModal2 list__cancelBtn btn__primary">Cancel</span>
-       </div>
-     </div>
-   </div>
-   {{/if}}
 </section>
 
-<script src="//ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script type="text/javascript" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+{{#if is_admin_of_project}}
+{{! Hidden Delete Modal }}
+<div class="popModal modalBackground">
+  <div class="modal-content">
+    <div class="modal-header">
+      <p>Are You Sure?</p>
+    </div>
+    <div class="modal-body">
+      <p>Deleting this is permanent and cannot be undone.
+    </div>
+    <div class="modal-footer">
+      <a href="/p/details/delete/{{project._id}}" class="btn__secondary">Yes I'm Sure</a>
+      <span class="closeModal btn__primary">Cancel</span>
+    </div>
+  </div>
+</div>
+{{/if}}
+
 <script>
 // Copy project details link
 function copyLink(text) {

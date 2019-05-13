@@ -83,7 +83,7 @@ app.use(function (req, res, next) {
    res.locals.error_msg = req.flash('error_msg');
    res.locals.errors_2 = req.flash('errors_2');
    res.locals.error = req.flash('error');
-   res.locals.site_url = 'localhost:3000';
+   res.locals.site_url = req.get('host');
    next();
 });
 
