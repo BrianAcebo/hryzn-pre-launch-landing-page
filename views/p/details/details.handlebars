@@ -11,7 +11,9 @@
   <a class="check" class="copy-link" onclick="copyLink('{{site_url}}/p/details/{{project._id}}/guest')"><i class="fa fa-link"></i></a>
 </div>
 
-{{#if user_is_guest}}
+{{#if user}}
+{{else}}
+{{! Add spacer for guest }}
 <div class="spacer"></div>
 {{/if}}
 
@@ -48,10 +50,7 @@
       </div>
       {{/if}}
 
-      {{! User visited from outside link }}
-      {{#if user_is_guest}}
-      {{! Show nothing }}
-      {{else}}
+      {{#if user}}
          {{#if is_admin_of_project}}
          <div class="row project-admin__container">
             <a class="project-admin__item" href="/p/details/edit/{{project._id}}">Edit</a>
@@ -77,6 +76,9 @@
 
             {{/if}}
          {{/if}}
+      {{else}}
+      {{! User visited from outside link }}
+      {{! Show nothing }}
       {{/if}}
    </div>
 </section>
@@ -119,10 +121,7 @@
       </div>
       {{/if}}
 
-      {{! User visited from outside link }}
-      {{#if user_is_guest}}
-      {{! Show nothing }}
-      {{else}}
+      {{#if user}}
          {{#if is_admin_of_project}}
          <div class="row project-admin__container">
             <a class="project-admin__item" href="/p/details/edit/{{project._id}}">Edit</a>
@@ -148,6 +147,9 @@
 
             {{/if}}
          {{/if}}
+      {{else}}
+      {{! User visited from outside link }}
+      {{! Show nothing }}
       {{/if}}
    </div>
 </section>

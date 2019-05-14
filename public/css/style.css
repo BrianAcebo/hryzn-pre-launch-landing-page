@@ -26,6 +26,7 @@ a, p {
 
 h1, h2, h3, h4, h5 {
    font-family: 'Karla', sans-serif;
+   letter-spacing: 1px;
 }
 
 h1, h2 {
@@ -42,11 +43,11 @@ h5 {
 
 @media screen and (max-width: 768px) {
    h1, h2 {
-      font-size: 28px;
+      font-size: 22px;
    }
 
    h3, h4 {
-      font-size: 22px;
+      font-size: 20px;
    }
 
    h5 {
