@@ -30,10 +30,14 @@ const Project = require('../models/projects');
 
 // Get Welcome Landing Page
 router.get('/welcome', (req, res, next) => {
-   res.render('welcome', {
-     page_title: 'Welcome to Hryzn',
-     notLoginPage: false
-   });
+   if(req.isAuthenticated()) {
+      res.redirect('/');
+   } else {
+      res.render('welcome', {
+        page_title: 'Welcome to Hryzn',
+        notLoginPage: false
+      });
+   }
 });
 
 // Get Index (User is logged in)
