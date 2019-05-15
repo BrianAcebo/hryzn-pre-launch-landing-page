@@ -66,9 +66,8 @@ app.use(expressValidator({
 // Connect-flash
 app.use(flash());
 
-// Global
+// Global User Object
 app.get('*', (req, res, next) => {
-
    res.locals.user = req.user || null;
 
    // Set global variables
@@ -77,6 +76,15 @@ app.get('*', (req, res, next) => {
       res.locals.email = req.user.email;
       res.locals.profileimage = req.user.profileimage;
    }
+});
+
+// Global
+app.use((req, res, next) => {
+   res.locals.success_msg = req.flash('success_msg');
+   res.locals.error_msg = req.flash('error_msg');
+   res.locals.errors_2 = req.flash('errors_2');
+   res.locals.error = req.flash('error');
+   res.locals.site_url = req.get('host');
 
    // Redirect all unsecure URLs to HTTPS
    if(!req.secure) {
@@ -85,16 +93,6 @@ app.get('*', (req, res, next) => {
      res.end();
    }
 
-   next();
-});
-
-// Global Variables
-app.use((req, res, next) => {
-   res.locals.success_msg = req.flash('success_msg');
-   res.locals.error_msg = req.flash('error_msg');
-   res.locals.errors_2 = req.flash('errors_2');
-   res.locals.error = req.flash('error');
-   res.locals.site_url = req.get('host');
    next();
 });
 
