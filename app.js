@@ -47,7 +47,7 @@ app.use(passport.session());
 
 // Express Validator
 app.use(expressValidator({
-   errorFormatter: function(param, msg, value) {
+   errorFormatter: (param, msg, value) => {
       var namespace = param.split('.')
       , root = namespace.shift()
       , formParam = root;
@@ -66,19 +66,30 @@ app.use(expressValidator({
 // Connect-flash
 app.use(flash());
 
-// Global User Object
-app.get('*', function(req, res, next) {
+// Global
+app.get('*', (req, res, next) => {
+
    res.locals.user = req.user || null;
+
+   // Set global variables
    if(req.user) {
       res.locals.username = req.user.username;
       res.locals.email = req.user.email;
       res.locals.profileimage = req.user.profileimage;
    }
+
+   // Redirect all unsecure URLs to HTTPS
+   if(!req.secure) {
+     var httpsUrl = "https://" + req.headers['host'] + req.url;
+     res.writeHead(301, { "Location":  httpsUrl });
+     res.end();
+   }
+
    next();
 });
 
 // Global Variables
-app.use(function (req, res, next) {
+app.use((req, res, next) => {
    res.locals.success_msg = req.flash('success_msg');
    res.locals.error_msg = req.flash('error_msg');
    res.locals.errors_2 = req.flash('errors_2');
@@ -93,12 +104,12 @@ app.use('/p', projectsRouter);
 app.use('/about', aboutRouter);
 
 // Catch 404
-app.use(function(req, res, next) {
+app.use((req, res, next) => {
   next(createError(404));
 });
 
 // Error Handler
-app.use(function(err, req, res, next) {
+app.use((err, req, res, next) => {
    // set locals, only providing error in development
    res.locals.message = err.message;
    res.locals.error = req.app.get('env') === 'development' ? err : {};
