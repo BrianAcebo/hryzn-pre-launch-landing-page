@@ -27,6 +27,7 @@ a, p {
 h1, h2, h3, h4, h5 {
    font-family: 'Karla', sans-serif;
    letter-spacing: 1px;
+   line-height: 35px;
 }
 
 h1, h2 {
@@ -534,7 +535,7 @@ input {
 }
 
 .modal-footer {
-   padding: 10px 25px;
+   padding: 10px 0;
    display: flex;
    border-radius: 35px;
    flex-direction: row;

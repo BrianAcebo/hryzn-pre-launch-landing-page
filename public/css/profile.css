@@ -43,16 +43,25 @@
 }
 
 .profile__top {
-   margin-bottom: 25px;
+   margin-bottom: 50px;
 }
 
 .profile__top,
 .profile__follow-container,
-.followers__following {
+.followers__following,
+.follow__btn-container {
    display: flex;
    justify-content: space-between;
    flex-direction: row;
    align-items: center;
+}
+
+.follow__btn-container {
+   width: 100%;
+}
+
+.follow__btn-container form {
+   min-width: 200px;
 }
 
 .profile__follow-container form {

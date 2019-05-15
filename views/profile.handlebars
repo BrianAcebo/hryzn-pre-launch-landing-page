@@ -25,16 +25,12 @@
 <div class="profile-main__container">
 
    <div class="profile__top">
-      <p class="profile__projects-p">
-         Projects
-      </p>
-      <div class="profile__follow-container">
-         <div class="followers__following">
-            <a href="/profile/{{profile.username}}/followers"><strong>{{amount_of_followers}}</strong> followers</a>
-            <a href="/profile/{{profile.username}}/following"><strong>{{amount_of_following}}</strong> following</a>
-         </div>
+      <div class="follow__btn-container">
+         <p class="profile__projects-p">
+            Projects
+         </p>
          {{#if can_see_private}}
-         {{! This is the User of the profile, no need to follow }}
+         {{! The User is viewing their own profile, no need to follow }}
          {{else}}
             {{#if user_follows_profile}}
 
@@ -54,6 +50,13 @@
 
             {{/if}}
          {{/if}}
+      </div>
+
+      <div class="profile__follow-container">
+         <div class="followers__following">
+            <a href="/profile/{{profile.username}}/followers"><strong>{{amount_of_followers}}</strong> followers</a>
+            <a href="/profile/{{profile.username}}/following"><strong>{{amount_of_following}}</strong> following</a>
+         </div>
       </div>
    </div>
 
