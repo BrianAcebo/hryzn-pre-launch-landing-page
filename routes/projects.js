@@ -208,8 +208,20 @@ router.get('/details/edit/:id', (req, res, next) => {
             var project_list_is_empty = false;
          }
 
+         if(project.project_notes === "") {
+            var notes_is_empty_string = true;
+         } else {
+            var notes_is_empty_string = false;
+
+            // Replace single & double quotes with backslash 
+            var project_notes = project.project_notes.replace(/'/g,"\\'");
+            project_notes.replace(/"/g,'\\"');
+         }
+
          res.render('p/details/edit-project', {
             project: project,
+            project_notes: project_notes,
+            notes_is_empty_string: notes_is_empty_string,
             hide_scripts: true,
             project_list_is_empty: project_list_is_empty,
             page_title: project.project_title,

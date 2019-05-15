@@ -176,8 +176,11 @@ $(document).ready(function() {
       }
    });
 
-   {{#if project.project_notes}}
-   $('#editor').trumbowyg('html', '{{{project.project_notes}}}');
+   {{#if notes_is_empty_string}}
+   {{! Do nothing }}
+   {{else}}
+   $('#editor').trumbowyg('html', '{{{project_notes}}}');
+
    {{/if}}
 
 });
