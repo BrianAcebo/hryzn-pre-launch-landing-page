@@ -88,13 +88,10 @@ app.use(function (req, res, next) {
 
 // Redirect http to https
 app.use(function(req, res, next) {
-   if(req.app.get('env') === 'development') {
-      // Don't redirect
-      next();
-   } else {
-      res.redirect('https://' + req.get('host') + req.url);
-      next();
+   if(req.app.get('env') === 'production') {
+      res.redirect('https://' + req.headers.host + req.url);
    }
+   next();
 });
 
 app.use('/', indexRouter);
