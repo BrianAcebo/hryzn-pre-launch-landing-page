@@ -82,15 +82,17 @@ app.use(function (req, res, next) {
    res.locals.success_msg = req.flash('success_msg');
    res.locals.error_msg = req.flash('error_msg');
    res.locals.error = req.flash('error');
+   res.locals.site_url = req.get('host');
    next();
 });
 
 // Redirect http to https
-app.get(function(req, res, next) {
+app.use(function(req, res, next) {
    if(req.app.get('env') === 'development') {
       // Don't redirect
+      next();
    } else {
-      res.redirect('https://' + req.headers.host + req.url);
+      res.redirect('https://' + req.get('host') + req.url);
       next();
    }
 });
