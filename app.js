@@ -94,7 +94,7 @@ app.get(function(req, res, next) {
 });
 
 app.use(function(req, res, next) {
-   if(req.app.get('env') === 'production') {
+   if(req.app.get('env') != 'development') {
       if (!req.secure) {
          res.redirect('https://' + req.headers.host + req.url);
       }
