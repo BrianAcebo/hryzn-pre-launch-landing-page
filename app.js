@@ -86,15 +86,10 @@ app.use(function (req, res, next) {
 });
 
 // Redirect http to https
-app.get(function(req, res, next) {
-   if(req.app.get('env') === 'production') {
-      res.redirect('https://' + req.headers.host + req.url);
-   }
-   next();
-});
-
 app.use(function(req, res, next) {
-   if(req.app.get('env') != 'development') {
+   if(req.app.get('env') === 'development') {
+      // Do nothing
+   } else {
       if (!req.secure) {
          res.redirect('https://' + req.headers.host + req.url);
       }
