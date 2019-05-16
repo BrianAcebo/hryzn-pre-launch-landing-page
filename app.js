@@ -82,25 +82,26 @@ app.use(function (req, res, next) {
    res.locals.success_msg = req.flash('success_msg');
    res.locals.error_msg = req.flash('error_msg');
    res.locals.error = req.flash('error');
+   res.locals.site_url = req.get('host');
    next();
 });
 
 // Redirect http to https
-app.use(function(req, res, next) {
-   // if(req.app.get('env') === 'development') {
-   //    // Do nothing
-   // } else {
-   //    if (!req.secure) {
-   //       res.redirect('https://' + req.headers.host + req.url);
-   //    }
-   // }
-
-   if (!req.secure) {
-      res.redirect('https://' + req.headers.host + req.url);
-   }
-
-   next();
-});
+// app.use(function(req, res, next) {
+//    // if(req.app.get('env') === 'development') {
+//    //    // Do nothing
+//    // } else {
+//    //    if (!req.secure) {
+//    //       res.redirect('https://' + req.headers.host + req.url);
+//    //    }
+//    // }
+//
+//    if (!req.secure) {
+//       res.redirect('https://' + req.headers.host + req.url);
+//    }
+//
+//    next();
+// });
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
