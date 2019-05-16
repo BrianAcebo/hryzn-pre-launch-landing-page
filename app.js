@@ -87,21 +87,16 @@ app.use(function (req, res, next) {
 });
 
 // Redirect http to https
-// app.use(function(req, res, next) {
-//    // if(req.app.get('env') === 'development') {
-//    //    // Do nothing
-//    // } else {
-//    //    if (!req.secure) {
-//    //       res.redirect('https://' + req.headers.host + req.url);
-//    //    }
-//    // }
-//
-//    if (!req.secure) {
-//       res.redirect('https://' + req.headers.host + req.url);
-//    }
-//
-//    next();
-// });
+var env = process.env.NODE_ENV || 'development';
+var forceSSL = function (req, res, next) {
+   if (req.headers['x-forwarded-proto'] !== 'https') {
+      return res.redirect(['https://', req.get('Host'), req.url].join(''));
+   }
+   return next();
+};
+if (env === 'production') {
+   app.use(forceSSL);
+}
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
