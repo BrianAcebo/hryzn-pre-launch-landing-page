@@ -86,12 +86,12 @@ app.use(function (req, res, next) {
 });
 
 // Redirect http to https
-app.get('*', function(req, res, next) {
-   if(req.app.get('env') === 'production') {
-      res.redirect('https://' + req.headers.host + req.url);
-   }
-   next();
-});
+// app.get('*', function(req, res, next) {
+//    if(req.app.get('env') === 'production') {
+//       res.redirect('https://' + req.headers.host + req.url);
+//    }
+//    next();
+// });
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
