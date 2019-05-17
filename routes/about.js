@@ -28,7 +28,7 @@ router.get('/contact', (req, res, next) => {
    });
 });
 
-// Get Contact
+// Get Contact Thanks
 router.get('/contact/thanks', (req, res, next) => {
    res.render('about/contact', {
      page_title: 'Thank You',
@@ -51,16 +51,16 @@ router.post('/contact', (req, res, next) => {
 
    // Mail Body
    var mailOptions = {
-      from: req.body.contact_name + '<' + req.body.contact_email + '>',
+      from: req.body.contact_name,
       to: 'hello@myhryzn.com',
-      subject: 'Contact Page Submission',
+      subject: 'Form Submit From myhryzn.com Contact Page',
       text: 'The contact page form sends: ' + req.body.contact_name + 'Email: ' + req.body.contact_email + 'Subject: ' + req.body.contact_subject + 'Message: ' + req.body.conatct_message,
-      html: '<p>Contact Form Submission</p><ul><li>Name: '+ req.contact_name +'</li><li>Email: '+ req.body.contact_email +'</li><li>Subject: ' + req.body.contact_subject +'</li><li>Message: '+ req.body.contact_message +'</li></ul>'
+      html: '<p>The contact page form sends:</p><ul><li>Name: '+ req.body.contact_name +'</li><li>Email: '+ req.body.contact_email +'</li><li>Subject: ' + req.body.contact_subject +'</li><li>Message: '+ req.body.contact_message +'</li></ul>'
    }
 
    transporter.sendMail(mailOptions, (error, info) => {
       if(!error) {
-         res.redirect('/contact/thanks');
+         res.redirect('/about/contact/thanks');
       }
    });
 
