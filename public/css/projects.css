@@ -282,7 +282,7 @@
    background: #fff;
    z-index: 77777;
    position: relative;
-   margin: -35px auto 0 auto;
+   margin: 0 auto;
    border-top-left-radius: 35px;
    border-top-right-radius: 35px;
    padding: 50px 100px;
