@@ -66,5 +66,20 @@ router.post('/contact', (req, res, next) => {
 
 });
 
+// Get Terms Of Service
+router.get('/terms', (req, res, next) => {
+   res.render('about/terms', {
+     page_title: 'Terms Of Service',
+     notLoginPage: false
+   });
+});
+
+// Get Privacy Policy
+router.get('/privacy', (req, res, next) => {
+   res.render('about/privacy', {
+     page_title: 'Privacy Policy',
+     notLoginPage: false
+   });
+});
 
 module.exports = router;
