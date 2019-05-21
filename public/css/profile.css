@@ -126,12 +126,12 @@
    }
 
    .profile__username {
+      left: 25px;
       font-size: 25px;
    }
 
-   .profile__settings,
-   .profile__username {
-      left: 25px;
+   .profile__settings {
+      right: 25px;
    }
 
    .profile-main__container {
