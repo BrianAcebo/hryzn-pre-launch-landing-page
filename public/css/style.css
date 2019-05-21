@@ -14,13 +14,13 @@ body {
    -webkit-font-smoothing: antialiased;
 }
 
-a, p, input, span {
+a, p, input, span, div {
    font-family: 'proxima-nova', sans-serif;
    letter-spacing: 0.5px;
    font-size: 16px;
 }
 
-a, p {
+a, p, div {
    line-height: 35px;
 }
 
@@ -54,6 +54,15 @@ h5 {
    h5 {
       font-size: 18px;
    }
+
+   a, p, input, span, div {
+      font-size: 14px;
+   }
+
+   a, p, div {
+      line-height: 30px;
+   }
+
 }
 
 .font__karla {
