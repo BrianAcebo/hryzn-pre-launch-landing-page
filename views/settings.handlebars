@@ -11,7 +11,7 @@
                <input class="form__input" type="text" placeholder="Last name" name="lastname" value="{{user.lastname}}" />
             </div>
          </div>
-         <input class="form__input" type="text" placeholder="Enter username" name="username" value="{{user.username}}" required autocapitalize="none" />
+         {{! For future use <input class="form__input" type="text" placeholder="Enter username" name="username" value="{{user.username}}{{!" required autocapitalize="none" /> }}
          <input class="form__input" type="email" placeholder="Enter email address" name="email" value="{{user.email}}" required autocapitalize="none" />
          <label for="profileimage" class="form__label">Change your profile header</label>
          <input class="form__input" type="file" name="profileimage" value="{{user.profileimage}}" />

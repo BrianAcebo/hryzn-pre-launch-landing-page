@@ -227,7 +227,7 @@ router.post('/settings', upload.single('profileimage'), (req, res, next) => {
          return string.charAt(0).toUpperCase() + string.slice(1);
       }
 
-      var username = req.body.username;
+      // var username = req.body.username;
       var oldUsername = req.user.username;
       var email = req.body.email;
       var oldEmail = req.user.email;
@@ -251,8 +251,8 @@ router.post('/settings', upload.single('profileimage'), (req, res, next) => {
       }
 
       // Form Validation
-      req.checkBody('username', 'Please Enter A Username').notEmpty();
-      req.checkBody('username', 'Username Must Be Between 5-50 Characters').isLength({ min: 5, max:50 });
+      // req.checkBody('username', 'Please Enter A Username').notEmpty();
+      // req.checkBody('username', 'Username Must Be Between 5-50 Characters').isLength({ min: 5, max:50 });
       req.checkBody('email', 'Please Enter An Email Address').notEmpty();
       req.checkBody('email', 'Please Enter A Valid Email Address').isEmail();
 
@@ -270,85 +270,154 @@ router.post('/settings', upload.single('profileimage'), (req, res, next) => {
          });
       } else {
 
-         User.getUserByUsername(username, (err, user) => {
+         /*
+            Must be edited to update username if the user was
+            an admin to a project, owner of a project,
+            following someone, etc.
+         */
+
+         // User.getUserByUsername(username, (err, user) => {
+         //    if(err) throw err;
+         //    if(!user || user.username === oldUsername) {
+         //       User.getUserByEmail(email, (err, user) => {
+         //          if(err) throw err;
+         //          if(!user || user.email === oldEmail) {
+         //
+         //             if(req.file) {
+         //                var ext = path.extname(req.file.originalname);
+         //                if(ext !== '.png' && ext !== '.PNG' && ext !== '.jpg' && ext !== '.JPG' && ext !== '.gif' && ext !== '.GIF' && ext !== '.jpeg' && ext !== '.JPEG') {
+         //                   User.findById(id, (err, user) => {
+         //                      if(err) throw err;
+         //
+         //                      res.render('settings', {
+         //                         error_msg: 'Uploaded File Must End With .jpg .jpeg .png .gif',
+         //                         firstname: firstname,
+         //                         lastname: lastname,
+         //                         username: username,
+         //                         email: email,
+         //                         page_title: 'Settings',
+         //                         user: user
+         //                      });
+         //                   });
+         //                } else {
+         //                   var profileimage = dateNow + '-' + req.file.originalname;
+         //
+         //                   User.findByIdAndUpdate(id, {
+         //                      firstname: firstname,
+         //                      lastname: lastname,
+         //                      username: username,
+         //                      email: email,
+         //                      profileimage: profileimage
+         //                   }, (err, user) => {
+         //                      if (err) throw err;
+         //                   });
+         //
+         //                   res.redirect('/profile/' + username);
+         //                }
+         //             } else {
+         //
+         //                User.findByIdAndUpdate(id, {
+         //                   firstname: firstname,
+         //                   lastname: lastname,
+         //                   username: username,
+         //                   email: email
+         //                }, (err, user) => {
+         //                   if (err) throw err;
+         //                });
+         //
+         //                res.redirect('/profile/' + username);
+         //             }
+         //
+         //          } else {
+         //             // Email address is taken
+         //             User.findById(id, (err, user) => {
+         //                if(err) throw err;
+         //
+         //                res.render('settings', {
+         //                   error_msg: 'Sorry That Email Address Is Taken',
+         //                   firstname: firstname,
+         //                   lastname: lastname,
+         //                   username: username,
+         //                   email: email,
+         //                   page_title: 'Settings',
+         //                   user: user
+         //                });
+         //             });
+         //          }
+         //       });
+         //    } else {
+         //       // Username is taken
+         //       User.findById(id, (err, user) => {
+         //          if(err) throw err;
+         //
+         //          res.render('settings', {
+         //             error_msg: 'Sorry That Username Is Taken',
+         //             firstname: firstname,
+         //             lastname: lastname,
+         //             username: username,
+         //             email: email,
+         //             page_title: 'Settings',
+         //             user: user
+         //          });
+         //       });
+         //    }
+         // });
+
+         User.getUserByEmail(email, (err, user) => {
             if(err) throw err;
-            if(!user || user.username === oldUsername) {
-               User.getUserByEmail(email, (err, user) => {
-                  if(err) throw err;
-                  if(!user || user.email === oldEmail) {
+            if(!user || user.email === oldEmail) {
 
-                     if(req.file) {
-                        var ext = path.extname(req.file.originalname);
-                        if(ext !== '.png' && ext !== '.PNG' && ext !== '.jpg' && ext !== '.JPG' && ext !== '.gif' && ext !== '.GIF' && ext !== '.jpeg' && ext !== '.JPEG') {
-                           User.findById(id, (err, user) => {
-                              if(err) throw err;
-
-                              res.render('settings', {
-                                 error_msg: 'Uploaded File Must End With .jpg .jpeg .png .gif',
-                                 firstname: firstname,
-                                 lastname: lastname,
-                                 username: username,
-                                 email: email,
-                                 page_title: 'Settings',
-                                 user: user
-                              });
-                           });
-                        } else {
-                           var profileimage = dateNow + '-' + req.file.originalname;
-
-                           User.findByIdAndUpdate(id, {
-                              firstname: firstname,
-                              lastname: lastname,
-                              username: username,
-                              email: email,
-                              profileimage: profileimage
-                           }, (err, user) => {
-                              if (err) throw err;
-                           });
-
-                           res.redirect('/profile/' + username);
-                        }
-                     } else {
-
-                        User.findByIdAndUpdate(id, {
-                           firstname: firstname,
-                           lastname: lastname,
-                           username: username,
-                           email: email
-                        }, (err, user) => {
-                           if (err) throw err;
-                        });
-
-                        res.redirect('/profile/' + username);
-                     }
-
-                  } else {
-                     // Email address is taken
+               if(req.file) {
+                  var ext = path.extname(req.file.originalname);
+                  if(ext !== '.png' && ext !== '.PNG' && ext !== '.jpg' && ext !== '.JPG' && ext !== '.gif' && ext !== '.GIF' && ext !== '.jpeg' && ext !== '.JPEG') {
                      User.findById(id, (err, user) => {
                         if(err) throw err;
 
                         res.render('settings', {
-                           error_msg: 'Sorry That Email Address Is Taken',
+                           error_msg: 'Uploaded File Must End With .jpg .jpeg .png .gif',
                            firstname: firstname,
                            lastname: lastname,
-                           username: username,
                            email: email,
                            page_title: 'Settings',
                            user: user
                         });
                      });
+                  } else {
+                     var profileimage = dateNow + '-' + req.file.originalname;
+
+                     User.findByIdAndUpdate(id, {
+                        firstname: firstname,
+                        lastname: lastname,
+                        email: email,
+                        profileimage: profileimage
+                     }, (err, user) => {
+                        if (err) throw err;
+                     });
+
+                     res.redirect('/profile/' + username);
                   }
-               });
+               } else {
+
+                  User.findByIdAndUpdate(id, {
+                     firstname: firstname,
+                     lastname: lastname,
+                     email: email
+                  }, (err, user) => {
+                     if (err) throw err;
+                  });
+
+                  res.redirect('/profile/' + req.user.username);
+               }
+
             } else {
-               // Username is taken
+               // Email address is taken
                User.findById(id, (err, user) => {
                   if(err) throw err;
 
                   res.render('settings', {
-                     error_msg: 'Sorry That Username Is Taken',
+                     error_msg: 'Sorry That Email Address Is Taken',
                      firstname: firstname,
                      lastname: lastname,
-                     username: username,
                      email: email,
                      page_title: 'Settings',
                      user: user
