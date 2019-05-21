@@ -77,8 +77,7 @@ router.get('/terms', (req, res, next) => {
 // Get Privacy Policy
 router.get('/privacy', (req, res, next) => {
    res.render('about/privacy', {
-     page_title: 'Privacy Policy',
-     notLoginPage: false
+     page_title: 'Privacy Policy'
    });
 });
 
