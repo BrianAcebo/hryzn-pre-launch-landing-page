@@ -96,7 +96,7 @@ $(document).ready(function() {
    if($noScroll) {
 
       $window.on('scroll touchmove mousewheel', function(e) {
-         if($window.scrollTop() >= 250) {
+         if($window.scrollTop() >= 300) {
             $modalSignUp.css({ "display": "block" });
             $body.css({ "overflow": "hidden" });
             $guestScroll.css({ "filter": " blur(10px)" });
