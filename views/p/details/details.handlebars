@@ -14,7 +14,7 @@
 {{#if user}}
 {{else}}
 {{! Add spacer for guest }}
-<div class="spacer"></div>
+<div class="spacer guestScroll"></div>
 {{/if}}
 
 {{! Displays only on widths > 595px }}
@@ -203,7 +203,7 @@
       <p>Are You Sure?</p>
     </div>
     <div class="modal-body">
-      <p>Deleting this is permanent and cannot be undone.
+      <p>Deleting this is permanent and cannot be undone.</p>
     </div>
     <div class="modal-footer">
       <a href="/p/details/delete/{{project._id}}" class="btn__secondary">Yes I'm Sure</a>
@@ -211,6 +211,30 @@
     </div>
   </div>
 </div>
+{{/if}}
+
+{{#if user}}
+{{else}}
+
+<div class="signUpModal modalBackground">
+  <div class="modal-content">
+    <div class="modal-header">
+      <a href="/" class="topnav__logo">
+         <img src="/img/logos/hryzn-logo-white.png" />
+         Hryzn
+      </a>
+    </div>
+    <div class="modal-body">
+      <p>Hi there, like what you see?</p>
+   </div>
+   <div class="modal-footer">
+      <a href="/users/register" class="btn__primary sign-up__more">Sign Up</a>
+      <p>or</p>
+      <a href="/users/login" class="btn__secondary sign-up__more">Log In</a>
+   </div>
+  </div>
+</div>
+
 {{/if}}
 
 <script>

@@ -158,6 +158,13 @@
    display: none;
 }
 
+.sign-up__more {
+   padding: 12px 25px;
+   text-align: center;
+   margin: 0 15px;
+   display: block;
+}
+
 @media screen and (max-width: 992px) {
    .project__top-section {
       flex-direction: column;

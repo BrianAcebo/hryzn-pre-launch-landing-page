@@ -2,7 +2,31 @@
    <h3 class="landing-title">Explore A World Of</h3>
    <h3 id="typewriter">Topics.</h3>
 
-   <div class="masonryContainer">
+   {{#if projects}}
+      <div class="masonryContainer">
+         {{#each projects}}
+            {{#if is_private}}
+            {{! Check if the project is a private project, we do not want to show private projects }}
+            {{else}}
+            <div class="masonryItem">
+               <a href="/p/details/{{id}}/guest" class="projects__link">
+                  <div class="projects__card">
+                     <img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{project_image}}" class="img-responsive" alt="{{project_title}}" />
+                     <p class="projects__card-title">{{project_title}}</p>
+                  </div>
+               </a>
+            </div>
+            {{/if}}
+         {{/each}}
+      </div>
+   {{else}}
+   {{! Something went wrong}}
+   <p class="error-message">
+      Sorry, we couldn't find any projects.
+   </p>
+   {{/if}}
+
+   <!-- <div class="masonryContainer">
 
       <div class="masonryItem">
          <div class="card-content">
@@ -124,7 +148,7 @@
          </div>
       </div>
 
-   </div>
+   </div> -->
 
    <div class="bg-square-01">
       <div class="bg-square__wrapper">

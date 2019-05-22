@@ -33,10 +33,16 @@ router.get('/welcome', (req, res, next) => {
    if(req.isAuthenticated()) {
       res.redirect('/');
    } else {
-      res.render('welcome', {
-        page_title: 'Welcome to Hryzn',
-        notLoginPage: false
-      });
+
+      Project.find({}, (err, projects) => {
+         if (err) throw err;
+         res.render('welcome', {
+           page_title: 'Welcome to Hryzn',
+           notLoginPage: false,
+           projects: projects
+         });
+      }).limit(8);
+
    }
 });
 

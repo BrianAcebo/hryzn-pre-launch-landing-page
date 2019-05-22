@@ -1,5 +1,8 @@
 $(document).ready(function() {
 
+   $window = $(window);
+   $body = $("body");
+
    // Open & close mobile nav overlay on landing page
    var $nav = $('#landingNav');
    var $navClose = $('#landingNavClose');
@@ -50,11 +53,9 @@ $(document).ready(function() {
 
    /**********/
 
-   $window = $(window);
    $topNav = $('.topnav');
    $flash_1 = $('.success__msg');
    $flash_2 = $('.error__msg-4');
-
 
    $window.scroll(function() {
       if($window.scrollTop() >= 50){
@@ -86,6 +87,20 @@ $(document).ready(function() {
       $modal.css({ "display": "none" });
    });
 
+   // Modal pop up for sign up
+
+   var $modalSignUp = $(".signUpModal");
+   var $noScroll = $("div").hasClass("guestScroll");
+
+   if($noScroll) {
+      $window.scroll(function() {
+         if($window.scrollTop() >= 250){
+            $modalSignUp.css({ "display": "block" });
+
+            $body.css({ "overflow": "hidden" });
+   		}
+      });
+   }
 
    /**********/
    // Edit Project
