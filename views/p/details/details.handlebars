@@ -14,7 +14,12 @@
 {{#if user}}
 {{else}}
 {{! Add spacer for guest }}
-<div class="spacer guestScroll"></div>
+<div class="spacer"></div>
+{{/if}}
+
+{{#if user}}
+{{else}}
+<div class="guestScroll">
 {{/if}}
 
 {{! Displays only on widths > 595px }}
@@ -215,6 +220,9 @@
 
 {{#if user}}
 {{else}}
+
+{{! End of guestScroll }}
+</div>
 
 <div class="signUpModal modalBackground">
   <div class="modal-content">
