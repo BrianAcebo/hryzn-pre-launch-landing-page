@@ -96,15 +96,29 @@ $(document).ready(function() {
    if($noScroll) {
 
       $window.on('scroll touchmove mousewheel', function(e) {
-         if($window.scrollTop() >= 300) {
-            $modalSignUp.css({ "display": "block" });
-            $body.css({ "overflow": "hidden" });
-            $guestScroll.css({ "filter": " blur(10px)" });
+         if($window.innerWidth > 768) {
+            // Stop scrolling and ask for sign up on desktops
+            if($window.scrollTop() >= 300) {
+               $modalSignUp.css({ "display": "block" });
+               $body.css({ "overflow": "hidden" });
+               $guestScroll.css({ "filter": " blur(10px)" });
 
-            e.preventDefault();
-            e.stopPropagation();
-            return false;
-   		}
+               e.preventDefault();
+               e.stopPropagation();
+               return false;
+      		}
+         } else {
+            // Stop scrolling and ask for sign up on mobile
+            if($window.scrollTop() >= 500) {
+               $modalSignUp.css({ "display": "block" });
+               $body.css({ "overflow": "hidden" });
+               $guestScroll.css({ "filter": " blur(10px)" });
+
+               e.preventDefault();
+               e.stopPropagation();
+               return false;
+      		}
+         }
       })
 
    }

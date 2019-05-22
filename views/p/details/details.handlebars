@@ -225,22 +225,27 @@
 </div>
 
 <div class="signUpModal modalBackground">
-  <div class="modal-content">
-    <div class="modal-header">
-      <a href="/" class="topnav__logo">
-         <img src="/img/logos/hryzn-logo-white.png" />
-         Hryzn
-      </a>
-    </div>
-    <div class="modal-body">
-      <p>Hi there, like what you see?</p>
+   <div class="modal-content">
+      <div class="form-container-2">
+         <div class="modal-header">
+            <a href="/" class="topnav__logo">
+               HRYZN
+            </a>
+         </div>
+         <form method="post" action="/users/login">
+            <div class="container">
+              <input class="form__input" type="text" placeholder="Enter username" name="username" value="{{username}}" required autocapitalize="none" />
+              <input class="form__input" type="password" placeholder="Enter password" name="password" value="{{password}}" required  autocapitalize="none" />
+              <button class="form__sign-up-button" name="submit" type="submit">Login</button>
+           </div>
+         </form>
+         <div class="form__href-container">
+            <a class ="form__href" href="/users/register">
+               Don't have an account? Sign Up
+            </a>
+         </div>
+      </div>
    </div>
-   <div class="modal-footer">
-      <a href="/users/register" class="btn__primary sign-up__more">Sign Up</a>
-      <p>or</p>
-      <a href="/users/login" class="btn__secondary sign-up__more">Log In</a>
-   </div>
-  </div>
 </div>
 
 {{/if}}
