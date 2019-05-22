@@ -93,13 +93,18 @@ $(document).ready(function() {
    var $noScroll = $("div").hasClass("guestScroll");
 
    if($noScroll) {
-      $window.scroll(function() {
-         if($window.scrollTop() >= 250){
-            $modalSignUp.css({ "display": "block" });
 
+      $window.on('scroll touchmove mousewheel', function(e) {
+         if($window.scrollTop() >= 250) {
+            $modalSignUp.css({ "display": "block" });
             $body.css({ "overflow": "hidden" });
+
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
    		}
-      });
+      })
+
    }
 
    /**********/
