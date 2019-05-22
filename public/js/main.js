@@ -94,13 +94,13 @@ $(document).ready(function() {
 
    if($noScroll) {
 
-      $window.on('scroll touchmove mousewheel', function(e) {
+      $window.on('scroll touchmove mousewheel', function() {
          if($window.scrollTop() >= 250) {
             $modalSignUp.css({ "display": "block" });
             $body.css({ "overflow": "hidden" });
 
-            e.preventDefault();
-            e.stopPropagation();
+            $body.preventDefault();
+            $body.stopPropagation();
             return false;
    		}
       })
