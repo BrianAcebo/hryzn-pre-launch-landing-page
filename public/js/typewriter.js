@@ -4,16 +4,16 @@ var typewriter = new Typewriter(app, {
    loop: true
 });
 
-typewriter.typeString('Creativity.')
+typewriter.typeString('Creativity')
    .pauseFor(1500)
    .deleteAll()
-   .typeString('Discovery.')
+   .typeString('Discovery')
    .pauseFor(1500)
    .deleteAll()
-   .typeString('Information.')
+   .typeString('Information')
    .pauseFor(1500)
    .deleteAll()
-   .typeString('Ideas.')
+   .typeString('Ideas')
    .pauseFor(1500)
    .deleteAll()
    .start();
