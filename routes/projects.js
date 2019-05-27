@@ -489,6 +489,26 @@ router.get('/details/:id/guest', (req, res, next) => {
    Project.findById(req.params.id, (err, project) => {
       if(err) throw err;
 
+      if(typeof project.followers === "undefined") {
+         var user_follows_project = false;
+         var followersLength = 0;
+      } else {
+         var followersLength = project.followers.length;
+         if(project.followers.indexOf(req.user.username) === -1) {
+            var user_follows_project = false;
+         } else {
+            var user_follows_project = true;
+         }
+      }
+
+      if(project.admins.indexOf(req.user.username) === -1) {
+         var is_admin_of_project = false;
+      } else {
+         var is_admin_of_project = true;
+      }
+
+      var adminLength = project.admins.length;
+
       res.render('p/details/details', {
          project: project,
          page_title: project.project_title,
