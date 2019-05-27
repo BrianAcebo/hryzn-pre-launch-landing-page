@@ -492,7 +492,11 @@ router.get('/details/:id/guest', (req, res, next) => {
       res.render('p/details/details', {
          project: project,
          page_title: project.project_title,
-         user_is_guest: true
+         user_is_guest: true,
+         user_follows_project: user_follows_project,
+         is_admin_of_project: is_admin_of_project,
+         followersLength: followersLength,
+         adminLength: adminLength
       });
    });
 });
