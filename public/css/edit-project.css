@@ -20,12 +20,6 @@
    resize: none;
 }
 
-@media screen and (max-width: 768px) {
-   .project-description__input {
-      padding: 15px;
-   }
-}
-
 .edit-project__list-wrapper {
    width: 100%;
    display: flex;
@@ -39,6 +33,16 @@
    border: 1px solid #ccc;
    padding: 25px;
    margin: 25px 0;
+}
+
+@media screen and (max-width: 768px) {
+   .project-description__input {
+      padding: 15px;
+   }
+
+   .edit-project__list-container {
+      width: 100%;
+   }
 }
 
 .edit-project__add-list {
@@ -167,6 +171,7 @@
    float: right;
    padding: 15px;
    border-radius: 50%;
+   line-height: 30px;
 }
 
 .listAddBtn:hover {
@@ -204,6 +209,7 @@
    .list-items li {
       padding: 0 15px;
       font-size: 12px;
+      width: 100%;
    }
 }
 
