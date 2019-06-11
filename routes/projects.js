@@ -626,7 +626,7 @@ router.get('/details/delete/:id', (req, res, next) => {
 
 router.post('/upload', upload.single('editor_image'), (req, res, next) => {
    if(req.isAuthenticated()) {
-      res.status(200).send({"file": "http://s3.amazonaws.com/hryzn-app-static-assets/" + dateNow + '-' + req.file.originalname, "success":true});
+      res.status(200).send({"file": "https://s3.amazonaws.com/hryzn-app-static-assets/" + dateNow + '-' + req.file.originalname, "success":true});
    } else {
       res.redirect('/welcome');
    }
