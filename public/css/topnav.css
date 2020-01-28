@@ -369,36 +369,6 @@ nav.item-list {
    margin: 2px 0;
 }
 
-@media screen and (max-width: 992px) {
-   .landing-nav {
-      padding: 0 25px;
-   }
-
-   .ham__menu {
-      display: flex;
-   }
-
-   .landing-nav__left,
-   .landing-nav__right {
-      width: 50%;
-   }
-
-   .landing-nav__right .auth-login__btn,
-   .landing-nav__right .auth-sign__btn {
-      display: none;
-   }
-
-   .overlay-content .auth-login__btn,
-   .overlay-content .auth-sign__btn {
-      margin: 25px auto;
-      max-width: 250px;
-   }
-
-   .landing-nav__center {
-      display: none;
-   }
-}
-
 .overlay {
    height: 0%;
    width: 100%;
@@ -440,4 +410,34 @@ nav.item-list {
    right: 25px;
    margin: 0;
    font-size: 40px;
+}
+
+@media screen and (max-width: 992px) {
+   .landing-nav {
+      padding: 0 25px;
+   }
+
+   .ham__menu {
+      display: flex;
+   }
+
+   .landing-nav__left,
+   .landing-nav__right {
+      width: 50%;
+   }
+
+   .landing-nav__right .auth-login__btn,
+   .landing-nav__right .auth-sign__btn {
+      display: none;
+   }
+
+   .overlay-content .auth-login__btn,
+   .overlay-content .auth-sign__btn {
+      margin: 25px auto;
+      max-width: 250px;
+   }
+
+   .landing-nav__center {
+      display: none;
+   }
 }

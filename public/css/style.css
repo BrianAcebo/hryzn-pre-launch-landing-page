@@ -25,13 +25,14 @@ a, p, div {
 }
 
 h1, h2, h3, h4, h5 {
-   font-family: 'Karla', sans-serif;
+   font-family: 'Poppins', sans-serif;
    letter-spacing: 1px;
    line-height: 35px;
+   font-weight: 500;
 }
 
 h1, h2 {
-   font-size: 35px;
+   font-size: 28px;
 }
 
 h3, h4 {
@@ -42,15 +43,17 @@ h5 {
    font-size: 20px;
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 992px) {
    h1, h2 {
       font-size: 22px;
    }
 
-   h3, h4 {
+   h3, h4, h5 {
       font-size: 20px;
    }
+}
 
+@media screen and (max-width: 768px) {
    h5 {
       font-size: 18px;
    }
@@ -62,7 +65,6 @@ h5 {
    a, p, div {
       line-height: 30px;
    }
-
 }
 
 .font__karla {
@@ -418,7 +420,7 @@ input {
    }
 }
 
-.loader__overlay {
+.loader_overlay {
    width: 100%;
    height: 100%;
    position: fixed;
@@ -430,7 +432,7 @@ input {
    transition: 0.5s;
 }
 
-.loader__wrapper {
+.loader_wrapper {
    position: relative;
    width: 100%;
    height: 100%;
@@ -454,7 +456,7 @@ input {
    margin: 0 auto;
 }
 
-.loader__text {
+.loader_text {
    font-size: 16px;
    position: absolute;
    top: 65%;
@@ -464,11 +466,11 @@ input {
    padding: 0 15px;
 }
 
-.loader__text-1,
-.loader__text-2,
-.loader__text-3,
-.loader__text-4,
-.loader__text-5 {
+.loader_text-1,
+.loader_text-2,
+.loader_text-3,
+.loader_text-4,
+.loader_text-5 {
    display: none;
 }
 
@@ -681,12 +683,6 @@ input {
    font-size: 16px;
    margin-top: 15px;
    line-height: 30px;
-}
-
-.project__followers, .project__admins {
-   text-align: center;
-   display: inline-block;
-   margin: 0 25px;
 }
 
 .main__container {

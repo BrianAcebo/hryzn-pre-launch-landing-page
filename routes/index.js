@@ -14,16 +14,17 @@ aws.config.update({
 });
 
 const s3 = new aws.S3();
+const storage = {
+   s3: s3,
+   bucket: 'hryzn-app-static-assets',
+   key: (req, file, cb) => {
+      // var fileExt = file.originalname.split('.').pop();
+      cb(null, dateNow + file.originalname);
+   }
+}
 
-const upload = multer({
-   storage: multerS3({
-      s3: s3,
-      bucket: 'hryzn-app-static-assets',
-      key: (req, file, cb) => {
-         cb(null, dateNow + '-' + file.originalname);
-      }
-   })
-});
+const upload = multer({storage: multerS3(storage)});
+const multipleUpload = multer({storage: multerS3(storage)}).any();
 
 const User = require('../models/users');
 const Project = require('../models/projects');
@@ -39,7 +40,8 @@ router.get('/welcome', (req, res, next) => {
          res.render('welcome', {
            page_title: 'Welcome to Hryzn',
            notLoginPage: false,
-           projects: projects
+           projects: projects,
+           welcomePage: true
          });
       }).limit(8);
 
@@ -49,13 +51,14 @@ router.get('/welcome', (req, res, next) => {
 // Get Index (User is logged in)
 router.get('/', (req, res, next) => {
    if(req.isAuthenticated()) {
-      Project.find({}, (err, projects) => {
-         if (err) throw err;
-         res.render('explore', {
-            page_title: 'Explore Projects',
-            projects: projects
-         });
-      });
+      // Project.find({}, (err, projects) => {
+      //    if (err) throw err;
+      //    res.render('explore', {
+      //       page_title: 'Explore Projects',
+      //       projects: projects
+      //    });
+      // });
+      res.redirect('/explore');
    } else {
       res.redirect('/welcome');
    }
@@ -77,48 +80,83 @@ router.get('/logout', (req, res, next) => {
 // GET Profile
 router.get('/profile/:username', (req, res, next) => {
    if(req.isAuthenticated()) {
+
       User.getUserByUsername(req.params.username, (err, profile) => {
+
          if(err) throw err;
+
+
+         // User is seeing their own profile
          if(profile.username === req.user.username) {
-            can_see_private = true;
+            viewing_own_profile = true;
          } else {
-            can_see_private = false;
+            viewing_own_profile = false;
          }
 
-         if(typeof profile.followers === "undefined") {
-            // Profile has no followers
-            var user_follows_profile = false;
-            var amount_of_followers = 0;
-         } else {
+
+         if(profile.followers) {
+
             var amount_of_followers = profile.followers.length;
+
             if(profile.followers.indexOf(req.user.username) === -1) {
                var user_follows_profile = false;
             } else {
                var user_follows_profile = true;
             }
+
+         } else {
+
+            // Profile has no followers
+            var user_follows_profile = false;
+            var amount_of_followers = 0;
+
          }
 
-         if(typeof profile.following === "undefined") {
+
+         if(profile.following) {
+            var amount_of_following = profile.following.length;
+         } else {
             // Profile is not following anyone
             var amount_of_following = 0;
-         } else {
-            var amount_of_following = profile.following.length;
          }
-         Project.find({
-             '_id': { $in: profile.projects}
-         }, (err, projects) => {
+
+
+         if(profile.own_projects) {
+            var amount_of_projects = profile.own_projects.length;
+         } else {
+            var amount_of_projects = 0;
+         }
+
+
+         Project.find({ '_id': { $in: profile.own_projects} }, (err, projects) => {
             if (err) throw err;
-            res.render('profile', {
-               page_title: profile.username,
-               profile: profile,
-               projects: projects,
-               user_follows_profile: user_follows_profile,
-               amount_of_followers: amount_of_followers,
-               amount_of_following: amount_of_following,
-               can_see_private: can_see_private
+
+            var private_amount = [];
+            projects.forEach(function(project, index) {
+               if (project.is_private) {
+                  private_amount.push(project);
+               }
+            });
+
+            amount_of_projects = amount_of_projects - private_amount.length;
+
+            Project.find({ '_id': { $in: profile.saved_projects} }, (err, saved_projects) => {
+               if (err) throw err;
+               res.render('profile', {
+                  page_title: profile.username,
+                  profile: profile,
+                  projects: projects,
+                  saved_projects: saved_projects,
+                  user_follows_profile: user_follows_profile,
+                  amount_of_followers: amount_of_followers,
+                  amount_of_following: amount_of_following,
+                  amount_of_projects: amount_of_projects,
+                  viewing_own_profile: viewing_own_profile
+               });
             });
          });
       });
+
    } else {
       res.redirect('/welcome');
    }
@@ -226,7 +264,7 @@ router.get('/settings', (req, res, next) => {
 });
 
 // POST Settings
-router.post('/settings', upload.single('profileimage'), (req, res, next) => {
+router.post('/settings', upload.array('images[]', 2), (req, res, next) => {
    if(req.isAuthenticated()) {
 
       function capitalize(string) {
@@ -306,14 +344,15 @@ router.post('/settings', upload.single('profileimage'), (req, res, next) => {
          //                      });
          //                   });
          //                } else {
-         //                   var profileimage = dateNow + '-' + req.file.originalname;
+         //                   var fileExt = req.file.originalname.split('.').pop();
+         //                   var backgroundimage = dateNow + '.' +fileExt;
          //
          //                   User.findByIdAndUpdate(id, {
          //                      firstname: firstname,
          //                      lastname: lastname,
          //                      username: username,
          //                      email: email,
-         //                      profileimage: profileimage
+         //                      backgroundimage: backgroundimage
          //                   }, (err, user) => {
          //                      if (err) throw err;
          //                   });
@@ -373,9 +412,20 @@ router.post('/settings', upload.single('profileimage'), (req, res, next) => {
             if(err) throw err;
             if(!user || user.email === oldEmail) {
 
-               if(req.file) {
-                  var ext = path.extname(req.file.originalname);
-                  if(ext !== '.png' && ext !== '.PNG' && ext !== '.jpg' && ext !== '.JPG' && ext !== '.gif' && ext !== '.GIF' && ext !== '.jpeg' && ext !== '.JPEG') {
+               if(req.files) {
+
+                  var img_indices = req.body.img_indices;
+
+                  good_files = [];
+
+                  req.files.forEach(function(file, key) {
+                     var ext = file.originalname.split('.').pop();
+                     if(ext !== '.png' && ext !== '.PNG' && ext !== '.jpg' && ext !== '.JPG' && ext !== '.gif' && ext !== '.GIF' && ext !== '.jpeg' && ext !== '.JPEG') {
+                        good_files.push(file.originalname);
+                     }
+                  })
+
+                  if(good_files.length < 2 && img_indices == 3) {
                      User.findById(id, (err, user) => {
                         if(err) throw err;
 
@@ -389,18 +439,73 @@ router.post('/settings', upload.single('profileimage'), (req, res, next) => {
                         });
                      });
                   } else {
-                     var profileimage = dateNow + '-' + req.file.originalname;
 
-                     User.findByIdAndUpdate(id, {
-                        firstname: firstname,
-                        lastname: lastname,
-                        email: email,
-                        profileimage: profileimage
-                     }, (err, user) => {
-                        if (err) throw err;
-                     });
+                     if(good_files.length < 1 && img_indices <= 2) {
+                        User.findById(id, (err, user) => {
+                           if(err) throw err;
 
-                     res.redirect('/profile/' + username);
+                           res.render('settings', {
+                              error_msg: 'Uploaded File Must End With .jpg .jpeg .png .gif',
+                              firstname: firstname,
+                              lastname: lastname,
+                              email: email,
+                              page_title: 'Settings',
+                              user: user
+                           });
+                        });
+                     } else {
+
+                        good_files = [];
+
+                        req.files.forEach(function(file, key) {
+                           // var fileExt = file.originalname.split('.').pop();
+                           var img = dateNow + file.originalname;
+                           good_files.push(img);
+                        })
+
+                        if (img_indices == 3) {
+
+                           User.findByIdAndUpdate(id, {
+                              firstname: firstname,
+                              lastname: lastname,
+                              email: email,
+                              profileimage: good_files[0],
+                              backgroundimage: good_files[1]
+                           }, (err, user) => {
+                              if (err) throw err;
+                           });
+
+                           res.redirect('/profile/' + req.user.username);
+
+                        } else if (img_indices == 2) {
+
+                           User.findByIdAndUpdate(id, {
+                              firstname: firstname,
+                              lastname: lastname,
+                              email: email,
+                              profileimage: good_files[0]
+                           }, (err, user) => {
+                              if (err) throw err;
+                           });
+
+                           res.redirect('/profile/' + req.user.username);
+
+                        } else {
+
+                           User.findByIdAndUpdate(id, {
+                              firstname: firstname,
+                              lastname: lastname,
+                              email: email,
+                              backgroundimage: good_files[0]
+                           }, (err, user) => {
+                              if (err) throw err;
+                           });
+
+                           res.redirect('/profile/' + req.user.username);
+
+                        }
+
+                     }
                   }
                } else {
 
@@ -460,7 +565,7 @@ router.get('/delete/:id', (req, res, next) => {
                      for (var i = 0, len = project.followers.length; i < len; i++) {
                         info['profileUsername'] = project.followers[i];
 
-                        User.unfollowProject(info, (err, user) => {
+                        User.unsaveToProfile(info, (err, user) => {
                            if(err) throw err;
                         });
                      }
@@ -471,7 +576,7 @@ router.get('/delete/:id', (req, res, next) => {
                      for (var i = 0, len = project.admins.length; i < len; i++) {
                         info['profileUsername'] = project.admins[i];
 
-                        User.unfollowProject(info, (err, user) => {
+                        User.deleteFromProfile(info, (err, user) => {
                            if(err) throw err;
                         });
                      }
@@ -507,7 +612,7 @@ router.get('/delete/:id', (req, res, next) => {
          var s3_instance = new aws.S3();
          var s3_params = {
             Bucket: 'hryzn-app-static-assets',
-            Key: user.profileimage
+            Key: user.backgroundimage
          };
          s3_instance.deleteObject(s3_params, (err, data) => {
             if(data) {
@@ -536,7 +641,8 @@ router.get('/explore', (req, res, next) => {
          if (err) throw err;
          res.render('explore', {
             page_title: 'Explore Projects',
-            projects: projects
+            projects: projects,
+            explore_default: true
          });
       });
 
@@ -549,114 +655,22 @@ router.get('/explore', (req, res, next) => {
 router.get('/search', (req, res, next) => {
    if(req.isAuthenticated()) {
       var searchTerm = req.query.p;
-      Project.find({
-         $text: { $search: searchTerm }
-      },
-      {
-         score: { $meta: "textScore" }
-      },
-      (err, projects) => {
+
+      User.find({$text: { $search: searchTerm }}, {score: { $meta: "textScore" }}, (err, user) => {
          if (err) throw err;
-         res.render('explore', {
-            page_title: 'Explore Projects',
-            projects: projects,
-            user_searched_for_project: true
-         });
-      }
-      ).sort({
-         score: { $meta: "textScore" }
-      });
 
-   } else {
-      res.redirect('/welcome');
-   }
-});
-
-// Get User to invite to admin
-router.get('/p/details/invite/:id', (req, res, next) => {
-   if(req.isAuthenticated()) {
-      var id = req.params.id;
-      Project.findById(id, (err, project) => {
-         if(err) throw err;
-
-         res.render('p/details/invite', {
-            page_title: project.project_title,
-            project: project
-         });
-      });
-   } else {
-      res.redirect('/welcome');
-   }
-});
-
-// Get User to invite to admin cont'd
-router.get('/p/details/invite/search/:id', (req, res, next) => {
-   if(req.isAuthenticated()) {
-      var project_id = req.params.id;
-
-      Project.findById(project_id, (err, project) => {
-         if(err) throw err;
-
-         var project = project;
-         var search_term = req.query.searchUser;
-
-         User.find({
-            $text: { $search: search_term }
-         },
-         {
-            score: { $meta: "textScore" }
-         },
-         (err, user) => {
+         Project.find({$text: { $search: searchTerm }}, {score: { $meta: "textScore" }}, (err, projects) => {
             if (err) throw err;
-            res.render('p/details/searchUser', {
-               page_title: 'Invite Admin',
-               user_found: user,
-               project: project
+
+            res.render('explore', {
+               page_title: 'Explore Projects',
+               projects: projects,
+               user_search: user,
+               project_search: projects,
+               explore_default: false
             });
-         }
-         ).sort({
-            score: { $meta: "textScore" }
-         });
-      });
-
-   } else {
-      res.redirect('/welcome');
-   }
-});
-
-// Post Add user to project admin
-router.post('/addtoadminuser/:username', (req, res, next) => {
-   if(req.isAuthenticated()) {
-
-      info = [];
-      info['profileUsername'] = req.params.username;
-      info['projectId'] = req.body.id;
-      info['projectTitle'] = req.body.project_title;
-      info['isPrivate'] = req.body.is_private;
-      info['projectImage'] = req.body.project_image;
-
-      var user_id = req.body.user_id;
-
-      Project.findById(req.body.id, (err, project) => {
-         if(err) throw err;
-
-         if(project.admins.indexOf(req.params.username) === -1) {
-            User.findByIdAndUpdate(user_id, {
-               projects: req.body.id
-            }, (err, user) => {
-               if (err) throw err;
-            });
-
-            Project.addAdmin(info, (err, project) => {
-               if(err) throw err;
-               req.flash('success_msg', "User Added To Admin");
-               res.redirect('/p/details/' + req.body.id);
-            });
-         } else {
-            req.flash('errors_2', "This User Is Already An Admin");
-            res.redirect('/p/details/' + req.body.id);
-         }
-      });
+         }).sort({score: { $meta: "textScore" }});
+      }).sort({score: { $meta: "textScore" }});
 
    } else {
       res.redirect('/welcome');

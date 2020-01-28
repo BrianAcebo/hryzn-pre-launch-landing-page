@@ -5,16 +5,24 @@
    <div class="hero__overlay"></div>
 </div>
 
+
 {{#if errors_2}}
-   {{#each errors_2}}
-      <div class="error__msg-3">
-         <p>{{msg}}</p>
-         <p class="error__exit">&times;</p>
-      </div>
-   {{/each}}
+{{#each errors_2}}
+
+<div class="error__msg-3">
+   <p>{{msg}}</p>
+   <p class="error__exit">&times;</p>
+</div>
+
+{{/each}}
 {{/if}}
 
+
+{{! Project Form }}
 <form method="post" class="edit-project-form" action="/p/details/edit/{{project._id}}" enctype="multipart/form-data">
+
+
+   {{! Public or Private checkbox }}
    <div class="checkbox__wrapper">
       <label class="check__container">
          <input id="isPrivateCheck" class="form__input-checkbox {{#if project.is_private}}checked{{/if}}" type="checkbox">
@@ -26,75 +34,43 @@
       </label>
    </div>
    <br />
-   <p class="form__input-small" id="changeText">
-      A public project can be viewed by anyone
-   </p>
-   <input id="checkbox" type="hidden" name="is_private" value="{{project.is_private}}">
+   <p class="form__input-small" id="changeText">A public project can be viewed by anyone</p>
+   <input id="checkbox" type="hidden" name="is_private" value="{{project.is_private}}" />
+
+
+   {{! Project Title }}
    <label for="project_title" class="form__label" style="margin-top: 25px;">Project Title</label>
    <input class="form__input" type="text" placeholder="Enter project title" name="project_title" value="{{project.project_title}}" required autocapitalize="none" />
+
+
+   {{! Project Image }}
    <label for="project_image" class="form__label">Change Project Image</label>
    <input class="form__input" type="file" name="project_image" value="{{project.project_image}}" />
+
+
+   {{! Project Video }}
    <label for="project_video" class="form__label" style="margin-top: 25px;">Change Project Video</label>
    <input class="form__input" type="text" placeholder="Enter a Youtube or Vimeo link" name="project_video" value="{{project.project_video}}" />
+
+
+   {{! Project Description }}
    <label for="project_description" class="form__label" style="margin-top: 25px;">Write a Description</label>
    <textarea class="project-description__input" type="text" name="project_description" value="{{project.project_description}}">{{project.project_description}}</textarea>
 
-   <div class="edit-project__list-wrapper">
-      {{#if project_list_is_empty}}
-      <div class="edit-project__list-container list-id">
-         <label for="list_title" class="form__label" style="margin-top: 25px;">Make a List</label>
-         <input class="form__input input-list-title" type="text" placeholder="Enter a title" name="list_title_1" value="{{project.list_title}}"/>
-         <div class="listItemCatch"></div>
-         <div class="container">
-            <div name="List" class="list-items__container">
-               <input id="listItemInput" class="form__input" type="text" placeholder="Enter an item" name="listItem" value="{{project.list_item}}"/>
-               <div class="listAddBtn"><img src="/icons/add-white.png" class="mobile-nav__icon"/></div>
-            </div>
-            <br/>
-            <ol class="list-items"></ol>
-         </div>
-      </div>
-      {{else}}
-      {{#each project.lists}}
-         {{#if list_items}}
-            <div class="edit-project__list-container list-id">
-               <label for="list_title" class="form__label" style="margin-top: 25px;">Make a List</label>
-               <input class="form__input" type="text" placeholder="Enter a title" name="list_title_{{list_order}}" value="{{list_title}}"/>
-               <div class="listItemCatch" id="{{list_order}}">
-                  {{#each list_items}}
-                  <input class="list_items" id="{{this}}" type="hidden" name="list_items_{{list_order}}" value="{{this}}"/>
-                  {{/each}}
-               </div>
-               <div class="container">
-                  <div name="List" class="list-items__container">
-                     <input id="listItemInput" class="form__input" type="text" placeholder="Enter an item" name="listItem" value="{{project.list_item}}"/>
-                     <div class="listAddBtn"><img src="/icons/add-white.png" class="mobile-nav__icon"/></div>
-                  </div>
-                  <br/>
-                  <ol class="list-items">
-                     {{#each list_items}}
-                     <div class="list-item__self"><li>{{this}}</li><span class="close">&#10005;<span></div>
-                     {{/each}}
-                  </ol>
-               </div>
-            </div>
-         {{/if}}
-      {{/each}}
-      {{/if}}
-      <div class="edit-project__add-list" id="newList">
-         <img src="/icons/add-black.png" class="icon-reg" />
-         <p>Make Another List</p>
-      </div>
-   </div>
 
+   {{! Project Notes }}
    <div id="editor" name="editor"  placeholder="Hi {{user.username}}, here's a notepad to write some extra stuff down. You have up to 1000 words, have fun!"></div>
-
    <input id="projectNotes" name="project_notes" type="hidden">
-   <input id="listCount" type="hidden" name="list_count" value="1">
+
+
    <input type="hidden" name="user_id" value="{{user._id}}">
    <p id="wordCount"></p>
 
+
+   {{! Submit }}
    <button id="edit-project__form-btn" class="form__sign-up-button" name="submit" type="submit">Save</button>
+
+
 </form>
 
 {{/if}}

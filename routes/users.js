@@ -16,17 +16,16 @@ aws.config.update({
 });
 
 const s3 = new aws.S3();
+const storage = {
+   s3: s3,
+   bucket: 'hryzn-app-static-assets',
+   key: (req, file, cb) => {
+      var fileExt = file.originalname.split('.').pop();
+      cb(null, dateNow + '.' + fileExt);
+   }
+}
 
-const upload = multer({
-   storage: multerS3({
-      s3: s3,
-      bucket: 'hryzn-app-static-assets',
-      key: (req, file, cb) => {
-         var fileExt = file.originalname.split('.').pop();
-         cb(null, dateNow + '-' + file.originalname);
-      }
-   })
-});
+const upload = multer({storage: multerS3(storage)});
 
 const User = require('../models/users');
 
@@ -107,7 +106,8 @@ router.post('/register', upload.single('profileimage'), (req, res, next) => {
                            email: email
                         });
                      } else {
-                        var profileimage = dateNow + '-' + req.file.originalname;
+                        var fileExt = req.file.originalname.split('.').pop();
+                        var profileimage = dateNow + '.' + fileExt;
 
                         var newUser = new User({
                            firstname: firstname,

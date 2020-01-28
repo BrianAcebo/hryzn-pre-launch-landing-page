@@ -1,6 +1,6 @@
 <div class="form-container form__settings">
    <h3 class="form__h3">Edit Profile</h3>
-   <form method="post" action="/settings" enctype="multipart/form-data">
+   <form id="settingsForm" method="post" action="/settings" enctype="multipart/form-data">
       <div class="form-container-2">
          <div class="row">
             <div class="col-lg-6">
@@ -13,10 +13,17 @@
          </div>
          {{! For future use <input class="form__input" type="text" placeholder="Enter username" name="username" value="{{user.username}}{{!" required autocapitalize="none" /> }}
          <input class="form__input" type="email" placeholder="Enter email address" name="email" value="{{user.email}}" required autocapitalize="none" />
-         <label for="profileimage" class="form__label">Change your profile header</label>
-         <input class="form__input" type="file" name="profileimage" value="{{user.profileimage}}" />
+
+         <label for="profileimage" class="form__label">Select your profile image</label>
+         <input id="profileImage" class="form__input" type="file" name="images[]" value="{{user.profileimage}}" />
+
+         <label for="backgroundimage" class="form__label">Change your profile background</label>
+         <input id="backgroundImage" class="form__input" type="file" name="images[]" value="{{user.backgroundimage}}" />
+
+         <input type="hidden" id="img_indices" name="img_indices" value="" />
          <input type="hidden" name="id" value="{{user.id}}">
-         <button class="form__sign-up-button" name="submit" type="submit">Submit Changes</button>
+
+         <button id="settingsSubmit" class="form__sign-up-button" name="submit" type="submit">Submit Changes</button>
      </div>
    </form>
    <p class="delete-link modalBtn">I would like to delete my account</p>

@@ -5,216 +5,179 @@
 </div>
 {{/if}}
 
-<div class="icon-bar">
-  <a target="_blank" href="http://www.facebook.com/sharer.php?u={{site_url}}/p/details/{{project._id}}/guest&amp;t={{project.project_title}}" title="Share on Facebook" class="facebook"><i class="fa fa-facebook"></i></a>
-  <a target="_blank" href="http://twitter.com/home/?status={{project.project_title}}- {{site_url}}/p/details/{{project._id}}/guest" title="Share on Twitter" class="twitter"><i class="fa fa-twitter"></i></a>
-  <a class="check" class="copy-link" onclick="copyLink('{{site_url}}/p/details/{{project._id}}/guest')"><i class="fa fa-link"></i></a>
-</div>
-
-{{#if user}}
-{{else}}
-{{! Add spacer for guest }}
-<div class="spacer"></div>
-{{/if}}
-
 {{#if user}}
 {{else}}
 <div class="guestScroll">
 {{/if}}
+{{! Mobile displays only on widths < 595px }}
+<section class="project">
 
-{{! Displays only on widths > 595px }}
-<section class="{{#if project.project_video}}project__top-video{{else}}project__top-section{{/if}} layout__web">
+   {{! Social sharing on desktop }}
+   <div class="icon-bar">
+     <a target="_blank" href="http://www.facebook.com/sharer.php?u={{site_url}}/p/details/{{project._id}}/guest&amp;t={{project.project_title}}" title="Share on Facebook" class="facebook"><i class="fa fa-facebook"></i></a>
+     <a target="_blank" href="http://twitter.com/home/?status={{project.project_title}}- {{site_url}}/p/details/{{project._id}}/guest" title="Share on Twitter" class="twitter"><i class="fa fa-twitter"></i></a>
+     <a class="check" class="copy-link" onclick="copyLink('{{site_url}}/p/details/{{project._id}}/guest')"><i class="fa fa-link"></i></a>
+   </div>
+
+
+   {{! Project Video / Image }}
    {{#if project.project_video}}
    <iframe id="projectFrame" src="{{project.project_video}}" frameborder="0" allowfullscreen></iframe>
    {{else}}
-   <div class="project__img-container">
-      <img class="hero__img" src="https://s3.amazonaws.com/hryzn-app-static-assets/{{project.project_image}}" />
+   <div class="project_img_container">
+      <img class="project_img" src="https://s3.amazonaws.com/hryzn-app-static-assets/{{project.project_image}}" />
    </div>
    {{/if}}
 
-   <div class="project__details">
-      <h1 class="project__title">{{project.project_title}}</h1>
 
-      <div class="project__admins-container">
-         {{#each project.admins}}
-         <a class="project__admins" href="/profile/{{this}}">{{this}}</a>
-         {{/each}}
+   <div class="project_main_info">
+
+
+      {{! Project Title }}
+      <div class="project_title_container">
+         <h1 class="project_title">{{project.project_title}}</h1>
+
+         {{! Checks if user has an account or a guest visit }}
+         {{#if user}}
+
+            {{#if is_admin_of_project}}
+
+               {{! Admin Abilities }}
+               <div class="row project_btn_container">
+                  <a class="admin_btn" href="/p/details/edit/{{project._id}}">Edit</a>
+                  <div class="modalBtn admin_btn">Delete</div>
+               </div>
+
+            {{else}}
+
+               <div class="row project_btn_container">
+                  {{! Project Admins }}
+                  {{#each project.admins}}
+                  <a class="project_admins mobile_admin" href="/profile/{{this}}">{{this}}</a>
+                  {{/each}}
+
+                  <div class="project_btn_wrapper">
+
+                     {{! Save / Unsave Project }}
+                     {{#if user_saved}}
+
+                     <form method="post" action="/p/details/unsave/{{project.id}}">
+                        <input type="hidden" name="username" value="{{user.username}}">
+                        <input type="hidden" name="project_id" value="{{project.id}}">
+                        <button class="project_action_btn" name="submit" type="submit">
+                           <img src="/icons/unsave.png" class="project_icon" />
+                           {{#if enough_saves}}
+                           {{saves_amount}}
+                           {{/if}}
+                        </button>
+                     </form>
+
+                     {{else}}
+
+                     <form method="post" action="/p/details/save/{{project.id}}">
+                        <input type="hidden" name="username" value="{{user.username}}">
+                        <input type="hidden" name="project_id" value="{{project.id}}">
+                        <button class="project_action_btn" name="submit" type="submit">
+                           <img src="/icons/save.png" class="project_icon" />
+                           {{#if enough_saves}}
+                           {{saves_amount}}
+                           {{/if}}
+                        </button>
+                     </form>
+
+                     {{/if}}
+
+
+                     {{! Like / Unlike Project }}
+                     {{#if user_liked}}
+
+                     <form method="post" action="/p/details/unlike/{{project.id}}">
+                        <input type="hidden" name="username" value="{{user.username}}">
+                        <input type="hidden" name="project_id" value="{{project.id}}">
+                        <button class="project_action_btn" name="submit" type="submit">
+                           <img src="/icons/heart-liked.png" class="project_icon" />
+                           {{#if enough_likes}}
+                           {{likes_amount}}
+                           {{/if}}
+                        </button>
+                     </form>
+
+                     {{else}}
+
+                     <form method="post" action="/p/details/like/{{project.id}}">
+                        <input type="hidden" name="username" value="{{user.username}}">
+                        <input type="hidden" name="project_id" value="{{project.id}}">
+                        <button class="project_action_btn" name="submit" type="submit">
+                           <img src="/icons/heart-unliked.png" class="project_icon" />
+                           {{#if enough_likes}}
+                           {{likes_amount}}
+                           {{/if}}
+                        </button>
+                     </form>
+
+                     {{/if}}
+                     
+                  </div>
+
+               </div>
+
+            {{/if}}
+
+         {{else}}
+         {{! User visited from outside link }}
+         {{! Show nothing... }}
+         {{/if}}
       </div>
 
+
+      {{! Project Admins }}
+      {{#each project.admins}}
+      <a class="project_admins desktop_admin" href="/profile/{{this}}">{{this}}</a>
+      {{/each}}
+
+
+      {{! Social sharing on mobile }}
       <div class="icon-bar-responsive">
         <a target="_blank" href="http://www.facebook.com/sharer.php?u={{site_url}}/p/details/{{project._id}}/guest&amp;t={{project.project_title}}" title="Share on Facebook" class="facebook"><i class="fa fa-facebook"></i></a>
         <a target="_blank" href="http://twitter.com/home/?status={{project.project_title}}- {{site_url}}/p/details/{{project._id}}/guest" title="Share on Twitter" class="twitter"><i class="fa fa-twitter"></i></a>
         <a class="check" class="copy-link" onclick="copyLink('{{site_url}}/p/details/{{project._id}}/guest')"><i class="fa fa-link"></i></a>
       </div>
 
-      {{#if project.project_description}}
-      <div class="project__description">
-         <p>
-            {{project.project_description}}
-         </p>
-      </div>
-      {{/if}}
 
-      {{#if user}}
-         {{#if is_admin_of_project}}
-         <div class="row project-admin__container">
-            <a class="project-admin__item" href="/p/details/edit/{{project._id}}">Edit</a>
-            <a href="/p/details/invite/{{project._id}}"><div class="project-admin__item middle-item">Invite</div></a>
-            <div class="modalBtn project-admin__item">Delete</div>
-         </div>
-         {{else}}
-            {{#if user_follows_project}}
-
-            <form method="post" action="/p/details/unfollow/{{project.id}}">
-               <input type="hidden" name="username" value="{{user.username}}">
-               <input type="hidden" name="project_id" value="{{project.id}}">
-               <button class="project__unsave" name="submit" type="submit">Unsave Project</button>
-            </form>
-
-            {{else}}
-
-            <form method="post" action="/p/details/{{project.id}}">
-               <input type="hidden" name="username" value="{{user.username}}">
-               <input type="hidden" name="project_id" value="{{project.id}}">
-               <button class="project__save" name="submit" type="submit">Save Project</button>
-            </form>
-
-            {{/if}}
-         {{/if}}
-      {{else}}
-      {{! User visited from outside link }}
-      {{! Show nothing }}
-      {{/if}}
    </div>
-</section>
-{{! ----- }}
 
-{{! Displays only on widths < 595px }}
-<section class="{{#if project.project_video}}project__top-video{{/if}} layout__mobile">
 
-   {{#if project.project_video}}
-   <iframe id="projectFrame" src="{{project.project_video}}" frameborder="0" allowfullscreen></iframe>
-   {{else}}
-   <div class="hero__img-container">
-      <img class="hero__img" src="https://s3.amazonaws.com/hryzn-app-static-assets/{{project.project_image}}" />
-   </div>
-   {{/if}}
-
-   <div class="project-main__container">
-
-      <div class="project__title">
-         <div class="row project__info-container">
-            <h1 class="project__title">{{project.project_title}}</h1>
-         </div>
-
-         {{#each project.admins}}
-         <a class="project__admins" href="/profile/{{this}}">{{this}}</a>
-         {{/each}}
-      </div>
-
-      <div class="icon-bar-responsive">
-        <a target="_blank" href="http://www.facebook.com/sharer.php?u={{site_url}}/p/details/{{project._id}}/guest&amp;t={{project.project_title}}" title="Share on Facebook" class="facebook"><i class="fa fa-facebook"></i></a>
-        <a target="_blank" href="http://twitter.com/home/?status={{project.project_title}}- {{site_url}}/p/details/{{project._id}}/guest" title="Share on Twitter" class="twitter"><i class="fa fa-twitter"></i></a>
-        <a class="check" class="copy-link" onclick="copyLink('{{site_url}}/p/details/{{project._id}}/guest')"><i class="fa fa-link"></i></a>
-      </div>
-
-      {{#if project.project_description}}
-      <div class="project__description">
-         <p>
-            {{project.project_description}}
-         </p>
-      </div>
-      {{/if}}
-
-      {{#if user}}
-         {{#if is_admin_of_project}}
-         <div class="row project-admin__container">
-            <a class="project-admin__item" href="/p/details/edit/{{project._id}}">Edit</a>
-            <a href="/p/details/invite/{{project._id}}"><div class="project-admin__item middle-item">Invite</div></a>
-            <div class="modalBtn project-admin__item">Delete</div>
-         </div>
-         {{else}}
-            {{#if user_follows_project}}
-
-            <form method="post" action="/p/details/unfollow/{{project.id}}">
-               <input type="hidden" name="username" value="{{user.username}}">
-               <input type="hidden" name="project_id" value="{{project.id}}">
-               <button class="project__unsave" name="submit" type="submit">Unsave Project</button>
-            </form>
-
-            {{else}}
-
-            <form method="post" action="/p/details/{{project.id}}">
-               <input type="hidden" name="username" value="{{user.username}}">
-               <input type="hidden" name="project_id" value="{{project.id}}">
-               <button class="project__save" name="submit" type="submit">Save Project</button>
-            </form>
-
-            {{/if}}
-         {{/if}}
-      {{else}}
-      {{! User visited from outside link }}
-      {{! Show nothing }}
-      {{/if}}
-   </div>
-</section>
-{{! ----- }}
-
-{{! Project Lists }}
-{{#if project.lists}}
-<section class="lists__container">
-
-   {{#each project.lists}}
-      {{#if list_items}}
-
-      <div class="list-card">
-         {{#if list_title}}
-         <div class="list__list-items">
-            <p class="list-title">{{list_title}}</p>
-         </div>
-         {{else}}
-         <div class="list__list-items">
-            <div class="mini-spacer"></div>
-         </div>
-         {{/if}}
-         {{#each list_items}}
-         <div class="list__list-items">
-            <p class="list-dot">&middot;</p>
-            <p class="list-item">{{this}}</p>
-         </div>
-         {{/each}}
-      </div>
-
-      {{/if}}
-   {{/each}}
-
-</section>
-{{/if}}
-{{! ----- }}
-
-<section class="project__bottom-section">
+   {{! Project Notes }}
    {{#if project.project_notes}}
-   <div class="detail-project_notes">
+   <div class="project_notes">
       {{{project.project_notes}}}
    </div>
    {{/if}}
+
+
 </section>
+
 
 {{#if is_admin_of_project}}
 {{! Hidden Delete Modal }}
 <div class="popModal modalBackground">
   <div class="modal-content">
+
     <div class="modal-header">
       <p>Are You Sure?</p>
     </div>
+
     <div class="modal-body">
       <p>Deleting this is permanent and cannot be undone.</p>
     </div>
+
     <div class="modal-footer">
       <a href="/p/details/delete/{{project._id}}" class="btn__secondary">Yes I'm Sure</a>
       <span class="closeModal btn__primary">Cancel</span>
     </div>
+
   </div>
+
 </div>
 {{/if}}
 
@@ -224,14 +187,16 @@
 {{! End of guestScroll }}
 </div>
 
+
+{{! Sign up pop up for users without an account }}
 <div class="signUpModal modalBackground">
    <div class="modal-content">
+
       <div class="form-container-2">
          <div class="modal-header">
-            <a href="/" class="topnav__logo">
-               HRYZN
-            </a>
+            <a href="/" class="topnav__logo">HRYZN</a>
          </div>
+
          <form method="post" action="/users/login">
             <div class="container">
               <input class="form__input" type="text" placeholder="Enter username" name="username" value="{{username}}" required autocapitalize="none" />
@@ -239,12 +204,14 @@
               <button class="form__sign-up-button" name="submit" type="submit">Login</button>
            </div>
          </form>
+
          <div class="form__href-container">
             <a class ="form__href" href="/users/register">
                Don't have an account? Sign Up
             </a>
          </div>
       </div>
+
    </div>
 </div>
 

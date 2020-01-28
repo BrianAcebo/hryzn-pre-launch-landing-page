@@ -24,15 +24,13 @@ const ProjectSchema = mongoose.Schema({
       type: String
    },
    admins: [],
-   followers: [],
+   saves: [],
    likes: [],
-   files: [],
-   lists: [{
-      list_title: {
+   comments: [{
+      username: {
          type: String
       },
-      list_items: [],
-      list_order: {
+      message: {
          type: String
       }
    }],
@@ -53,8 +51,8 @@ module.exports.saveProject = (newProject, callback) => {
    newProject.save(callback);
 }
 
-// Add Followers
-module.exports.addFollowers = (info, callback) => {
+// Add Save
+module.exports.addSaves = (info, callback) => {
    projectId = info['projectId'];
    profileUsername = info['profileUsername'];
 
@@ -62,22 +60,52 @@ module.exports.addFollowers = (info, callback) => {
 
    Project.findOneAndUpdate(query,
       {
-         $addToSet: {"followers": [profileUsername]},
+         $addToSet: {"saves": [profileUsername]},
       },
       { safe: true, upsert: true },
       callback
    );
 }
 
-// Remove Followers
-module.exports.removeFollowers = (info, callback) => {
+// Remove Saves
+module.exports.removeSaves = (info, callback) => {
    projectId = info['projectId'];
    profileUsername = info['profileUsername'];
 
    const query = { _id: projectId };
 
    Project.findOneAndUpdate(query,
-      { $pull: { followers: profileUsername } },
+      { $pull: { saves: profileUsername } },
+      { multi: true },
+      callback
+   );
+}
+
+// Add Like
+module.exports.addLikes = (info, callback) => {
+   projectId = info['projectId'];
+   profileUsername = info['profileUsername'];
+
+   const query = { _id: projectId };
+
+   Project.findOneAndUpdate(query,
+      {
+         $addToSet: {"likes": [profileUsername]},
+      },
+      { safe: true, upsert: true },
+      callback
+   );
+}
+
+// Remove Like
+module.exports.removeLikes = (info, callback) => {
+   projectId = info['projectId'];
+   profileUsername = info['profileUsername'];
+
+   const query = { _id: projectId };
+
+   Project.findOneAndUpdate(query,
+      { $pull: { likes: profileUsername } },
       { multi: true },
       callback
    );

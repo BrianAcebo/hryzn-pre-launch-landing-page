@@ -36,8 +36,9 @@ app.use(session({
    secret: 'sessionSecretKey',
    saveUninitialized: true,
    resave: true,
+   rolling: true,
    cookie: {
-      maxAge: null
+      maxAge: 365 * 24 * 60 * 60 * 1000 // One Year
    }
 }));
 
@@ -87,16 +88,34 @@ app.use(function (req, res, next) {
 });
 
 // Redirect http to https
-var env = process.env.NODE_ENV || 'development';
-var forceSSL = function (req, res, next) {
-   if (req.headers['x-forwarded-proto'] !== 'https') {
-      return res.redirect(['https://', req.get('Host'), req.url].join(''));
+app.use(function (req, res, next) {
+   var localhost = req.get('host').search("localhost");
+   var local_server = req.get('host').search("127.0.0.1");
+
+   // Checks if URL has dev server IP address
+   if (localhost === -1) {
+      
+      if (local_server === -1) {
+         var env = process.env.NODE_ENV || 'development';
+         next();
+      } else {
+         var env = process.env.NODE_ENV || 'production';
+
+         if (req.headers['x-forwarded-proto'] !== 'https') {
+            return res.redirect(['https://www.', req.get('Host'), req.url].join(''));
+         }
+
+         next();
+      }
+
+   } else {
+
+      var env = process.env.NODE_ENV || 'development';
+      next();
+
    }
-   return next();
-};
-if (env === 'production') {
-   app.use(forceSSL);
-}
+});
+
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);

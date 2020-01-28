@@ -25,15 +25,16 @@ const UserSchema = mongoose.Schema({
    profileimage: {
       type: String
    },
+   backgroundimage: {
+      type: String
+   },
    bio: {
       type: String
    },
    followers: [],
    following: [],
-   projects: [{
-      type: [mongoose.Schema.Types.ObjectId],
-      ref: 'Project'
-   }]
+   own_projects: [],
+   saved_projects: [],
 });
 
 const User = module.exports = mongoose.model('User', UserSchema);
@@ -74,8 +75,8 @@ module.exports.saveUser = (newUser, callback) => {
    });
 }
 
-// Follow Project
-module.exports.followProject = (info, callback) => {
+// Create Project
+module.exports.createToProfile = (info, callback) => {
    profileUsername = info['profileUsername'];
    projectId = info['projectId'];
    projectTitle = info['projectTitle'];
@@ -85,10 +86,63 @@ module.exports.followProject = (info, callback) => {
    const query = { username: profileUsername };
 
    User.findOneAndUpdate(query,
-      { $push: { "projects": projectId }},
+      {
+         $addToSet: {"own_projects": [projectId]},
+      },
       { safe: true, upsert: true },
       callback
    );
+}
+
+// Delete Project
+module.exports.deleteFromProfile = (info, callback) => {
+   profileUsername = info['profileUsername'];
+   projectId = info['projectId'];
+   projectTitle = info['projectTitle'];
+
+   const query = { username: profileUsername };
+
+   User.findOneAndUpdate(query,
+      { $pull: { "own_projects": projectId  } },
+      { multi: true },
+      callback
+   );
+
+}
+
+// Save Project
+module.exports.saveToProfile = (info, callback) => {
+   profileUsername = info['profileUsername'];
+   projectId = info['projectId'];
+   projectTitle = info['projectTitle'];
+   isPrivate = info['isPrivate'];
+   projectImage = info['projectImage'];
+
+   const query = { username: profileUsername };
+
+   User.findOneAndUpdate(query,
+      {
+         $addToSet: {"saved_projects": [projectId]},
+      },
+      { safe: true, upsert: true },
+      callback
+   );
+}
+
+// Unsave Project
+module.exports.unsaveToProfile = (info, callback) => {
+   profileUsername = info['profileUsername'];
+   projectId = info['projectId'];
+   projectTitle = info['projectTitle'];
+
+   const query = { username: profileUsername };
+
+   User.findOneAndUpdate(query,
+      { $pull: { "saved_projects": projectId  } },
+      { multi: true },
+      callback
+   );
+
 }
 
 // Add Followers
@@ -137,7 +191,7 @@ module.exports.removeFollowers = (info, callback) => {
    );
 }
 
-// Remove Followers
+// Remove Following
 module.exports.removeFollowing = (info, callback) => {
    userId = info['userId'];
    username_to_remove = info['profileUsername'];
@@ -149,20 +203,4 @@ module.exports.removeFollowing = (info, callback) => {
       { multi: true },
       callback
    );
-}
-
-// Unfollow Project
-module.exports.unfollowProject = (info, callback) => {
-   profileUsername = info['profileUsername'];
-   projectId = info['projectId'];
-   projectTitle = info['projectTitle'];
-
-   const query = { username: profileUsername };
-
-   User.findOneAndUpdate(query,
-      { $pull: { projects: { project_id: projectId } } },
-      { multi: true },
-      callback
-   );
-
 }

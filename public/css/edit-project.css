@@ -1,7 +1,6 @@
-
 .edit-project-form {
    width: 100%;
-   max-width: 1000px;
+   max-width: 1200px;
    padding: 50px 25px;
    margin: 0 auto;
 }
@@ -288,42 +287,4 @@
    text-align: right;
    font-weight: 600;
    font-size: 14px;
-}
-
-.detail-project_notes {
-   padding: 100px;
-}
-
-.detail-project_notes img {
-   width: 100%;
-   max-width: 400px;
-   margin: 0 auto;
-   text-align: center;
-   display: block;
-}
-
-.detail-project_notes blockquote {
-   margin: 35px 0;
-   padding: 25px 50px;
-   box-shadow: inset 5px 0 0 0 #a8add0;
-   font-size: 16px;
-   line-height: 35px;
-   text-align: center;
-}
-
-@media screen and (max-width: 768px) {
-   .detail-project_notes {
-      padding: 35px;
-   }
-
-   .detail-project_notes p {
-      margin: 0;
-      font-size: 14px;
-      line-height: 30px;
-   }
-
-   .detail-project_notes blockquote {
-      padding: 12px 0 12px 50px;
-      text-align: left;
-   }
 }

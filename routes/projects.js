@@ -13,179 +13,206 @@ aws.config.update({
    accessKeyId: keys.accessKeyId,
    region: keys.region
 });
-
 const s3 = new aws.S3();
-
 const storage = {
    s3: s3,
    bucket: 'hryzn-app-static-assets',
    key: (req, file, cb) => {
-      cb(null, dateNow + '-' + file.originalname);
+      var fileExt = file.originalname.split('.').pop();
+      cb(null, dateNow + '.' + fileExt);
    }
 }
-const upload = multer({
-   storage: multerS3(storage)
-});
-const multipleUpload = multer({
-   storage: multerS3(storage)
-});
+const upload = multer({storage: multerS3(storage)});
+const multipleUpload = multer({storage: multerS3(storage)});
 
+
+// Connection to Models
 const User = require('../models/users');
 const Project = require('../models/projects');
+
 
 // GET Create Project
 router.get('/create-project', (req, res, next) => {
    if(req.isAuthenticated()) {
       res.render('p/create-project', {
-         page_title: 'Create Project'
+         page_title: 'Create Project',
+         editProject: true
       });
    } else {
       res.redirect('/welcome');
    }
 });
 
+
 // POST Create Project
 router.post('/create-project', upload.single('project_image'), (req, res, next) => {
 
-   var project_title = req.body.project_title;
-   var admin = req.body.admin; // Owner of project
-   var is_private = req.body.is_private;
-   var id = req.body.id;
+   if(req.isAuthenticated()) {
 
-   // Embed video
-   var project_video = '';
-   var url = req.body.project_video;
-   var is_youtube_video = url.search("https://www.youtube.com");
-   var is_vimeo_video = url.search("https://vimeo.com");
+      var project_title = req.body.project_title;
+      var project_description = req.body.project_description;
+      var admin = req.body.admin; // Owner of project
+      var is_private = req.body.is_private;
+      var id = req.body.id;
+      var user = req.body.user;
+      var project_notes = req.body.project_notes;
+      project_notes = project_notes.replace(/\r\n/g,'');
 
-   // Check if it is Youtube video ->
-   // Check if there's an unwanted playlist ->
-   // Check if it's already an embedded video ->
-   // Grab the video id and attach it to new link
+      // Embed video
+      var project_video = '';
+      var url = req.body.project_video;
+      var is_youtube_video = url.search("https://www.youtube.com");
+      var is_vimeo_video = url.search("https://vimeo.com");
 
-   if(is_youtube_video === -1) {
-      // It is not a Youtube video
-   } else {
+      // Check if it is Youtube video ->
+      // Check if there's an unwanted playlist ->
+      // Check if it's already an embedded video ->
+      // Grab the video id and attach it to new link
 
-      // See if link has unwanted playlist
-      var has_unwanted_playlist = url.search("&list=");
-      if(has_unwanted_playlist === -1) {
+      if(is_youtube_video === -1) {
+         // It is not a Youtube video
+      } else {
+
+         // See if link has unwanted playlist
+         var has_unwanted_playlist = url.search("&list=");
+         if(has_unwanted_playlist === -1) {
+
+            // See if video is already embedded
+            var is_already_embed = url.search("https://www.youtube.com/embed");
+            if(is_already_embed === -1) {
+               // It is not a an embedded video
+               var video_id = url.split("?v=")[1];
+               project_video = "https://www.youtube.com/embed/" + video_id;
+            } else {
+               project_video = req.body.project_video;
+            }
+
+         } else {
+            // It has an unwanted playlist attached to the url
+            var url_end = url.split("?v=")[1];
+            var video_id = url_end.split("&list=")[0];
+            project_video = "https://www.youtube.com/embed/" + video_id;
+         }
+
+      }
+
+      // Check if it is Vimeo video ->
+      // Check if it's already an embedded video ->
+      // Grab the video id and attach it to new link
+
+      if(is_vimeo_video === -1) {
+         // It is not a Vimeo video
+      } else {
 
          // See if video is already embedded
-         var is_already_embed = url.search("https://www.youtube.com/embed");
+         var is_already_embed = url.search("https://player.vimeo.com/video/");
          if(is_already_embed === -1) {
             // It is not a an embedded video
-            var video_id = url.split("?v=")[1];
-            project_video = "https://www.youtube.com/embed/" + video_id;
+            var video_id = url.split("https://vimeo.com/")[1];
+            project_video = "https://player.vimeo.com/video/" + video_id;
          } else {
             project_video = req.body.project_video;
          }
 
-      } else {
-         // It has an unwanted playlist attached to the url
-         var url_end = url.split("?v=")[1];
-         var video_id = url_end.split("&list=")[0];
-         project_video = "https://www.youtube.com/embed/" + video_id;
       }
 
-   }
+      // Form Validation
+      req.checkBody('project_title', 'Please Enter A Project Title').notEmpty();
+      req.checkBody('project_title', 'Project Title Is Too Long').isLength({ min: 0, max:200 });
+      req.checkBody('project_description', 'Description Must Be Less Than 500 Characters').isLength({ min: 0, max: 500 });
 
-   // Check if it is Vimeo video ->
-   // Check if it's already an embedded video ->
-   // Grab the video id and attach it to new link
+      errors = req.validationErrors();
 
-   if(is_vimeo_video === -1) {
-      // It is not a Vimeo video
-   } else {
+      if(errors) {
 
-      // See if video is already embedded
-      var is_already_embed = url.search("https://player.vimeo.com/video/");
-      if(is_already_embed === -1) {
-         // It is not a an embedded video
-         var video_id = url.split("https://vimeo.com/")[1];
-         project_video = "https://player.vimeo.com/video/" + video_id;
-      } else {
-         project_video = req.body.project_video;
-      }
-
-   }
-
-   // Form Validation
-   req.checkBody('project_title', 'Please Enter A Project Title').notEmpty();
-   req.checkBody('project_title', 'Project Title Is Too Long').isLength({ min: 0, max:200 });
-
-   errors = req.validationErrors();
-
-   if(errors) {
-      User.findById(id, (err, user) => {
-         if(err) throw err;
-
-         res.render('p/create-project', {
-            errors: errors,
-            page_title: 'Create Project',
-            user: user
-         });
-      });
-   } else {
-      if(req.file) {
-         // If user uploaded an image for project
-         var ext = path.extname(req.file.originalname);
-
-         // Check if file is an image
-         if(ext !== '.png' && ext !== '.PNG' && ext !== '.jpg' && ext !== '.JPG' && ext !== '.gif' && ext !== '.GIF' && ext !== '.jpeg' && ext !== '.JPEG') {
-            User.findById(id, (err, user) => {
-               if(err) throw err;
-
-               res.render('p/create-project', {
-                  error_msg: 'Uploaded File Must End With .jpg .jpeg .png .gif',
-                  page_title: 'Create Project',
-                  user: user
-               });
-            });
-         } else {
-            // No errors have been made
-            var project_image = dateNow + '-' + req.file.originalname;
-
-            var newProject = new Project({
-               project_title: project_title,
-               is_private: is_private,
-               project_image: project_image,
-               project_video: project_video,
-               admins: admin,
-               project_owner: admin
-            });
-
-            // Create project in database
-            Project.saveProject(newProject, (err, project) => {
-               if(err) throw err;
-               console.log(err);
-            });
-
-            // Add project to User document
-            info = [];
-            info['profileUsername'] = req.user.username;
-            info['projectId'] = newProject._id;
-
-            User.followProject(info, (err, user) => {
-               if(err) throw err;
-            });
-
-            req.flash('success_msg', "Project was created. Edit the project.");
-            res.redirect('/p/details/edit/' + newProject._id);
-
-         }
-      } else {
-         // If user did not upload an image for project
          User.findById(id, (err, user) => {
             if(err) throw err;
 
             res.render('p/create-project', {
-               error_msg: 'Please upload an image for the project.',
+               errors: errors,
                page_title: 'Create Project',
+               project_title: project_title,
+               project_description: project_description,
+               project_notes: project_notes,
                user: user
             });
          });
+
+      } else {
+         if(req.file) {
+
+            // If user uploaded an image for project
+            var ext = path.extname(req.file.originalname);
+
+            // Check if file is an image
+            if(ext !== '.png' && ext !== '.PNG' && ext !== '.jpg' && ext !== '.JPG' && ext !== '.gif' && ext !== '.GIF' && ext !== '.jpeg' && ext !== '.JPEG') {
+
+               User.findById(id, (err, user) => {
+                  if(err) throw err;
+
+                  res.render('p/create-project', {
+                     error_msg: 'Uploaded File Must End With .jpg .jpeg .png .gif',
+                     page_title: 'Create Project',
+                     project_title: project_title,
+                     project_description: project_description,
+                     project_notes: project_notes,
+                     user: user
+                  });
+               });
+
+            } else {
+               // No errors have been made
+               var fileExt = req.file.originalname.split('.').pop();
+               var project_image = dateNow + '.' + fileExt;
+
+               var newProject = new Project({
+                  project_title: project_title,
+                  project_description: project_description,
+                  is_private: is_private,
+                  project_image: project_image,
+                  project_video: project_video,
+                  admins: admin,
+                  project_owner: admin,
+                  project_notes: project_notes
+               });
+
+               // Create project in database
+               Project.saveProject(newProject, (err, project) => {
+                  if(err) throw err;
+
+                  // Add project to User document
+                  info = [];
+                  info['profileUsername'] = req.user.username;
+                  info['projectId'] = project._id.toString();
+
+                  User.createToProfile(info, (err, user) => {
+                     if(err) throw err;
+                  });
+
+                  req.flash('success_msg', "Project was created.");
+                  res.redirect('/p/details/' + project._id);
+               });
+
+            }
+         } else {
+            // If user did not upload an image for project
+            User.findById(id, (err, user) => {
+               if(err) throw err;
+
+               res.render('p/create-project', {
+                  error_msg: 'Please upload an image for the project.',
+                  page_title: 'Create Project',
+                  project_title: project_title,
+                  project_description: project_description,
+                  project_notes: project_notes,
+                  user: user
+               });
+            });
+         }
       }
+
+   } else {
+      res.redirect('/welcome');
    }
 });
 
@@ -200,12 +227,6 @@ router.get('/details/edit/:id', (req, res, next) => {
             res.redirect('');
          } else {
             var is_admin_of_project = true;
-         }
-
-         if(project.lists === undefined || project.lists.length == 0) {
-            var project_list_is_empty = true;
-         } else {
-            var project_list_is_empty = false;
          }
 
          if(project.project_notes) {
@@ -227,9 +248,9 @@ router.get('/details/edit/:id', (req, res, next) => {
             project_notes: project_notes,
             notes_is_empty_string: notes_is_empty_string,
             hide_scripts: true,
-            project_list_is_empty: project_list_is_empty,
             page_title: project.project_title,
-            is_admin_of_project: is_admin_of_project
+            is_admin_of_project: is_admin_of_project,
+            editProject: true
          });
       });
    } else {
@@ -247,7 +268,6 @@ router.post('/details/edit/:id', upload.single('project_image'), (req, res, next
       var is_private = req.body.is_private;
       var user_id = req.body.id;
       var user = req.body.user;
-      var list_count = req.body.list_count;
       var project_notes = req.body.project_notes;
       project_notes = project_notes.replace(/\r\n/g,'');
 
@@ -332,60 +352,10 @@ router.post('/details/edit/:id', upload.single('project_image'), (req, res, next
 
       } else {
 
-         var lists = [];
-
-         if (req.body.list_items_1 === undefined || req.body.list_items_1.length == 0) {
-            // List items are empty
-         } else {
-            lists.push({
-               list_title: req.body.list_title_1,
-               list_items: req.body.list_items_1,
-               list_order: 1
-            });
-         }
-
-         if (req.body.list_items_2 === undefined || req.body.list_items_2.length == 0) {
-            // List items are empty
-         } else {
-            lists.push({
-               list_title: req.body.list_title_2,
-               list_items: req.body.list_items_2,
-               list_order: 2
-            });
-         }
-
-         if (req.body.list_items_3 === undefined || req.body.list_items_3.length == 0) {
-            // List items are empty
-         } else {
-            lists.push({
-               list_title: req.body.list_title_3,
-               list_items: req.body.list_items_3,
-               list_order: 3
-            });
-         }
-
-         if (req.body.list_items_4 === undefined || req.body.list_items_4.length == 0) {
-            // List items are empty
-         } else {
-            lists.push({
-               list_title: req.body.list_title_4,
-               list_items: req.body.list_items_4,
-               list_order: 4
-            });
-         }
-
-         if (req.body.list_items_5 === undefined || req.body.list_items_5.length == 0) {
-            // List items are empty
-         } else {
-            lists.push({
-               list_title: req.body.list_title_5,
-               list_items: req.body.list_items_5,
-               list_order: 5
-            });
-         }
-
          if(req.file) {
             var ext = path.extname(req.file.originalname);
+
+            // Check if image has proper extension
             if(ext !== '.png' && ext !== '.PNG' && ext !== '.jpg' && ext !== '.JPG' && ext !== '.gif' && ext !== '.GIF' && ext !== '.jpeg' && ext !== '.JPEG') {
                Project.findById(project_id, (err, project) => {
                   if(err) throw err;
@@ -399,7 +369,8 @@ router.post('/details/edit/:id', upload.single('project_image'), (req, res, next
                   });
                });
             } else {
-               var project_image = dateNow + '-' + req.file.originalname;
+               var fileExt = req.file.originalname.split('.').pop();
+               var project_image = dateNow + '.' + fileExt;
 
                Project.findById(project_id, (err, project) => {
                   if(err) throw err;
@@ -410,7 +381,6 @@ router.post('/details/edit/:id', upload.single('project_image'), (req, res, next
                      project_image: project_image,
                      project_video: project_video,
                      is_private: is_private,
-                     lists: lists,
                      project_notes: project_notes
                   }, (err, user) => {
                      if (err) throw err;
@@ -429,7 +399,6 @@ router.post('/details/edit/:id', upload.single('project_image'), (req, res, next
                   project_description: project_description,
                   is_private: is_private,
                   project_video: project_video,
-                  lists: lists,
                   project_notes: project_notes
                }, (err, user) => {
                   if (err) throw err;
@@ -448,18 +417,43 @@ router.post('/details/edit/:id', upload.single('project_image'), (req, res, next
 router.get('/details/:id', (req, res, next) => {
    if(req.isAuthenticated()) {
       Project.findById(req.params.id, (err, project) => {
-         if(err) throw err;
+         if (err) throw err;
 
-         if(typeof project.followers === "undefined") {
-            var user_follows_project = false;
-            var followersLength = 0;
-         } else {
-            var followersLength = project.followers.length;
-            if(project.followers.indexOf(req.user.username) === -1) {
-               var user_follows_project = false;
+         if (project.saves) {
+            var saves_amount = project.saves.length;
+            var likes_amount = project.likes.length;
+
+            if (saves_amount >= 1) {
+               var enough_saves = true;
             } else {
-               var user_follows_project = true;
+               var enough_saves = false;
             }
+
+            if (likes_amount >= 1) {
+               var enough_likes = true;
+            } else {
+               var enough_likes = false;
+            }
+
+            if (project.saves.indexOf(req.user.username) === -1) {
+               var user_saved = false;
+            } else {
+               var user_saved = true;
+            }
+
+            if (project.likes.indexOf(req.user.username) === -1) {
+               var user_liked = false;
+            } else {
+               var user_liked = true;
+            }
+
+         } else {
+            // Project has no saves or likes
+            var user_saved = false;
+            var saves_amount = 0;
+
+            var user_liked = false;
+            var likes_amount = 0;
          }
 
          if(project.admins.indexOf(req.user.username) === -1) {
@@ -468,15 +462,19 @@ router.get('/details/:id', (req, res, next) => {
             var is_admin_of_project = true;
          }
 
-         var adminLength = project.admins.length;
+         var admin_amount = project.admins.length;
 
          res.render('p/details/details', {
             project: project,
             page_title: project.project_title,
-            user_follows_project: user_follows_project,
             is_admin_of_project: is_admin_of_project,
-            followersLength: followersLength,
-            adminLength: adminLength
+            enough_saves: enough_saves,
+            saves_amount: saves_amount,
+            enough_likes: enough_likes,
+            likes_amount: likes_amount,
+            user_saved: user_saved,
+            user_liked: user_liked,
+            admin_amount: admin_amount
          });
       });
    } else {
@@ -501,8 +499,8 @@ router.get('/details/:id/guest', (req, res, next) => {
    }
 });
 
-// Post Project Detail - Follow
-router.post('/details/:id', (req, res, next) => {
+// Post Project Detail - Save
+router.post('/details/save/:id', (req, res, next) => {
    if(req.isAuthenticated()) {
       info = [];
       info['profileUsername'] = req.user.username;
@@ -511,12 +509,12 @@ router.post('/details/:id', (req, res, next) => {
       info['isPrivate'] = req.body.is_private;
       info['projectImage'] = req.body.project_image;
 
-      User.followProject(info, (err, user) => {
+      User.saveToProfile(info, (err, user) => {
          if(err) throw err;
       });
 
-      // Add followers to project
-      Project.addFollowers(info, (err, user) => {
+      // Add save to project
+      Project.addSaves(info, (err, user) => {
          if(err) throw err;
          req.flash('success_msg', "Project Saved");
          res.redirect('/p/details/' + req.body.project_id);
@@ -526,19 +524,19 @@ router.post('/details/:id', (req, res, next) => {
    }
 });
 
-// Post Project Detail - Unfollow
-router.post('/details/unfollow/:id', (req, res, next) => {
+// Post Project Detail - Unsave
+router.post('/details/unsave/:id', (req, res, next) => {
    if(req.isAuthenticated()) {
       info = [];
       info['profileUsername'] = req.user.username;
       info['projectId'] = req.body.project_id;
 
-      User.unfollowProject(info, (err, user) => {
+      User.unsaveToProfile(info, (err, user) => {
          if(err) throw err;
       });
 
-      // Add followers to project
-      Project.removeFollowers(info, (err, user) => {
+      // Remove save from project
+      Project.removeSaves(info, (err, user) => {
          if(err) throw err;
          req.flash('success_msg', "Project Unsaved");
          res.redirect('/p/details/' + req.body.project_id);
@@ -547,6 +545,46 @@ router.post('/details/unfollow/:id', (req, res, next) => {
       res.redirect('/welcome');
    }
 });
+
+// Post Project Detail - Like
+router.post('/details/like/:id', (req, res, next) => {
+   if(req.isAuthenticated()) {
+      info = [];
+      info['profileUsername'] = req.user.username;
+      info['projectId'] = req.body.project_id;
+      info['projectTitle'] = req.body.project_title;
+      info['isPrivate'] = req.body.is_private;
+      info['projectImage'] = req.body.project_image;
+
+      // Add like to project
+      Project.addLikes(info, (err, user) => {
+         if(err) throw err;
+         req.flash('success_msg', "Project Liked");
+         res.redirect('/p/details/' + req.body.project_id);
+      });
+   } else {
+      res.redirect('/welcome');
+   }
+});
+
+// Post Project Detail - Unlike
+router.post('/details/unlike/:id', (req, res, next) => {
+   if(req.isAuthenticated()) {
+      info = [];
+      info['profileUsername'] = req.user.username;
+      info['projectId'] = req.body.project_id;
+
+      // Remove like from project
+      Project.removeLikes(info, (err, user) => {
+         if(err) throw err;
+         req.flash('success_msg', "Project Unliked");
+         res.redirect('/p/details/' + req.body.project_id);
+      });
+   } else {
+      res.redirect('/welcome');
+   }
+});
+
 
 // Delete project
 router.get('/details/delete/:id', (req, res, next) => {
@@ -568,14 +606,14 @@ router.get('/details/delete/:id', (req, res, next) => {
 
             info = [];
 
-            // If project has followers
-            if(project.followers.length > 0) {
+            // If project has saves
+            if(project.saves.length) {
 
-               for (var i = 0, len = project.followers.length; i < len; i++) {
-                  info['profileUsername'] = project.followers[i];
+               for (var i = 0, len = project.saves.length; i < len; i++) {
+                  info['profileUsername'] = project.saves[i];
                   info['projectId'] = req.params.id;
 
-                  User.unfollowProject(info, (err, user) => {
+                  User.unsaveToProfile(info, (err, user) => {
                      if(err) throw err;
                   });
                }
@@ -588,7 +626,7 @@ router.get('/details/delete/:id', (req, res, next) => {
                   info['profileUsername'] = project.admins[i];
                   info['projectId'] = req.params.id;
 
-                  User.unfollowProject(info, (err, user) => {
+                  User.deleteFromProfile(info, (err, user) => {
                      if(err) throw err;
                   });
                }
@@ -626,7 +664,8 @@ router.get('/details/delete/:id', (req, res, next) => {
 
 router.post('/upload', upload.single('editor_image'), (req, res, next) => {
    if(req.isAuthenticated()) {
-      res.status(200).send({"file": "https://s3.amazonaws.com/hryzn-app-static-assets/" + dateNow + '-' + req.file.originalname, "success":true});
+      var fileExt = req.file.originalname.split('.').pop();
+      res.status(200).send({"file": "https://s3.amazonaws.com/hryzn-app-static-assets/" + dateNow + '.' + fileExt, "success":true});
    } else {
       res.redirect('/welcome');
    }
