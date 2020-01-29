@@ -48,6 +48,10 @@
       <input id="checkbox" type="hidden" name="is_private" value="false">
       <input type="hidden" name="admin" value="{{user.username}}">
       <input type="hidden" name="id" value="{{user._id}}">
-      <button class="form__sign-up-button" name="submit" type="submit">Create</button>
+      <div class="create_btns">
+         <button class="form__sign-up-button" name="submit" type="submit">Create</button>
+         <button class="form__sign-up-button draft_btn" name="submit" type="submit">Save as Draft</button>
+      </div>
   </div>
 </form>
+<p class="go-back back-btn" style="margin-top: 50px;">Cancel</p>

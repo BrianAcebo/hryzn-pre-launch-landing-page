@@ -243,7 +243,7 @@ router.get('/profile/:username/following', (req, res, next) => {
              'username': { $in: profile.following}
          }, (err, profiles) => {
             if (err) throw err;
-            res.render('following', {
+            res.render('followers', {
                page_title: profile.username,
                profiles: profiles
             });

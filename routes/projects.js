@@ -50,13 +50,12 @@ router.post('/create-project', upload.single('project_image'), (req, res, next) 
    if(req.isAuthenticated()) {
 
       var project_title = req.body.project_title;
-      var project_description = req.body.project_description;
+      var project_description = req.body.project_description.replace(/\r\n/g,'');
       var admin = req.body.admin; // Owner of project
       var is_private = req.body.is_private;
       var id = req.body.id;
       var user = req.body.user;
-      var project_notes = req.body.project_notes;
-      project_notes = project_notes.replace(/\r\n/g,'');
+      var project_notes = req.body.project_notes.replace(/\r\n/g,'');
 
       // Embed video
       var project_video = '';
@@ -422,6 +421,7 @@ router.get('/details/:id', (req, res, next) => {
          if (project.saves) {
             var saves_amount = project.saves.length;
             var likes_amount = project.likes.length;
+            var comment_amount = project.comments.length;
 
             if (saves_amount >= 1) {
                var enough_saves = true;
@@ -468,6 +468,7 @@ router.get('/details/:id', (req, res, next) => {
             project: project,
             page_title: project.project_title,
             is_admin_of_project: is_admin_of_project,
+            comment_amount: comment_amount,
             enough_saves: enough_saves,
             saves_amount: saves_amount,
             enough_likes: enough_likes,
@@ -578,6 +579,47 @@ router.post('/details/unlike/:id', (req, res, next) => {
       Project.removeLikes(info, (err, user) => {
          if(err) throw err;
          req.flash('success_msg', "Project Unliked");
+         res.redirect('/p/details/' + req.body.project_id);
+      });
+   } else {
+      res.redirect('/welcome');
+   }
+});
+
+
+// Post Project Detail - Comment
+router.post('/details/comment/:id', (req, res, next) => {
+   if(req.isAuthenticated()) {
+      info = [];
+      info['profileUsername'] = req.user.username;
+      info['projectId'] = req.body.project_id;
+      info['profileimage'] = req.body.profileimage;
+      info['comment'] = req.body.comment.replace(/\r\n/g,'');
+
+      // Add save to project
+      Project.addComment(info, (err, user) => {
+         if(err) throw err;
+         req.flash('success_msg', "Added Comment");
+         res.redirect('/p/details/' + req.body.project_id);
+      });
+   } else {
+      res.redirect('/welcome');
+   }
+});
+
+
+// Post Project Detail - Uncomment
+router.post('/details/uncomment/:id', (req, res, next) => {
+   if(req.isAuthenticated()) {
+      info = [];
+      info['profileUsername'] = req.user.username;
+      info['projectId'] = req.body.project_id;
+      info['profileimage'] = req.body.profileimage;
+
+      // Add save to project
+      Project.removeComment(info, (err, user) => {
+         if(err) throw err;
+         req.flash('success_msg', "Removed Comment");
          res.redirect('/p/details/' + req.body.project_id);
       });
    } else {

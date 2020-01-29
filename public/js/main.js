@@ -152,7 +152,17 @@ $(document).ready(function() {
       $checkbox.attr("value", "true");
       $changeText.html("A private project can only be seen by you or people you invite");
    });
-   /***********/
+
+   // Save as draft
+   $(".draft_btn").click(function() {
+      $isPrivate.attr("checked", "checked");
+      $isPrivate.addClass("checked");
+      $isPublic.removeClass("checked");
+      $isPublic.removeAttr("checked");
+      $checkbox.attr("value", "true");
+      $changeText.html("A private project can only be seen by you or people you invite");
+   });
+   /**********/
 
 
    // Open settings nav on click
@@ -216,6 +226,23 @@ $(document).ready(function() {
          $ownProject.css({ "display": "block" });
       });
    }
+   /**********/
+
+
+   // Remove comments
+   var $commentUsername = $(".comment_username");
+   var $currentUser = $("#current_user").text();
+   var $projAdmins = $(".project_admins").text();
+
+   $commentUsername.each(function() {
+
+      if ($currentUser === $projAdmins) {
+         $(this).parent().append('<form method="post" class="" action="/p/details/uncomment/{{this.project_id}}"><input type="hidden" name="username" value="{{this.username}}"><input type="hidden" name="profileimage" value="{{this.profileimage}}"><input type="hidden" name="project_id" value="{{this.project_id}}"><button class="project_action_btn" name="submit" type="submit"><img src="/icons/delete-ticket-item.png" class="main-topnav__icon" /></button></form>');
+      } else if ($(this).text() === $currentUser) {
+         $(this).parent().append('<form method="post" class="" action="/p/details/uncomment/{{this.project_id}}"><input type="hidden" name="username" value="{{this.username}}"><input type="hidden" name="profileimage" value="{{this.profileimage}}"><input type="hidden" name="project_id" value="{{this.project_id}}"><button class="project_action_btn" name="submit" type="submit"><img src="/icons/delete-ticket-item.png" class="main-topnav__icon" /></button></form>');
+      }
+
+   });
    /**********/
 
 });

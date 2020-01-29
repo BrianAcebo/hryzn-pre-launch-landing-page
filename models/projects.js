@@ -27,7 +27,13 @@ const ProjectSchema = mongoose.Schema({
    saves: [],
    likes: [],
    comments: [{
+      project_id: {
+         type: String
+      },
       username: {
+         type: String
+      },
+      profileimage: {
          type: String
       },
       message: {
@@ -49,6 +55,45 @@ module.exports.getAllProjects = (callback, limit) => {
 // Create Project
 module.exports.saveProject = (newProject, callback) => {
    newProject.save(callback);
+}
+
+// Add Comment
+module.exports.addComment = (info, callback) => {
+   projectId = info['projectId'];
+   profileUsername = info['profileUsername'];
+   profileimage = info['profileimage'];
+   comment = info['comment'];
+
+   const query = { _id: projectId };
+
+   Project.findOneAndUpdate(query,
+      {
+         $addToSet: {
+            "comments": {
+               "project_id": projectId,
+               "username": profileUsername,
+               "profileimage": profileimage,
+               "message": comment
+            }
+         },
+      },
+      { safe: true, upsert: true },
+      callback
+   );
+}
+
+// Remove Comment
+module.exports.removeComment = (info, callback) => {
+   projectId = info['projectId'];
+   profileUsername = info['profileUsername'];
+
+   const query = { _id: projectId };
+
+   Project.findOneAndUpdate(query,
+      { $pull: { comments: { 'username': profileUsername } } },
+      { multi: true },
+      callback
+   );
 }
 
 // Add Save
