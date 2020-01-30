@@ -37,14 +37,14 @@ gulp.task('css-main', function() {
 
 /***** Gulp task was causing errors *****/
 // Gulp Task for Optimizing JS Loads
-// gulp.task('js-main', function() {
-//    return gulp.src('./public/js/**/*.js')
-//    .pipe(gp_concat('main.min.js'))
-//    .pipe(gulp.dest('./public/dist/js/'))
-//    .pipe(gp_rename('main.min.js'))
-//    .pipe(gp_uglify())
-//    .pipe(gulp.dest('./public/dist/js/'))
-// });
+gulp.task('js-main', function() {
+   return gulp.src('./public/js/main.js')
+   .pipe(gp_concat('main.min.js'))
+   .pipe(gulp.dest('./public/dist/js/'))
+   .pipe(gp_rename('main.min.js'))
+   .pipe(gp_uglify())
+   .pipe(gulp.dest('./public/dist/js/'))
+});
 
 // Gulp task to minify all files
 gulp.task('prod', function() {

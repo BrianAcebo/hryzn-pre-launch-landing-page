@@ -35,6 +35,7 @@ const UserSchema = mongoose.Schema({
    following: [],
    own_projects: [],
    saved_projects: [],
+   messages: []
 });
 
 const User = module.exports = mongoose.model('User', UserSchema);
@@ -201,6 +202,23 @@ module.exports.removeFollowing = (info, callback) => {
    User.findOneAndUpdate(query,
       { $pull: { following: username_to_remove } },
       { multi: true },
+      callback
+   );
+}
+
+
+// Add Chat
+module.exports.addChat = (info, callback) => {
+   messageId = info['messageId'];
+   username = info['profileUsername'];
+
+   const query = { username: username };
+
+   User.findOneAndUpdate(query,
+      {
+         $addToSet: {"messages": [messageId]},
+      },
+      { safe: true, upsert: true },
       callback
    );
 }

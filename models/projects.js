@@ -85,12 +85,12 @@ module.exports.addComment = (info, callback) => {
 // Remove Comment
 module.exports.removeComment = (info, callback) => {
    projectId = info['projectId'];
-   profileUsername = info['profileUsername'];
+   commentId = info['commentId'];
 
    const query = { _id: projectId };
 
    Project.findOneAndUpdate(query,
-      { $pull: { comments: { 'username': profileUsername } } },
+      { $pull: { comments: { '_id': commentId } } },
       { multi: true },
       callback
    );

@@ -153,11 +153,10 @@ section.project {
 .project_img {
    position: absolute;
    display: block;
-   height: -webkit-fill-available;
+   height: 100%;
    z-index: 0;
    object-fit: cover;
    top: 0;
-   left: 0;
    left: 50%;
    transform: translate(-50%, 0);
 }
@@ -175,6 +174,7 @@ section.project {
       left: 0;
       right: 0;
       transform: none;
+      width: 100%;
    }
 }
 
@@ -356,14 +356,24 @@ section.project {
    align-items: center;
    flex-direction: column;
    max-width: 600px;
-   width: 80%;
+   width: 100%;
    margin: 100px auto;
 }
 
 .comment_form textarea {
-   border: 1px solid #ccc;
    width: 100%;
+   padding: 15px 0;
    height: 100px;
+   margin: 25px 0;
+   display: inline-block;
+   border: none;
+   background: transparent;
+   border-radius: 0;
+   border: 1px solid #ccc;
+   outline: none!important;
+   font-size: 12px;
+   letter-spacing: 1px;
+   text-indent: 25px;
 }
 
 .comment_btn {

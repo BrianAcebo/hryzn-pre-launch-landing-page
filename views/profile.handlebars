@@ -56,6 +56,13 @@
 
          {{! The User is viewing their own profile, no need to follow }}
          {{else}}
+
+         <div class="project_btn_wrapper">
+
+            <a href="/messages/{{profile.username}}">
+               <div class="own_btn">Message</div>
+            </a>
+
             {{#if user_follows_profile}}
 
             <form method="post" action="/profile/unfollow/{{profile._id}}">
@@ -73,6 +80,7 @@
             </form>
 
             {{/if}}
+         </div>
          {{/if}}
       </div>
 

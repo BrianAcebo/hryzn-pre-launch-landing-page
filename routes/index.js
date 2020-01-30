@@ -28,6 +28,7 @@ const multipleUpload = multer({storage: multerS3(storage)}).any();
 
 const User = require('../models/users');
 const Project = require('../models/projects');
+const Message = require('../models/messages');
 
 // Get Welcome Landing Page
 router.get('/welcome', (req, res, next) => {
@@ -64,6 +65,201 @@ router.get('/', (req, res, next) => {
    }
 });
 
+
+// Get All Chats
+router.get('/messages', (req, res, next) => {
+   if(req.isAuthenticated()) {
+      Message.find({ '_id': { $in: req.user.messages} }, (err, messages) => {
+
+         if (err) throw err;
+
+         if (messages.length > 0) {
+            var has_messages = true;
+         } else {
+            var has_messages = false;
+         }
+
+         User.find({ 'username': { $in: req.user.following} }, (err, following) => {
+
+            if (err) throw err;
+
+            var other_users = [];
+
+            messages.forEach(function(msg, key) {
+               msg.users.forEach(function(user, key) {
+                  if (user != req.user.username) {
+                     other_users.push(user);
+                  }
+               });
+            });
+
+            res.render('messages', {
+               page_title: 'Messages',
+               has_messages: has_messages,
+               messages: messages,
+               other_users: other_users,
+               following: following
+            });
+
+         });
+
+      });
+
+   } else {
+      res.redirect('/welcome');
+   }
+});
+
+
+// New / Old Message Redirect
+router.get('/messages/:username', (req, res, next) => {
+   if(req.isAuthenticated()) {
+
+      User.findOne({ 'username': { $in: req.params.username} }, (err, user) => {
+
+         if (err) throw err;
+
+         var chat_id;
+
+         user.messages.forEach(function(msg, key) {
+            req.user.messages.forEach(function(user_msg, key) {
+               if (user_msg === msg) {
+                  chat_id = user_msg;
+               }
+            });
+         });
+
+         Message.findOne({ '_id': { $in: chat_id } }, (err, message) => {
+
+            if (err) throw err;
+
+            if (message) {
+               res.redirect('/messages/chat/' + message.id);
+            } else {
+               res.redirect('/messages/new/' + req.params.username);
+            }
+
+         });
+
+
+      });
+
+   } else {
+      res.redirect('/welcome');
+   }
+});
+
+
+// Get Old Message Chat
+router.get('/messages/chat/:messageId', (req, res, next) => {
+   if(req.isAuthenticated()) {
+
+      Message.findOne({ '_id': { $in: req.params.messageId } }, (err, message) => {
+
+         if (err) throw err;
+
+         res.render('messages/chat', {
+            page_title: 'Messages',
+            new_chat: false,
+            message: message
+         });
+
+      });
+
+   } else {
+      res.redirect('/welcome');
+   }
+});
+
+
+// Post Old Message Chat
+router.post('/messages/chat/:messageId', (req, res, next) => {
+   if(req.isAuthenticated()) {
+
+      info = [];
+      info['userUsername'] = req.body.username;
+      info['messageId'] = req.params.messageId;
+      info['profileimage'] = req.body.profileimage;
+      info['message'] = req.body.message.replace(/\r\n/g,'');
+
+      // Add followers to profile
+      Message.addMessage(info, (err, message) => {
+         if(err) throw err;
+         req.flash('success_msg', "Message Sent");
+         res.redirect('/messages/chat/' + req.params.messageId);
+      });
+
+   } else {
+      res.redirect('/welcome');
+   }
+});
+
+
+// Get New Message Chat
+router.get('/messages/new/:username', (req, res, next) => {
+   if(req.isAuthenticated()) {
+
+      User.findOne({ 'username': { $in: req.params.username} }, (err, user) => {
+
+         if (err) throw err;
+
+         res.render('messages/chat', {
+            page_title: 'Messages',
+            new_chat: true,
+            other_user: user.username
+         });
+
+      });
+
+   } else {
+      res.redirect('/welcome');
+   }
+});
+
+
+// Post New Message Chat
+router.post('/messages/new/:username', (req, res, next) => {
+   if(req.isAuthenticated()) {
+
+      var users = req.body.users;
+      var sent_by = req.user.username;
+      var profileimage = req.body.profileimage;
+      var message = req.body.message.replace(/\r\n/g,'');
+
+      var newMessage = new Message({
+         users: users,
+         messages: {
+            username: sent_by,
+            profileimage: profileimage,
+            message: message
+         }
+      });
+
+      // Create message in database
+      Message.saveMessage(newMessage, (err, message) => {
+         if(err) throw err;
+
+         // Add chat for User
+         users.forEach(function(user, key) {
+            info = [];
+            info['profileUsername'] = user;
+            info['messageId'] = message._id.toString();
+
+            User.addChat(info, (err, user) => {
+               if(err) throw err;
+            });
+         });
+
+         req.flash('success_msg', "Message was sent.");
+         res.redirect('/messages');
+      });
+
+   } else {
+      res.redirect('/welcome');
+   }
+});
+
+
 // Get User Logout
 router.get('/logout', (req, res, next) => {
    if(req.isAuthenticated() || req.session) {
@@ -76,6 +272,7 @@ router.get('/logout', (req, res, next) => {
       res.redirect('/welcome');
    }
 });
+
 
 // GET Profile
 router.get('/profile/:username', (req, res, next) => {

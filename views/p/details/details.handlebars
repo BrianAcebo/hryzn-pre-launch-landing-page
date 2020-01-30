@@ -7,6 +7,8 @@
 
 {{#if user}}
 <p id="current_user" style="display: none;">{{user.username}}</p>
+<p id="current_project" style="display: none;">{{project.id}}</p>
+<p id="current_admin" style="display: none;">{{#each project.admins}}{{this}}{{/each}}</p>
 {{else}}
 <div class="guestScroll">
 {{/if}}
@@ -42,7 +44,7 @@
          {{#if user}}
 
             <div class="row project_btn_container">
-               {{! Project Admins }}
+               {{! Project Admins Mobile }}
                {{#each project.admins}}
                <a class="project_admins mobile_admin" href="/profile/{{this}}">{{this}}</a>
                {{/each}}
@@ -170,9 +172,10 @@
       <a href="/profile/{{this.username}}">
          <div class="topnav__user">
             <div class="topnav__profile-img-container">
-               <img class="profile__img" src="https://s3.amazonaws.com/hryzn-app-static-assets/{{this.profileimage}}">
+               <img class="profile__img comment_profileimage" src="https://s3.amazonaws.com/hryzn-app-static-assets/{{this.profileimage}}">
             </div>
             <p class="comment_username">{{this.username}}</p>
+            <p style="display:none" class="comment_id">{{this._id}}</p>
          </div>
       </a>
       <p class="comment_msg">{{this.message}}</p>
@@ -184,7 +187,7 @@
       <input type="hidden" name="username" value="{{user.username}}">
       <input type="hidden" name="profileimage" value="{{user.profileimage}}">
       <input type="hidden" name="project_id" value="{{project.id}}">
-      <textarea type="text" name="comment"></textarea>
+      <textarea type="text" name="comment" required></textarea>
       <button class="comment_btn" name="submit" type="submit">
          Send Comment
       </button>

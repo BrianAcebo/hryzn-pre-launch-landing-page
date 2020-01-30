@@ -262,13 +262,12 @@ router.post('/details/edit/:id', upload.single('project_image'), (req, res, next
    if(req.isAuthenticated()) {
 
       var project_id = req.params.id;
-      var project_description = req.body.project_description;
+      var project_description = req.body.project_description.replace(/\r\n/g,'');
       var project_title = req.body.project_title;
       var is_private = req.body.is_private;
       var user_id = req.body.id;
       var user = req.body.user;
-      var project_notes = req.body.project_notes;
-      project_notes = project_notes.replace(/\r\n/g,'');
+      var project_notes = req.body.project_notes.replace(/\r\n/g,'');
 
       // Embed video
       var project_video = '';
@@ -613,14 +612,14 @@ router.post('/details/uncomment/:id', (req, res, next) => {
    if(req.isAuthenticated()) {
       info = [];
       info['profileUsername'] = req.user.username;
-      info['projectId'] = req.body.project_id;
-      info['profileimage'] = req.body.profileimage;
+      info['projectId'] = req.params.id;
+      info['commentId'] = req.body.comment_id;
 
       // Add save to project
       Project.removeComment(info, (err, user) => {
          if(err) throw err;
          req.flash('success_msg', "Removed Comment");
-         res.redirect('/p/details/' + req.body.project_id);
+         res.redirect('/p/details/' + req.params.id);
       });
    } else {
       res.redirect('/welcome');

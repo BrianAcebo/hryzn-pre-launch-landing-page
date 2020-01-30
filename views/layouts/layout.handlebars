@@ -32,7 +32,7 @@
       <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700&display=swap" rel="stylesheet">
 
       <!-- Site CSS -->
-      {{! For DEV }}
+      {{! For DEV
       <link rel="stylesheet" type="text/css" href="/css/style.css" />
       <link rel="stylesheet" type="text/css" href="/css/topnav.css" />
       <link rel="stylesheet" type="text/css" href="/css/login.css" />
@@ -41,11 +41,12 @@
       <link rel="stylesheet" type="text/css" href="/css/landing.css" />
       <link rel="stylesheet" type="text/css" href="/css/about.css" />
       <link rel="stylesheet" type="text/css" href="/css/profile.css" />
+      <link rel="stylesheet" type="text/css" href="/css/messages.css" />
       <link rel="stylesheet" type="text/css" href="/css/trumbowyg.min.css" />
-
-      {{! For PROD
-      <link rel="stylesheet" type="text/css" href="/dist/css/style.min.css" />
       }}
+
+      {{! For PROD }}
+      <link rel="stylesheet" type="text/css" href="/dist/css/style.min.css" />
       <link href="/img/logos/hryzn-logo-webclip.png" rel="apple-touch-icon" />
       <link rel="icon"  href="/img/logos/hryzn-favicon.ico" />
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -87,6 +88,7 @@
                </div>
             </a>
             <a href="/explore"><img src="/icons/explore-black.png" class="main-topnav__icon" /></a>
+            <a href="/messages"><img src="/icons/messages.png" class="main-topnav__icon" /></a>
             <a href="/p/create-project" class="create-icon"><img src="/icons/create-icon.png" class="main-topnav__icon" /></a>
          </nav>
       </div>
@@ -235,7 +237,7 @@
          useOwnImageLoader: false,
          debug: true,
          mobileFirst: false,
-         margin: 50,
+         margin: 35,
          columns: 5,
          breakAt: {
             992: 4,
@@ -246,7 +248,12 @@
    </script>
    {{/if}}
 
+   {{! For DEV
    <script src="/js/main.js" type="text/javascript"></script>
+   }}
+
+   {{! For PROD }}
+   <script src="/dist/js/main.min.js" type="text/javascript"></script>
 
    {{#if welcomePage}}
    <script src="/js/vendor/typewriter.js" type="text/javascript"></script>

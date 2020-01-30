@@ -1,0 +1,44 @@
+{{#if other_users}}
+
+<div class="explore_main">
+
+   <p class="top_results">Your Chats</p>
+   <hr class="top_results_underline" />
+
+   <section class="follower__profiles-section">
+      {{#each other_users}}
+
+      <a href="/messages/{{this}}" class="follower__profile">
+         {{this}}
+      </a>
+
+      {{/each}}
+   </section>
+
+   {{else}}
+
+   {{! User has no messages }}
+   <div class="spacer"></div>
+   <p class="error-message">No messages</p>
+
+   {{/if}}
+
+   <p class="top_results">Following</p>
+   <hr class="top_results_underline" />
+
+   {{#if following}}
+
+   <section class="follower__profiles-section">
+      {{#each following}}
+      <a href="/messages/{{this.username}}" class="follower__profile">
+         <div class="follower__profile-img-container">
+            <img class="profile__img" {{#if this.profileimage}}src="https://s3.amazonaws.com/hryzn-app-static-assets/{{this.profileimage}}"{{else}}src="/img/site/hryzn-placeholder-01.jpg"{{/if}} />
+         </div>
+         {{this.username}}
+      </a>
+      {{/each}}
+   </section>
+
+</div>
+
+{{/if}}

@@ -232,14 +232,18 @@ $(document).ready(function() {
    // Remove comments
    var $commentUsername = $(".comment_username");
    var $currentUser = $("#current_user").text();
-   var $projAdmins = $(".project_admins").text();
+   var $projAdmins = $("#current_admin").text();
+   var $projectId = $("#current_project").text();
 
    $commentUsername.each(function() {
 
+      var $commentId = $(this).next().text();
+      var $username = $(this).text();
+
       if ($currentUser === $projAdmins) {
-         $(this).parent().append('<form method="post" class="" action="/p/details/uncomment/{{this.project_id}}"><input type="hidden" name="username" value="{{this.username}}"><input type="hidden" name="profileimage" value="{{this.profileimage}}"><input type="hidden" name="project_id" value="{{this.project_id}}"><button class="project_action_btn" name="submit" type="submit"><img src="/icons/delete-ticket-item.png" class="main-topnav__icon" /></button></form>');
-      } else if ($(this).text() === $currentUser) {
-         $(this).parent().append('<form method="post" class="" action="/p/details/uncomment/{{this.project_id}}"><input type="hidden" name="username" value="{{this.username}}"><input type="hidden" name="profileimage" value="{{this.profileimage}}"><input type="hidden" name="project_id" value="{{this.project_id}}"><button class="project_action_btn" name="submit" type="submit"><img src="/icons/delete-ticket-item.png" class="main-topnav__icon" /></button></form>');
+         $(this).parent().append('<form method="post" class="" action="/p/details/uncomment/' + $projectId + '"><input type="hidden" name="comment_id" value="' + $commentId + '"><input type="hidden" name="project_id" value="' + $projectId + '"><button class="project_action_btn" name="submit" type="submit"><img src="/icons/delete-ticket-item.png" class="main-topnav__icon" /></button></form>');
+      } else if ($username === $currentUser) {
+         $(this).parent().append('<form method="post" class="" action="/p/details/uncomment/' + $projectId + '"><input type="hidden" name="comment_id" value="' + $commentId + '"><input type="hidden" name="project_id" value="' + $projectId + '"><button class="project_action_btn" name="submit" type="submit"><img src="/icons/delete-ticket-item.png" class="main-topnav__icon" /></button></form>');
       }
 
    });
