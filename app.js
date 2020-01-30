@@ -93,9 +93,9 @@ app.use(function (req, res, next) {
    // Set to production
    var env = process.env.NODE_ENV || 'production';
 
-   // if (req.headers['x-forwarded-proto'] !== 'https') {
-   //    return res.redirect(['https://www.', req.get('Host'), req.url].join(''));
-   // }
+   if (req.headers['x-forwarded-proto'] !== 'https') {
+      return res.redirect(['https://www.', req.get('Host'), req.url].join(''));
+   }
 
    next();
 });
