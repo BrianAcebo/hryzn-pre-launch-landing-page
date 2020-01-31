@@ -161,7 +161,8 @@ router.get('/messages/chat/:messageId', (req, res, next) => {
          res.render('messages/chat', {
             page_title: 'Messages',
             new_chat: false,
-            message: message
+            message: message,
+            chat: true
          });
 
       });
@@ -184,7 +185,11 @@ router.post('/messages/chat/:messageId', (req, res, next) => {
 
       // Add followers to profile
       Message.addMessage(info, (err, message) => {
-         if(err) throw err;
+         if(err) throw err
+
+
+         io.emit('message', info['message']);
+
          req.flash('success_msg', "Message Sent");
          res.redirect('/messages/chat/' + req.params.messageId);
       });
@@ -206,7 +211,8 @@ router.get('/messages/new/:username', (req, res, next) => {
          res.render('messages/chat', {
             page_title: 'Messages',
             new_chat: true,
-            other_user: user.username
+            other_user: user.username,
+            chat: true
          });
 
       });

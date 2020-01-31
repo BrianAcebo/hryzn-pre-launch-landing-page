@@ -656,6 +656,12 @@ input {
    align-items: center;
 }
 
+.bck_btn {
+   margin-top: 50px;
+   margin-left: 50px;
+   max-width: 35px;
+}
+
 @media screen and (max-width: 992px) {
    .main__wrapper {
       padding: 25px 15px;
