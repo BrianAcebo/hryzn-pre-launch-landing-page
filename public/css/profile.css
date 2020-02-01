@@ -321,7 +321,7 @@
    height: 3px;
    border: none;
    background: #333;
-    margin: 25px 0 25px 50px;
+   margin: 25px 0 25px 50px;
 }
 
 .profile__sidenav a {
@@ -336,7 +336,14 @@
    color: #707070;
 }
 
-.profile__sidenav #settingsClose {
+#relatedSideNav .settings__header,
+#relatedSideNav .settings__underline,
+#relatedSideNav a {
+   margin-left: 0;
+}
+
+.profile__sidenav #settingsClose,
+.profile__sidenav #relatedClose {
    position: absolute;
    top: 15px;
    right: 15px;
@@ -345,7 +352,8 @@
    cursor: pointer;
 }
 
-.profile__sidenav #settingsClose:hover {
+.profile__sidenav #settingsClose:hover,
+.profile__sidenav #relatedClose:hover {
    color: #333;
 }
 
