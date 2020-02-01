@@ -92,12 +92,28 @@
 .form__input {
    width: 100%;
    padding: 15px 20px;
-   margin: 18px 0;
+   margin: 15px 0 25px 0;
    display: inline-block;
    border: 1px solid #ccc;
    font-size: 12px;
    border-radius: 5px;
    letter-spacing: 1px;
+}
+
+.form__container .chosen-choices,
+.edit-project-form .chosen-choices {
+   width: 100%;
+   padding: 15px 20px!important;
+   margin: 15px 0 25px 0!important;
+   display: inline-block;
+   border: 1px solid #ccc!important;
+   font-size: 12px;
+   border-radius: 5px;
+   letter-spacing: 1px;
+   background-image: none!important;
+   background-image: none!important;
+   cursor: pointer!important;
+
 }
 
 .form__input-checkbox {

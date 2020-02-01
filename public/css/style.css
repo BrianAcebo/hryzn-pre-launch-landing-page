@@ -432,6 +432,10 @@ input {
    transition: 0.5s;
 }
 
+.create_loader.loader_overlay {
+   display: none;
+}
+
 .loader_wrapper {
    position: relative;
    width: 100%;
@@ -660,6 +664,9 @@ input {
    margin-top: 50px;
    margin-left: 50px;
    max-width: 35px;
+   box-shadow: 0px 2px 4px 0px rgba(0,0,0,0.2);
+   border-radius: 50%;
+   cursor: pointer;
 }
 
 @media screen and (max-width: 992px) {

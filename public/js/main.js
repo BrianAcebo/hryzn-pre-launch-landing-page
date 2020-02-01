@@ -249,4 +249,32 @@ $(document).ready(function() {
    });
    /**********/
 
+
+   // Open related projects nav on click
+   var $relatedOpen = $('#relatedBtn');
+   var $relatedClose = $('#relatedClose');
+   var $relatedNav = $('#relatedSideNav');
+
+   $relatedOpen.click(function() {
+      if($window.width() <= 768) {
+         $relatedNav.css({ "width": "100%", "box-shadow": "0 2px 4px 0 rgba(0,0,0,0.2)" });
+      } else {
+         $relatedNav.css({ "width": "350" });
+      }
+   });
+
+   $relatedClose.click(function() {
+      $relatedNav.css({ "width": "0" });
+   });
+   /**********/
+
+   // Add loader for create project
+   var $createLoader = $('.create_loader');
+   var $createSub = $('.create_sub');
+
+   $createSub.click(function() {
+      $createLoader.css({ "display": "block" });
+   });
+   /**********/
+
 });

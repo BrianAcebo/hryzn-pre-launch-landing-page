@@ -854,6 +854,25 @@ router.get('/explore', (req, res, next) => {
    }
 });
 
+// Get Category
+router.get('/explore/:category', (req, res, next) => {
+   if(req.isAuthenticated()) {
+
+      Project.find({ 'categories': { $in: req.params.category} }, (err, projects) => {
+         if (err) throw err;
+
+         res.render('explore', {
+            page_title: 'Explore ' + req.params.category,
+            projects: projects,
+            explore_default: true
+         });
+      });
+
+   } else {
+      res.redirect('/welcome');
+   }
+});
+
 // Get Search
 router.get('/search', (req, res, next) => {
    if(req.isAuthenticated()) {

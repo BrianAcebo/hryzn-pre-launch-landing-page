@@ -43,6 +43,7 @@
       <div class="project_title_container">
          <h1 class="project_title">{{project.project_title}}</h1>
 
+
          {{! Checks if user has an account or a guest visit }}
          {{#if user}}
 
@@ -132,6 +133,19 @@
       </div>
 
 
+      {{! Project Categories }}
+      {{#if project.categories}}
+      <div class="project_categories">
+         {{#each project.categories}}
+         <a href="/explore/{{this}}" class="category">{{this}}</a>
+         {{/each}}
+      </div>
+      {{/if}}
+
+
+      <p id="relatedBtn" style="cursor:pointer;">View Related</p>
+
+
       {{! Project Admins }}
       {{#each project.admins}}
       <a class="project_admins desktop_admin" href="/profile/{{this}}">{{this}}</a>
@@ -200,6 +214,30 @@
 
 
 </section>
+
+{{! Settings Side Nav}}
+{{#if related_projects}}
+<div id="relatedSideNav" class="profile__sidenav">
+  <a href="javascript:void(0)" id="relatedClose">&times;</a>
+  <h3 class="settings__header">Related</h3>
+  <hr class="settings__underline" />
+  {{#each related_projects}}
+  {{#if is_private}}
+  {{! Check if the project is a private project, we do not want to show private projects }}
+  {{else}}
+
+  <a href="/p/details/{{id}}" class="project_link">
+     <div class="project_card">
+        <img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{project_image}}" class="img-responsive" alt="{{project_title}}" />
+        <p class="project_card_title">{{project_title}}</p>
+     </div>
+  </a>
+  <a href="/profile/{{project_owner}}"><p class="project_owner">{{project_owner}}</p></a>
+
+  {{/if}}
+  {{/each}}
+</div>
+{{/if}}
 
 
 {{#if is_admin_of_project}}

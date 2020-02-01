@@ -42,7 +42,8 @@ const ProjectSchema = mongoose.Schema({
    }],
    project_notes: {
       type: String
-   }
+   },
+   categories: []
 });
 
 const Project = module.exports = mongoose.model('Project', ProjectSchema);

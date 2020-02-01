@@ -182,6 +182,24 @@ section.project {
    margin-top: 75px;
 }
 
+.project_categories {
+   display: flex;
+   flex-direction: row;
+}
+
+.project_categories .category {
+   padding: 5px 20px;
+   background: #f1f1f1;
+   font-size: 12px;
+   font-weight: bold;
+   border-radius: 35px;
+   margin: 0 15px 25px 15px;
+}
+
+.project_categories .category:first-child {
+   margin-left: 0!important;
+}
+
 .project_admins {
    color: #ccc!important;
    font-weight: 600;
@@ -196,6 +214,11 @@ section.project {
 }
 
 @media screen and (max-width: 768px) {
+   .project_categories .category {
+      font-size: 10px;
+      margin: 0 10px 25px 10px;
+   }
+
    .project_admins {
       margin: 0 5px 0 0!important;
    }

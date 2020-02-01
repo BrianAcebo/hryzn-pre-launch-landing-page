@@ -32,10 +32,15 @@
       <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700&display=swap" rel="stylesheet">
 
       <!-- Site CSS -->
-      {{! For DEV
+      <link href="/img/logos/hryzn-logo-webclip.png" rel="apple-touch-icon" />
+      <link rel="icon"  href="/img/logos/hryzn-favicon.ico" />
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+      <link href="https://cdn.rawgit.com/harvesthq/chosen/gh-pages/chosen.min.css" rel="stylesheet"/>
+
+      {{! For DEV 
       <link rel="stylesheet" type="text/css" href="/css/style.css" />
       <link rel="stylesheet" type="text/css" href="/css/topnav.css" />
-      <link rel="stylesheet" type="text/css" href="/css/login.css" />
+      <link rel="stylesheet" type="text/css" href="/css/main-forms.css" />
       <link rel="stylesheet" type="text/css" href="/css/projects.css" />
       <link rel="stylesheet" type="text/css" href="/css/edit-project.css" />
       <link rel="stylesheet" type="text/css" href="/css/landing.css" />
@@ -47,9 +52,6 @@
 
       {{! For PROD }}
       <link rel="stylesheet" type="text/css" href="/dist/css/style.min.css" />
-      <link href="/img/logos/hryzn-logo-webclip.png" rel="apple-touch-icon" />
-      <link rel="icon"  href="/img/logos/hryzn-favicon.ico" />
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
       <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
@@ -220,15 +222,24 @@
    <script src="/js/vendor/trumbowyg-insertaudio.js" type="text/javascript"></script>
    <script src="/js/editor.js" type="text/javascript"></script>
 
-      {{#if notes_is_empty_string}}
-      {{! Do nothing }}
-      {{else}}
-      <script>
-      $(document).ready(function() {
-         $('#editor').trumbowyg('html', '{{{project_notes}}}');
-      });
-      </script>
-      {{/if}}
+   {{#if notes_is_empty_string}}
+   {{! Do nothing }}
+   {{else}}
+   <script>
+   $(document).ready(function() {
+      $('#editor').trumbowyg('html', '{{{project_notes}}}');
+   });
+   </script>
+   {{/if}}
+
+   <script src="https://cdn.rawgit.com/harvesthq/chosen/gh-pages/chosen.jquery.min.js"></script>
+   <script>
+   $(".chosen-select").chosen({
+      no_results_text: "Oops, nothing found!",
+      max_selected_options: 5
+   });
+   </script>
+
    {{/if}}
 
    {{#if projects}}

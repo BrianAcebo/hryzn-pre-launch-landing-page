@@ -57,6 +57,12 @@ router.post('/create-project', upload.single('project_image'), (req, res, next) 
       var user = req.body.user;
       var project_notes = req.body.project_notes.replace(/\r\n/g,'');
 
+      if (req.body.project_categories.length > 0) {
+         var project_categories = req.body.project_categories;
+      } else {
+         var project_categories;
+      }
+
       // Embed video
       var project_video = '';
       var url = req.body.project_video;
@@ -171,6 +177,7 @@ router.post('/create-project', upload.single('project_image'), (req, res, next) 
                   project_image: project_image,
                   project_video: project_video,
                   admins: admin,
+                  categories: project_categories,
                   project_owner: admin,
                   project_notes: project_notes
                });
@@ -373,11 +380,23 @@ router.post('/details/edit/:id', upload.single('project_image'), (req, res, next
                Project.findById(project_id, (err, project) => {
                   if(err) throw err;
 
+                  if (req.body.project_categories) {
+                     if (req.body.project_categories.length > 0) {
+                        var project_categories = req.body.project_categories;
+                     } else {
+                        var project_categories = project.categories;
+                     }
+                  } else {
+                     var project_categories = project.categories;
+                  }
+
+
                   Project.findByIdAndUpdate(project_id, {
                      project_title: project_title,
                      project_description: project_description,
                      project_image: project_image,
                      project_video: project_video,
+                     categories: project_categories,
                      is_private: is_private,
                      project_notes: project_notes
                   }, (err, user) => {
@@ -392,11 +411,22 @@ router.post('/details/edit/:id', upload.single('project_image'), (req, res, next
             Project.findById(project_id, (err, project) => {
                if(err) throw err;
 
+               if (req.body.project_categories) {
+                  if (req.body.project_categories.length > 0) {
+                     var project_categories = req.body.project_categories;
+                  } else {
+                     var project_categories = project.categories;
+                  }
+               } else {
+                  var project_categories = project.categories;
+               }
+
                Project.findByIdAndUpdate(project_id, {
                   project_title: project_title,
                   project_description: project_description,
                   is_private: is_private,
                   project_video: project_video,
+                  categories: project_categories,
                   project_notes: project_notes
                }, (err, user) => {
                   if (err) throw err;
@@ -463,19 +493,46 @@ router.get('/details/:id', (req, res, next) => {
 
          var admin_amount = project.admins.length;
 
-         res.render('p/details/details', {
-            project: project,
-            page_title: project.project_title,
-            is_admin_of_project: is_admin_of_project,
-            comment_amount: comment_amount,
-            enough_saves: enough_saves,
-            saves_amount: saves_amount,
-            enough_likes: enough_likes,
-            likes_amount: likes_amount,
-            user_saved: user_saved,
-            user_liked: user_liked,
-            admin_amount: admin_amount
-         });
+         if (project.categories.length > 0) {
+            Project.find({ 'categories': { $in: project.categories} }, (err, related_projects) => {
+               if (err) throw err;
+
+               res.render('p/details/details', {
+                  project: project,
+                  related_projects: related_projects,
+                  page_title: project.project_title,
+                  is_admin_of_project: is_admin_of_project,
+                  comment_amount: comment_amount,
+                  enough_saves: enough_saves,
+                  saves_amount: saves_amount,
+                  enough_likes: enough_likes,
+                  likes_amount: likes_amount,
+                  user_saved: user_saved,
+                  user_liked: user_liked,
+                  admin_amount: admin_amount
+               });
+            }).limit(5);
+         } else {
+            Project.find({}, (err, related_projects) => {
+               if (err) throw err;
+
+               res.render('p/details/details', {
+                  project: project,
+                  related_projects: related_projects,
+                  page_title: project.project_title,
+                  is_admin_of_project: is_admin_of_project,
+                  comment_amount: comment_amount,
+                  enough_saves: enough_saves,
+                  saves_amount: saves_amount,
+                  enough_likes: enough_likes,
+                  likes_amount: likes_amount,
+                  user_saved: user_saved,
+                  user_liked: user_liked,
+                  admin_amount: admin_amount
+               });
+            }).limit(5);
+         }
+
       });
    } else {
       res.redirect('/welcome');

@@ -1,3 +1,9 @@
+<div class="create_loader loader_overlay">
+   <div class="loader_wrapper">
+      <div class="loader"></div>
+   </div>
+</div>
+
 <form method="post" class="edit-project-form" action="/p/create-project" enctype="multipart/form-data">
    <div class="form__container">
 
@@ -18,18 +24,58 @@
 
 
       {{! Project Title }}
-      <label for="project_title" class="form__label" style="margin-top: 25px;">Project Title (Required)</label>
+      <label for="project_title" class="form__label" style="margin-top: 25px;">Project Title *</label>
       <input class="form__input" type="text" placeholder="Enter project title" name="project_title" value="{{project.project_title}}" required autocapitalize="none" />
 
 
       {{! Project Image }}
-      <label for="project_image" class="form__label">Add Project Image (Required)</label>
+      <label for="project_image" class="form__label">Add Project Image *</label>
       <input class="form__input" type="file" name="project_image" value="{{project.project_image}}" />
 
 
       {{! Project Video }}
       <label for="project_video" class="form__label" style="margin-top: 25px;">Add Project Video</label>
       <input class="form__input" type="text" placeholder="Enter a Youtube or Vimeo link" name="project_video" value="{{project.project_video}}" />
+
+
+      {{! Project Categories }}
+      <label for="project_categories" class="form__label" style="margin-top: 25px;">Add Project Categories</label>
+      <select data-placeholder="Add categories..." multiple class="chosen-select form__input" name="project_categories[]">
+         <option value=""></option>
+         <option>Animals</option>
+         <option>Architecture</option>
+         <option>Art</option>
+         <option>Cars & Motorcycles</option>
+         <option>Celebrities</option>
+         <option>DIY & Crafts</option>
+         <option>Design</option>
+         <option>Education</option>
+         <option>Film, Music & Books</option>
+         <option>Food & Drink</option>
+         <option>Gardening</option>
+         <option>Geek</option>
+         <option>Hair & Beauty</option>
+         <option>Health & Fitness</option>
+         <option>History</option>
+         <option>Holidays & Events</option>
+         <option>Home Decor</option>
+         <option>Humor</option>
+         <option>Illustrations & Posters</option>
+         <option>Kids</option>
+         <option>Men’s Fashion</option>
+         <option>Outdoors</option>
+         <option>Photography</option>
+         <option>Products</option>
+         <option>Quotes</option>
+         <option>Science & Nature</option>
+         <option>Sports</option>
+         <option>Tattoos</option>
+         <option>Technology</option>
+         <option>Travel</option>
+         <option>Weddings</option>
+         <option>Women’s Fashion</option>
+         <option>Other</option>
+      </select>
 
 
       {{! Project Description }}
@@ -49,8 +95,8 @@
       <input type="hidden" name="admin" value="{{user.username}}">
       <input type="hidden" name="id" value="{{user._id}}">
       <div class="create_btns">
-         <button class="form__sign-up-button" name="submit" type="submit">Create</button>
-         <button class="form__sign-up-button draft_btn" name="submit" type="submit">Save as Draft</button>
+         <button class="form__sign-up-button create_sub" name="submit" type="submit">Create</button>
+         <button class="form__sign-up-button draft_btn create_sub" name="submit" type="submit">Save as Draft</button>
       </div>
   </div>
 </form>
