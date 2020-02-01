@@ -339,7 +339,8 @@
 #relatedSideNav .settings__header,
 #relatedSideNav .settings__underline,
 #relatedSideNav a {
-   margin-left: 0;
+   margin-left: 25px;
+   margin-right: 25px;
 }
 
 .profile__sidenav #settingsClose,
