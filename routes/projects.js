@@ -57,12 +57,6 @@ router.post('/create-project', upload.single('project_image'), (req, res, next) 
       var user = req.body.user;
       var project_notes = req.body.project_notes.replace(/\r\n/g,'');
 
-      if (req.body.project_categories.length > 0) {
-         var project_categories = req.body.project_categories;
-      } else {
-         var project_categories;
-      }
-
       // Embed video
       var project_video = '';
       var url = req.body.project_video;
@@ -169,6 +163,16 @@ router.post('/create-project', upload.single('project_image'), (req, res, next) 
                // No errors have been made
                var fileExt = req.file.originalname.split('.').pop();
                var project_image = dateNow + '.' + fileExt;
+
+               if (req.body.project_categories) {
+                  if (req.body.project_categories.length > 0) {
+                     var project_categories = req.body.project_categories;
+                  } else {
+                     var project_categories = project.categories;
+                  }
+               } else {
+                  var project_categories = project.categories;
+               }
 
                var newProject = new Project({
                   project_title: project_title,
