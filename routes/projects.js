@@ -168,10 +168,10 @@ router.post('/create-project', upload.single('project_image'), (req, res, next) 
                   if (req.body.project_categories.length > 0) {
                      var project_categories = req.body.project_categories;
                   } else {
-                     var project_categories = project.categories;
+                     var project_categories;
                   }
                } else {
-                  var project_categories = project.categories;
+                  var project_categories;
                }
 
                var newProject = new Project({
