@@ -187,9 +187,6 @@ router.post('/messages/chat/:messageId', (req, res, next) => {
       Message.addMessage(info, (err, message) => {
          if(err) throw err
 
-
-         io.emit('message', info['message']);
-
          req.flash('success_msg', "Message Sent");
          res.redirect('/messages/chat/' + req.params.messageId);
       });
@@ -547,8 +544,8 @@ router.post('/settings', upload.array('images[]', 2), (req, res, next) => {
          //                      });
          //                   });
          //                } else {
-         //                   var fileExt = req.file.originalname.split('.').pop();
-         //                   var backgroundimage = dateNow + '.' +fileExt;
+         //                   // var fileExt = req.file.originalname.split('.').pop();
+         //                   var backgroundimage = dateNow + file.originalname;
          //
          //                   User.findByIdAndUpdate(id, {
          //                      firstname: firstname,

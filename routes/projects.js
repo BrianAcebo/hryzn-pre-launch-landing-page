@@ -18,8 +18,8 @@ const storage = {
    s3: s3,
    bucket: 'hryzn-app-static-assets',
    key: (req, file, cb) => {
-      var fileExt = file.originalname.split('.').pop();
-      cb(null, dateNow + '.' + fileExt);
+      // var fileExt = file.originalname.split('.').pop();
+      cb(null, dateNow + file.originalname);
    }
 }
 const upload = multer({storage: multerS3(storage)});
@@ -161,8 +161,8 @@ router.post('/create-project', upload.single('project_image'), (req, res, next) 
 
             } else {
                // No errors have been made
-               var fileExt = req.file.originalname.split('.').pop();
-               var project_image = dateNow + '.' + fileExt;
+               // var fileExt = req.file.originalname.split('.').pop();
+               var project_image = dateNow + file.originalname;
 
                if (req.body.project_categories) {
                   if (req.body.project_categories.length > 0) {
@@ -378,8 +378,8 @@ router.post('/details/edit/:id', upload.single('project_image'), (req, res, next
                   });
                });
             } else {
-               var fileExt = req.file.originalname.split('.').pop();
-               var project_image = dateNow + '.' + fileExt;
+               // var fileExt = req.file.originalname.split('.').pop();
+               var project_image = dateNow + file.originalname;
 
                Project.findById(project_id, (err, project) => {
                   if(err) throw err;
@@ -407,6 +407,7 @@ router.post('/details/edit/:id', upload.single('project_image'), (req, res, next
                      if (err) throw err;
                   });
 
+                  req.flash('success_msg', "Project was updated.");
                   res.redirect('/p/details/' + project_id);
                });
             }
@@ -436,6 +437,7 @@ router.post('/details/edit/:id', upload.single('project_image'), (req, res, next
                   if (err) throw err;
                });
 
+               req.flash('success_msg', "Project was updated.");
                res.redirect('/p/details/' + project_id);
             });
          }
@@ -767,7 +769,7 @@ router.get('/details/delete/:id', (req, res, next) => {
 router.post('/upload', upload.single('editor_image'), (req, res, next) => {
    if(req.isAuthenticated()) {
       var fileExt = req.file.originalname.split('.').pop();
-      res.status(200).send({"file": "https://s3.amazonaws.com/hryzn-app-static-assets/" + dateNow + '.' + fileExt, "success":true});
+      res.status(200).send({"file": "https://s3.amazonaws.com/hryzn-app-static-assets/" + dateNow + file.originalname, "success":true});
    } else {
       res.redirect('/welcome');
    }

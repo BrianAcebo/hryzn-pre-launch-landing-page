@@ -185,6 +185,7 @@ section.project {
 .project_categories {
    display: flex;
    flex-direction: row;
+   flex-wrap: wrap;
 }
 
 .project_categories .category {

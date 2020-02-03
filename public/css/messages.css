@@ -1,7 +1,8 @@
 .direct_msg_container {
    width: 80%;
    max-width: 600px;
-   margin: 100px auto 0 auto;
+   margin: 50px auto 150px auto;
+   padding: 0 50px;
    display: flex;
    justify-content: flex-start;
    align-items: flex-start;
@@ -13,6 +14,7 @@
    flex-direction: row;
    width: 90%;
    max-width: 800px;
+   max-height: 50px;
    position: fixed;
    bottom: 150px;
    margin: 0 auto;
@@ -25,6 +27,7 @@
    border-bottom-left-radius: 35px;
    outline: none!important;
    text-indent: 25px;
+   margin: 0!important;
 }
 
 .msg_send {
@@ -33,7 +36,7 @@
    border: 1px solid #31375A;
    color: #fff;
    font-size: 12px;
-   margin: 18px 0;
+   margin: 0!important;
    border-top-right-radius: 35px;
    border-bottom-right-radius: 35px;
    cursor: pointer;
