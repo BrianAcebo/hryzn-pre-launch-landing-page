@@ -48,46 +48,48 @@
       <div class="follow__btn-container">
          <p class="profile__projects-p">Projects - {{amount_of_projects}}</p>
 
-         {{#if viewing_own_profile}}
-         <div class="project_btn_wrapper">
-            <div class="own_btn">Created</div>
-            <div class="saved_btn">Saved</div>
-         </div>
+         <div class="profile_top_right">
+            <div class="profile__follow-container">
+               <div class="followers__following">
+                  <a href="/profile/{{profile.username}}/followers"><strong>{{amount_of_followers}}</strong> followers</a>
+                  <a href="/profile/{{profile.username}}/following"><strong>{{amount_of_following}}</strong> following</a>
+               </div>
+            </div>
 
-         {{! The User is viewing their own profile, no need to follow }}
-         {{else}}
+            {{#if viewing_own_profile}}
+            <div class="project_btn_wrapper">
+               <div class="own_btn">Created</div>
+               <div class="saved_btn">Saved</div>
+            </div>
 
-         <div class="project_btn_wrapper">
-
-            <a href="/messages/{{profile.username}}">
-               <div class="own_btn">Message</div>
-            </a>
-
-            {{#if user_follows_profile}}
-
-            <form method="post" action="/profile/unfollow/{{profile._id}}">
-               <input type="hidden" name="user_username" value="{{user.username}}">
-               <input type="hidden" name="profile_username" value="{{profile.username}}">
-               <button class="profile__unfollow" name="submit" type="submit">Unsubscribe</button>
-            </form>
-
+            {{! The User is viewing their own profile, no need to follow }}
             {{else}}
 
-            <form method="post" action="/profile/follow/{{profile._id}}">
-               <input type="hidden" name="user_username" value="{{user.username}}">
-               <input type="hidden" name="profile_username" value="{{profile.username}}">
-               <button class="profile__follow" name="submit" type="submit">Subscribe</button>
-            </form>
+            <div class="project_btn_wrapper">
 
+               <a href="/messages/{{profile.username}}">
+                  <div class="own_btn">Message</div>
+               </a>
+
+               {{#if user_follows_profile}}
+
+               <form method="post" action="/profile/unfollow/{{profile._id}}">
+                  <input type="hidden" name="user_username" value="{{user.username}}">
+                  <input type="hidden" name="profile_username" value="{{profile.username}}">
+                  <button class="profile__unfollow" name="submit" type="submit">Unsubscribe</button>
+               </form>
+
+               {{else}}
+
+               <form method="post" action="/profile/follow/{{profile._id}}">
+                  <input type="hidden" name="user_username" value="{{user.username}}">
+                  <input type="hidden" name="profile_username" value="{{profile.username}}">
+                  <button class="profile__follow" name="submit" type="submit">Subscribe</button>
+               </form>
+
+               {{/if}}
+            </div>
             {{/if}}
-         </div>
-         {{/if}}
-      </div>
-
-      <div class="profile__follow-container">
-         <div class="followers__following">
-            <a href="/profile/{{profile.username}}/followers"><strong>{{amount_of_followers}}</strong> followers</a>
-            <a href="/profile/{{profile.username}}/following"><strong>{{amount_of_following}}</strong> following</a>
          </div>
       </div>
 

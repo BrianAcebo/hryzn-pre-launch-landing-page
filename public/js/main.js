@@ -277,21 +277,4 @@ $(document).ready(function() {
    });
    /**********/
 
-
-   // Fix image orientation
-   var $img = $('img');
-
-   $img.each(function() {
-      EXIF.getData($(this), function() {
-         var orientation = EXIF.getTag($(this), "Orientation");
-
-         console.log(orientation)
-
-         if(orientation == 6) {
-            $(this).css('transform', 'rotate(90deg)')
-         }
-      });
-   });
-   /**********/
-
 });

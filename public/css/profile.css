@@ -131,11 +131,16 @@
 .profile__top,
 .profile__follow-container,
 .followers__following,
-.follow__btn-container {
+.follow__btn-container,
+.profile_top_right {
    display: flex;
    justify-content: space-between;
    flex-direction: row;
    align-items: center;
+}
+
+.profile__follow-container {
+   margin-right: 25px;
 }
 
 .follow__btn-container {
@@ -205,6 +210,26 @@
    flex-direction: row;
    justify-content: center;
    align-items: center;
+}
+
+@media screen and (max-width: 768px) {
+   .follow__btn-container,
+   .profile_top_right {
+      flex-direction: column;
+      margin: 0 auto;
+   }
+
+   .profile__follow-container {
+      margin: 0 auto;
+   }
+
+   .followers__following {
+      margin: 0 auto;
+   }
+
+   .project_btn_wrapper {
+      margin-top: 25px;
+   }
 }
 
 .own_btn,
