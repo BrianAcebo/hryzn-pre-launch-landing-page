@@ -3,6 +3,15 @@ const router = express.Router();
 const path = require('path');
 const nodemailer = require('nodemailer');
 
+
+// Get Start
+router.get('/start', (req, res, next) => {
+   res.render('about/start', {
+     page_title: 'Start Your Writing Journey',
+     notLoginPage: false
+   });
+});
+
 // Get Branding
 router.get('/branding', (req, res, next) => {
    res.render('about/branding', {
