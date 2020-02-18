@@ -8,9 +8,22 @@ const nodemailer = require('nodemailer');
 router.get('/start', (req, res, next) => {
    res.render('about/start', {
      page_title: 'Start Your Writing Journey',
-     notLoginPage: false
+     notLoginPage: false,
+     page_description: 'Share your knowledge and thoughts with others, showcase expertise in your industry, and build a loyal fanbase with compelling content on a platform built for writers.'
    });
 });
+
+
+// Get Grow
+router.get('/grow', (req, res, next) => {
+
+   res.render('about/grow', {
+     page_title: 'Grow With Content Marketing',
+     notLoginPage: false,
+     page_description: 'Grow With Content Marketing'
+   });
+});
+
 
 // Get Branding
 router.get('/branding', (req, res, next) => {
@@ -20,6 +33,7 @@ router.get('/branding', (req, res, next) => {
    });
 });
 
+
 // Get Press
 router.get('/press', (req, res, next) => {
    res.render('about/press', {
@@ -27,6 +41,7 @@ router.get('/press', (req, res, next) => {
      notLoginPage: false
    });
 });
+
 
 // Get Contact
 router.get('/contact', (req, res, next) => {
@@ -37,6 +52,7 @@ router.get('/contact', (req, res, next) => {
    });
 });
 
+
 // Get Contact Thanks
 router.get('/contact/thanks', (req, res, next) => {
    res.render('about/contact', {
@@ -45,6 +61,7 @@ router.get('/contact/thanks', (req, res, next) => {
      form_submitted: true,
    });
 });
+
 
 // Post Contact Form
 router.post('/contact', (req, res, next) => {
@@ -75,6 +92,7 @@ router.post('/contact', (req, res, next) => {
 
 });
 
+
 // Get Terms Of Service
 router.get('/terms', (req, res, next) => {
    res.render('about/terms', {
@@ -83,11 +101,13 @@ router.get('/terms', (req, res, next) => {
    });
 });
 
+
 // Get Privacy Policy
 router.get('/privacy', (req, res, next) => {
    res.render('about/privacy', {
      page_title: 'Privacy Policy'
    });
 });
+
 
 module.exports = router;

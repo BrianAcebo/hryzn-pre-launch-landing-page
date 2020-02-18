@@ -8,18 +8,18 @@
       <meta charset="utf-8" />
       <meta http-equiv="X-UA-Compatible" content="IE=edge" />
       <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-      <meta property="description" name="description" content="{{#if project.project_description}}{{project.project_description}}{{else}}Create, explore, and share your ideas on a powerful social writing platform.{{/if}}" data-app />
+      <meta property="description" name="description" content="{{#if project.project_description}}{{project.project_description}}{{else}}{{#if page_description}}{{page_description}}{{else}}Create, explore, and share your ideas on a powerful social writing platform.{{/if}}{{/if}}" data-app />
       <meta name="google-site-verification" content="_hdPpgLR0QEFHs3hphfVbMIbXf5SLzrNIV4vjThAhZc" />
 
       <meta property="twitter:site" name="twitter:site" content="@hryzn" data-app>
       <meta name="twitter:card" content="summary" />
-      <meta name="twitter:description" content="{{#if project.project_description}}{{project.project_description}}{{else}}Explore a creative world of content, topics, and ideas.{{/if}}" data-app />
+      <meta name="twitter:description" content="{{#if project.project_description}}{{project.project_description}}{{else}}{{#if page_description}}{{page_description}}{{else}}Create, explore, and share your ideas on a powerful social writing platform.{{/if}}{{/if}}" data-app />
       <meta name="twitter:title" content="{{page_title}} | Hryzn" />
       <meta name="twitter:site" content="@hryzn" />
       <meta name="twitter:creator" content="@hryzn" />
 
       <meta property="og:site_name" content="Hryzn">
-      <meta property="og:description" name="og:description" content="{{#if project.project_description}}{{project.project_description}}{{else}}Explore a creative world of content, topics, and ideas.{{/if}}" data-app />
+      <meta property="og:description" name="og:description" content="{{#if project.project_description}}{{project.project_description}}{{else}}{{#if page_description}}{{page_description}}{{else}}Create, explore, and share your ideas on a powerful social writing platform.{{/if}}{{/if}}" data-app />
       <meta property="og:title" name="og:title" content="{{page_title}} | Hryzn" data-app>
       <meta property="og:type" name="og:type" content="website" data-app>
       <meta property="og:url" name="og:url" content="{{site_url}}" data-app>
@@ -53,6 +53,7 @@
 
       {{! For PROD }}
       <link rel="stylesheet" type="text/css" href="/dist/css/style.min.css" />
+
 
       <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
@@ -133,10 +134,10 @@
          </div>
          <div class="landing-nav__center">
             <ul>
+               <li><a href="/">About</a></li>
                <li><a href="/about/start">Start</a></li>
-               <li><a href="/about/run">Run</a></li>
                <li><a href="/about/grow">Grow</a></li>
-               <li><a href="/learn/">Learn</a></li>
+               <li><a href="https://www.blog.myhryzn.com/">Learn</a></li>
             </ul>
          </div>
          <div class="landing-nav__right">
@@ -156,10 +157,10 @@
       <div id="landingNav" class="overlay">
          <a id="landingNavClose" href="javascript:void(0)" class="landingNavClose">&times;</a>
          <div class="overlay-content">
+            <a href="/">About</a>
             <a href="/about/start">Start</a>
-            <a href="/about/run">Run</a>
             <a href="/about/grow">Grow</a>
-            <a href="/learn/">Learn</a>
+            <a href="https://www.blog.myhryzn.com/">Learn</a>
 
             <a href="/users/login"><div class="auth-login__btn btn__secondary">Log In</div></a>
             <a href="/users/register"><div class="auth-sign__btn btn__primary">Sign Up</div></a>
@@ -204,7 +205,7 @@
          <a href="/">About</a>
          <a href="/about/press">Press</a>
          <a href="/about/contact">Contact</a>
-         {{! Not Ready Yet <a href="/blog/">Blog</a>}}
+         <a href="https://www.blog.myhryzn.com/">Learn</a>
          <a href="/about/terms">Terms Of Service</a>
          <a href="/about/privacy">Privacy Policy</a>
          {{! Not Ready Yet <a href="/about/copyright">Copyright</a> }}
