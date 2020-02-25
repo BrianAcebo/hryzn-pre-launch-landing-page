@@ -16,7 +16,7 @@
     "express": "~4.16.0",
     "express-handlebars": "*",
     "express-messages": "*",
-    "express-session": "*",
+    "express-session": "^1.17.0",
     "express-validator": "*",
     "gulp-cli": "^2.0.1",
     "http": "0.0.0",
