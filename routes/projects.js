@@ -155,6 +155,10 @@ router.post('/create-project', upload.single('project_image'), (req, res, next) 
                      project_title: project_title,
                      project_description: project_description,
                      project_notes: project_notes,
+                     is_private: is_private,
+                     project_video: project_video,
+                     categories: project_categories,
+                     project_notes: project_notes,
                      user: user
                   });
                });
@@ -162,7 +166,7 @@ router.post('/create-project', upload.single('project_image'), (req, res, next) 
             } else {
                // No errors have been made
                // var fileExt = req.file.originalname.split('.').pop();
-               var project_image = dateNow + file.originalname;
+               var project_image = dateNow + req.file.originalname;
 
                if (req.body.project_categories) {
                   if (req.body.project_categories.length > 0) {
@@ -214,6 +218,10 @@ router.post('/create-project', upload.single('project_image'), (req, res, next) 
                   page_title: 'Create Project',
                   project_title: project_title,
                   project_description: project_description,
+                  project_notes: project_notes,
+                  is_private: is_private,
+                  project_video: project_video,
+                  categories: project_categories,
                   project_notes: project_notes,
                   user: user
                });
@@ -379,7 +387,7 @@ router.post('/details/edit/:id', upload.single('project_image'), (req, res, next
                });
             } else {
                // var fileExt = req.file.originalname.split('.').pop();
-               var project_image = dateNow + file.originalname;
+               var project_image = dateNow + req.file.originalname;
 
                Project.findById(project_id, (err, project) => {
                   if(err) throw err;
@@ -768,8 +776,8 @@ router.get('/details/delete/:id', (req, res, next) => {
 
 router.post('/upload', upload.single('editor_image'), (req, res, next) => {
    if(req.isAuthenticated()) {
-      var fileExt = req.file.originalname.split('.').pop();
-      res.status(200).send({"file": "https://s3.amazonaws.com/hryzn-app-static-assets/" + dateNow + file.originalname, "success":true});
+      // var fileExt = req.file.originalname.split('.').pop();
+      res.status(200).send({"file": "https://s3.amazonaws.com/hryzn-app-static-assets/" + dateNow + req.file.originalname, "success":true});
    } else {
       res.redirect('/welcome');
    }
