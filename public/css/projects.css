@@ -332,6 +332,10 @@ section.project {
    margin-top: 50px;
 }
 
+.project_notes a {
+   text-decoration: underline!important;
+}
+
 .project_notes img {
    width: 100%;
    margin: 75px auto;
