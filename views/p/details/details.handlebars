@@ -244,6 +244,7 @@
 
 
 {{! Mobile Related Side Nav}}
+{{#if user}}
 {{#if related_projects}}
 <div id="relatedSideNav" class="profile__sidenav">
   <a href="javascript:void(0)" id="relatedClose">&times;</a>
@@ -265,6 +266,7 @@
   {{/if}}
   {{/each}}
 </div>
+{{/if}}
 {{/if}}
 
 

@@ -846,8 +846,6 @@ router.get('/explore', (req, res, next) => {
          });
       });
 
-   } else {
-      res.redirect('/welcome');
    }
 });
 
