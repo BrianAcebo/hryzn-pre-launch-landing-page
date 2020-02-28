@@ -478,6 +478,12 @@ router.get('/details/:id', (req, res, next) => {
                var enough_likes = false;
             }
 
+            if (comment_amount >= 1) {
+               var enough_comments = true;
+            } else {
+               var enough_comments = false;
+            }
+
             if (project.saves.indexOf(req.user.username) === -1) {
                var user_saved = false;
             } else {
@@ -499,8 +505,12 @@ router.get('/details/:id', (req, res, next) => {
             var likes_amount = 0;
          }
 
-         if(project.admins.indexOf(req.user.username) === -1) {
-            var is_admin_of_project = false;
+         if (project.admins.indexOf(req.user.username) === -1) {
+            if (req.user.username === 'hryzn') {
+               var is_admin_of_project = true;
+            } else {
+               var is_admin_of_project = false;
+            }
          } else {
             var is_admin_of_project = true;
          }
@@ -517,6 +527,7 @@ router.get('/details/:id', (req, res, next) => {
                   page_title: project.project_title,
                   is_admin_of_project: is_admin_of_project,
                   comment_amount: comment_amount,
+                  enough_comments: enough_comments,
                   enough_saves: enough_saves,
                   saves_amount: saves_amount,
                   enough_likes: enough_likes,
@@ -706,13 +717,7 @@ router.get('/details/delete/:id', (req, res, next) => {
       Project.findById(req.params.id, (err, project) => {
          if(err) throw err;
 
-         if(project.admins.indexOf(req.user.username) === -1) {
-
-            // Send them to the homepage
-            res.location('/');
-            res.redirect('/');
-
-         } else {
+         if(project.admins.indexOf(req.user.username) > -1 || req.user.username === 'hryzn') {
 
             // Only delete if admin
 
@@ -766,6 +771,13 @@ router.get('/details/delete/:id', (req, res, next) => {
               res.location('/');
               res.redirect('/');
             });
+
+         } else {
+
+            // Send them to the homepage
+            res.location('/');
+            res.redirect('/');
+
          }
 
       });

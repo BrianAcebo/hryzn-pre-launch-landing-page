@@ -27,7 +27,7 @@ a, p, div {
 h1, h2, h3, h4, h5 {
    font-family: 'Poppins', sans-serif;
    letter-spacing: 1px;
-   line-height: 35px;
+   line-height: 55px;
    font-weight: 500;
 }
 
@@ -354,15 +354,10 @@ input {
    padding: 100px 0;
 }
 
-.icon-bar-responsive {
-  flex-direction: row;
-  display: none;
-}
-
 .icon-bar {
   position: fixed;
   top: 50%;
-  left: 50px;
+  left: 1%;
   -webkit-transform: translateY(-50%);
   -ms-transform: translateY(-50%);
   transform: translateY(-50%);
@@ -373,24 +368,13 @@ input {
    align-items: center;
    justify-content: center;
    text-align: center;
-   width: 50px;
-   height: 50px;
+   width: 35px;
+   height: 35px;
    border-radius: 50%;
    transition: all 0.3s ease;
    color: #333;
-   font-size: 20px;
+   font-size: 15px;
    margin: 10px 0;
-}
-
-.icon-bar-responsive a {
-   display: flex;
-   align-items: center;
-   justify-content: center;
-   text-align: center;
-   transition: all 0.3s ease;
-   color: #333;
-   font-size: 18px;
-   margin-right: 35px;
 }
 
 .icon-bar a:hover {
@@ -399,24 +383,10 @@ input {
   cursor: pointer;
 }
 
-.icon-bar-responsive a:hover {
-  color: #f1f1f1;
-  cursor: pointer;
-}
-
-@media screen and (max-width: 1400px) {
+@media screen and (max-width: 992px) {
    .icon-bar {
-      display: none;
-   }
-
-   .icon-bar-responsive {
-      display: flex;
-   }
-}
-
-@media screen and (max-width: 768px) {
-   .icon-bar-responsive a {
-      margin: 25px 35px 0 0;
+     left: 0;
+     border-right: 1px solid #f1f1f1;
    }
 }
 
