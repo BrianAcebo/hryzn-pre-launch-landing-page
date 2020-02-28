@@ -44,7 +44,7 @@
                {{else}}
 
                <div class="masonryItem">
-                  <a href="/p/details/{{id}}" class="project_link">
+                  <a href="/p/details/{{id}}{{#if explore_guest}}/guest{{/if}}" class="project_link">
                      <div class="project_card">
                         <img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{project_image}}" class="img-responsive" alt="{{project_title}}" />
                         <p class="project_card_title">{{project_title}}</p>
@@ -77,7 +77,7 @@
                {{else}}
 
                <div class="masonryItem">
-                  <a href="/p/details/{{id}}" class="project_link">
+                  <a href="/p/details/{{id}}{{#if explore_guest}}/guest{{/if}}" class="project_link">
                      <div class="project_card">
                         <img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{project_image}}" class="img-responsive" alt="{{project_title}}" />
                         <p class="project_card_title">{{project_title}}</p>

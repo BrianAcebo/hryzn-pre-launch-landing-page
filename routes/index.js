@@ -842,10 +842,20 @@ router.get('/explore', (req, res, next) => {
          res.render('explore', {
             page_title: 'Explore Projects',
             projects: projects,
-            explore_default: true
+            explore_default: true,
+            explore_guest: false
          });
       });
-
+   } else {
+      Project.find({}, (err, projects) => {
+         if (err) throw err;
+         res.render('explore', {
+            page_title: 'Explore Projects',
+            projects: projects,
+            explore_default: true,
+            explore_guest: true
+         });
+      });
    }
 });
 
@@ -859,12 +869,24 @@ router.get('/explore/:category', (req, res, next) => {
          res.render('explore', {
             page_title: 'Explore ' + req.params.category,
             projects: projects,
-            explore_default: true
+            explore_default: true,
+            explore_guest: false
          });
       });
 
    } else {
-      res.redirect('/welcome');
+
+      Project.find({ 'categories': { $in: req.params.category} }, (err, projects) => {
+         if (err) throw err;
+
+         res.render('explore', {
+            page_title: 'Explore ' + req.params.category,
+            projects: projects,
+            explore_default: true,
+            explore_guest: true
+         });
+      });
+
    }
 });
 
@@ -884,13 +906,33 @@ router.get('/search', (req, res, next) => {
                projects: projects,
                user_search: user,
                project_search: projects,
-               explore_default: false
+               explore_default: false,
+               explore_guest: false
             });
          }).sort({score: { $meta: "textScore" }});
       }).sort({score: { $meta: "textScore" }});
 
    } else {
-      res.redirect('/welcome');
+
+      var searchTerm = req.query.p;
+
+      User.find({$text: { $search: searchTerm }}, {score: { $meta: "textScore" }}, (err, user) => {
+         if (err) throw err;
+
+         Project.find({$text: { $search: searchTerm }}, {score: { $meta: "textScore" }}, (err, projects) => {
+            if (err) throw err;
+
+            res.render('explore', {
+               page_title: 'Explore Projects',
+               projects: projects,
+               user_search: user,
+               project_search: projects,
+               explore_default: false,
+               explore_guest: true
+            });
+         }).sort({score: { $meta: "textScore" }});
+      }).sort({score: { $meta: "textScore" }});
+
    }
 });
 
