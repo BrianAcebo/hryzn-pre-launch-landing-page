@@ -86,6 +86,21 @@ $(document).ready(function() {
       $modal.css({ "display": "none" });
    });
 
+   // Modal pop up for project meta
+   var $modalMeta = $(".popModalMeta");
+   var $modalBtnMeta = $(".modalBtnMeta");
+   var $closeBtnMeta = $(".closeModalMeta");
+
+   $modalBtnMeta.each(function() {
+      $(this).click(function() {
+         $modalMeta.css({ "width": "100%" });
+      });
+   });
+
+   $closeBtnMeta.click(function() {
+      $modalMeta.css({ "width": "0" });
+   });
+
    // Modal pop up for sign up
    var $modalSignUp = $(".signUpModal");
    var $noScroll = $("div").hasClass("guestScroll");
@@ -150,7 +165,7 @@ $(document).ready(function() {
       $isPublic.removeClass("checked");
       $isPublic.removeAttr("checked");
       $checkbox.attr("value", "true");
-      $changeText.html("A private project can only be seen by you or people you invite");
+      $changeText.html("A private project can only be seen by you");
    });
 
    // Save as draft
@@ -160,7 +175,7 @@ $(document).ready(function() {
       $isPublic.removeClass("checked");
       $isPublic.removeAttr("checked");
       $checkbox.attr("value", "true");
-      $changeText.html("A private project can only be seen by you or people you invite");
+      $changeText.html("A private project can only be seen by you");
    });
    /**********/
 

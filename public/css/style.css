@@ -472,6 +472,10 @@ input {
    background-color: rgba(0,0,0,0.4);
 }
 
+.popModalMeta {
+   display: block;
+}
+
 .modal-content, .modal-content2 {
    position: relative;
    background-color: #fefefe;

@@ -5,8 +5,8 @@ $(document).ready(function() {
       removeformatPasted: true,
       btnsDef: {
          image: {
-            dropdown: ['insertImage', 'upload'],
-            ico: 'insertImage'
+            dropdown: ['insertImage', 'upload', 'insertAudio'],
+            ico: 'upload'
          }
       },
       btns: [
@@ -19,7 +19,8 @@ $(document).ready(function() {
          ['justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull'],
          ['unorderedList', 'orderedList'],
          ['horizontalRule'],
-         ['removeformat']
+         ['removeformat'],
+         ['historyUndo', 'historyRedo']
       ],
       plugins: {
          upload: {

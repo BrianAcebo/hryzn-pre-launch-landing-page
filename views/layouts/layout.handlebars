@@ -22,12 +22,12 @@
       <meta property="description" name="description" content="{{#if project.project_description}}{{project.project_description}}{{else}}{{#if page_description}}{{page_description}}{{else}}Create, explore, and share your ideas on a powerful social writing platform.{{/if}}{{/if}}" data-app />
       <meta name="google-site-verification" content="_hdPpgLR0QEFHs3hphfVbMIbXf5SLzrNIV4vjThAhZc" />
 
-      <meta property="twitter:site" name="twitter:site" content="@hryzn" data-app>
+      <meta property="twitter:site" name="twitter:site" content="@myhryzn" data-app>
       <meta name="twitter:card" content="summary" />
       <meta name="twitter:description" content="{{#if project.project_description}}{{project.project_description}}{{else}}{{#if page_description}}{{page_description}}{{else}}Create, explore, and share your ideas on a powerful social writing platform.{{/if}}{{/if}}" data-app />
       <meta name="twitter:title" content="{{page_title}} | Hryzn" />
-      <meta name="twitter:site" content="@hryzn" />
-      <meta name="twitter:creator" content="@hryzn" />
+      <meta name="twitter:site" content="@myhryzn" />
+      <meta name="twitter:creator" content="@myhryzn" />
 
       <meta property="og:site_name" content="Hryzn">
       <meta property="og:description" name="og:description" content="{{#if project.project_description}}{{project.project_description}}{{else}}{{#if page_description}}{{page_description}}{{else}}Create, explore, and share your ideas on a powerful social writing platform.{{/if}}{{/if}}" data-app />
@@ -48,23 +48,23 @@
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
       <link href="https://cdn.rawgit.com/harvesthq/chosen/gh-pages/chosen.min.css" rel="stylesheet"/>
 
-      {{! For DEV }}
+      {{! For DEV
       <link rel="stylesheet" type="text/css" href="/css/style.css" />
       <link rel="stylesheet" type="text/css" href="/css/topnav.css" />
       <link rel="stylesheet" type="text/css" href="/css/main-forms.css" />
-      <link rel="stylesheet" type="text/css" href="/css/projects.css" />
+      <link rel="stylesheet" type="text/css" href="/css/project.css" />
       <link rel="stylesheet" type="text/css" href="/css/edit-project.css" />
       <link rel="stylesheet" type="text/css" href="/css/welcome.css" />
       <link rel="stylesheet" type="text/css" href="/css/about.css" />
       <link rel="stylesheet" type="text/css" href="/css/profile.css" />
       <link rel="stylesheet" type="text/css" href="/css/messages.css" />
       <link rel="stylesheet" type="text/css" href="/css/trumbowyg.min.css" />
+      }}
 
 
-
-      {{! For PROD
+      {{! For PROD }}
       <link rel="stylesheet" type="text/css" href="/dist/css/style.min.css" />
-   }}
+
 
       <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
@@ -229,10 +229,14 @@
    <script src="//ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
    {{#if editProject}}
-   <script src="/js/vendor/trumbowyg.min.js" type="text/javascript"></script>
-   <script src="/js/vendor/trumbowyg-upload.js" type="text/javascript"></script>
-   <script src="/js/vendor/trumbowyg-allowtags.js" type="text/javascript"></script>
-   <script src="/js/vendor/trumbowyg-insertaudio.js" type="text/javascript"></script>
+   <script src="/scripts/trumbowyg/dist/trumbowyg.min.js" type="text/javascript"></script>
+   <script src="/scripts/trumbowyg/dist/plugins/upload/trumbowyg.upload.min.js" type="text/javascript"></script>
+   <script src="/scripts/trumbowyg/dist/plugins/allowtagsfrompaste/trumbowyg.allowtagsfrompaste.min.js" type="text/javascript"></script>
+   <script src="/scripts/trumbowyg/dist/plugins/insertaudio/trumbowyg.insertaudio.min.js" type="text/javascript"></script>
+   <script src="/scripts/trumbowyg/dist/plugins/cleanpaste/trumbowyg.cleanpaste.min.js"></script>
+   <script src="/scripts/trumbowyg/dist/plugins/history/trumbowyg.history.min.js"></script>
+   <script src="/scripts/trumbowyg/dist/plugins/pasteembed/trumbowyg.pasteembed.min.js"></script>
+   <script src="/scripts/trumbowyg/dist/plugins/pasteimage/trumbowyg.pasteimage.min.js"></script>
    <script src="/js/editor.js" type="text/javascript"></script>
 
    {{#if notes_is_empty_string}}
@@ -280,10 +284,12 @@
    <script src="/js/main.js" type="text/javascript"></script>
    }}
 
+
    {{! For PROD }}
    <script src="/dist/js/main.min.js" type="text/javascript"></script>
 
-   {{! Socket Io}}
+
+   {{! Socket IO}}
    {{!if chat}}
    {{!<script src="/socket.io/socket.io.js"></script>
 
