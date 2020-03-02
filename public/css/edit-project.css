@@ -309,11 +309,11 @@
 }
 
 .project_title_input {
-   border: none;
+   border: none!important;
    text-indent: 0;
    outline: none;
-   padding: 0;
-   font-size: 35px;
+   padding: 0!important;
+   font-size: 35px!important;
 }
 
 .chosen-choices {
