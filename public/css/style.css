@@ -14,7 +14,7 @@ body {
    -webkit-font-smoothing: antialiased;
 }
 
-a, p, input, span, div {
+a, p, input, span, div, textarea {
    font-family: 'proxima-nova', sans-serif;
    letter-spacing: 0.5px;
    font-size: 16px;
