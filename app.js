@@ -93,11 +93,23 @@ app.use(function (req, res, next) {
 // Redirect http to https
 app.use(function (req, res, next) {
 
-   // Set to production
-   var env = process.env.NODE_ENV || 'production';
+   var url_host = req.get('Host');
 
-   if (req.headers['x-forwarded-proto'] !== 'https') {
-      return res.redirect(['https://www.', req.get('Host'), req.url].join(''));
+   if (url_host === 'localhost:5000' || url_host === '127.0.0.1:5000') {
+
+      // Set to development
+      var env = process.env.NODE_ENV || 'development';
+      console.log('In development mode');
+
+   } else {
+
+      // Set to production
+      var env = process.env.NODE_ENV || 'production';
+
+      if (req.headers['x-forwarded-proto'] !== 'https') {
+         return res.redirect(['https://www.', req.get('Host'), req.url].join(''));
+      }
+
    }
 
    next();

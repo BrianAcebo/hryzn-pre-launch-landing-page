@@ -475,6 +475,12 @@ router.post('/settings', upload.array('images[]', 2), (req, res, next) => {
       var oldUsername = req.user.username;
       var email = req.body.email;
       var oldEmail = req.user.email;
+      var bio = req.body.bio.replace(/\r\n/g,'');;
+      var website_link = req.body.website_link;
+      var youtube_link = req.body.youtube_link;
+      var twitter_link = req.body.twitter_link;
+      var instagram_link = req.body.instagram_link;
+      var facebook_link = req.body.facebook_link;
       var id = req.body.id;
       var user = req.body.user;
 
@@ -497,6 +503,7 @@ router.post('/settings', upload.array('images[]', 2), (req, res, next) => {
       // Form Validation
       // req.checkBody('username', 'Please Enter A Username').notEmpty();
       // req.checkBody('username', 'Username Must Be Between 5-50 Characters').isLength({ min: 5, max:50 });
+      req.checkBody('bio', 'Bio Is Too Long.').isLength({ min: 0, max: 200 });
       req.checkBody('email', 'Please Enter An Email Address').notEmpty();
       req.checkBody('email', 'Please Enter A Valid Email Address').isEmail();
 
@@ -612,7 +619,9 @@ router.post('/settings', upload.array('images[]', 2), (req, res, next) => {
             if(err) throw err;
             if(!user || user.email === oldEmail) {
 
-               if(req.files) {
+               if(req.body.images) {
+
+                  console.log('files');
 
                   var img_indices = req.body.img_indices;
 
@@ -669,6 +678,12 @@ router.post('/settings', upload.array('images[]', 2), (req, res, next) => {
                               firstname: firstname,
                               lastname: lastname,
                               email: email,
+                              bio: bio,
+                              website: website_link,
+                              youtube: youtube_link,
+                              twitter: twitter_link,
+                              instagram: instagram_link,
+                              facebook: facebook_link,
                               profileimage: good_files[0],
                               backgroundimage: good_files[1]
                            }, (err, user) => {
@@ -683,6 +698,12 @@ router.post('/settings', upload.array('images[]', 2), (req, res, next) => {
                               firstname: firstname,
                               lastname: lastname,
                               email: email,
+                              bio: bio,
+                              website: website_link,
+                              youtube: youtube_link,
+                              twitter: twitter_link,
+                              instagram: instagram_link,
+                              facebook: facebook_link,
                               profileimage: good_files[0]
                            }, (err, user) => {
                               if (err) throw err;
@@ -696,6 +717,12 @@ router.post('/settings', upload.array('images[]', 2), (req, res, next) => {
                               firstname: firstname,
                               lastname: lastname,
                               email: email,
+                              bio: bio,
+                              website: website_link,
+                              youtube: youtube_link,
+                              twitter: twitter_link,
+                              instagram: instagram_link,
+                              facebook: facebook_link,
                               backgroundimage: good_files[0]
                            }, (err, user) => {
                               if (err) throw err;
@@ -712,7 +739,13 @@ router.post('/settings', upload.array('images[]', 2), (req, res, next) => {
                   User.findByIdAndUpdate(id, {
                      firstname: firstname,
                      lastname: lastname,
-                     email: email
+                     email: email,
+                     bio: bio,
+                     website: website_link,
+                     youtube: youtube_link,
+                     twitter: twitter_link,
+                     instagram: instagram_link,
+                     facebook: facebook_link
                   }, (err, user) => {
                      if (err) throw err;
                   });
@@ -729,6 +762,12 @@ router.post('/settings', upload.array('images[]', 2), (req, res, next) => {
                      error_msg: 'Sorry That Email Address Is Taken',
                      firstname: firstname,
                      lastname: lastname,
+                     bio: bio,
+                     website: website_link,
+                     youtube: youtube_link,
+                     twitter: twitter_link,
+                     instagram: instagram_link,
+                     facebook: facebook_link,
                      email: email,
                      page_title: 'Settings',
                      user: user

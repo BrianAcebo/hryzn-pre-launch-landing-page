@@ -20,6 +20,17 @@
          <label for="backgroundimage" class="form__label">Change your profile background</label>
          <input id="backgroundImage" class="form__input" type="file" name="images[]" value="{{user.backgroundimage}}" />
 
+
+         <label for="bio" class="form__label">Enter a bio</label>
+         <textarea name="bio" value="{{user.bio}}" class="form__input profile_bio">{{user.bio}}</textarea>
+
+
+         <input class="form__input" type="text" placeholder="Enter your website link without https://" name="website_link" value="{{user.website}}" autocapitalize="none" />
+         <input class="form__input" type="text" placeholder="Enter your Youtube username" name="youtube_link" value="{{user.youtube}}" autocapitalize="none" />
+         <input class="form__input" type="text" placeholder="Enter your Twitter username" name="twitter_link" value="{{user.twitter}}" autocapitalize="none" />
+         <input class="form__input" type="text" placeholder="Enter your Instagram username" name="instagram_link" value="{{user.instagram}}" autocapitalize="none" />
+         <input class="form__input" type="text" placeholder="Enter your Facebook username" name="facebook_link" value="{{user.facebook}}" autocapitalize="none" />
+
          <input type="hidden" id="img_indices" name="img_indices" value="" />
          <input type="hidden" name="id" value="{{user.id}}">
 

@@ -30,22 +30,24 @@ $(document).ready(function() {
       }
    });
 
-   $('#edit-project__form-btn').click(function() {
-      // Content of editor
-      var contents = $('#editor').trumbowyg('html');
+   $('.edit-project__form-btn').each(function() {
+      $(this).click(function() {
+         // Content of editor
+         var contents = $('#editor').trumbowyg('html');
 
-      // Take away html tags and line breaks
-      var cleanUp = contents.replace(/<(?:.|\n)*?>/gm, '').replace(/(\r\n|\n|\r)/gm,"").replace('&nbsp;','');
+         // Take away html tags and line breaks
+         var cleanUp = contents.replace(/<(?:.|\n)*?>/gm, '').replace(/(\r\n|\n|\r)/gm,"").replace('&nbsp;','');
 
-      // Split apart each word
-      var noSpaces = cleanUp.trim().split(/\s+/);
+         // Split apart each word
+         var noSpaces = cleanUp.trim().split(/\s+/);
 
-      // Count up the words
-      var wordCount = noSpaces.length;
+         // Count up the words
+         var wordCount = noSpaces.length;
 
-      if(wordCount < 1000 ) {
-         $("#projectNotes").val(contents);
-      }
+         if(wordCount < 1000 ) {
+            $("#projectNotes").val(contents);
+         }
+      });
    });
 
    $('#editor').keyup(function() {

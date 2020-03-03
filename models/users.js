@@ -31,6 +31,21 @@ const UserSchema = mongoose.Schema({
    bio: {
       type: String
    },
+   website: {
+      type: String
+   },
+   youtube: {
+      type: String
+   },
+   twitter: {
+      type: String
+   },
+   instagram: {
+      type: String
+   },
+   facebook: {
+      type: String
+   },
    followers: [],
    following: [],
    own_projects: [],
