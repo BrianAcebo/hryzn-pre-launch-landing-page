@@ -434,10 +434,8 @@
 
 .profile_links_container {
    display: flex;
-   justify-content: space-between;
-   align-items: center;
-   flex-direction: row;
-   padding: 50px 25px;
+   flex-direction: column;
+   padding: 50px;
    margin-bottom: 100px;
 }
 
@@ -447,12 +445,12 @@
 }
 
 .profile_bio_container .profile_about {
-   font-size: 22px;
+   font-size: 20px;
    font-weight: bold;
 }
 
 .profile_bio_container .profile_bio {
-   font-size: 20px;
+   font-size: 18px;
 }
 
 .profile_social_container {
