@@ -95,34 +95,6 @@
 
    </div>
 
-   <div class="profile_links_container">
-      <div class="profile_bio_container">
-         {{#if profile.bio}}
-         <p class="profile_bio">
-            {{profile.bio}}
-         </p>
-         {{/if}}
-      </div>
-
-      <div class="profile_social_container">
-         {{#if profile.website}}
-         <a target="_blank" href="https://{{profile.website}}"><i class="fa fa-desktop"></i></a>
-         {{/if}}
-         {{#if profile.youtube}}
-         <a target="_blank" href="https://www.youtube.com/channel/{{profile.youtube}}"><i class="fa fa-youtube-play"></i></a>
-         {{/if}}
-         {{#if profile.twitter}}
-         <a target="_blank" href="https://twitter.com/{{profile.twitter}}"><i class="fa fa-twitter"></i></a>
-         {{/if}}
-         {{#if profile.instagram}}
-         <a target="_blank" href="https://www.instagram.com/{{profile.instagram}}"><i class="fa fa-instagram"></i></a>
-         {{/if}}
-         {{#if profile.facebook}}
-         <a target="_blank" href="https://www.facebook.com/{{profile.facebook}}"><i class="fa fa-facebook"></i></a>
-         {{/if}}
-      </div>
-   </div>
-
    <div class="masonryContainer {{#if viewing_own_profile}}ownProfile{{/if}}">
 
       {{#if projects}}
@@ -209,12 +181,52 @@
 
 {{! Settings Side Nav}}
 <div id="profileSideNav" class="profile__sidenav">
-  <a href="javascript:void(0)" id="settingsClose">&times;</a>
-  <h3 class="settings__header">Settings</h3>
-  <hr class="settings__underline" />
-  {{!<a href="/c/create-collection">Create Collection</a>}}
-  <a href="/settings">Edit Profile</a>
-  <a href="/logout">Logout</a>
+   <div class="profile_links_container">
+      <div class="profile_bio_container">
+         {{#if profile.bio}}
+         <p class="profile_bio">
+            {{profile.bio}}
+         </p>
+         {{/if}}
+      </div>
+
+      <div class="profile_social_container">
+         {{#if profile.website}}
+         <a target="_blank" href="https://{{profile.website}}"><i class="fa fa-desktop"></i></a>
+         {{/if}}
+         {{#if profile.youtube}}
+         <a target="_blank" href="https://www.youtube.com/channel/{{profile.youtube}}"><i class="fa fa-youtube-play"></i></a>
+         {{/if}}
+         {{#if profile.twitter}}
+         <a target="_blank" href="https://twitter.com/{{profile.twitter}}"><i class="fa fa-twitter"></i></a>
+         {{/if}}
+         {{#if profile.instagram}}
+         <a target="_blank" href="https://www.instagram.com/{{profile.instagram}}"><i class="fa fa-instagram"></i></a>
+         {{/if}}
+         {{#if profile.facebook}}
+         <a target="_blank" href="https://www.facebook.com/{{profile.facebook}}"><i class="fa fa-facebook"></i></a>
+         {{/if}}
+      </div>
+   </div>
+
+   {{#if viewing own profile}}
+   <a href="javascript:void(0)" id="settingsClose">&times;</a>
+   <h3 class="settings__header">Settings</h3>
+   <hr class="settings__underline" />
+   {{!<a href="/c/create-collection">Create Collection</a>}}
+   <a href="/settings">Edit Profile</a>
+   <a href="/logout">Logout</a>
+
+   <hr />
+
+   <a href="/">About</a>
+   <a href="/about/press">Press</a>
+   <a href="/about/contact">Contact</a>
+   <a href="https://www.thehryznblog.com/" target="_blank">Learn</a>
+   <a href="/about/terms">Terms Of Service</a>
+   <a href="/about/privacy">Privacy Policy</a>
+   {{! Not Ready Yet <a href="/about/copyright">Copyright</a> }}
+   {{/if}}
 </div>
 
 {{/if}}

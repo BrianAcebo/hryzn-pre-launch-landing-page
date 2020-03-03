@@ -444,12 +444,11 @@
 
 .profile_bio_container {
    max-width: 750px;
+   margin-bottom: 50px;
 }
 
 .profile_bio_container .profile_bio {
-   font-size: 22px;
-   font-weight: bold;
-   background: linear-gradient(180deg,rgba(255,255,255,0) 70%,#DADCEB 70%);
+   font-size: 20px;
    display: inline;
 }
 
@@ -468,10 +467,5 @@
 @media screen and (max-width: 768px) {
    .profile_links_container {
       flex-direction: column;
-   }
-
-   .profile_bio_container {
-      text-align: center;
-      margin-bottom: 50px;
    }
 }
