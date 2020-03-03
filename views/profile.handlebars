@@ -179,9 +179,22 @@
 
 {{! Settings Side Nav}}
 <div id="profileSideNav" class="profile__sidenav">
+   {{#if viewing_own_profile}}
+   <a href="javascript:void(0)" id="settingsClose">&times;</a>
+   <h3 class="settings__header">Settings</h3>
+   <hr class="settings__underline" />
+   {{!<a href="/c/create-collection">Create Collection</a>}}
+   <a href="/settings">Edit Profile</a>
+   <a href="/about/contact">Contact</a>
+   <a href="/logout">Logout</a>
+   {{/if}}
+
    <div class="profile_links_container">
       <div class="profile_bio_container">
          {{#if profile.bio}}
+         <p class="profile_about">
+            About
+         </p>
          <p class="profile_bio">
             {{profile.bio}}
          </p>
@@ -206,25 +219,6 @@
          {{/if}}
       </div>
    </div>
-
-   {{#if viewing_own_profile}}
-   <a href="javascript:void(0)" id="settingsClose">&times;</a>
-   <h3 class="settings__header">Settings</h3>
-   <hr class="settings__underline" />
-   {{!<a href="/c/create-collection">Create Collection</a>}}
-   <a href="/settings">Edit Profile</a>
-   <a href="/logout">Logout</a>
-
-   <hr />
-
-   <a href="/">About</a>
-   <a href="/about/press">Press</a>
-   <a href="/about/contact">Contact</a>
-   <a href="https://www.thehryznblog.com/" target="_blank">Learn</a>
-   <a href="/about/terms">Terms Of Service</a>
-   <a href="/about/privacy">Privacy Policy</a>
-   {{! Not Ready Yet <a href="/about/copyright">Copyright</a> }}
-   {{/if}}
 </div>
 
 {{/if}}

@@ -208,6 +208,8 @@
          {{{body}}}
       </main>
 
+      {{#if user}}
+      {{else}}
       <footer class="footer__container">
          <a href="/">About</a>
          <a href="/about/press">Press</a>
@@ -217,6 +219,7 @@
          <a href="/about/privacy">Privacy Policy</a>
          {{! Not Ready Yet <a href="/about/copyright">Copyright</a> }}
       </footer>
+      {{/if}}
 
    </body>
 
