@@ -788,7 +788,7 @@ router.get('/delete/:id', (req, res, next) => {
       User.findById(req.params.id, (err, user) => {
          if(err) throw err;
 
-         if(user.projects.length > 0) {
+         if(user.projects) {
 
             var info = [];
 
