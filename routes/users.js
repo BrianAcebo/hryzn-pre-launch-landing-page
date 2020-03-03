@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const path = require('path');
+const nodemailer = require('nodemailer');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const multer = require('multer');
@@ -8,6 +9,8 @@ const keys = require('../config/keys');
 const aws = require('aws-sdk');
 const multerS3 = require('multer-s3');
 const dateNow = Date.now().toString();
+
+var thanks_email = path.join(__dirname, '../public', 'email/register.html');
 
 aws.config.update({
    secretAccessKey: keys.secretAccessKey,
@@ -123,8 +126,31 @@ router.post('/register', upload.single('profileimage'), (req, res, next) => {
                            if(err) throw err;
                         });
 
-                        req.flash('success_msg', "Account Created. Please Log In");
-                        res.redirect('/users/login');
+                        // Gmail Credentials
+                        var transporter = nodemailer.createTransport({
+                           service: 'Gmail',
+                           auth: {
+                              user: 'hello@myhryzn.com',
+                              pass: '+ar+oo-55'
+                           }
+                        });
+
+                        // Mail Body
+                        var mailOptions = {
+                           from: '"Hryzn" <hello@myhryzn.com>',
+                           to: email,
+                           subject: 'Hello From Hryzn!',
+                           text: 'Hi ' + firstname + ', we want to say thank you for signing up and welcome to our community! Hryzn is a social network so you can connect and collaborate with your friends, show off your content to followers, or simply just write privately. Hryzn can also help you rank higher in search engines, showcase expertise in your field, and promote your brand\'s awareness.',
+                           html: { path: thanks_email }
+                        }
+
+                        transporter.sendMail(mailOptions, (error, info) => {
+                           if(!error) {
+                              req.flash('success_msg', "Account Created. Please Log In");
+                              res.redirect('/users/login');
+                           }
+                        });
+
                      }
                   } else {
 
@@ -139,6 +165,31 @@ router.post('/register', upload.single('profileimage'), (req, res, next) => {
                      // Create user in database
                      User.saveUser(newUser, (err, user) => {
                         if(err) throw err;
+                     });
+
+                     // Gmail Credentials
+                     var transporter = nodemailer.createTransport({
+                        service: 'Gmail',
+                        auth: {
+                           user: 'hello@myhryzn.com',
+                           pass: '+ar+oo-55'
+                        }
+                     });
+
+                     // Mail Body
+                     var mailOptions = {
+                        from: '"Hryzn" <hello@myhryzn.com>',
+                        to: email,
+                        subject: 'Hello From Hryzn!',
+                        text: 'Hi ' + firstname + ', we want to say thank you for signing up and welcome to our community! Hryzn is a social network so you can connect and collaborate with your friends, show off your content to followers, or simply just write privately. Hryzn can also help you rank higher in search engines, showcase expertise in your field, and promote your brand\'s awareness.',
+                        html: { path: thanks_email }
+                     }
+
+                     transporter.sendMail(mailOptions, (error, info) => {
+                        if(!error) {
+                           req.flash('success_msg', "Account Created. Please Log In");
+                           res.redirect('/users/login');
+                        }
                      });
 
                      req.flash('success_msg', "Account Created. Please Log In");
