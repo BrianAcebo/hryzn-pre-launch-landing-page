@@ -138,6 +138,35 @@ $(document).ready(function() {
    /**********/
 
 
+   // Modal pop up for invite only
+   var $modalInvite = $(".inviteModal");
+   var $noInviteScroll = $("div").hasClass("inviteScroll");
+   var $inviteScroll = $(".inviteScroll");
+   var $inviteBtn = $("#inviteBtn");
+
+   if($noInviteScroll) {
+
+      $modalInvite.css({ "display": "block" });
+      $body.css({ "overflow": "hidden" });
+      $inviteScroll.css({ "filter": " blur(10px)" });
+
+      $inviteBtn.click(function() {
+         var $inviteCode = $('#inviteInput').val();
+         if ($inviteCode === 'deathB4DECAF') {
+            $modalInvite.css({ "display": "none" });
+            $body.css({ "overflow": "visible" });
+            $inviteScroll.css({ "filter": "none" });
+            $("#scroll").removeClass("inviteScroll");
+            $('.form-container-2').append('<form method="post" action="/users/register" enctype="multipart/form-data"><div class="container"><div class="row"><div class="col-lg-6"><input class="form__input" type="text" placeholder="First name" name="firstname" value="" /></div><div class="col-lg-6"><input class="form__input" type="text" placeholder="Last name" name="lastname" value="" /></div></div><input class="form__input" type="text" placeholder="Enter username" name="username" value="" required autocapitalize="none" /><input class="form__input" type="email" placeholder="Enter email address" name="email" value="" required autocapitalize="none" /><input class="form__input" type="password" placeholder="Enter password" name="password" value="" required autocapitalize="none" /><input class="form__input" type="password" placeholder="Confirm password" name="password2" value="" required autocapitalize="none" /><label for="profileimage" class="form__label">Select your profile image</label><input class="form__input" type="file" name="profileimage" value="" /><button class="form__sign-up-button" name="submit" type="submit">Sign Up</button></div></form><div class="form__href-container"><a class ="form__href" href="/users/login">Have an account? Login</a></div>');
+         } else {
+            $(".wrongInviteCode").html("Sorry, wrong code.");
+         }
+      });
+
+   }
+   /**********/
+
+
    // Add hidden input for search admin invite
    var addInput = $('.add-input').children();
    $('.addInput').append(addInput);

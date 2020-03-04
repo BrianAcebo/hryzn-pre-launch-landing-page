@@ -87,7 +87,10 @@ router.post('/register', upload.single('profileimage'), (req, res, next) => {
          lastname: lastname,
          username: username,
          email: email,
-         password: password
+         password: password,
+         inviteAllowed: true,
+         page_title: 'Register Your Account',
+         notLoginPage: false
       });
    } else {
       User.getUserByUsername(username, (err, user) => {
@@ -106,7 +109,11 @@ router.post('/register', upload.single('profileimage'), (req, res, next) => {
                            firstname: firstname,
                            lastname: lastname,
                            username: username,
-                           email: email
+                           password: password,
+                           email: email,
+                           inviteAllowed: true,
+                           page_title: 'Register Your Account',
+                           notLoginPage: false
                         });
                      } else {
                         var fileExt = req.file.originalname.split('.').pop();
@@ -126,6 +133,7 @@ router.post('/register', upload.single('profileimage'), (req, res, next) => {
                            if(err) throw err;
                         });
 
+                        // Thank you email //
                         // Gmail Credentials
                         var transporter = nodemailer.createTransport({
                            service: 'Gmail',
@@ -167,6 +175,7 @@ router.post('/register', upload.single('profileimage'), (req, res, next) => {
                         if(err) throw err;
                      });
 
+                     // Thank you email //
                      // Gmail Credentials
                      var transporter = nodemailer.createTransport({
                         service: 'Gmail',
@@ -202,7 +211,11 @@ router.post('/register', upload.single('profileimage'), (req, res, next) => {
                      error_msg: 'Sorry That Email Address Is Taken',
                      firstname: firstname,
                      lastname: lastname,
-                     username: username
+                     username: username,
+                     password: password,
+                     inviteAllowed: true,
+                     page_title: 'Register Your Account',
+                     notLoginPage: false
                   });
                }
             });
@@ -212,7 +225,11 @@ router.post('/register', upload.single('profileimage'), (req, res, next) => {
                error_msg: 'Sorry That Username Is Taken',
                firstname: firstname,
                lastname: lastname,
-               email: email
+               email: email,
+               password: password,
+               inviteAllowed: true,
+               page_title: 'Register Your Account',
+               notLoginPage: false
             });
          }
       });
