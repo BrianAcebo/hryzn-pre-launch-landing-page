@@ -39,6 +39,7 @@ router.get('/welcome', (req, res, next) => {
       Project.find({}, (err, projects) => {
          if (err) throw err;
          res.render('welcome', {
+           page_title: 'Create, explore, and share your ideas on a powerful social writing platform.',
            notLoginPage: false,
            projects: projects,
            welcomePage: true
