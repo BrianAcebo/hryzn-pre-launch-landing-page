@@ -39,7 +39,6 @@ router.get('/welcome', (req, res, next) => {
       Project.find({}, (err, projects) => {
          if (err) throw err;
          res.render('welcome', {
-           page_title: 'Welcome to Hryzn',
            notLoginPage: false,
            projects: projects,
            welcomePage: true
