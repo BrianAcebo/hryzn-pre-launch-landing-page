@@ -467,6 +467,12 @@ section.project {
    margin-top: 25px;
 }
 
+.project_url {
+   display: block;
+   text-decoration: underline!important;
+   margin-top: 25px;
+}
+
 @media screen and (max-width: 768px) {
    section.project {
       padding: 50px;

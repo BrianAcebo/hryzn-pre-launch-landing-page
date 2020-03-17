@@ -56,6 +56,10 @@
          {{! Project Title }}
          <h1 class="project_title">{{project.project_title}}</h1>
 
+         {{#if project.project_url}}
+         <a target="_blank" class="project_url" href="https://{{project.project_url}}">{{project.project_url}}</a>
+         {{/if}}
+
          <div class="project_title_container">
 
             {{! Project Admins }}

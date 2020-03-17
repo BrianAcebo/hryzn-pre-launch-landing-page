@@ -43,6 +43,9 @@ const ProjectSchema = mongoose.Schema({
    project_notes: {
       type: String
    },
+   project_url: {
+      type: String
+   },
    categories: []
 });
 

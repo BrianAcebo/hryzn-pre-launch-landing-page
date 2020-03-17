@@ -99,6 +99,11 @@
    </select>
 
 
+   {{! Project URL }}
+   <label for="project_url" class="form__label" style="margin-top: 25px;">Add a link</label>
+   <input class="form__input" type="text" placeholder="Enter a link" name="project_url" value="{{project.project_url}}" />
+
+
    {{! Project Description }}
    <label for="project_description" class="form__label" style="margin-top: 25px;">Write a Description</label>
    <textarea class="project-description__input" type="text" name="project_description" value="{{project.project_description}}">{{project.project_description}}</textarea>

@@ -500,6 +500,15 @@ router.post('/settings', upload.array('images[]', 2), (req, res, next) => {
          req.checkBody('lastname', 'Last Name Is Too Long').isLength({ min: 0, max:50 });
       }
 
+      // See if website_link has https://
+      var has_https = website_link.search("https://");
+      if(has_https > -1) {
+
+         var url_without_https = website_link.split("https://")[1];
+         website_link = url_without_https;
+
+      }
+
       // Form Validation
       // req.checkBody('username', 'Please Enter A Username').notEmpty();
       // req.checkBody('username', 'Username Must Be Between 5-50 Characters').isLength({ min: 5, max:50 });

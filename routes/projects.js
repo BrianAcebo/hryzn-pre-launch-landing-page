@@ -56,6 +56,16 @@ router.post('/create-project', upload.single('project_image'), (req, res, next) 
       var id = req.body.id;
       var user = req.body.user;
       var project_notes = req.body.project_notes.replace(/\r\n/g,'');
+      var project_url = req.body.project_url;
+
+      // See if project_url has https://
+      var has_https = project_url.search("https://");
+      if(has_https > -1) {
+
+         var url_without_https = project_url.split("https://")[1];
+         project_url = url_without_https;
+
+      }
 
       // Embed video
       var project_video = '';
@@ -157,6 +167,7 @@ router.post('/create-project', upload.single('project_image'), (req, res, next) 
                      project_notes: project_notes,
                      is_private: is_private,
                      project_video: project_video,
+                     project_url: project_url,
                      categories: project_categories,
                      project_notes: project_notes,
                      user: user
@@ -184,6 +195,7 @@ router.post('/create-project', upload.single('project_image'), (req, res, next) 
                   is_private: is_private,
                   project_image: project_image,
                   project_video: project_video,
+                  project_url: project_url,
                   admins: admin,
                   categories: project_categories,
                   project_owner: admin,
@@ -221,6 +233,7 @@ router.post('/create-project', upload.single('project_image'), (req, res, next) 
                   project_notes: project_notes,
                   is_private: is_private,
                   project_video: project_video,
+                  project_url: project_url,
                   categories: project_categories,
                   project_notes: project_notes,
                   user: user
@@ -287,6 +300,16 @@ router.post('/details/edit/:id', upload.single('project_image'), (req, res, next
       var user_id = req.body.id;
       var user = req.body.user;
       var project_notes = req.body.project_notes.replace(/\r\n/g,'');
+      var project_url = req.body.project_url;
+
+      // See if project_url has https://
+      var has_https = project_url.search("https://");
+      if(has_https > -1) {
+
+         var url_without_https = project_url.split("https://")[1];
+         project_url = url_without_https;
+
+      }
 
       // Embed video
       var project_video = '';
@@ -408,6 +431,7 @@ router.post('/details/edit/:id', upload.single('project_image'), (req, res, next
                      project_description: project_description,
                      project_image: project_image,
                      project_video: project_video,
+                     project_url: project_url,
                      categories: project_categories,
                      is_private: is_private,
                      project_notes: project_notes
@@ -439,6 +463,7 @@ router.post('/details/edit/:id', upload.single('project_image'), (req, res, next
                   project_description: project_description,
                   is_private: is_private,
                   project_video: project_video,
+                  project_url: project_url,
                   categories: project_categories,
                   project_notes: project_notes
                }, (err, user) => {
