@@ -55,8 +55,12 @@
 }
 
 @media screen and (max-width: 768px) {
-   .topnav__logo {
+   .topnav__logo.user_beta {
       flex-direction: column;
+   }
+
+   .topnav__logo.user_beta .logo_beta {
+      margin-left: 0;
    }
 }
 
