@@ -47,6 +47,19 @@
    background: transparent!important;
 }
 
+.logo_beta {
+   margin-left: 10px;
+   font-size: 16px;
+   font-weight: 300;
+   text-transform: lowercase;
+}
+
+@media screen and (max-width: 768px) {
+   .topnav__logo {
+      flex-direction: column;
+   }
+}
+
 .topnav .search-container {
    float: left;
    width: 100%;
