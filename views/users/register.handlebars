@@ -1,5 +1,3 @@
-<div {{#if inviteAllowed}}{{else}}id="scroll" class="inviteScroll"{{/if}}>
-
 <div class="landing-main__container">
    {{#if error_msg}}
    <div class="error__msg-2">
@@ -61,33 +59,5 @@
          </a>
       </div>
       {{/if}}
-   </div>
-</div>
-
-</div>
-
-{{! Enter invite code }}
-<div class="inviteModal modalBackground">
-   <div class="modal-content">
-
-      <div class="form-container-2">
-         <div class="modal-header">
-            <a href="/" class="topnav__logo">HRYZN Is invite only</a>
-         </div>
-
-         <div class="container">
-           <input id="inviteInput" class="form__input" type="text" style="text-align: center!important;" placeholder="Please enter the invite code to sign up" name="invite" required autocapitalize="none" />
-           <button id="inviteBtn" class="form__sign-up-button" name="submit" type="submit">Enter</button>
-        </div>
-
-         <div class="form__href-container">
-            <p class="wrongInviteCode"></p>
-            <a class ="form__href" style="text-decoration: underline!important;" href="/about/contact">
-               Questions and Concerns?
-            </a>
-         </div>
-
-      </div>
-
    </div>
 </div>
