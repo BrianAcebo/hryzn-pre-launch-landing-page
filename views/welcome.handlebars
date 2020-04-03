@@ -1,36 +1,97 @@
-<div class="loader_overlay">
-   <div class="loader_wrapper">
-      <div class="loader"></div>
-      <p class="loader_text loader_text-1"><strong>Our robots are looking for the cool stuff.</strong></p>
-      <p class="loader_text loader_text-2"><strong>Retrieving files... Accessing data... Planning world domination.</strong></p>
-      <p class="loader_text loader_text-3"><strong>Soon the computers will just take over.</strong></p>
-      <p class="loader_text loader_text-4"><strong>The things are doing the stuff.</strong></p>
-      <p class="loader_text loader_text-5"><strong>Your hair looks pretty.</strong></p>
-   </div>
-</div>
+<!-- Hero Home Section -->
+<section id="home" class="s-home target-section" style="background-image: url('/img/welcome/hero-img-cliff.jpg');">
 
-<div class="welcome_hero_container">
-   <div class="welcome_hero_wrapper">
-      <div class="welcome_hero_left">
-         <div class="hero-text">
-           <h1 class="landing-title">Your writing's worth sharing.</h1>
-           <p class="landing-sub">Create, explore, and share your ideas on a powerful social writing platform.</p>
-           <a href="/users/register"><div class="hero_sign_up">Join Today</div></a>
+   <div class="s-hero_overlay"></div>
+   <div class="shadow-overlay"></div>
+
+   <div class="home-content">
+
+      <div class="row home-content__main">
+         <h3>Find your voice.</h3>
+         <h1>Create, explore, and share your ideas on a powerful social writing platform.</h1>
+
+         <div class="home-content__buttons">
+            <a href="/users/register" class="welcome_primary btn btn--stroke">Sign Up</a>
+            <a href="https://player.vimeo.com/video/14592941?color=00a650&title=0&byline=0&portrait=0" data-lity class="btn btn--stroke">Watch Video</a>
          </div>
       </div>
 
-      <div class="welcome_hero_right">
-         <img src="/img/welcome/landing-hero.jpg" class="landing_hero_01" />
+      <div class="home-content__scroll">
+         <a href="#about" class="scroll-link smoothscroll"><span>Scroll Down</span></a>
+      </div>
+      <div class="home-content__line"></div>
+
+   </div>
+   <!-- /Home Content -->
+
+   <ul class="home-social">
+      <li>
+         <a href="https://twitter.com/myHryzn" target="_blank">
+            <i class="fa fa-twitter"></i>
+            <span>Twitter</span>
+         </a>
+      </li>
+      <li>
+         <a href="https://www.instagram.com/myHryzn/" target="_blank">
+            <i class="fa fa-instagram"></i>
+            <span>Instagram</span>
+         </a>
+      </li>
+      <li>
+         <a href="https://www.youtube.com/channel/UCHxZtvq7nc-cd9e88X9MHOQ" target="_blank">
+            <i class="fa fa-youtube"></i>
+            <span>Youtube</span>
+         </a>
+      </li>
+   </ul>
+   <!-- /Home Social -->
+
+</section>
+<!-- /Hero Home -->
+
+
+<!-- About Section -->
+<section id='about' class="s-about">
+
+   <div class="row section-header has-bottom-sep" data-aos="fade-up">
+      <div class="col-full">
+         <h3 class="subhead subhead--dark">Explore The World</h3>
+         <h1 class="display-1 display-1--light">Discover New Ideas</h1>
       </div>
    </div>
-</div>
+
+   <div class="row about-desc" data-aos="fade-up">
+      <div class="col-full">
+         <p>
+            Hryzn is a social network built around blog content where people can explore, create, and share different topics and ideas.
+            Anyone from bloggers to everyday people can promote their content, connect with friends, or discover a new world of creativity.
+         </p>
+      </div>
+   </div>
+
+   <div class="about__line"></div>
+
+</section>
+<!-- /About Section -->
 
 
+<!-- Top Picks-->
+<section id='works' class="s-works">
 
-<div class="landing-main__container">
-   <h3 class="landing-title-secondary">Our Top Picks</h3>
+   <div class="intro-wrap">
 
-   {{#if projects}}
+   <div class="row section-header has-bottom-sep light-sep" data-aos="fade-up">
+      <div class="col-full">
+         <h3 class="subhead">Our Top Picks</h3>
+         <h1 class="display-2">Our latest works</h1>
+      </div>
+   </div>
+
+   </div>
+
+    <div class="top_picks_container" data-aos="fade-up">
+
+      {{#if projects}}
       <div class="masonryContainer">
          {{#each projects}}
             {{#if is_private}}
@@ -46,52 +107,151 @@
             {{/if}}
          {{/each}}
       </div>
-   {{else}}
-   {{! Something went wrong}}
-   <p class="error-message">
-      Sorry, we couldn't find any projects.
-   </p>
-   {{/if}}
+      {{else}}
+      {{! Something went wrong}}
+      <p class="error-message">
+         Sorry, we couldn't find any projects.
+      </p>
+      {{/if}}
+   </div>
 
-   <div class="bg-square-01">
-      <div class="bg-square__wrapper">
-         <h3>For the creative</h3>
-         <p>
-            Create content for an audience in a multitude of topics, or create private content just for you to see.
-            We love being creative and we live to inspire creativity.
-         </p>
-      </div>
-      <div class="bg-square__wrapper">
-         <img src="/img/welcome/landing-section-01.jpg" />
+</section>
+<!-- /Top Picks -->
+
+
+<!-- Features Section -->
+<section id='features' class="s-services">
+
+   <div class="row section-header has-bottom-sep" data-aos="fade-up">
+      <div class="col-full">
+         <h3 class="subhead">What We Do</h3>
+         <h1 class="display-2">Find what captivates you</h1>
       </div>
    </div>
 
-   <div class="bg-square-02">
-      <div class="bg-square__wrapper">
-         <img src="/img/welcome/landing-section-02.jpg" />
+   <div class="row services-list block-1-2 block-tab-full">
+
+      <div class="col-block service-item" data-aos="fade-up">
+         <div class="service-text">
+            <p>Discover a world where people can share their thoughts about what interests them.</p>
+         </div>
       </div>
-      <div class="bg-square__wrapper">
-         <h3>To Explore</h3>
-         <p>
-            Explore through various topics, interests, and ideas to experience. Search and browse to enjoy or simply save it to your profile.
-         </p>
+
+      <div class="col-block service-item" data-aos="fade-up">
+         <div class="service-text">
+            <p>Find new recipes to try, workout routines to crush, even travel guides for your next trip.</p>
+         </div>
+      </div>
+
+      <div class="col-block service-item" data-aos="fade-up">
+         <div class="service-text">
+            <p>Experience the endless possibilities and subscribe to the people you enjoy the most.</p>
+         </div>
+      </div>
+
+      <div class="col-block service-item" data-aos="fade-up">
+         <div class="service-text">
+            <p>If you find something you like, simply save it to your profile or share it with a friend.</p>
+         </div>
+      </div>
+
+      <div class="col-block service-item" data-aos="fade-up">
+         <div class="service-text">
+            <p>Like, comment, and socialize on this social blogging network.</p>
+         </div>
+      </div>
+
+   </div>
+
+</section>
+<!-- /Features Section -->
+
+
+<!-- Learn Section -->
+<section id="clients" class="s-clients">
+
+<div class="row section-header" data-aos="fade-up">
+<div class="col-full">
+<h3 class="subhead">Join Today</h3>
+<h1 class="display-2">Join a creative world of content, topics, and ideas.</h1>
+<a href="/users/register"><div class="hero_sign_up" style="margin:0 auto;">Sign Up</div></a>
+</div>
+</div>
+
+</section>
+<!-- /Learn Section -->
+
+
+<!-- Contact Section -->
+<section id="contact" class="s-contact">
+
+   <div class="s-hero_overlay"></div>
+   <div class="contact__line"></div>
+
+   <div class="row section-header" data-aos="fade-up">
+      <div class="col-full">
+         <h3 class="subhead subhead--dark">Contact Us</h3>
+         <h1 class="display-2 display-2--light">We like conversation</h1>
       </div>
    </div>
 
-   <div class="bg-square-03">
-      <div class="bg-square__wrapper">
-         <h3>Connect &amp; Socialize</h3>
-         <p>
-            Connect and collaborate with your friends, or show off your content to followers.
-            Share content with your friends &amp; family, and personalize your profile to match your unique style.
+   <div class="row contact-content" data-aos="fade-up">
+
+      <div class="contact-primary">
+
+         <h3 class="h6">Send Us A Message</h3>
+
+         {{#if form_submitted}}
+         <h3 class="landing-title-faded">Thank you for your feedback. <a href="/">Click here to go back.</a></h3>
+         {{else}}
+
+         <form name="contactForm" id="contactForm" method="post" action="/about/contact">
+         <fieldset>
+            <div class="form-field">
+               <input name="contact_name" type="text" id="contactName" placeholder="Your Name" value="{{contact_name}}" minlength="2" required="" aria-required="true" class="full-width">
+            </div>
+            <div class="form-field">
+               <input name="contact_email" type="email" id="contactEmail" placeholder="Your Email" value="{{contact_email}}" required="" aria-required="true" class="full-width">
+            </div>
+            <div class="form-field">
+               <input name="contact_subject" type="text" id="contactSubject" placeholder="Subject" value="{{contact_subject}}" class="full-width">
+            </div>
+            <div class="form-field">
+               <textarea name="contact_message" id="contactMessage" placeholder="Your Message" rows="10" cols="50" required="" aria-required="true" class="full-width"></textarea>
+            </div>
+
+            <div class="form-field">
+               <button class="full-width btn--primary">Submit</button>
+               <div class="submit-loader">
+                  <div class="text-loader">Sending...</div>
+                  <div class="s-loader">
+                  <div class="bounce1"></div>
+                  <div class="bounce2"></div>
+                  <div class="bounce3"></div>
+                  </div>
+               </div>
+            </div>
+         </fieldset>
+         </form>
+         {{/if}}
+
       </div>
-      <div class="bg-square__wrapper">
-         <img src="/img/welcome/landing-section-03.jpg" />
-      </div>
+
    </div>
 
-   <h3 class="landing-title-secondary join_secondary">Join a creative world of content, topics, and ideas.</h3>
-   <a href="/users/register"><div class="hero_sign_up" style="margin:0 auto;">Sign Up Today</div></a>
+</section>
+<!-- /Contact Section -->
 
 
+<!-- Preloader-->
+<div id="preloader">
+   <div id="loader">
+      <div class="line-scale-pulse-out">
+         <div></div>
+         <div></div>
+         <div></div>
+         <div></div>
+         <div></div>
+      </div>
+   </div>
 </div>

@@ -1,6 +1,5 @@
 /* Main Nav */
 .topnav {
-   overflow: hidden;
    background-color: #fff;
    display: flex;
    align-items: center;
@@ -184,6 +183,58 @@ nav.item-list {
    background: #f1f1f1;
 }
 
+.drop_menu {
+   float: left;
+   overflow: hidden;
+   width: 100%;
+}
+
+.drop_menu .dropBtn {
+   cursor: pointer;
+   font-size: 16px;
+   border: none;
+   outline: none;
+   padding: 14px 16px;
+   background-color: inherit;
+   font-family: inherit;
+   margin: 0;
+}
+
+.drop_nav {
+   display: none;
+   position: absolute;
+   min-width: 160px;
+   border-bottom: 1px solid #f1f1f1;
+   border-right: 1px solid #f1f1f1;
+   border-left: 1px solid #f1f1f1;
+   border-top: none;
+   background: #fff;
+   z-index: 9999999;
+   top: 100px;
+   right: 0;
+}
+
+.drop_nav a {
+   float: none;
+   color: black;
+   padding: 12px 16px;
+   border-bottom: 1px solid #f1f1f1;
+   text-decoration: none;
+   display: block;
+   text-align: left;
+}
+
+.drop_nav a:hover {
+  background: transparent;
+}
+
+.showDrop {
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+   align-items: center;
+}
+
 @media screen and (max-width: 992px) {
    .topnav {
       padding: 25px;
@@ -268,7 +319,7 @@ nav.item-list {
 
 /* Landing Page Nav */
 .landing-nav {
-   background-color: #fff;
+   background-color: transparent;
    position: fixed;
    width: 100%;
    z-index: 99999;
@@ -276,11 +327,12 @@ nav.item-list {
    flex-direction: row;
    height: 100px;
    padding: 0 50px;
+   transition: 0.3s;
 }
 
 .landing-nav__left,
 .landing-nav__right {
-   width: 25%;
+   width: auto;
    display: flex;
    flex-direction: row;
    align-items: center;
@@ -292,6 +344,9 @@ nav.item-list {
 
 .landing-nav__right {
    justify-content: flex-end;
+   position: absolute;
+   right: 0;
+   padding: 35px 50px;
 }
 
 .landing-nav__center {
@@ -309,14 +364,15 @@ nav.item-list {
    overflow: hidden;
    display: flex;
    flex-direction: row;
-   justify-content: center;
+   justify-content: flex-start;
    height: 100%;
    width: 100%;
    align-items: center;
+   transition: 0.3s;
 }
 
 .landing-nav__center ul li {
-   margin: 0 5%;
+   margin: 0 4%;
 }
 
 .landing-nav__center ul li a {
@@ -333,6 +389,38 @@ nav.item-list {
 
 .landing-nav li a:hover {
   color: #707070;
+}
+
+.landing-nav .nav_social {
+   list-style: none;
+   margin: 0;
+}
+
+.landing-nav .nav_social li {
+   display: inline-block;
+   font-size: 20px;
+   padding: 0;
+   margin-right: 10px;
+}
+
+.landing-nav .nav_social li:last-child {
+   margin-right: 0;
+}
+
+.landing-nav .nav_social li a {
+   display: block;
+   line-height: 50px;
+   height: 50px;
+   width: 50px;
+   text-align: center;
+   background-color: #fff;
+   color: #333;
+   border-radius: 50%;
+}
+
+.landing-nav.landing_background {
+   background: #fff;
+   height: 75px;
 }
 
 .auth-login__btn,
@@ -434,18 +522,17 @@ nav.item-list {
       padding: 0 25px;
    }
 
+   .landing-nav .nav_social {
+      display: none;
+   }
+
    .ham__menu {
       display: flex;
    }
 
    .landing-nav__left,
    .landing-nav__right {
-      width: 50%;
-   }
-
-   .landing-nav__right .auth-login__btn,
-   .landing-nav__right .auth-sign__btn {
-      display: none;
+      width: auto;
    }
 
    .overlay-content .auth-login__btn,

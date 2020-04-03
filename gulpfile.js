@@ -27,7 +27,7 @@ gulp.task('clean', function() {
 
 // Gulp Task for Optimizing CSS Loads
 gulp.task('css-main', function() {
-   return gulp.src('./public/css/**/*.css')
+   return gulp.src('./public/css/site/*.css')
    .pipe(autoprefixer({browsers: AUTOPREFIXER_BROWSERS}))
    .pipe(minifyCSS())
    .pipe(gp_concat('style.min.css'))

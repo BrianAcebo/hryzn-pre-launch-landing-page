@@ -18,6 +18,14 @@ $(document).ready(function() {
    });
    /**********/
 
+   // Nav dropdown menu
+   var $dropNav = $('.dropNav');
+   var $dropBtn = $('.dropBtn');
+
+   $dropBtn.click(function() {
+      $dropNav.toggleClass('showDrop')
+   });
+
 
    // Remove loader after 4 seconds
    var $rand_loader = $('.loader_text-' + Math.floor(Math.random() * 6));
@@ -71,6 +79,19 @@ $(document).ready(function() {
    /**********/
 
 
+   // Add white background to landing-nav on scroll
+   $landingNav = $('.landing-nav');
+
+   $window.scroll(function() {
+      if($window.scrollTop() >= 50){
+         $landingNav.addClass('landing_background');
+      } else {
+         $landingNav.removeClass('landing_background');
+      }
+   });
+   /**********/
+
+
    // Modal pop up
    var $modal = $(".popModal");
    var $modalBtn = $(".modalBtn");
@@ -111,7 +132,7 @@ $(document).ready(function() {
       $window.on('scroll touchmove mousewheel', function(e) {
          if($window.innerWidth > 768) {
             // Stop scrolling and ask for sign up on desktops
-            if($window.scrollTop() >= 300) {
+            if($window.scrollTop() >= 1000) {
                $modalSignUp.css({ "display": "block" });
                $body.css({ "overflow": "hidden" });
                $guestScroll.css({ "filter": " blur(10px)" });
@@ -122,7 +143,7 @@ $(document).ready(function() {
       		}
          } else {
             // Stop scrolling and ask for sign up on mobile
-            if($window.scrollTop() >= 500) {
+            if($window.scrollTop() >= 750) {
                $modalSignUp.css({ "display": "block" });
                $body.css({ "overflow": "hidden" });
                $guestScroll.css({ "filter": " blur(10px)" });

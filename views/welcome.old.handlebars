@@ -1,0 +1,115 @@
+<div class="loader_overlay">
+   <div class="loader_wrapper">
+      <div class="loader"></div>
+      <p class="loader_text loader_text-1"><strong>Our robots are looking for the cool stuff.</strong></p>
+      <p class="loader_text loader_text-2"><strong>Retrieving files... Accessing data... Planning world domination.</strong></p>
+      <p class="loader_text loader_text-3"><strong>Soon the computers will just take over.</strong></p>
+      <p class="loader_text loader_text-4"><strong>The things are doing the stuff.</strong></p>
+      <p class="loader_text loader_text-5"><strong>Your hair looks pretty.</strong></p>
+   </div>
+</div>
+
+
+<!-- Hero Img -->
+<section class="welcome_hero_container">
+   <div class="welcome_hero_wrapper">
+      <div class="welcome_hero_left">
+         <div class="hero-text">
+            <h1 class="landing-title">Explore The World.</h1>
+            <p class="landing-sub">Create, explore, and share your ideas on a powerful social writing platform.</p>
+            <div class="btm_hero">
+               <a class="btm_first" href="/users/register"><div class="hero_sign_up">Join Today</div></a>
+               <a class="btn-video" href="https://player.vimeo.com/video/14592941?color=00a650&title=0&byline=0&portrait=0" data-lity>
+                  <p class="watch_video">Watch Video</p>
+                  <span class="video-icon" style="background-image: url('/icons/icon-play.svg');"></span>
+               </a>
+            </div>
+         </div>
+      </div>
+
+      <div class="welcome_hero_right" style="background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)), url('/img/welcome/woman-in-white-with-phone_02.jpg');"></div>
+   </div>
+</section>
+<!-- /Hero Img -->
+
+
+<!-- Content Text -->
+<section class="welcome_content_container">
+   <h3>Explore The World</h3>
+</section>
+<!-- /Content Text -->
+
+
+<div class="landing-main__container">
+
+   <div class="top_picks_container">
+      <h3 class="landing-title-secondary">Our Top Picks</h3>
+
+      {{#if projects}}
+      <div class="masonryContainer">
+         {{#each projects}}
+            {{#if is_private}}
+            {{! Check if the project is a private project, we do not want to show private projects }}
+            {{else}}
+            <div class="masonryItem">
+               <a href="/p/details/{{id}}/guest" class="project_link">
+                  <div class="project_card">
+                     <img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{project_image}}" class="img-responsive" alt="{{project_title}}" />
+                  </div>
+               </a>
+            </div>
+            {{/if}}
+         {{/each}}
+      </div>
+      {{else}}
+      {{! Something went wrong}}
+      <p class="error-message">
+         Sorry, we couldn't find any projects.
+      </p>
+      {{/if}}
+   </div>
+
+   <div class="landing_content_container">
+      <div class="bg-square-01">
+         <div class="bg-square__wrapper">
+            <h3>For the creative</h3>
+            <p>
+               Create content for an audience in a multitude of topics, or create private content just for you to see.
+               We love being creative and we live to inspire creativity.
+            </p>
+         </div>
+         <div class="bg-square__wrapper">
+            <img src="/img/welcome/landing-section-01.jpg" />
+         </div>
+      </div>
+
+      <div class="bg-square-02">
+         <div class="bg-square__wrapper">
+            <img src="/img/welcome/landing-section-02.jpg" />
+         </div>
+         <div class="bg-square__wrapper">
+            <h3>To Explore</h3>
+            <p>
+               Explore through various topics, interests, and ideas to experience. Search and browse to enjoy or simply save it to your profile.
+            </p>
+         </div>
+      </div>
+
+      <div class="bg-square-03">
+         <div class="bg-square__wrapper">
+            <h3>Connect &amp; Socialize</h3>
+            <p>
+               Connect and collaborate with your friends, or show off your content to followers.
+               Share content with your friends &amp; family, and personalize your profile to match your unique style.
+         </div>
+         <div class="bg-square__wrapper">
+            <img src="/img/welcome/landing-section-03.jpg" />
+         </div>
+      </div>
+
+      <h3 class="landing-title-secondary join_secondary">Join a creative world of content, topics, and ideas.</h3>
+      <a href="/users/register"><div class="hero_sign_up" style="margin:0 auto;">Sign Up Today</div></a>
+   </div>
+
+
+</div>

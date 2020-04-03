@@ -10,7 +10,7 @@
 <p id="current_project" style="display: none;">{{project.id}}</p>
 <p id="current_admin" style="display: none;">{{#each project.admins}}{{this}}{{/each}}</p>
 {{else}}
-<div class="guestScroll">
+<div {{! Commenting out for now class="guestScroll" }}>
 {{/if}}
 
 <img src="/icons/left.png" class="go-back bck_btn" />
@@ -230,7 +230,7 @@
         {{! Check if the project is a private project, we do not want to show private projects }}
         {{else}}
 
-        <a href="/p/details/{{id}}" class="project_link">
+        <a href="/p/details/{{id}}/guest" class="project_link">
            <div class="project_card">
               <img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{project_image}}" class="img-responsive" alt="{{project_title}}" />
               <p class="project_card_title">{{project_title}}</p>
@@ -249,7 +249,6 @@
 
 
 {{! Mobile Related Side Nav}}
-{{#if user}}
 {{#if related_projects}}
 <div id="relatedSideNav" class="profile__sidenav">
   <a href="javascript:void(0)" id="relatedClose">&times;</a>
@@ -260,7 +259,7 @@
   {{! Check if the project is a private project, we do not want to show private projects }}
   {{else}}
 
-  <a href="/p/details/{{id}}" class="project_link">
+  <a href="/p/details/{{id}}/guest" class="project_link">
      <div class="project_card">
         <img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{project_image}}" class="img-responsive" alt="{{project_title}}" />
         <p class="project_card_title">{{project_title}}</p>
@@ -271,7 +270,6 @@
   {{/if}}
   {{/each}}
 </div>
-{{/if}}
 {{/if}}
 
 

@@ -594,14 +594,87 @@ router.get('/details/:id/guest', (req, res, next) => {
    if(req.isAuthenticated()) {
       res.redirect('/p/details/' + req.params.id);
    } else {
-      Project.findById(req.params.id, (err, project) => {
-         if(err) throw err;
 
-         res.render('p/details/details', {
-            project: project,
-            page_title: project.project_title,
-            user_is_guest: true
-         });
+      Project.findById(req.params.id, (err, project) => {
+         if (err) throw err;
+
+         if (project.saves) {
+            var saves_amount = project.saves.length;
+            var likes_amount = project.likes.length;
+            var comment_amount = project.comments.length;
+
+            if (saves_amount >= 1) {
+               var enough_saves = true;
+            } else {
+               var enough_saves = false;
+            }
+
+            if (likes_amount >= 1) {
+               var enough_likes = true;
+            } else {
+               var enough_likes = false;
+            }
+
+            if (comment_amount >= 1) {
+               var enough_comments = true;
+            } else {
+               var enough_comments = false;
+            }
+
+         } else {
+            // Project has no saves or likes
+            var user_saved = false;
+            var saves_amount = 0;
+
+            var user_liked = false;
+            var likes_amount = 0;
+         }
+
+         var admin_amount = project.admins.length;
+
+         if (project.categories.length > 0) {
+            Project.find({ 'categories': { $in: project.categories} }, (err, related_projects) => {
+               if (err) throw err;
+
+               res.render('p/details/details', {
+                  project: project,
+                  related_projects: related_projects,
+                  page_title: project.project_title,
+                  is_admin_of_project: false,
+                  comment_amount: comment_amount,
+                  enough_comments: enough_comments,
+                  enough_saves: enough_saves,
+                  saves_amount: saves_amount,
+                  enough_likes: enough_likes,
+                  likes_amount: likes_amount,
+                  user_saved: false,
+                  user_liked: false,
+                  admin_amount: admin_amount,
+                  user_is_guest: true
+               });
+            }).limit(5);
+         } else {
+            Project.find({}, (err, related_projects) => {
+               if (err) throw err;
+
+               res.render('p/details/details', {
+                  project: project,
+                  related_projects: related_projects,
+                  page_title: project.project_title,
+                  is_admin_of_project: false,
+                  comment_amount: comment_amount,
+                  enough_saves: enough_saves,
+                  saves_amount: saves_amount,
+                  enough_likes: enough_likes,
+                  likes_amount: likes_amount,
+                  user_saved: false,
+                  user_liked: false,
+                  admin_amount: admin_amount,
+                  user_is_guest: true
+               });
+            }).limit(5);
+         }
+
       });
    }
 });
