@@ -256,7 +256,7 @@
       {{/if}}
 
       {{! Errors styling }}
-      <main {{#if user}}id="mainBody"{{else}}{{#if projects}}id="mainProject"{{else}}{{#if welcomePage}}{{else}}id="mainWelcome"{{/if}}{{/if}}{{/if}}>
+      <main {{#if user}}id="mainBody"{{else}}{{#if project}}id="mainProject"{{else}}{{#if welcomePage}}{{else}}id="mainWelcome"{{/if}}{{/if}}{{/if}}>
          {{#if user}}
             {{#if error_msg}}
             <div class="error__msg-3">
