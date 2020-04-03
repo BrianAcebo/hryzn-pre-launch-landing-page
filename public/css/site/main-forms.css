@@ -33,6 +33,10 @@
 }
 
 @media screen and (max-width: 768px) {
+   .form_row {
+      flex-direction: column;
+   }
+
    .form-container-2 {
       padding: 25px;
    }
