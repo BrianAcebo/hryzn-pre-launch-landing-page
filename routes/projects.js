@@ -34,9 +34,19 @@ const Project = require('../models/projects');
 // GET Create Project
 router.get('/create-project', (req, res, next) => {
    if(req.isAuthenticated()) {
-      res.render('p/create-project', {
-         page_title: 'Create Project',
-         editProject: true
+      User.getUserByUsername(req.user.username, (err, profile) => {
+         if(err) throw err;
+
+         User.find({
+             'username': { $in: profile.following}
+         }, (err, profiles) => {
+            if (err) throw err;
+            res.render('p/create-project', {
+               page_title: 'Create Project',
+               editProject: true,
+               mention: profiles
+            });
+         });
       });
    } else {
       res.redirect('/welcome');
@@ -274,14 +284,24 @@ router.get('/details/edit/:id', (req, res, next) => {
             var notes_is_empty_string = false;
          }
 
-         res.render('p/details/edit-project', {
-            project: project,
-            project_notes: project_notes,
-            notes_is_empty_string: notes_is_empty_string,
-            hide_scripts: true,
-            page_title: project.project_title,
-            is_admin_of_project: is_admin_of_project,
-            editProject: true
+         User.getUserByUsername(req.user.username, (err, profile) => {
+            if(err) throw err;
+
+            User.find({
+                'username': { $in: profile.following}
+            }, (err, profiles) => {
+               if (err) throw err;
+               res.render('p/details/edit-project', {
+                  project: project,
+                  project_notes: project_notes,
+                  notes_is_empty_string: notes_is_empty_string,
+                  hide_scripts: true,
+                  page_title: project.project_title,
+                  is_admin_of_project: is_admin_of_project,
+                  editProject: true,
+                  mention: profiles
+               });
+            });
          });
       });
    } else {
@@ -542,10 +562,12 @@ router.get('/details/:id', (req, res, next) => {
 
          var admin_amount = project.admins.length;
 
-         if (project.categories.length > 0) {
-            Project.find({ 'categories': { $in: project.categories} }, (err, related_projects) => {
-               if (err) throw err;
+         var search_notes = project.project_notes.toString();
 
+         Project.find({$text: { $search: search_notes }}, {score: { $meta: "textScore" }}, (err, related_projects) => {
+            if (err) throw err;
+
+            if (related_projects.length > 0) {
                res.render('p/details/details', {
                   project: project,
                   related_projects: related_projects,
@@ -561,27 +583,50 @@ router.get('/details/:id', (req, res, next) => {
                   user_liked: user_liked,
                   admin_amount: admin_amount
                });
-            }).limit(5);
-         } else {
-            Project.find({}, (err, related_projects) => {
-               if (err) throw err;
+            } else {
+               if (project.categories.length > 0) {
+                  Project.find({ 'categories': { $in: project.categories} }, (err, related_projects) => {
+                     if (err) throw err;
 
-               res.render('p/details/details', {
-                  project: project,
-                  related_projects: related_projects,
-                  page_title: project.project_title,
-                  is_admin_of_project: is_admin_of_project,
-                  comment_amount: comment_amount,
-                  enough_saves: enough_saves,
-                  saves_amount: saves_amount,
-                  enough_likes: enough_likes,
-                  likes_amount: likes_amount,
-                  user_saved: user_saved,
-                  user_liked: user_liked,
-                  admin_amount: admin_amount
-               });
-            }).limit(5);
-         }
+                     res.render('p/details/details', {
+                        project: project,
+                        related_projects: related_projects,
+                        page_title: project.project_title,
+                        is_admin_of_project: is_admin_of_project,
+                        comment_amount: comment_amount,
+                        enough_comments: enough_comments,
+                        enough_saves: enough_saves,
+                        saves_amount: saves_amount,
+                        enough_likes: enough_likes,
+                        likes_amount: likes_amount,
+                        user_saved: user_saved,
+                        user_liked: user_liked,
+                        admin_amount: admin_amount
+                     });
+                  }).limit(8);
+               } else {
+                  Project.find({}, (err, related_projects) => {
+                     if (err) throw err;
+
+                     res.render('p/details/details', {
+                        project: project,
+                        related_projects: related_projects,
+                        page_title: project.project_title,
+                        is_admin_of_project: is_admin_of_project,
+                        comment_amount: comment_amount,
+                        enough_saves: enough_saves,
+                        saves_amount: saves_amount,
+                        enough_likes: enough_likes,
+                        likes_amount: likes_amount,
+                        user_saved: user_saved,
+                        user_liked: user_liked,
+                        admin_amount: admin_amount
+                     });
+                  }).limit(5);
+               }
+            }
+
+         }).sort({score: { $meta: "textScore" }}).limit(5);
 
       });
    } else {
