@@ -335,48 +335,32 @@
    {{#if projects}}
    <script src="/js/macy.js" type="text/javascript"></script>
    <script>
-      var masonry = new Macy({
-         container: ".masonryContainer",
-         trueOrder: false,
-         waitForImages: true,
-         useOwnImageLoader: false,
-         debug: true,
-         mobileFirst: false,
-         margin: 35,
-         columns: 5,
-         breakAt: {
-            992: 4,
-            768: 3,
-            595: 2
-         }
-      });
+   var masonry = new Macy({
+      container: ".masonryContainer",
+      trueOrder: false,
+      waitForImages: true,
+      useOwnImageLoader: false,
+      debug: true,
+      mobileFirst: false,
+      margin: 35,
+      columns: 4,
+      breakAt: {
+         992: 3,
+         768: 2,
+         595: 2
+      }
+   });
 
-      masonry.runOnImageLoad(function () {
-         masonry.recalculate(true);
-      }, true);
-
+   masonry.runOnImageLoad(function () {
+      masonry.recalculate(true);
+   }, true);
    </script>
    {{/if}}
-
-   {{! For DEV
-   <script src="/js/main.js" type="text/javascript"></script>
-   }}
 
    {{! For PROD }}
    <script src="/dist/js/main.min.js" type="text/javascript"></script>
 
-   {{! Socket IO}}
-   {{!if chat}}
-   {{!<script src="/socket.io/socket.io.js"></script>
-
-   <script>
-
-     var socket = io();
-
-     socket.on(‘message’, addMessages)
-  </script>}}
-   {{!if}}
-
+   {{! Landing Page JS }}
    {{#if user}}
    {{else}}
    <script src="/js/welcome/modernizr.js"></script>
@@ -384,5 +368,18 @@
    <script src="/js/welcome/plugins.js" type="text/javascript"></script>
    <script src="/js/welcome/welcome.js" type="text/javascript"></script>
    {{/if}}
+
+   {{! For DEV
+   <script src="/js/main.js" type="text/javascript"></script>
+   }}
+
+   {{! Socket IO}}
+   {{!if chat}}
+   {{!<script src="/socket.io/socket.io.js"></script>
+   <script>
+   var socket = io();
+   socket.on(‘message’, addMessages)
+   </script>}}
+   {{!if}}
 
 </html>
