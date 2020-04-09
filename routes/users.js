@@ -256,20 +256,36 @@ router.post('/login', passport.authenticate('local-login', { failureRedirect:'/u
 });
 
 passport.use('local-login', new LocalStrategy( (username, password, done) => {
+   // Check for username
    User.getUserByUsername(username, (err, user) => {
       if(err) throw err;
       if(!user) {
-         return done(null, false, { message: 'Incorrect Password Or Username. Please Try Again' });
-      }
+         // Check for email
+         User.getUserByEmail(username, (err, user) => {
+            if(err) throw err;
+            if(!user) {
+               return done(null, false, { message: 'Incorrect Password Or Username. Please Try Again' });
+            }
 
-      User.comparePassword(password, user.password, (err, isMatch) => {
-         if(err) throw err;
-         if(isMatch) {
-            return done(null, user);
-         } else {
-            return done(null, false, { message: 'Incorrect Password Or Username. Please Try Again' });
-         }
-      });
+            User.comparePassword(password, user.password, (err, isMatch) => {
+               if(err) throw err;
+               if(isMatch) {
+                  return done(null, user);
+               } else {
+                  return done(null, false, { message: 'Incorrect Password Or Username. Please Try Again' });
+               }
+            });
+         });
+      } else {
+         User.comparePassword(password, user.password, (err, isMatch) => {
+            if(err) throw err;
+            if(isMatch) {
+               return done(null, user);
+            } else {
+               return done(null, false, { message: 'Incorrect Password Or Username. Please Try Again' });
+            }
+         });
+      }
    });
 }));
 
