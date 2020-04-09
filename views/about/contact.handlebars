@@ -2,23 +2,61 @@
 
    <div class="contact__container">
 
+   {{#if errors}}
+      {{#each errors}}
+         <div class="error__msg-2">
+            <p>{{msg}}</p>
+            <p class="error__exit">&times;</p>
+         </div>
+      {{/each}}
+   {{/if}}
+
    <div class="form-container-2">
-      {{#if form_submitted}}
-         <h3 class="landing-title-faded">Thank you for your feedback. <a href="/">Click here to go back.</a></h3>
-      {{else}}
-      <h3 class="landing-title-faded">We like conversation.</h3>
-      <form method="post" action="/about/contact">
-         <input class="form__input" type="text" placeholder="Enter full name" name="contact_name" value="{{contact_name}}" required />
-            <input class="form__input" type="email" placeholder="Enter email address" name="contact_email" value="{{contact_email}}" required autocapitalize="none" />
-            <input class="form__input" type="text" placeholder="Enter subject" name="contact_subject" value="{{contact_subject}}" required />
-            <textarea class="form__textarea" type="text" placeholder="Enter message" name="contact_message" value="{{contact_message}}" required></textarea>
-            <button class="form__sign-up-button" name="submit" type="submit">SEND</button>
-        </div>
+
+      {{#if resetForm}}
+
+      <h3 class="landing-title-faded">Please enter a new password.</h3>
+      <form method="post" action="/about/reset/{{user_id}}">
+         <input class="form__input" type="password" placeholder="Enter new password" name="password" value="{{new_password}}" required autocapitalize="none" />
+         <input class="form__input" type="password" placeholder="Confirm new password" name="password2" value="{{confirm_password}}" required autocapitalize="none" />
+         <button class="form__sign-up-button" name="submit" type="submit">Submit</button>
       </form>
+
+      {{else}}
+
+         {{#if forgotPassword}}
+
+            {{#if form_submitted}}
+               <h3 class="landing-title-faded">Please check your email.</h3>
+            {{else}}
+            <h3 class="landing-title-faded">Please enter your email.</h3>
+            <form method="post" action="/about/contact/forgot">
+               <input class="form__input" type="email" placeholder="Enter email address" name="contact_email" value="{{contact_email}}" required autocapitalize="none" />
+               <button class="form__sign-up-button" name="submit" type="submit">Go</button>
+            </form>
+            {{/if}}
+
+         {{else}}
+
+            {{#if form_submitted}}
+               <h3 class="landing-title-faded">Thank you for your feedback. <a href="/">Click here to go back.</a></h3>
+            {{else}}
+            <h3 class="landing-title-faded">We like conversation.</h3>
+            <form method="post" action="/about/contact">
+               <input class="form__input" type="text" placeholder="Enter full name" name="contact_name" value="{{contact_name}}" required />
+               <input class="form__input" type="email" placeholder="Enter email address" name="contact_email" value="{{contact_email}}" required autocapitalize="none" />
+               <input class="form__input" type="text" placeholder="Enter subject" name="contact_subject" value="{{contact_subject}}" required />
+               <textarea class="form__textarea" type="text" placeholder="Enter message" name="contact_message" value="{{contact_message}}" required></textarea>
+               <button class="form__sign-up-button" name="submit" type="submit">SEND</button>
+            </form>
+            {{/if}}
+
+         {{/if}}
+         {{! /Forgot Password }}
+
       {{/if}}
+      {{! /Reset Form }}
    </div>
 
    </div>
-</div>
-
 </div>

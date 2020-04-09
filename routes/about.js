@@ -2,7 +2,9 @@ const express = require('express');
 const router = express.Router();
 const path = require('path');
 const nodemailer = require('nodemailer');
+const bcrypt = require('bcryptjs');
 
+const User = require('../models/users');
 
 // Get Start
 router.get('/start', (req, res, next) => {
@@ -49,6 +51,7 @@ router.get('/contact', (req, res, next) => {
      page_title: 'Contact Us',
      notLoginPage: false,
      form_submitted: false,
+     forgotPassword: false
    });
 });
 
@@ -59,11 +62,22 @@ router.get('/contact/thanks', (req, res, next) => {
      page_title: 'Thank You',
      notLoginPage: false,
      form_submitted: true,
+     forgotPassword: false
+   });
+});
+
+// Get Contact Thanks
+router.get('/forgot/thanks', (req, res, next) => {
+   res.render('about/contact', {
+     page_title: 'Thank You',
+     notLoginPage: false,
+     form_submitted: true,
+     forgotPassword: true
    });
 });
 
 
-// Post Contact Form
+// Post Contact Form - Contact
 router.post('/contact', (req, res, next) => {
 
    // Gmail Credentials
@@ -107,6 +121,134 @@ router.get('/privacy', (req, res, next) => {
    res.render('about/privacy', {
      page_title: 'Privacy Policy'
    });
+});
+
+
+// Get Forgot Password
+router.get('/forgot', (req, res, next) => {
+   res.render('about/contact', {
+     page_title: 'Forgot Password',
+     notLoginPage: false,
+     form_submitted: false,
+     forgotPassword: true
+   });
+});
+
+
+// Post Contact Form - Forgot Password
+router.post('/contact/forgot', (req, res, next) => {
+
+   var contact_email = req.body.contact_email;
+
+   User.getUserByEmail(contact_email, (err, user) => {
+
+      if(err) throw err;
+
+
+      // Gmail Credentials
+      var transporter = nodemailer.createTransport({
+         service: 'Gmail',
+         auth: {
+            user: 'hello@myhryzn.com',
+            pass: '+ar+oo-55'
+         }
+      });
+
+      // Mail Body
+      var mailOptions = {
+         from: '"Hryzn" <hello@myhryzn.com>',
+         to: contact_email,
+         subject: 'Change Your Password On Hryzn',
+         html: '<p>Hi ' + user.firstname + ',<p><p style="display:inline-block">We received your request to change your password, which you can do </p><a href="https://www.myhryzn.com/about/reset/' + user.id + '" style="display:inline-block; margin-left: 2px;">here</a>'
+      }
+
+      transporter.sendMail(mailOptions, (error, info) => {
+         if(!error) {
+            res.redirect('/about/forgot/thanks');
+         }
+      });
+
+
+   });
+
+});
+
+
+// Get Reset Password - User is ready
+router.get('/reset/:id', (req, res, next) => {
+
+   var user_id = req.params.id;
+
+   User.getUserById(user_id, (err, user) => {
+
+      if(err) throw err;
+
+      if(user) {
+
+         res.render('about/contact', {
+           page_title: 'Reset Password',
+           notLoginPage: false,
+           form_submitted: false,
+           resetForm: true,
+           user_id: user.id
+         });
+
+      } else {
+         res.redirect('/welcome');
+      }
+
+   });
+});
+
+
+// POST Forgot Password - User is ready
+router.post('/reset/:id', (req, res, next) => {
+
+   var new_password = req.body.password;
+
+   User.getUserById(req.params.id, (err, user) => {
+
+      var user_email = user.email;
+
+      // Form Validation
+      req.checkBody('password', 'Please Enter A Password').notEmpty();
+      req.checkBody('password', 'Password Must Be Greater Than 8 Characters').isLength({ min: 8, max:50 });
+      req.checkBody('password2', 'Passwords Do Not Match').equals(req.body.password);
+
+      errors = req.validationErrors();
+
+      if(errors) {
+         User.getUserById(req.params.id, (err, user) => {
+
+            if(err) throw err;
+
+            res.render('about/contact', {
+              page_title: 'Reset Password',
+              notLoginPage: false,
+              form_submitted: false,
+              resetForm: true,
+              user_id: user.id,
+              errors: errors,
+            });
+         });
+      } else {
+
+         bcrypt.hash(new_password, 10, (err, hash) => {
+            if(err) throw err;
+
+            User.findByIdAndUpdate(req.params.id, {
+               password: hash
+            }, (err, user) => {
+               if (err) throw err;
+               req.flash('success_msg', "Password Changed. Please Log In");
+               res.redirect('/users/login');
+            });
+         });
+
+      }
+
+   });
+
 });
 
 
