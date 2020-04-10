@@ -121,6 +121,30 @@
 
          {{else}}
 
+         {{#if guestUser}}
+
+         {{#each projects}}
+
+            {{#if is_private}}
+            {{! Can't show private projects to people other than logged in User }}
+            {{else}}
+
+               <div class="masonryItem ownProject">
+                  <a href="/p/details/{{_id}}/guest" class="project_link">
+                     <div class="project_card">
+                        <img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{project_image}}" class="img-responsive project-image" alt="{{project_title}}" />
+                        <p class="project_card_title">{{project_title}}</p>
+                     </div>
+                  </a>
+                  <a href="/profile/{{project_owner}}"><p class="project_owner">{{project_owner}}</p></a>
+               </div>
+
+            {{/if}}
+
+         {{/each}}
+
+         {{else}}
+
          {{#each projects}}
 
             {{#if is_private}}
@@ -140,6 +164,8 @@
             {{/if}}
 
          {{/each}}
+
+         {{/if}}
 
          {{/if}}
 

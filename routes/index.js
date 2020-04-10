@@ -279,87 +279,96 @@ router.get('/logout', (req, res, next) => {
 
 // GET Profile
 router.get('/profile/:username', (req, res, next) => {
-   if(req.isAuthenticated()) {
 
-      User.getUserByUsername(req.params.username, (err, profile) => {
+   User.getUserByUsername(req.params.username, (err, profile) => {
 
-         if(err) throw err;
+      if(err) throw err;
 
+      if(req.isAuthenticated()) {
+      } else {
+         var guestUser = true;
+      }
 
+      if(req.isAuthenticated()) {
          // User is seeing their own profile
          if(profile.username === req.user.username) {
-            viewing_own_profile = true;
+            var viewing_own_profile = true;
          } else {
-            viewing_own_profile = false;
+            var viewing_own_profile = false;
          }
+      } else {
+         var viewing_own_profile = false;
+      }
 
 
-         if(profile.followers) {
+      if(profile.followers) {
 
-            var amount_of_followers = profile.followers.length;
+         var amount_of_followers = profile.followers.length;
 
+         if(req.isAuthenticated()) {
             if(profile.followers.indexOf(req.user.username) === -1) {
                var user_follows_profile = false;
             } else {
                var user_follows_profile = true;
             }
-
          } else {
-
-            // Profile has no followers
             var user_follows_profile = false;
-            var amount_of_followers = 0;
-
          }
 
+      } else {
 
-         if(profile.following) {
-            var amount_of_following = profile.following.length;
-         } else {
-            // Profile is not following anyone
-            var amount_of_following = 0;
-         }
+         // Profile has no followers
+         var user_follows_profile = false;
+         var amount_of_followers = 0;
 
-
-         if(profile.own_projects) {
-            var amount_of_projects = profile.own_projects.length;
-         } else {
-            var amount_of_projects = 0;
-         }
+      }
 
 
-         Project.find({ '_id': { $in: profile.own_projects} }, (err, projects) => {
+      if(profile.following) {
+         var amount_of_following = profile.following.length;
+      } else {
+         // Profile is not following anyone
+         var amount_of_following = 0;
+      }
+
+
+      if(profile.own_projects) {
+         var amount_of_projects = profile.own_projects.length;
+      } else {
+         var amount_of_projects = 0;
+      }
+
+
+      Project.find({ '_id': { $in: profile.own_projects} }, (err, projects) => {
+         if (err) throw err;
+
+         var private_amount = [];
+         projects.forEach(function(project, index) {
+            if (project.is_private) {
+               private_amount.push(project);
+            }
+         });
+
+         amount_of_projects = amount_of_projects - private_amount.length;
+
+         Project.find({ '_id': { $in: profile.saved_projects} }, (err, saved_projects) => {
             if (err) throw err;
-
-            var private_amount = [];
-            projects.forEach(function(project, index) {
-               if (project.is_private) {
-                  private_amount.push(project);
-               }
-            });
-
-            amount_of_projects = amount_of_projects - private_amount.length;
-
-            Project.find({ '_id': { $in: profile.saved_projects} }, (err, saved_projects) => {
-               if (err) throw err;
-               res.render('profile', {
-                  page_title: profile.username,
-                  profile: profile,
-                  projects: projects,
-                  saved_projects: saved_projects,
-                  user_follows_profile: user_follows_profile,
-                  amount_of_followers: amount_of_followers,
-                  amount_of_following: amount_of_following,
-                  amount_of_projects: amount_of_projects,
-                  viewing_own_profile: viewing_own_profile
-               });
+            res.render('profile', {
+               page_title: profile.username,
+               profile: profile,
+               projects: projects,
+               saved_projects: saved_projects,
+               user_follows_profile: user_follows_profile,
+               amount_of_followers: amount_of_followers,
+               amount_of_following: amount_of_following,
+               amount_of_projects: amount_of_projects,
+               viewing_own_profile: viewing_own_profile,
+               guestUser: guestUser
             });
          });
       });
+   });
 
-   } else {
-      res.redirect('/welcome');
-   }
 });
 
 // Post Profile - Follow
