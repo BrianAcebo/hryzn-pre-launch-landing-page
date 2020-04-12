@@ -47,10 +47,10 @@ router.post('/register', upload.single('profileimage'), (req, res, next) => {
       return string.charAt(0).toUpperCase() + string.slice(1);
    }
 
-   var username = req.body.username;
-   var email = req.body.email;
-   var password = req.body.password;
-   var password2 = req.body.password2;
+   var username = req.body.username.replace(/\r\n/g,'').trim();
+   var email = req.body.email.replace(/\r\n/g,'').trim();
+   var password = req.body.password.replace(/\r\n/g,'').trim();
+   var password2 = req.body.password2.replace(/\r\n/g,'').trim();
 
    if(req.body.firstname === "") {
       var firstname = "";
