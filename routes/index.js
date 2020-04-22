@@ -36,8 +36,22 @@ router.get('/welcome', (req, res, next) => {
       res.redirect('/');
    } else {
 
-      Project.find({}, (err, projects) => {
+      var featured_projects = [
+         '5cda25cc5f66f6001759268a',
+         '5cdc5b07294e1e0017d3f87e',
+         '5e88ee436413750017b0304b',
+         '5e7d700888041a0017351dc4',
+         '5e88f3ef6413750017b0304c',
+         '5e8e799102b32d001725d5bb',
+         '5e57414fe509772628eca160',
+         '5e8fdd1600584b0017693055'
+      ];
+
+      Project.find({ '_id': { $in: featured_projects } }, (err, projects) => {
          if (err) throw err;
+
+
+
          res.render('welcome', {
            page_title: 'Create, explore, and share your ideas on a powerful social writing platform',
            notLoginPage: false,
@@ -342,6 +356,8 @@ router.get('/profile/:username', (req, res, next) => {
       Project.find({ '_id': { $in: profile.own_projects} }, (err, projects) => {
          if (err) throw err;
 
+         var reversed_projects = projects.reverse();
+
          var private_amount = [];
          projects.forEach(function(project, index) {
             if (project.is_private) {
@@ -353,11 +369,14 @@ router.get('/profile/:username', (req, res, next) => {
 
          Project.find({ '_id': { $in: profile.saved_projects} }, (err, saved_projects) => {
             if (err) throw err;
+
+            var reversed_saved_projects = saved_projects.reverse();
+
             res.render('profile', {
                page_title: profile.username,
                profile: profile,
-               projects: projects,
-               saved_projects: saved_projects,
+               projects: reversed_projects,
+               saved_projects: reversed_saved_projects,
                user_follows_profile: user_follows_profile,
                amount_of_followers: amount_of_followers,
                amount_of_following: amount_of_following,
@@ -896,9 +915,12 @@ router.get('/explore', (req, res, next) => {
    if(req.isAuthenticated()) {
       Project.find({}, (err, projects) => {
          if (err) throw err;
+
+         var reversed_projects = projects.reverse();
+
          res.render('explore', {
             page_title: 'Explore Projects',
-            projects: projects,
+            projects: reversed_projects,
             explore_default: true
          });
       });
@@ -915,9 +937,11 @@ router.get('/explore/:category', (req, res, next) => {
       Project.find({ 'categories': { $in: req.params.category} }, (err, projects) => {
          if (err) throw err;
 
+         var reversed_projects = projects.reverse();
+
          res.render('explore', {
             page_title: 'Explore ' + req.params.category,
-            projects: projects,
+            projects: reversed_projects,
             explore_default: true
          });
       });
@@ -937,6 +961,8 @@ router.get('/search', (req, res, next) => {
 
          Project.find({$text: { $search: searchTerm }}, {score: { $meta: "textScore" }}, (err, projects) => {
             if (err) throw err;
+
+            // No need to reverse order of projects
 
             res.render('explore', {
                page_title: 'Explore Projects',

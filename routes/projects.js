@@ -263,46 +263,48 @@ router.get('/details/edit/:id', (req, res, next) => {
       Project.findById(req.params.id, (err, project) => {
          if(err) throw err;
 
-         if(project.admins.indexOf(req.user.username) === -1) {
-            var is_admin_of_project = false;
-            res.redirect('');
-         } else {
-            var is_admin_of_project = true;
-         }
+         if(project.admins.indexOf(req.user.username) > -1 || req.user.username === 'hryzn') {
 
-         if(project.project_notes) {
-            if(project.project_notes === "") {
-               var notes_is_empty_string = true;
+            var is_admin_of_project = true;
+
+            if(project.project_notes) {
+               if(project.project_notes === "") {
+                  var notes_is_empty_string = true;
+               } else {
+                  var notes_is_empty_string = false;
+
+                  // Replace single & double quotes with backslash
+                  var project_notes = project.project_notes.replace(/'/g,"\\'");
+                  project_notes.replace(/"/g,'\\"');
+               }
             } else {
                var notes_is_empty_string = false;
-
-               // Replace single & double quotes with backslash
-               var project_notes = project.project_notes.replace(/'/g,"\\'");
-               project_notes.replace(/"/g,'\\"');
             }
-         } else {
-            var notes_is_empty_string = false;
-         }
 
-         User.getUserByUsername(req.user.username, (err, profile) => {
-            if(err) throw err;
+            User.getUserByUsername(req.user.username, (err, profile) => {
+               if(err) throw err;
 
-            User.find({
-                'username': { $in: profile.following}
-            }, (err, profiles) => {
-               if (err) throw err;
-               res.render('p/details/edit-project', {
-                  project: project,
-                  project_notes: project_notes,
-                  notes_is_empty_string: notes_is_empty_string,
-                  hide_scripts: true,
-                  page_title: project.project_title,
-                  is_admin_of_project: is_admin_of_project,
-                  editProject: true,
-                  mention: profiles
+               User.find({ 'username': { $in: profile.following} }, (err, profiles) => {
+                  if (err) throw err;
+                  res.render('p/details/edit-project', {
+                     project: project,
+                     project_notes: project_notes,
+                     notes_is_empty_string: notes_is_empty_string,
+                     hide_scripts: true,
+                     page_title: project.project_title,
+                     is_admin_of_project: is_admin_of_project,
+                     editProject: true,
+                     mention: profiles
+                  });
                });
             });
-         });
+
+         } else {
+
+            var is_admin_of_project = false;
+            res.redirect('/');
+
+         }
       });
    } else {
       res.redirect('/welcome');
@@ -567,10 +569,12 @@ router.get('/details/:id', (req, res, next) => {
          Project.find({$text: { $search: search_notes }}, {score: { $meta: "textScore" }}, (err, related_projects) => {
             if (err) throw err;
 
+            var reverse_related_projects = related_projects.reverse();
+
             if (related_projects.length > 0) {
                res.render('p/details/details', {
                   project: project,
-                  related_projects: related_projects,
+                  related_projects: reverse_related_projects,
                   page_title: project.project_title,
                   is_admin_of_project: is_admin_of_project,
                   comment_amount: comment_amount,
@@ -588,9 +592,11 @@ router.get('/details/:id', (req, res, next) => {
                   Project.find({ 'categories': { $in: project.categories} }, (err, related_projects) => {
                      if (err) throw err;
 
+                     var reverse_related_projects = related_projects.reverse();
+
                      res.render('p/details/details', {
                         project: project,
-                        related_projects: related_projects,
+                        related_projects: reverse_related_projects,
                         page_title: project.project_title,
                         is_admin_of_project: is_admin_of_project,
                         comment_amount: comment_amount,
@@ -608,9 +614,11 @@ router.get('/details/:id', (req, res, next) => {
                   Project.find({}, (err, related_projects) => {
                      if (err) throw err;
 
+                     var reverse_related_projects = related_projects.reverse();
+
                      res.render('p/details/details', {
                         project: project,
-                        related_projects: related_projects,
+                        related_projects: reverse_related_projects,
                         page_title: project.project_title,
                         is_admin_of_project: is_admin_of_project,
                         comment_amount: comment_amount,
@@ -681,9 +689,11 @@ router.get('/details/:id/guest', (req, res, next) => {
             Project.find({ 'categories': { $in: project.categories} }, (err, related_projects) => {
                if (err) throw err;
 
+               var reverse_related_projects = related_projects.reverse();
+
                res.render('p/details/details', {
                   project: project,
-                  related_projects: related_projects,
+                  related_projects: reverse_related_projects,
                   page_title: project.project_title,
                   is_admin_of_project: false,
                   comment_amount: comment_amount,
@@ -702,9 +712,11 @@ router.get('/details/:id/guest', (req, res, next) => {
             Project.find({}, (err, related_projects) => {
                if (err) throw err;
 
+               var reverse_related_projects = related_projects.reverse();
+
                res.render('p/details/details', {
                   project: project,
-                  related_projects: related_projects,
+                  related_projects: reverse_related_projects,
                   page_title: project.project_title,
                   is_admin_of_project: false,
                   comment_amount: comment_amount,
