@@ -186,6 +186,7 @@ section.project {
 
 .project_img {
    position: absolute;
+   border-radius: 25px;
    display: block;
    height: 100%;
    width: 100%;

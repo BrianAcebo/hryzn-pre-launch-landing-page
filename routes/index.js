@@ -50,8 +50,6 @@ router.get('/welcome', (req, res, next) => {
       Project.find({ '_id': { $in: featured_projects } }, (err, projects) => {
          if (err) throw err;
 
-
-
          res.render('welcome', {
            page_title: 'Create, explore, and share your ideas on a powerful social writing platform',
            notLoginPage: false,
@@ -66,13 +64,37 @@ router.get('/welcome', (req, res, next) => {
 // Get Index (User is logged in)
 router.get('/', (req, res, next) => {
    if(req.isAuthenticated()) {
-      // Project.find({}, (err, projects) => {
-      //    if (err) throw err;
-      //    res.render('explore', {
-      //       page_title: 'Explore Projects',
-      //       projects: projects
+
+      // User's Subscriptions Feed
+
+      // if (req.user.following) {
+      //    User.find({ 'username': { $in: req.user.following } }, (err, profiles) => {
+      //       if (err) throw err;
+      //
+      //       var profile_project = []
+      //
+      //       profiles.forEach(function(profile, key) {
+      //          profile.own_projects.reverse().forEach(function(proj, key) {
+      //             profile_project.push(proj);
+      //          });
+      //       });
+      //
+      //       Project.find({ '_id': { $in: profile_project } }, (err, projects) => {
+      //          if (err) throw err;
+      //
+      //          res.render('explore', {
+      //             page_title: 'Explore Projects',
+      //             projects: projects,
+      //             profiles: profiles,
+      //             explore_default: true
+      //          });
+      //       });
       //    });
-      // });
+      // } else {
+      //    res.redirect('/explore');
+      // }
+
+      // For now just redirect to explore page
       res.redirect('/explore');
    } else {
       res.redirect('/welcome');
@@ -446,9 +468,7 @@ router.get('/profile/:username/followers', (req, res, next) => {
       User.getUserByUsername(req.params.username, (err, profile) => {
          if(err) throw err;
 
-         User.find({
-             'username': { $in: profile.followers}
-         }, (err, profiles) => {
+         User.find({ 'username': { $in: profile.followers} }, (err, profiles) => {
             if (err) throw err;
             res.render('followers', {
                page_title: profile.username,
