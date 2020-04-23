@@ -37,9 +37,7 @@ router.get('/create-project', (req, res, next) => {
       User.getUserByUsername(req.user.username, (err, profile) => {
          if(err) throw err;
 
-         User.find({
-             'username': { $in: profile.following}
-         }, (err, profiles) => {
+         User.find({ 'username': { $in: profile.following} }, (err, profiles) => {
             if (err) throw err;
             res.render('p/create-project', {
                page_title: 'Create Project',
@@ -508,133 +506,137 @@ router.get('/details/:id', (req, res, next) => {
       Project.findById(req.params.id, (err, project) => {
          if (err) throw err;
 
-         if (project.saves) {
-            var saves_amount = project.saves.length;
-            var likes_amount = project.likes.length;
-            var comment_amount = project.comments.length;
-
-            if (saves_amount >= 1) {
-               var enough_saves = true;
-            } else {
-               var enough_saves = false;
-            }
-
-            if (likes_amount >= 1) {
-               var enough_likes = true;
-            } else {
-               var enough_likes = false;
-            }
-
-            if (comment_amount >= 1) {
-               var enough_comments = true;
-            } else {
-               var enough_comments = false;
-            }
-
-            if (project.saves.indexOf(req.user.username) === -1) {
-               var user_saved = false;
-            } else {
-               var user_saved = true;
-            }
-
-            if (project.likes.indexOf(req.user.username) === -1) {
-               var user_liked = false;
-            } else {
-               var user_liked = true;
-            }
-
-         } else {
-            // Project has no saves or likes
-            var user_saved = false;
-            var saves_amount = 0;
-
-            var user_liked = false;
-            var likes_amount = 0;
-         }
-
-         if (project.admins.indexOf(req.user.username) === -1) {
-            if (req.user.username === 'hryzn') {
-               var is_admin_of_project = true;
-            } else {
-               var is_admin_of_project = false;
-            }
-         } else {
+         if (project.admins.indexOf(req.user.username) > -1 || req.user.username === 'hryzn') {
             var is_admin_of_project = true;
+         } else {
+            var is_admin_of_project = false;
+            var not_admin = true;
          }
 
-         var admin_amount = project.admins.length;
+         if (project.is_private && not_admin) {
 
-         var search_notes = project.project_notes.toString();
+            // User came to a private project and is not an owner
+            res.redirect('/');
 
-         Project.find({$text: { $search: search_notes }}, {score: { $meta: "textScore" }}, (err, related_projects) => {
-            if (err) throw err;
+         } else {
+            if (project.saves) {
+               var saves_amount = project.saves.length;
+               var likes_amount = project.likes.length;
+               var comment_amount = project.comments.length;
 
-            var reverse_related_projects = related_projects.reverse();
-
-            if (related_projects.length > 0) {
-               res.render('p/details/details', {
-                  project: project,
-                  related_projects: reverse_related_projects,
-                  page_title: project.project_title,
-                  is_admin_of_project: is_admin_of_project,
-                  comment_amount: comment_amount,
-                  enough_comments: enough_comments,
-                  enough_saves: enough_saves,
-                  saves_amount: saves_amount,
-                  enough_likes: enough_likes,
-                  likes_amount: likes_amount,
-                  user_saved: user_saved,
-                  user_liked: user_liked,
-                  admin_amount: admin_amount
-               });
-            } else {
-               if (project.categories.length > 0) {
-                  Project.find({ 'categories': { $in: project.categories} }, (err, related_projects) => {
-                     if (err) throw err;
-
-                     var reverse_related_projects = related_projects.reverse();
-
-                     res.render('p/details/details', {
-                        project: project,
-                        related_projects: reverse_related_projects,
-                        page_title: project.project_title,
-                        is_admin_of_project: is_admin_of_project,
-                        comment_amount: comment_amount,
-                        enough_comments: enough_comments,
-                        enough_saves: enough_saves,
-                        saves_amount: saves_amount,
-                        enough_likes: enough_likes,
-                        likes_amount: likes_amount,
-                        user_saved: user_saved,
-                        user_liked: user_liked,
-                        admin_amount: admin_amount
-                     });
-                  }).limit(8);
+               if (saves_amount >= 1) {
+                  var enough_saves = true;
                } else {
-                  Project.find({}, (err, related_projects) => {
-                     if (err) throw err;
-
-                     var reverse_related_projects = related_projects.reverse();
-
-                     res.render('p/details/details', {
-                        project: project,
-                        related_projects: reverse_related_projects,
-                        page_title: project.project_title,
-                        is_admin_of_project: is_admin_of_project,
-                        comment_amount: comment_amount,
-                        enough_saves: enough_saves,
-                        saves_amount: saves_amount,
-                        enough_likes: enough_likes,
-                        likes_amount: likes_amount,
-                        user_saved: user_saved,
-                        user_liked: user_liked,
-                        admin_amount: admin_amount
-                     });
-                  }).limit(5);
+                  var enough_saves = false;
                }
+
+               if (likes_amount >= 1) {
+                  var enough_likes = true;
+               } else {
+                  var enough_likes = false;
+               }
+
+               if (comment_amount >= 1) {
+                  var enough_comments = true;
+               } else {
+                  var enough_comments = false;
+               }
+
+               if (project.saves.indexOf(req.user.username) === -1) {
+                  var user_saved = false;
+               } else {
+                  var user_saved = true;
+               }
+
+               if (project.likes.indexOf(req.user.username) === -1) {
+                  var user_liked = false;
+               } else {
+                  var user_liked = true;
+               }
+
+            } else {
+               // Project has no saves or likes
+               var user_saved = false;
+               var saves_amount = 0;
+
+               var user_liked = false;
+               var likes_amount = 0;
             }
 
-         }).sort({score: { $meta: "textScore" }}).limit(5);
+            var admin_amount = project.admins.length;
+
+            var search_notes = project.project_notes.toString();
+
+            Project.find({$text: { $search: search_notes }}, {score: { $meta: "textScore" }}, (err, related_projects) => {
+               if (err) throw err;
+
+               var reverse_related_projects = related_projects.reverse();
+
+               if (related_projects.length > 0) {
+                  res.render('p/details/details', {
+                     project: project,
+                     related_projects: reverse_related_projects,
+                     page_title: project.project_title,
+                     is_admin_of_project: is_admin_of_project,
+                     comment_amount: comment_amount,
+                     enough_comments: enough_comments,
+                     enough_saves: enough_saves,
+                     saves_amount: saves_amount,
+                     enough_likes: enough_likes,
+                     likes_amount: likes_amount,
+                     user_saved: user_saved,
+                     user_liked: user_liked,
+                     admin_amount: admin_amount
+                  });
+               } else {
+                  if (project.categories.length > 0) {
+                     Project.find({ 'categories': { $in: project.categories} }, (err, related_projects) => {
+                        if (err) throw err;
+
+                        var reverse_related_projects = related_projects.reverse();
+
+                        res.render('p/details/details', {
+                           project: project,
+                           related_projects: reverse_related_projects,
+                           page_title: project.project_title,
+                           is_admin_of_project: is_admin_of_project,
+                           comment_amount: comment_amount,
+                           enough_comments: enough_comments,
+                           enough_saves: enough_saves,
+                           saves_amount: saves_amount,
+                           enough_likes: enough_likes,
+                           likes_amount: likes_amount,
+                           user_saved: user_saved,
+                           user_liked: user_liked,
+                           admin_amount: admin_amount
+                        });
+                     }).limit(8);
+                  } else {
+                     Project.find({}, (err, related_projects) => {
+                        if (err) throw err;
+
+                        var reverse_related_projects = related_projects.reverse();
+
+                        res.render('p/details/details', {
+                           project: project,
+                           related_projects: reverse_related_projects,
+                           page_title: project.project_title,
+                           is_admin_of_project: is_admin_of_project,
+                           comment_amount: comment_amount,
+                           enough_saves: enough_saves,
+                           saves_amount: saves_amount,
+                           enough_likes: enough_likes,
+                           likes_amount: likes_amount,
+                           user_saved: user_saved,
+                           user_liked: user_liked,
+                           admin_amount: admin_amount
+                        });
+                     }).limit(5);
+                  }
+               }
+
+            }).sort({score: { $meta: "textScore" }}).limit(5);
+         }
 
       });
    } else {
