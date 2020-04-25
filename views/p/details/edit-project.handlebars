@@ -61,7 +61,7 @@
 
    {{! Project Categories }}
    <label for="project_categories" class="form__label" style="margin-top: 25px;">Change Project Categories</label>
-   <select data-placeholder="Add categories..." multiple class="chosen-select form__input" name="project_categories[]">
+   <select data-placeholder="Change categories..." multiple class="chosen-select form__input" name="project_categories[]">
       <option value=""></option>
       <option>Animals</option>
       <option>Architecture</option>
@@ -72,6 +72,7 @@
       <option>Design</option>
       <option>Education</option>
       <option>Film, Music & Books</option>
+      <option>Finance</option>
       <option>Food & Drink</option>
       <option>Gardening</option>
       <option>Geek</option>
@@ -119,11 +120,38 @@
 
 
    {{! Submit }}
-   <button class="form__sign-up-button create_sub edit-project__form-btn" name="submit" type="submit">Save</button>
+   <button class="form__sign-up-button project_submit edit-project__form-btn" name="submit" type="submit">Save</button>
 
 
 </form>
 
 <p class="go-back back-btn" style="margin-top: 50px;">Cancel</p>
+
+<!-- Loader Balls -->
+<div class="loader_project">
+   <div class='loader-container'>
+      <div class='ball-wrapper'>
+         <div class='ball-holder'>
+            <div class='ball'></div>
+         </div>
+         <div class='shadow'></div>
+      </div>
+
+      <div class='ball-wrapper'>
+         <div class='ball-holder'>
+            <div class='ball'></div>
+         </div>
+         <div class='shadow'></div>
+      </div>
+
+      <div class='ball-wrapper'>
+         <div class='ball-holder'>
+            <div class='ball'></div>
+         </div>
+         <div class='shadow'></div>
+      </div>
+      <p class="loader_text">Thank you, the computer is doing its thing.</p>
+   </div>
+</div>
 
 {{/if}}

@@ -28,8 +28,8 @@
       <input type="hidden" name="admin" value="{{user.username}}">
       <input type="hidden" name="id" value="{{user._id}}">
       <div class="create_btns">
-         <button class="form__sign-up-button create_sub edit-project__form-btn" name="submit" type="submit">Create</button>
-         <button class="form__sign-up-button draft_btn create_sub edit-project__form-btn" name="submit" type="submit">Save as Draft</button>
+         <button class="form__sign-up-button project_submit edit-project__form-btn" name="submit" type="submit">Create</button>
+         <button class="form__sign-up-button draft_btn project_submit edit-project__form-btn" name="submit" type="submit">Save as Draft</button>
       </div>
   </div>
 
@@ -91,6 +91,7 @@
            <option>Design</option>
            <option>Education</option>
            <option>Film, Music & Books</option>
+           <option>Finance</option>
            <option>Food & Drink</option>
            <option>Gardening</option>
            <option>Geek</option>
@@ -137,3 +138,30 @@
   </div>
 </form>
 <p class="go-back back-btn" style="margin-top: 50px;">Cancel</p>
+
+<!-- Loader Balls -->
+<div class="loader_project">
+   <div class='loader-container'>
+      <div class='ball-wrapper'>
+         <div class='ball-holder'>
+            <div class='ball'></div>
+         </div>
+         <div class='shadow'></div>
+      </div>
+
+      <div class='ball-wrapper'>
+         <div class='ball-holder'>
+            <div class='ball'></div>
+         </div>
+         <div class='shadow'></div>
+      </div>
+
+      <div class='ball-wrapper'>
+         <div class='ball-holder'>
+            <div class='ball'></div>
+         </div>
+         <div class='shadow'></div>
+      </div>
+      <p class="loader_text">Thank you, the computer is doing its thing.</p>
+   </div>
+</div>

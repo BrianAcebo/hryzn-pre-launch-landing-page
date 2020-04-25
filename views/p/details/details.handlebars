@@ -1,3 +1,15 @@
+<div class="loader_overlay">
+   <div class="loader_wrapper">
+      <div class="loader"></div>
+      <p class="loader_text loader_text-1">Our robots are looking for the cool stuff.</p>
+      <p class="loader_text loader_text-2">Retrieving files... Accessing data... Planning world domination.</p>
+      <p class="loader_text loader_text-3">Soon the computers will just take over.</p>
+      <p class="loader_text loader_text-4">The things are doing the stuff.</p>
+      <p class="loader_text loader_text-5">Your hair looks pretty.</p>
+   </div>
+</div>
+
+
 {{#if errors_2}}
 <div class="error__msg-4">
    <p>{{errors_2}}</p>
@@ -280,7 +292,7 @@
 <div class="popModal modalBackground">
   <div class="modal-content">
 
-    <div class="modal-header">
+    <div class="modal-header ">
       <p>Are You Sure?</p>
     </div>
 
@@ -289,12 +301,39 @@
     </div>
 
     <div class="modal-footer">
-      <a href="/p/details/delete/{{project._id}}" class="btn__secondary">Yes I'm Sure</a>
+      <a href="/p/details/delete/{{project._id}}" class="btn__secondary project_submit">Yes I'm Sure</a>
       <span class="closeModal btn__primary">Cancel</span>
     </div>
 
   </div>
 
+</div>
+
+<!-- Loader Balls -->
+<div class="loader_project">
+   <div class='loader-container'>
+      <div class='ball-wrapper'>
+         <div class='ball-holder'>
+            <div class='ball'></div>
+         </div>
+         <div class='shadow'></div>
+      </div>
+
+      <div class='ball-wrapper'>
+         <div class='ball-holder'>
+            <div class='ball'></div>
+         </div>
+         <div class='shadow'></div>
+      </div>
+
+      <div class='ball-wrapper'>
+         <div class='ball-holder'>
+            <div class='ball'></div>
+         </div>
+         <div class='shadow'></div>
+      </div>
+      <p class="loader_text">Thank you, the computer is doing its thing.</p>
+   </div>
 </div>
 {{/if}}
 

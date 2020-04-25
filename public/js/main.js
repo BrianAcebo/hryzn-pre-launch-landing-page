@@ -28,13 +28,22 @@ $(document).ready(function() {
 
 
    // Remove loader after 4 seconds
+
    var $rand_loader = $('.loader_text-' + Math.floor(Math.random() * 6));
 
    $rand_loader.css({ "display": "block" });
 
-   setTimeout(function() {
-      $('.loader_overlay').remove();
-   }, 3500);
+   $window.on('load', function() {
+      $(".loader_wrapper").delay(300).fadeOut("slow", function() {
+         $('.loader_overlay').delay(300).fadeOut("slow");
+      });
+   });
+
+   $window.on('load', function() {
+      $(".projects_loader").delay(300).fadeOut("slow", function() {
+         $('.loader_overlay').delay(300).fadeOut("slow");
+      });
+   });
    /**********/
 
 
@@ -305,11 +314,11 @@ $(document).ready(function() {
    /**********/
 
    // Add loader for create project
-   var $createLoader = $('.create_loader');
-   var $createSub = $('.create_sub');
+   var $projectLoader = $('.loader_project');
+   var $projectSub = $('.project_submit');
 
-   $createSub.click(function() {
-      $createLoader.css({ "display": "block" });
+   $projectSub.click(function() {
+      $projectLoader.css({ "display": "flex" });
    });
    /**********/
 

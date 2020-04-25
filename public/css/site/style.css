@@ -383,6 +383,202 @@ input {
    }
 }
 
+/* Explore loader */
+.masonry-with-columns {
+  columns: 4 200px;
+  column-gap: 35px;
+  padding: 150px 35px 35px 35px;
+}
+.masonry-with-columns .loader_card {
+  width: 150px;
+  background: #f1f1f1;
+  border-radius: 25px;
+  color: white;
+  margin: 0 0 35px 0;
+  display: inline-block;
+  width: 100%;
+  background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab );
+	background-size: 400% 400%;
+	-webkit-animation: gradientBG 10s ease infinite;
+	        animation: gradientBG 10s ease infinite;
+}
+
+@-webkit-keyframes gradientBG {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
+}
+@keyframes gradientBG {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
+}
+
+.masonry-with-columns .loader_card:nth-child(1) {
+  height: 475px;
+  line-height: 475px;
+}
+.masonry-with-columns .loader_card:nth-child(2) {
+  height: 456px;
+  line-height: 456px;
+}
+.masonry-with-columns .loader_card:nth-child(3) {
+  height: 418px;
+  line-height: 418px;
+}
+.masonry-with-columns .loader_card:nth-child(4) {
+  height: 239px;
+  line-height: 239px;
+}
+.masonry-with-columns .loader_card:nth-child(5) {
+  height: 217px;
+  line-height: 217px;
+}
+.masonry-with-columns .loader_card:nth-child(6) {
+  height: 134px;
+  line-height: 134px;
+}
+.masonry-with-columns .loader_card:nth-child(7) {
+  height: 437px;
+  line-height: 437px;
+}
+.masonry-with-columns .loader_card:nth-child(8) {
+  height: 266px;
+  line-height: 266px;
+}
+.masonry-with-columns .loader_card:nth-child(9) {
+  height: 268px;
+  line-height: 268px;
+}
+.masonry-with-columns .loader_card:nth-child(10) {
+  height: 416px;
+  line-height: 416px;
+}
+.masonry-with-columns .loader_card:nth-child(11) {
+  height: 146px;
+  line-height: 146px;
+}
+.masonry-with-columns .loader_card:nth-child(12) {
+  height: 114px;
+  line-height: 114px;
+}
+.masonry-with-columns .loader_card:nth-child(13) {
+  height: 246px;
+  line-height: 246px;
+}
+.masonry-with-columns .loader_card:nth-child(14) {
+  height: 310px;
+  line-height: 310px;
+}
+.masonry-with-columns .loader_card:nth-child(15) {
+  height: 322px;
+  line-height: 322px;
+}
+
+/**********/
+
+/* loader for create project */
+.loader_project {
+   width: 100%;
+   height: 100%;
+   position: fixed;
+   z-index: 999999;
+   top: 0;
+   left: 0;
+   background: #fff;
+   overflow-y: hidden;
+   transition: 0.5s;
+   display: none;
+   justify-content: center;
+   align-items: center;
+}
+
+.loader_project .loader-container {
+   width: 220px;
+}
+
+.loader_project .ball-wrapper {
+   position: relative;
+   display: inline-block;
+   width: 50px;
+   margin: 0 10px;
+   padding-bottom: 10px;
+}
+
+.loader_project .ball-holder {
+   position: relative;
+   overflow: hidden;
+   height: 130px;
+}
+
+.loader_project .ball {
+   position: absolute;
+   bottom:0; left: 50%;
+   display: block;
+   width: 30px;
+   height: 30px;
+   border-radius: 25px;
+   border: 1px solid #a8add0;
+   background-color: #a8add0;
+   transform: translateY(0px) translateX(-50%) translateZ(0);
+   transform-origin: center;
+   animation: loader_project 1s infinite linear;
+   z-index: 2;
+}
+
+.loader_project .shadow {
+   position: absolute;
+   bottom: 9px;
+   width: 100%;
+   height: 6px;
+   border-radius: 50%;
+   background: rgb(161,160,161);
+   opacity: 1;
+   animation: shadow_loader 1s infinite linear;
+   z-index: 1;
+}
+
+.ball-wrapper:nth-of-type(1) .ball,
+.ball-wrapper:nth-of-type(1) .shadow {
+   animation-delay: 0s;
+}
+.ball-wrapper:nth-of-type(2) .ball,
+.ball-wrapper:nth-of-type(2) .shadow {
+   animation-delay: 0.2s;
+}
+.ball-wrapper:nth-of-type(3) .ball,
+.cube-wrapper:nth-of-type(3) .shadow {
+   animation-delay: 0.3s;
+}
+
+@keyframes loader_project {
+   0%   { transform: translate(-50%, 10px); }
+   40%  { transform: translate(-50%, -90px); width: 30px; height: 30px; }
+   50%  { transform: translate(-50%, -100px); width: 30px; height: 30px; }
+   65%  { transform: translate(-50%, -90px); width: 30px; height: 30px; }
+   75%  { transform: translate(-50%, 0px); width: 30px; height: 30px; }
+   100% { transform: translate(-50%, 10px);  width: 50px; height: 15px;}
+}
+
+@keyframes shadow_loader {
+   0%   { transform: scale(0.9, 0.9); opacity: 1; }
+   50%  { transform: scale(0.2, 0.2); opacity: 0.3; }
+   100% { transform: scale(0.9, 0.9); opacity: 1; }
+}
+
+
 .loader_overlay {
    width: 100%;
    height: 100%;
@@ -454,7 +650,7 @@ input {
 .modalBackground {
    display: none;
    position: fixed;
-   z-index: 999999;
+   z-index: 999998;
    padding: 150px 0;
    left: 0;
    top: 0;
