@@ -9,7 +9,7 @@
       {{#each other_users}}
 
       <a href="/messages/{{this}}" class="follower__profile">
-         {{this}}
+         @{{this}}
       </a>
 
       {{/each}}
@@ -34,7 +34,7 @@
          <div class="follower__profile-img-container">
             <img class="profile__img" {{#if this.profileimage}}src="https://s3.amazonaws.com/hryzn-app-static-assets/{{this.profileimage}}"{{else}}src="/img/site/hryzn-placeholder-01.jpg"{{/if}} />
          </div>
-         {{this.username}}
+         @{{this.username}}
       </a>
       {{/each}}
    </section>

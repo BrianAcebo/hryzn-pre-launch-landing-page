@@ -6,7 +6,7 @@
       <div class="follower__profile-img-container">
          <img class="profile__img" {{#if this.profileimage}}src="https://s3.amazonaws.com/hryzn-app-static-assets/{{this.profileimage}}"{{else}}src="/img/site/hryzn-placeholder-01.jpg"{{/if}} />
       </div>
-      {{this.username}}
+      @{{this.username}}
    </a>
    {{/each}}
    {{else}}

@@ -34,15 +34,19 @@ $(document).ready(function() {
    $rand_loader.css({ "display": "block" });
 
    $window.on('load', function() {
-      $(".loader_wrapper").delay(300).fadeOut("slow", function() {
-         $('.loader_overlay').delay(300).fadeOut("slow");
-      });
+      setTimeout(function(){
+         $(".loader_wrapper").delay(300).fadeOut("slow", function() {
+            $('.loader_overlay').delay(300).fadeOut("slow");
+         });
+      }, 3000);
    });
 
    $window.on('load', function() {
-      $(".projects_loader").delay(300).fadeOut("slow", function() {
-         $('.loader_overlay').delay(300).fadeOut("slow");
-      });
+      setTimeout(function(){
+         $(".projects_loader").delay(300).fadeOut("slow", function() {
+            $('.loader_overlay').delay(300).fadeOut("slow");
+         });
+      }, 3000);
    });
    /**********/
 

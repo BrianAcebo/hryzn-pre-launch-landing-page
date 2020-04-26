@@ -109,7 +109,7 @@
                   <div class="topnav__profile-img-container">
                      <img class="profile__img" {{#if user.profileimage}}src="https://s3.amazonaws.com/hryzn-app-static-assets/{{user.profileimage}}"{{else}}src="/img/site/hryzn-placeholder-01.jpg"{{/if}} />
                   </div>
-                  {{user.username}}
+                  @{{user.username}}
                </div>
             </a>
             <a href="/explore"><img src="/icons/explore-black.png" class="main-topnav__icon" /></a>

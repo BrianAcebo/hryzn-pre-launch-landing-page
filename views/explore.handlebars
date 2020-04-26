@@ -1,13 +1,4 @@
 <div class="loader_overlay">
-   <!-- <div class="loader_wrapper">
-      <div class="loader"></div>
-      <p class="loader_text loader_text-1">Our robots are looking for the cool stuff.</p>
-      <p class="loader_text loader_text-2">Retrieving files... Accessing data... Planning world domination.</p>
-      <p class="loader_text loader_text-3">Soon the computers will just take over.</p>
-      <p class="loader_text loader_text-4">The things are doing the stuff.</p>
-      <p class="loader_text loader_text-5">Your hair looks pretty.</p>
-   </div> -->
-
    <div class="masonry-with-columns projects_loader">
       <div class="loader_card"></div>
       <div class="loader_card"></div>
@@ -35,14 +26,16 @@
 
       <p class="top_results">Top Profiles</p>
       <hr class="top_results_underline" />
+      <section class="follower__profiles-section">
       {{#each user_search}}
       <a href="/profile/{{this.username}}" class="follower__profile">
          <div class="follower__profile-img-container">
             <img class="profile__img" {{#if this.profileimage}}src="https://s3.amazonaws.com/hryzn-app-static-assets/{{this.profileimage}}"{{else}}src="/img/site/hryzn-placeholder-01.jpg"{{/if}} />
          </div>
-         {{this.username}}
+         @{{this.username}}
       </a>
       {{/each}}
+      </section>
    {{/if}}
 
    {{#if project_search}}
@@ -61,14 +54,23 @@
                {{! Check if the project is a private project, we do not want to show private projects }}
                {{else}}
 
-               <div class="masonryItem">
-                  <a href="/p/details/{{id}}" class="project_link">
-                     <div class="project_card">
+               <div class="masonryItem" title="{{project_title}}">
+                  <div class="project_card">
+                     <a href="/p/details/{{id}}" class="project_link">
                         <img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{project_image}}" class="img-responsive" alt="{{project_title}}" />
-                        <p class="project_card_title">{{project_title}}</p>
+                     </a>
+                     <div class="project_card_bottom">
+                        <div class="project_bottom_wrapper">
+                           <div class="bg_overlay"></div>
+                           <div class="project_bottom_details">
+                              <a href="/profile/{{project_owner}}"><p class="project_owner">@{{project_owner}}</p></a>
+                              <a href="/p/details/{{id}}" class="project_link">
+                                 <p class="project_card_title">{{project_title}}</p>
+                              </a>
+                           </div>
+                        </div>
                      </div>
-                  </a>
-                  <a href="/profile/{{project_owner}}"><p class="project_owner">{{project_owner}}</p></a>
+                  </div>
                </div>
 
                {{/if}}
@@ -94,14 +96,23 @@
                {{! Check if the project is a private project, we do not want to show private projects }}
                {{else}}
 
-               <div class="masonryItem">
-                  <a href="/p/details/{{id}}" class="project_link">
-                     <div class="project_card">
+               <div class="masonryItem" title="{{project_title}}">
+                  <div class="project_card">
+                     <a href="/p/details/{{id}}" class="project_link">
                         <img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{project_image}}" class="img-responsive" alt="{{project_title}}" />
-                        <p class="project_card_title">{{project_title}}</p>
+                     </a>
+                     <div class="project_card_bottom">
+                        <div class="project_bottom_wrapper">
+                           <div class="bg_overlay"></div>
+                           <div class="project_bottom_details">
+                              <a href="/profile/{{project_owner}}"><p class="project_owner">@{{project_owner}}</p></a>
+                              <a href="/p/details/{{id}}" class="project_link">
+                                 <p class="project_card_title">{{project_title}}</p>
+                              </a>
+                           </div>
+                        </div>
                      </div>
-                  </a>
-                  <a href="/profile/{{project_owner}}"><p class="project_owner">{{project_owner}}</p></a>
+                  </div>
                </div>
 
                {{/if}}

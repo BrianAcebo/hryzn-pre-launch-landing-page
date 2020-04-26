@@ -79,7 +79,7 @@
 
             {{! Project Admins }}
             {{#each project.admins}}
-            <a class="project_admins desktop_admin" href="/profile/{{this}}">{{this}}</a>
+            <a class="project_admins desktop_admin" href="/profile/{{this}}">@{{this}}</a>
             {{/each}}
 
             {{! Checks if user has an account or a guest visit }}
@@ -88,7 +88,7 @@
                <div class="row project_btn_container">
                   {{! Project Admins Mobile }}
                   {{#each project.admins}}
-                  <a class="project_admins mobile_admin" href="/profile/{{this}}">{{this}}</a>
+                  <a class="project_admins mobile_admin" href="/profile/{{this}}">@{{this}}</a>
                   {{/each}}
 
                   <div class="project_btn_wrapper">
@@ -244,13 +244,24 @@
         {{! Check if the project is a private project, we do not want to show private projects }}
         {{else}}
 
-        <a href="/p/details/{{id}}/guest" class="project_link">
+        <div class="masonryItem" title="{{project_title}}">
            <div class="project_card">
-              <img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{project_image}}" class="img-responsive" alt="{{project_title}}" />
-              <p class="project_card_title">{{project_title}}</p>
+             <a href="/p/details/{{id}}/guest" class="project_link">
+                 <img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{project_image}}" class="img-responsive" alt="{{project_title}}" />
+             </a>
+             <div class="project_card_bottom">
+                 <div class="project_bottom_wrapper">
+                    <div class="bg_overlay"></div>
+                    <div class="project_bottom_details">
+                       <a href="/profile/{{project_owner}}"><p class="project_owner">@{{project_owner}}</p></a>
+                       <a href="/p/details/{{id}}/guest" class="project_link">
+                          <p class="project_card_title">{{project_title}}</p>
+                       </a>
+                    </div>
+                 </div>
+             </div>
            </div>
-        </a>
-        <a href="/profile/{{project_owner}}"><p class="project_owner">{{project_owner}}</p></a>
+        </div>
 
         {{/if}}
         {{/each}}
@@ -273,13 +284,24 @@
   {{! Check if the project is a private project, we do not want to show private projects }}
   {{else}}
 
-  <a href="/p/details/{{id}}/guest" class="project_link">
+  <div class="masonryItem" title="{{project_title}}">
      <div class="project_card">
-        <img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{project_image}}" class="img-responsive" alt="{{project_title}}" />
-        <p class="project_card_title">{{project_title}}</p>
+        <a href="/p/details/{{id}}/guest" class="project_link">
+           <img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{project_image}}" class="img-responsive" alt="{{project_title}}" />
+        </a>
+        <div class="project_card_bottom">
+           <div class="project_bottom_wrapper">
+              <div class="bg_overlay"></div>
+              <div class="project_bottom_details">
+                 <a href="/profile/{{project_owner}}"><p class="project_owner">@{{project_owner}}</p></a>
+                 <a href="/p/details/{{id}}/guest" class="project_link">
+                    <p class="project_card_title">{{project_title}}</p>
+                 </a>
+              </div>
+           </div>
+        </div>
      </div>
-  </a>
-  <a href="/profile/{{project_owner}}"><p class="project_owner">{{project_owner}}</p></a>
+  </div>
 
   {{/if}}
   {{/each}}
