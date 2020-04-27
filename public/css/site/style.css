@@ -389,6 +389,7 @@ input {
   column-gap: 35px;
   padding: 150px 35px 35px 35px;
 }
+
 .masonry-with-columns .loader_card {
   width: 150px;
   background: #f1f1f1;
@@ -398,9 +399,20 @@ input {
   display: inline-block;
   width: 100%;
   background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab );
-	background-size: 400% 400%;
-	-webkit-animation: gradientBG 10s ease infinite;
-	        animation: gradientBG 10s ease infinite;
+  background-size: 400% 400%;
+  -webkit-animation: gradientBG 10s ease infinite;
+  animation: gradientBG 10s ease infinite;
+}
+
+@media screen and (max-width: 768px) {
+   .masonry-with-columns {
+     columns: 2 100px;
+     column-gap: 15px;
+   }
+
+   .masonry-with-columns .loader_card {
+     margin: 0;
+   }
 }
 
 @-webkit-keyframes gradientBG {

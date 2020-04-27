@@ -269,7 +269,7 @@ nav.item-list {
    bottom: 0;
    border-top: 1px solid #f1f1f1;
    width: 100%;
-   z-index: 99999;
+   z-index: 999998;
 }
 
 .mobile-nav__item-list {
