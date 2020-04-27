@@ -999,4 +999,11 @@ router.get('/search', (req, res, next) => {
    }
 });
 
+// Get Category
+router.get('/sitemap', (req, res, next) => {
+   res.render('sitemap', {
+      page_title: 'Sitemap'
+   });
+});
+
 module.exports = router;
