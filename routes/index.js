@@ -999,10 +999,11 @@ router.get('/search', (req, res, next) => {
    }
 });
 
-// Get Category
+// Get Sitemap
 router.get('/sitemap', (req, res, next) => {
    res.render('sitemap', {
-      page_title: 'Sitemap'
+      page_title: 'Sitemap',
+      sitemap: true
    });
 });
 

@@ -1,3 +1,7 @@
+{{#if sitemap}}
+{{! We want xml for our sitemap }}
+{{{body}}}
+{{else}}
 <!DOCTYPE html>
 
 <html class="no-js" lang="en">
@@ -405,3 +409,4 @@
    {{!if}}
 
 </html>
+{{/if}}
