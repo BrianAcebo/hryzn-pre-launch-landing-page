@@ -159,7 +159,7 @@ router.post('/contact/forgot', (req, res, next) => {
          from: '"Hryzn" <hello@myhryzn.com>',
          to: contact_email,
          subject: 'Change Your Password On Hryzn',
-         html: '<p>Hi ' + user.firstname + ',<p><p style="display:inline-block">We received your request to change your password, which you can do </p><a href="https://www.myhryzn.com/about/reset/' + user.id + '" style="display:inline-block; margin-left: 2px;">here</a>'
+         html: '<p>Hi ' + user.firstname + ',<p><p style="display:inline-block">We received your request to change your password, which you can do </p><a href="https://www.myhryzn.com/about/reset/' + user.id + '" style="display:inline-block; margin-left: 2px;">here</a><br /><p>If this was not you, please <a href="https://www.myhryzn.com/welcome#contact">contact us</a></p>'
       }
 
       transporter.sendMail(mailOptions, (error, info) => {

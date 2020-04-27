@@ -1,0 +1,44 @@
+<div class="landing-main__container">
+   {{#if error_msg}}
+   <div class="error__msg-2">
+      <p>{{error_msg}}</p>
+      <p class="error__exit">&times;</p>
+   </div>
+   {{/if}}
+
+   {{#if errors}}
+      {{#each errors}}
+         <div class="error__msg-2">
+            <p>{{msg}}</p>
+            <p class="error__exit">&times;</p>
+         </div>
+      {{/each}}
+   {{/if}}
+
+   {{#if error}}
+      {{#each error}}
+         <div class="error__msg-2">
+            <p>{{this}}</p>
+            <p class="error__exit">&times;</p>
+         </div>
+      {{/each}}
+   {{/if}}
+
+   {{#if success_msg}}
+   <div class="success__msg-2">
+      <p>{{success_msg}}</p>
+      <p class="error__exit">&times;</p>
+   </div>
+   {{/if}}
+
+   <div class="form-container-2 auth_form">
+      <h3 class="landing-title-faded">Auth</h3>
+      <form method="post" action="/blog/auth">
+         <div class="container">
+           <input class="form__input" type="text" placeholder="Enter username or email address" name="username" value="{{username}}" required autocapitalize="none" />
+           <input class="form__input" type="password" placeholder="Enter password" name="password" value="{{password}}" required  autocapitalize="none" />
+           <button class="form__sign-up-button" name="submit" type="submit">Login</button>
+        </div>
+      </form>
+   </div>
+</div>
