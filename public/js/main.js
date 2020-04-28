@@ -77,16 +77,19 @@ $(document).ready(function() {
    $topNav = $('.topnav');
    $flash_1 = $('.success__msg');
    $flash_2 = $('.error__msg-4');
+   $drop_nav = $('.drop_nav');
 
    $window.scroll(function() {
       if($window.scrollTop() >= 50){
          $topNav.addClass('shadow');
          $flash_1.addClass('changeTop');
          $flash_2.addClass('changeTop');
+         $drop_nav.addClass('dropNavTop');
 		} else {
          $topNav.removeClass('shadow');
          $flash_1.removeClass('changeTop');
          $flash_2.removeClass('changeTop');
+         $drop_nav.removeClass('dropNavTop');
 		}
    });
    /**********/

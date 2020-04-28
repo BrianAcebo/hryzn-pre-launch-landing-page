@@ -86,11 +86,11 @@ passport.deserializeUser( (id, done) => {
 });
 
 // POST Login
-router.post('/auth', passport.authenticate('local-login', { failureRedirect:'/blog/auth', failureFlash: true }), (req, res, next) => {
+router.post('/auth', passport.authenticate('local-auth', { failureRedirect:'/blog/auth', failureFlash: true }), (req, res, next) => {
    res.redirect('/blog/create-post');
 });
 
-passport.use('local-login', new LocalStrategy( (username, password, done) => {
+passport.use('local-auth', new LocalStrategy( (username, password, done) => {
    // Check for username
 
    if (username === 'hryzn') {
@@ -112,7 +112,7 @@ passport.use('local-login', new LocalStrategy( (username, password, done) => {
    } else {
       return done(null, false, { message: 'Incorrect Password Or Username. Please Try Again' });
    }
-   
+
 }));
 
 
