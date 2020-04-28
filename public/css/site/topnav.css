@@ -212,6 +212,7 @@ nav.item-list {
    z-index: 9999999;
    top: 100px;
    right: 0;
+   transition: .3s;
 }
 
 .drop_nav.dropNavTop {
