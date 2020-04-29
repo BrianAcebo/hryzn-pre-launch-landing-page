@@ -212,6 +212,11 @@
     cursor: pointer;
 }
 
+.login_page_btn {
+   border-radius: 35px!important;
+   padding: 0!important;
+}
+
 .form__href-container {
    text-align: center;
 }
