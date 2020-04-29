@@ -3281,35 +3281,6 @@ th:last-child, td:last-child {
 
 
 /* -------------------------------------------------------------------
- * ## Spacing
- * ------------------------------------------------------------------- */
-button, .btn {
-    margin-bottom: 1.2rem;
-}
-
-fieldset {
-    margin-bottom: 1.5rem;
-}
-
-input,
-textarea,
-select,
-pre,
-blockquote,
-figure,
-table,
-p,
-ul,
-ol,
-dl,
-form,
-.video-container,
-.cl-custom-select {
-    margin-bottom: 3rem;
-}
-
-
-/* -------------------------------------------------------------------
  * ## pace.js styles - minimal
  * ------------------------------------------------------------------- */
 .pace {
@@ -3605,7 +3576,6 @@ input[type="button"] {
     text-transform: uppercase;
     letter-spacing: .3rem;
     height: 5.4rem;
-    line-height: calc(5.4rem - .4rem);
     padding: 0 3rem;
     margin: 0 .3rem 1.2rem 0;
     color: #000000;
