@@ -175,25 +175,6 @@
    color: #707070;
 }
 
-.auth_form.form__sign-up-button {
-   background: #31375A;
-   font-size: 12px;
-   text-transform: uppercase;
-   letter-spacing: 1px;
-   color: #fff;
-   margin: 0;
-   font-weight: bold;
-   border-radius: 35px;
-   width: 50%;
-   display: flex;
-   justify-content: center;
-   align-items: center;
-   text-align: center;
-   border: none;
-   cursor: pointer;
-   transition: 0.3s;
-}
-
 .form__sign-up-button {
     background: #31375A;
     font-size: 12px;
@@ -214,6 +195,20 @@
 
 .form__sign-up-button:hover {
   opacity: 0.8;
+}
+
+.auth_form.form__sign-up-button {
+   background: #31375A;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #fff;
+    margin: 0;
+    width: 50%;
+    font-size: 12px;
+    transition: .3s;
+    text-align: center;
+    border-radius: 35px;
+    cursor: pointer;
 }
 
 .form__href-container {
