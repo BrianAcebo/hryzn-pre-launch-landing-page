@@ -32,9 +32,28 @@
    flex-direction: row;
 }
 
+.form_row .col-lg-6 {
+   padding: 0!important;
+}
+
+.form_row.auth_btn {
+   display: flex;
+   align-items: center;
+   justify-content: flex-start;
+   border: 1px solid #31375A;
+   padding: 0;
+   cursor: pointer;
+   border-radius: 35px;
+   margin-top: 25px;
+}
+
 @media screen and (max-width: 768px) {
    .form_row {
       flex-direction: column;
+   }
+
+   .form_row.auth_btn {
+      flex-direction: row;
    }
 
    .form-container-2 {
@@ -57,6 +76,10 @@
    .form-container-2 {
       width: 100%;
       padding: 25px;
+   }
+
+   .auth_form {
+      padding: 50px;
    }
 
    .form__list {
@@ -152,22 +175,41 @@
    color: #707070;
 }
 
-.form__sign-up-button {
+.auth_form.form__sign-up-button {
    background: #31375A;
    font-size: 12px;
    text-transform: uppercase;
    letter-spacing: 1px;
    color: #fff;
-   max-width: 400px;
-   padding: 15px 20px;
-   width: 100%;
-   margin: 20px auto;
+   margin: 0;
+   font-weight: bold;
+   border-radius: 35px;
+   width: 50%;
    display: flex;
    justify-content: center;
+   align-items: center;
    text-align: center;
    border: none;
    cursor: pointer;
    transition: 0.3s;
+}
+
+.form__sign-up-button {
+    background: #31375A;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #fff;
+    margin: 0;
+    padding: 15px 25px;
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s;
 }
 
 .form__sign-up-button:hover {
@@ -275,5 +317,18 @@
 @media screen and (max-width: 520px) {
    .checkmark {
       top: 5px;
+   }
+}
+
+.login_page_secondary {
+   font-weight: bold;
+   margin-left: 16%;
+   color: #31375A;
+}
+
+
+@media screen and (max-width: 595px) {
+   .login_page_secondary {
+      margin-left: 15%;
    }
 }

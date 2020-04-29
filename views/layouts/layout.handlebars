@@ -62,6 +62,7 @@
       <link rel="stylesheet" type="text/css" href="/css/site/about.css" />
       <link rel="stylesheet" type="text/css" href="/css/site/profile.css" />
       <link rel="stylesheet" type="text/css" href="/css/site/messages.css" />
+      <link rel="stylesheet" type="text/css" href="/css/site/blog.css" />
       <link rel="stylesheet" type="text/css" href="/css/site/trumbowyg.min.css" />
       }}
 
@@ -70,8 +71,6 @@
       {{#if user}}
       {{else}}
       <link rel="stylesheet" type="text/css" href="/css/welcomeNav.css" />
-      {{/if}}
-      {{#if welcomePage}}
       <link rel="stylesheet" type="text/css" href="/css/welcome.css" />
       {{/if}}
 
@@ -170,12 +169,12 @@
                <h3>Find your voice</h3>
 
                <ul class="header-nav__list">
-                  <li class="current"><a class="smoothscroll"  href="#home" title="home">Home</a></li>
-                  <li><a class="smoothscroll"  href="#about" title="about">About</a></li>
-                  <li><a class="smoothscroll"  href="#works" title="works">Works</a></li>
-                  <li><a class="smoothscroll"  href="#features" title="services">Features</a></li>
+                  <li class="current"><a {{#if welcomePage}}class="smoothscroll"  href="#home"{{else}}href="https://www.myhryzn.com#home"{{/if}} title="home">Home</a></li>
+                  <li><a {{#if welcomePage}}class="smoothscroll"  href="#about" {{else}}href="https://www.myhryzn.com#about"{{/if}} title="about">About</a></li>
+                  <li><a {{#if welcomePage}}class="smoothscroll"  href="#works" {{else}}href="https://www.myhryzn.com#works"{{/if}} title="works">Works</a></li>
+                  <li><a {{#if welcomePage}}class="smoothscroll"  href="#features" {{else}}href="https://www.myhryzn.com#services"{{/if}} title="services">Features</a></li>
                   <li><a href="/blog" title="blog">Blog</a></li>
-                  <li><a class="smoothscroll"  href="#contact" title="contact">Contact</a></li>
+                  <li><a {{#if welcomePage}}class="smoothscroll"  href="#contact" {{else}}href="https://www.myhryzn.com#contact"{{/if}} title="contact">Contact</a></li>
                   <li><a href="/users/login"><strong>Login</strong></a> | <a href="/users/register"><strong>Sign Up</strong></a></li>
                </ul>
 
@@ -196,9 +195,12 @@
             <span class="header-menu-icon"></span>
          </a>
          {{else}}
-         <div class="landing-nav__right">
+         <a class="header-menu-toggle" href="#0">
+            <span class="header-menu-icon"></span>
+         </a>
+         <!-- <div class="landing-nav__right">
             <a href="/users/register"><div class="auth-sign__btn btn__primary">Sign Up</div></a>
-         </div>
+         </div> -->
          {{/if}}
 
       </header>
@@ -239,9 +241,8 @@
       {{else}}
       <footer class="footer__container">
          <a href="/">About</a>
-         {{#if blog}}<a href="/blog/auth">Auth</a>{{/if}}
          <a href="/about/press">Press</a>
-         <a href="https://www.thehryznblog.com/" target="_blank">Learn</a>
+         <a href="/blog">Blog</a>
          <a href="/about/terms">Terms Of Service</a>
          <a href="/about/privacy">Privacy Policy</a>
          {{! Not Ready Yet <a href="/about/copyright">Copyright</a> }}

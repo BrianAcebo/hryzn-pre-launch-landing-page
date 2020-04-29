@@ -2932,10 +2932,6 @@ a {
     transition: all 0.3s ease-in-out;
 }
 
-a:hover, a:focus, a:active {
-    color: #39b54a;
-}
-
 a:hover, a:active {
     outline: 0;
 }
@@ -3566,42 +3562,31 @@ label > input[type="radio"] {
  * ## style placeholder text
  * ------------------------------------------------------------------- */
 ::-webkit-input-placeholder {
-    color: #fff;
+    color: #333;
 }
 
 :-moz-placeholder {
-    color: #fff;
+    color: #333;
     /* Firefox 18- */
 }
 
 ::-moz-placeholder {
-    color: #fff;
+    color: #333;
     /* Firefox 19+ */
 }
 
 :-ms-input-placeholder {
-    color: #fff;
+    color: #333;
 }
 
 .placeholder {
-    color: #fff !important;
+    color: #333 !important;
 }
 
 
 /* -------------------------------------------------------------------
  * ## change autocomplete styles in chrome
  * ------------------------------------------------------------------- */
-input:-webkit-autofill,
-input:-webkit-autofill:hover,
-input:-webkit-autofill:focus input:-webkit-autofill,
-textarea:-webkit-autofill,
-textarea:-webkit-autofill:hover textarea:-webkit-autofill:focus,
-select:-webkit-autofill,
-select:-webkit-autofill:hover,
-select:-webkit-autofill:focus {
-    -webkit-text-fill-color: #fff;
-    transition: background-color 5000s ease-in-out 0s;
-}
 
 
 
@@ -5509,16 +5494,16 @@ html.no-csstransitions .home-content__main {
 }
 
 ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
-  color: #fff;
+  color: #333;
   opacity: 1; /* Firefox */
 }
 
 :-ms-input-placeholder { /* Internet Explorer 10-11 */
-  color: #fff;
+  color: #333;
 }
 
 ::-ms-input-placeholder { /* Microsoft Edge */
-  color: #fff;
+  color: #333;
 }
 
 .contact-content input[type="email"]:focus,

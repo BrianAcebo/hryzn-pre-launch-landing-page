@@ -329,6 +329,11 @@ router.get('/profile/:username', (req, res, next) => {
          // User is seeing their own profile
          if(profile.username === req.user.username) {
             var viewing_own_profile = true;
+            if (profile.username === 'hryzn') {
+               var hryznAdmin = true;
+            } else {
+               var hryznAdmin = false;
+            }
          } else {
             var viewing_own_profile = false;
          }
@@ -404,7 +409,8 @@ router.get('/profile/:username', (req, res, next) => {
                amount_of_following: amount_of_following,
                amount_of_projects: amount_of_projects,
                viewing_own_profile: viewing_own_profile,
-               guestUser: guestUser
+               guestUser: guestUser,
+               hryznAdmin: hryznAdmin
             });
          });
       });

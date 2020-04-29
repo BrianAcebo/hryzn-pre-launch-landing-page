@@ -1,3 +1,41 @@
-<div class="error__container">
-   <h1 class="main__title">Sorry, this is a work in progress...</h1>
-</div>
+{{#if posts}}
+
+   <h1 class="blog_welcome_title">Welcome to the Hryzn <span>Blog</span></h1>
+   <p class="blog_welcome_sub">Learn how to find your voice and grow your blog into business</p>
+
+   <div class="most_recent_posts_container">
+      {{#if most_recent_posts}}
+      {{#each most_recent_posts}}
+      <a href="/blog/{{post_slug}}">
+         <div class="most_recent_post_card">
+            <div class="most_recent_img_container">
+               <img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{post_image}}" class="img-responsive" alt="{{post_title}}" />
+            </div>
+
+            <div class="post_info_container">
+               <p class="post_date">{{post_date}}</p>
+               <h3 class="post_title">{{post_title}}</h3>
+               <div class="post_btn">view</div>
+            </div>
+         </div>
+      </a>
+      {{/each}}
+      {{/if}}
+   </div>
+
+   {{#each posts}}
+
+      {{#if is_draft}}
+      {{! Check if the project is a private project, we do not want to show private projects }}
+      {{else}}
+
+      {{/if}}
+
+   {{/each}}
+
+{{else}}
+
+   {{! Something went wrong }}
+   <p class="error-message">Sorry, we couldn't find what you were looking for.</p>
+
+{{/if}}

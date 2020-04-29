@@ -4,7 +4,7 @@
    </div>
 </div>
 
-<form method="post" class="edit-project-form" action="/p/create-project" enctype="multipart/form-data">
+<form method="post" class="edit-project-form" action="/blog/create-post" enctype="multipart/form-data">
    <div class="form__container">
 
       <div class="modalBtnMeta project_meta_btn">
@@ -12,13 +12,13 @@
       </div>
 
 
-      {{! Project Title }}
-      <input class="form__input project_title_input" type="text" placeholder="Enter a title" name="project_title" value="{{project.project_title}}" required autocapitalize="none" />
+      {{! Post Title }}
+      <input class="form__input project_title_input" type="text" placeholder="Enter a title" name="post_title" value="{{post.post_title}}" required autocapitalize="none" />
 
 
-      {{! Project Notes }}
-      <div id="editor" name="editor"  placeholder="Hi {{user.username}}, you have 1000 words. Have fun!"></div>
-      <input id="projectNotes" name="project_notes" type="hidden">
+      {{! Post Notes }}
+      <div id="editor" name="editor"  placeholder="Make it good, you got this. Have fun!"></div>
+      <input id="projectNotes" name="post_notes" type="hidden">
 
 
       <input type="hidden" name="user_id" value="{{user._id}}">
@@ -33,7 +33,7 @@
       </div>
   </div>
 
-  {{! Project Meta Modal }}
+  {{! Post Meta Modal }}
   <div class="popModalMeta modalBackground">
      <div class="modal-content">
 
@@ -53,80 +53,29 @@
            {{/each}}
         {{/if}}
 
-        {{! Public or Private }}
-        <div class="checkbox__wrapper">
-           <label class="check__container">
-              <input id="isPrivateCheck" class="form__input-checkbox" type="checkbox">
-              <span class="checkmark">Private Project</span>
-           </label>
-           <label class="check__container">
-              <input id="isPublicCheck" class="form__input-checkbox checked" type="checkbox" checked>
-              <span class="checkmark">Public Project</span>
-           </label>
-        </div>
-        <br />
-        <p class="form__input-small" id="changeText">A public project can be viewed by anyone</p>
+
+        {{! Post Image }}
+        <label for="post_image" class="form__label">Add Post Image <span style="color: #999; font-size: 10px; margin-left: 8px;">* Required *</span></label>
+        <input class="form__input" type="file" name="post_image" value="{{post.post_image}}" />
 
 
-        {{! Project Image }}
-        <label for="project_image" class="form__label">Add Project Image <span style="color: #999; font-size: 10px; margin-left: 8px;">* Required *</span></label>
-        <input class="form__input" type="file" name="project_image" value="{{project.project_image}}" />
-
-
-        {{! Project Video }}
-        <label for="project_video" class="form__label" style="margin-top: 25px;">Add Project Video</label>
-        <input class="form__input" type="text" placeholder="Enter a Youtube or Vimeo link" name="project_video" value="{{project.project_video}}" />
-
-
-        {{! Project Categories }}
-        <label for="project_categories" class="form__label" style="margin-top: 25px;">Add Project Categories</label>
-        <select data-placeholder="Add categories..." multiple class="chosen-select form__input" name="project_categories[]">
+        {{! Post Categories }}
+        <label for="post_categories" class="form__label" style="margin-top: 25px;">Add Post Categories</label>
+        <select data-placeholder="Add categories..." multiple class="chosen-select form__input" name="post_categories[]">
            <option value=""></option>
-           <option>Animals</option>
-           <option>Architecture</option>
-           <option>Art</option>
-           <option>Cars & Motorcycles</option>
-           <option>Celebrities</option>
-           <option>DIY & Crafts</option>
-           <option>Design</option>
-           <option>Education</option>
-           <option>Film, Music & Books</option>
-           <option>Finance</option>
-           <option>Food & Drink</option>
-           <option>Gardening</option>
-           <option>Geek</option>
-           <option>Hair & Beauty</option>
-           <option>Health & Fitness</option>
-           <option>History</option>
-           <option>Holidays & Events</option>
-           <option>Home Decor</option>
-           <option>Humor</option>
-           <option>Illustrations & Posters</option>
-           <option>Kids</option>
-           <option>Men’s Fashion</option>
-           <option>Outdoors</option>
-           <option>Photography</option>
-           <option>Products</option>
-           <option>Quotes</option>
-           <option>Science & Nature</option>
-           <option>Sports</option>
-           <option>Tattoos</option>
-           <option>Technology</option>
-           <option>Travel</option>
-           <option>Weddings</option>
-           <option>Women’s Fashion</option>
-           <option>Other</option>
+           <option>Growth Strategies</option>
+           <option>Marketing</option>
+           <option>Content Strategy</option>
+           <option>Writer Spotlight</option>
+           <option>Starting</option>
+           <option>Managing</option>
+           <option>Hryzn</option>
         </select>
 
 
-        {{! Project URL }}
-        <label for="project_url" class="form__label" style="margin-top: 25px;">Add a link</label>
-        <input class="form__input" type="text" placeholder="Enter a link" name="project_url" value="{{project.project_url}}" />
-
-
-        {{! Project Description }}
-        <label for="project_description" class="form__label" style="margin-top: 25px;">Write a Description</label>
-        <textarea class="project-description__input" type="text" name="project_description" value="{{project.project_description}}">{{project.project_description}}</textarea>
+        {{! Post Description }}
+        <label for="post_description" class="form__label" style="margin-top: 25px;">Write a Description</label>
+        <textarea class="project-description__input" type="text" name="post_description" value="{{post.post_description}}">{{post.post_description}}</textarea>
 
 
         <div class="modal-footer">

@@ -49,13 +49,11 @@
             <input class="form__input" type="password" placeholder="Confirm password" name="password2" value="{{password2}}" required autocapitalize="none" />
             <label for="profileimage" class="form__label">Select your profile image</label>
             <input class="form__input" type="file" name="profileimage" value="{{profileimage}}" />
-            <button class="form__sign-up-button" name="submit" type="submit">Sign Up</button>
+            <div class="form_row auth_btn">
+             <button class="form__sign-up-button login_page_btn" name="submit" type="submit">Sign Up</button>
+             <a class ="form__href login_page_secondary" href="/users/login">Login</a>
+            </div>
         </div>
       </form>
-      <div class="form__href-container">
-         <a class ="form__href" href="/users/login">
-            Have an account? Login
-         </a>
-      </div>
    </div>
 </div>
