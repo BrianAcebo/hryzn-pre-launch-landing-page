@@ -82,6 +82,7 @@
 .post_title {
    margin: 0;
    font-size: 20px;
+   line-height: 30px;
 }
 
 .post_btn {
@@ -132,18 +133,27 @@
 
 @media screen and (max-width: 595px) {
    .blog_welcome_title {
-      margin: 25px 0 0 15px;
-      font-size: 26px;
+      margin: 25px 0 0 0;
+      font-size: 24px;
    }
 
    .blog_welcome_title span {
-      font-size: 26px;
+      font-size: 24px;
    }
 
    .blog_welcome_sub {
       font-size: 18px;
-      margin: 15px 0 75px 15px;
+      margin: 15px 0 75px 0;
    }
+
+   .most_recent_posts_container a {
+      padding: 0;
+   }
+
+   .post_info_container {
+      padding: 35px;
+      width: 90%;
+   }  
 }
 
 .all_posts_container {
