@@ -207,7 +207,8 @@
     font-size: 12px;
     transition: .3s;
     text-align: center;
-    border-radius: 35px;
+    border-radius: 35px!important;
+    padding: 0!important;
     cursor: pointer;
 }
 
