@@ -153,7 +153,7 @@
    .post_info_container {
       padding: 35px;
       width: 90%;
-   }  
+   }
 }
 
 .all_posts_container {
@@ -168,9 +168,22 @@
 /**********/
 
 /* Detail */
+.post_data_container {
+   display: flex;
+   flex-direction: row;
+   max-width: 200px;
+   justify-content: center;
+   align-items: center;
+   margin: 25px 0 0 10%;
+}
+
+.post_data_container p {
+   margin-right: 15px;
+}
+
 .post_detail_img_container {
    width: 80%;
-   margin: 100px auto;
+   margin: 0 auto 100px auto;
    position: relative;
 }
 
@@ -200,6 +213,13 @@
 
    .post_detail_img_wrapper img {
       height: 300px;
+   }
+}
+
+@media screen and (max-width: 595px) {
+   .post_data_container {
+      margin: 25px 0;
+      justify-content: flex-start;
    }
 }
 /**********/

@@ -248,4 +248,42 @@ router.get('/:title', (req, res, next) => {
 });
 
 
+// Get Edit Post
+router.get('/edit-post/:id', (req, res, next) => {
+
+   if(req.isAuthenticated()) {
+      if (req.user.username === 'hryzn') {
+
+         var hryznAdmin = true;
+
+         Post.findOne({ '_id': { $in: req.params.id} }, (err, post) => {
+            if (err) throw err;
+
+            if (post) {
+
+               res.render('blog/edit-post', {
+                  post: post,
+                  page_title: post.post_title,
+                  hryznAdmin: hryznAdmin,
+                  editProject: true,
+                  blog: true
+               });
+
+            } else {
+               res.redirect('/');
+            }
+         });
+      } else {
+
+         var hryznAdmin = false;
+         res.redirect('/');
+
+      }
+   } else {
+      res.redirect('/');
+   }
+
+});
+
+
 module.exports = router;
