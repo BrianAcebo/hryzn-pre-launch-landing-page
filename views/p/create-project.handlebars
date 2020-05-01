@@ -74,12 +74,12 @@
 
 
         {{! Project Video }}
-        <label for="project_video" class="form__label" style="margin-top: 25px;">Add Project Video</label>
+        <label for="project_video" class="form__label" style="margin-top: 25px;">Add Project Video <span style="color: #999; font-size: 10px; margin-left: 8px;">( Optional )</span></label>
         <input class="form__input" type="text" placeholder="Enter a Youtube or Vimeo link" name="project_video" value="{{project.project_video}}" />
 
 
         {{! Project Categories }}
-        <label for="project_categories" class="form__label" style="margin-top: 25px;">Add Project Categories</label>
+        <label for="project_categories" class="form__label" style="margin-top: 25px;">Add Project Categories <span style="color: #999; font-size: 10px; margin-left: 8px;">( Optional )</span></label>
         <select data-placeholder="Add categories..." multiple class="chosen-select form__input" name="project_categories[]">
            <option value=""></option>
            <option>Animals</option>
@@ -120,12 +120,12 @@
 
 
         {{! Project URL }}
-        <label for="project_url" class="form__label" style="margin-top: 25px;">Add a link</label>
+        <label for="project_url" class="form__label" style="margin-top: 25px;">Add a link <span style="color: #999; font-size: 10px; margin-left: 8px;">( Optional )</span></label>
         <input class="form__input" type="text" placeholder="Enter a link" name="project_url" value="{{project.project_url}}" />
 
 
         {{! Project Description }}
-        <label for="project_description" class="form__label" style="margin-top: 25px;">Write a Description</label>
+        <label for="project_description" class="form__label" style="margin-top: 25px;">Write a Description <span style="color: #999; font-size: 10px; margin-left: 8px;">( Optional )</span></label>
         <textarea class="project-description__input" type="text" name="project_description" value="{{project.project_description}}">{{project.project_description}}</textarea>
 
 
