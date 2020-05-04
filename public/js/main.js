@@ -2,21 +2,89 @@ $(document).ready(function() {
 
    $window = $(window);
    $body = $("body");
+   var doc = document.documentElement;
+   doc.setAttribute('data-useragent', navigator.userAgent);
+
+   // Smoothscroll Duration
+   var cfg = { scrollDuration : 800 };
 
 
-   // Open & close mobile nav overlay on landing page
-   var $nav = $('#landingNav');
-   var $navClose = $('#landingNavClose');
-   var $navOpen = $('#landingNavOpen');
+   // Welcome Page Preloader
+   $("html").addClass('cl-preload');
 
-   $navOpen.click(function() {
-      $nav.css({ "height": "100%" });
-   });
+   $window.on('load', function() {
+      $("#loader").fadeOut("slow", function() {
+         $("#preloader").delay(300).fadeOut("slow");
+      });
 
-   $navClose.click(function() {
-      $nav.css({ "height": "0" });
+      $("html").removeClass('cl-preload');
+      $("html").addClass('cl-loaded');
    });
    /**********/
+
+
+   // Slick slider on welcomePage
+   $('.slider-for').slick({
+      slidesToShow: 1,
+      slidesToScroll: 1,
+      arrows: false,
+      fade: true,
+      asNavFor: '.slider-nav'
+   });
+
+   $('.slider-nav').slick({
+      slidesToShow: 3,
+      slidesToScroll: 1,
+      asNavFor: '.slider-for',
+      dots: true,
+      focusOnSelect: true
+   });
+
+   $('a[data-slide]').click(function(e) {
+      e.preventDefault();
+      var slideno = $(this).data('slide');
+      $('.slider-nav').slick('slickGoTo', slideno - 1);
+   });
+   /**********/
+
+
+   // Smooth Scrolling
+   $('.smoothscroll').on('click', function(e) {
+      var target = $(this).attr('href');
+      var $target = $(target);
+
+      e.preventDefault();
+      e.stopPropagation();
+
+      $('html, body').stop().animate({
+         'scrollTop': $target.offset().top
+      }, cfg.scrollDuration, 'swing').promise().done(function() {
+         // check if menu is open
+         if ($('body').hasClass('menu-is-open')) {
+            $('.hamburger_menu').trigger('click');
+         }
+         window.location.hash = target;
+      });
+   });
+   /**********/
+
+
+   // Placeholder plugins
+   $('input, textarea, select').placeholder();
+   /**********/
+
+
+   // Animate On Scroll
+   AOS.init( {
+      offset: 200,
+      duration: 600,
+      easing: 'ease-in-sine',
+      delay: 300,
+      once: true,
+      disable: 'mobile'
+   });
+   /**********/
+
 
    // Nav dropdown menu
    var $dropNav = $('.dropNav');
@@ -25,10 +93,10 @@ $(document).ready(function() {
    $dropBtn.click(function() {
       $dropNav.toggleClass('showDrop')
    });
+   /**********/
 
 
-   // Remove loader after 4 seconds
-
+   // Logged In Loader
    var $rand_loader = $('.loader_text-' + Math.floor(Math.random() * 6));
 
    $rand_loader.css({ "display": "block" });
@@ -73,39 +141,57 @@ $(document).ready(function() {
    /**********/
 
 
-   // Add shadow to nav on scroll
-   $topNav = $('.topnav');
-   $flash_1 = $('.success__msg');
-   $flash_2 = $('.error__msg-4');
-   $drop_nav = $('.drop_nav');
+   // Add effects to nav on scroll
+   var $topNav = $('.topnav');
+   var $flash_1 = $('.success__msg');
+   var $flash_2 = $('.error__msg-4');
+   var $drop_nav = $('.drop_nav');
+   var $menuTrigger = $('.hamburger_menu');
+   var $nav_social = $('.nav_social');
 
    $window.scroll(function() {
       if($window.scrollTop() >= 50){
+         $menuTrigger.addClass('opaque');
          $topNav.addClass('shadow');
          $flash_1.addClass('changeTop');
          $flash_2.addClass('changeTop');
          $drop_nav.addClass('dropNavTop');
+         $nav_social.addClass('dis-none');
 		} else {
+         $menuTrigger.removeClass('opaque');
          $topNav.removeClass('shadow');
          $flash_1.removeClass('changeTop');
          $flash_2.removeClass('changeTop');
          $drop_nav.removeClass('dropNavTop');
+         $nav_social.removeClass('dis-none');
 		}
    });
    /**********/
 
 
-   // Add white background to landing-nav on scroll
-   $landingNav = $('.landing-nav');
+   // Open - Close Side Menu
+   var menuTrigger = $('.hamburger_menu');
+   var nav = $('.side_nav');
+   var closeButton = nav.find('.side_nav__close');
+   var siteBody = $('body');
+   var mainContents = $('section, footer');
 
-   $window.scroll(function() {
-      if($window.scrollTop() >= 50){
-         $landingNav.addClass('landing_background');
-      } else {
-         $landingNav.removeClass('landing_background');
+  menuTrigger.on('click', function(e){
+      e.preventDefault();
+      siteBody.toggleClass('menu-is-open');
+  });
+
+  closeButton.on('click', function(e){
+      e.preventDefault();
+      menuTrigger.trigger('click');
+  });
+
+  siteBody.on('click', function(e){
+      if( !$(e.target).is('.side_nav, .side_nav__content, .hamburger_menu, .hamburger_menu span') ) {
+         siteBody.removeClass('menu-is-open');
       }
-   });
-   /**********/
+  });
+  /**********/
 
 
    // Modal pop up

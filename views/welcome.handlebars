@@ -1,90 +1,113 @@
-<!-- Hero Home Section -->
-<section id="home" class="s-home target-section" style="background-image: url('/img/welcome/hero-img-cliff.jpg');">
+<!-- Welcome Page Preloader -->
+<div id="preloader">
+   <div id="loader">
+      <div class="line-scale-pulse-out">
+         <div></div>
+         <div></div>
+         <div></div>
+         <div></div>
+         <div></div>
+      </div>
+   </div>
+</div>
+<!-- /Preloader -->
 
-   <div class="s-hero_overlay"></div>
+<!-- Hero Home Section -->
+<section id="home" class="section_home target-section" style="background-image: url('/img/welcome/hero-img-colors.jpg');">
+
    <div class="shadow-overlay"></div>
 
-   <div class="home-content">
+   <div class="section_home_content">
 
-      <div class="row home-content__main">
-         <h3>Find your voice.</h3>
-         <h1>Create, explore, and share your ideas on a powerful social writing platform.</h1>
+      <div class="row section_home_content__main">
+         <div class="section_home_container">
 
-         <div class="home-content__buttons">
+            <div class="section_home_title">
+               <h3>Find your voice.</h3>
+               <h1>The simplest way to start a blog, share your story, and grow hassle free.</h1>
+            </div>
+
+            <!-- {{#if projects}}
+            <div class="section_home_project">
+               <div class="slider slider-for">
+                  {{#each projects}}
+                     {{#if is_private}}
+                     {{! Check if the project is a private project, we do not want to show private projects }}
+                     {{else}}
+                     <div class="">
+                        <a href="/p/details/{{id}}/guest" class="project_link">
+                           <div class="project_card">
+                              <img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{project_image}}" class="img-responsive" alt="{{project_title}}" />
+                           </div>
+                        </a>
+                     </div>
+                     {{/if}}
+                  {{/each}}
+               </div>
+
+               <div class="slider slider-nav">
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+               </div>
+            </div>
+            {{/if}} -->
+
+         </div>
+
+         <div class="section_home_content__buttons">
             <a href="/users/register" class="welcome_primary btn btn--stroke">Sign Up</a>
             <a href="https://youtu.be/nPuWTEinD20" data-lity class="btn btn--stroke">Watch Video</a>
          </div>
-      </div>
 
-      <div class="home-content__scroll">
-         <a href="#about" class="scroll-link smoothscroll"><span>Scroll Down</span></a>
       </div>
-      <div class="home-content__line"></div>
 
    </div>
-   <!-- /Home Content -->
 
-   <ul class="home-social">
-      <li>
-         <a href="https://twitter.com/myHryzn" target="_blank">
-            <i class="fa fa-twitter"></i>
-            <span>Twitter</span>
-         </a>
-      </li>
-      <li>
-         <a href="https://www.instagram.com/myHryzn/" target="_blank">
-            <i class="fa fa-instagram"></i>
-            <span>Instagram</span>
-         </a>
-      </li>
-      <li>
-         <a href="https://www.youtube.com/channel/UCHxZtvq7nc-cd9e88X9MHOQ" target="_blank">
-            <i class="fa fa-youtube"></i>
-            <span>Youtube</span>
-         </a>
-      </li>
-   </ul>
-   <!-- /Home Social -->
+   <div class="section_home_content__scroll">
+      <a href="#about" class="scroll-link smoothscroll"><span>Scroll Down</span></a>
+   </div>
+   <div class="section_home_content__line"></div>
 
 </section>
 <!-- /Hero Home -->
 
 
 <!-- About Section -->
-<section id='about' class="s-about">
+<section id='about' class="section_container section_about">
 
-   <div class="row section-header has-bottom-sep" data-aos="fade-up">
-      <div class="col-full">
-         <h3 class="subhead subhead--dark">Explore The World</h3>
-         <h1 class="display-1 display-1--light">Discover New Ideas</h1>
-      </div>
+   <div class="section_header has-bottom-sep light_sep" data-aos="fade-up">
+      <h3 class="section_sub light_sub">Explore Your Interests</h3>
+      <h1 class="section_title light_title">Discover Freedom</h1>
    </div>
 
-   <div class="row about-desc" data-aos="fade-up">
-      <div class="col-full">
-         <p>
-            Hryzn is a social network built around blog content where people can explore, create, and share different topics and ideas.
-            Anyone from bloggers to everyday people can promote their content, connect with friends, or discover a new world of creativity.
-         </p>
-      </div>
+   <div class="section_about_desc" data-aos="fade-up">
+      <p>
+         Hryzn is a blogging social network where people are free to explore, create, and share their interests.
+         Whether you're looking to grow professionaly, or simply write privately to your friends and family, we've got you covered.
+         Our goal is to help those that are curious find their voice and express themselves, without all the hassle and commitment of a regular blog.
+      </p>
    </div>
 
-   <div class="about__line"></div>
+   <div class="section_about__line"></div>
 
 </section>
 <!-- /About Section -->
 
 
 <!-- Top Picks-->
-<section id='works' class="s-works">
+<section id='works' class="section_container section_works">
 
    <div class="intro-wrap">
 
-   <div class="row section-header has-bottom-sep light-sep" data-aos="fade-up">
-      <div class="col-full">
-         <h3 class="subhead">Our Top Picks</h3>
-         <h1 class="display-2">Our latest works</h1>
-      </div>
+   <div class="section_header" data-aos="fade-up">
+      <h3 class="section_sub">Our Top Picks</h3>
+      <h1 class="section_title">Our Featured Works</h1>
    </div>
 
    </div>
@@ -97,12 +120,31 @@
             {{#if is_private}}
             {{! Check if the project is a private project, we do not want to show private projects }}
             {{else}}
-            <div class="masonryItem">
+            <!-- <div class="masonryItem">
                <a href="/p/details/{{id}}/guest" class="project_link">
                   <div class="project_card">
                      <img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{project_image}}" class="img-responsive" alt="{{project_title}}" />
                   </div>
                </a>
+            </div> -->
+
+            <div class="masonryItem" title="{{project_title}}">
+               <div class="project_card">
+                  <a href="/p/details/{{id}}/guest" class="project_link">
+                     <img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{project_image}}" class="img-responsive" alt="{{project_title}}" />
+                  </a>
+                  <div class="project_card_bottom">
+                     <div class="project_bottom_wrapper">
+                        <div class="bg_overlay"></div>
+                        <div class="project_bottom_details">
+                           <a href="/profile/{{project_owner}}"><p class="project_owner">@{{project_owner}}</p></a>
+                           <a href="/p/details/{{id}}/guest" class="project_link">
+                              <p class="project_card_title">{{project_title}}</p>
+                           </a>
+                        </div>
+                     </div>
+                  </div>
+               </div>
             </div>
             {{/if}}
          {{/each}}
@@ -119,87 +161,106 @@
 <!-- /Top Picks -->
 
 
-<!-- Features Section -->
-<section id='features' class="s-services">
-
-   <div class="row section-header has-bottom-sep" data-aos="fade-up">
-      <div class="col-full">
-         <h3 class="subhead">What We Do</h3>
-         <h1 class="display-2">Find what captivates you</h1>
+<!-- Features -->
+<section id="features" class="landing_content_container">
+   <div class="bg-square-01" data-aos="fade-up">
+      <div class="bg-square__wrapper">
+         <div class="bg-square_text bg-text-01" data-aos="fade-up">
+            <h3>Find What Captivates You</h3>
+            <p>
+               Feel free to express yourself and post what you please, without the commitment and intimidation of setting up a blog.
+               Create content for an audience in a multitude of topics, or create private content just for your friends and family to see.
+               We love the creative type and we live to inspire creativity.
+            </p>
+         </div>
+      </div>
+      <div class="bg-square__wrapper">
+         <img src="/img/welcome/landing-hero.jpg" data-aos="fade-up" />
       </div>
    </div>
 
-   <div class="row services-list block-1-2 block-tab-full">
-
-      <div class="col-block service-item" data-aos="fade-up">
-         <div class="service-text">
-            <p>Discover a world where people can share their thoughts about what interests them.</p>
+   <div class="bg-square-02" data-aos="fade-up">
+      <div class="bg-square__wrapper">
+         <img src="/img/welcome/hero-phone.jpg" data-aos="fade-up"/>
+      </div>
+      <div class="bg-square__wrapper">
+         <div class="bg-square_text bg-text-02" data-aos="fade-up">
+            <h3>Grow Into Something More</h3>
+            <p>
+               For those looking to further their business or monetize from scratch, we aim to provide content marketing tools
+               for each stage of the process. We look to encompass all of the aspects you need to start, run, and grow your business through content marketing.
+            </p>
          </div>
       </div>
+   </div>
+</section>
 
-      <div class="col-block service-item" data-aos="fade-up">
-         <div class="service-text">
-            <p>Find new recipes to try, workout routines to crush, even travel guides for your next trip.</p>
-         </div>
+<div class="spacer"></div>
+
+<section class="section_container section_features">
+
+   <div class="section_header has-bottom-sep dark_sep" data-aos="fade-up">
+      <h3 class="section_sub">What We Do</h3>
+      <h1 class="section_title">Our Box Of Resources</h1>
+   </div>
+
+   <div class="services_container">
+
+      <div class="services_list" data-aos="fade-up">
+         <p>Discover a world where people can share their thoughts about what interests them.</p>
+         <p>Simple setup to get up and running quickly and easily.</p>
+         <p>Built in search engine to help rank and find a multitude of topics and ideas.</p>
+         <p>Connect with our database of influencers, or become one to partner with brands.<br /><span>Coming Soon</span></p>
       </div>
 
-      <div class="col-block service-item" data-aos="fade-up">
-         <div class="service-text">
-            <p>Experience the endless possibilities and subscribe to the people you enjoy the most.</p>
-         </div>
+      <div class="services_list" data-aos="fade-up">
+         <p>Experience the endless possibilities and subscribe to the people you enjoy the most.</p>
+         <p>Be easily discovered by an audience or write privately to friends and family.</p>
+         <p>Monetize your content, and sell or affiliate products.<br /><span>Coming Soon</span></p>
+         <p>Utilize management and automation tools to streamline your marketing.<br /><span>Coming Soon</span></p>
       </div>
 
-      <div class="col-block service-item" data-aos="fade-up">
-         <div class="service-text">
-            <p>If you find something you like, simply save it to your profile or share it with a friend.</p>
-         </div>
-      </div>
+   </div>
 
-      <div class="col-block service-item" data-aos="fade-up">
-         <div class="service-text">
-            <p>Like, comment, and socialize on this social blogging network.</p>
-         </div>
-      </div>
+   <div class="spacer"></div>
 
+   <div class="section_header" data-aos="fade-up">
+      <h3 class="section_sub">And Much More!</h3>
    </div>
 
 </section>
 <!-- /Features Section -->
 
 
-<!-- Learn Section -->
-<section id="clients" class="s-clients">
+<!-- CTA Section -->
+<section class="section_container section_cta">
 
-<div class="row section-header" data-aos="fade-up">
-<div class="col-full">
-<h3 class="subhead">Join Today</h3>
-<h1 class="display-2">Join a creative world of content, topics, and ideas.</h1>
-<a href="/users/register"><div class="hero_sign_up" style="margin:0 auto;">Sign Up</div></a>
-</div>
+<div class="section_header" data-aos="fade-up">
+<h3 class="section_sub">Join Today</h3>
+<h1 class="section_title">Join a creative world of content, topics, and ideas.</h1>
+<a href="/users/register"><div class="hero_sign_up">Sign Up</div></a>
 </div>
 
 </section>
-<!-- /Learn Section -->
+<!-- /CTA Section -->
 
 
 <!-- Contact Section -->
-<section id="contact" class="s-contact">
+<section id="contact" class="section_container section_contact">
 
    <div class="s-hero_overlay"></div>
    <div class="contact__line"></div>
 
-   <div class="row section-header" data-aos="fade-up">
-      <div class="col-full">
-         <h3 class="subhead subhead--dark">Contact Us</h3>
-         <h1 class="display-2 display-2--light">We like conversation</h1>
-      </div>
+   <div class="section_header" data-aos="fade-up">
+      <h3 class="section_sub">Contact Us</h3>
+      <h1 class="section_title">We Like Conversation</h1>
    </div>
 
-   <div class="row contact-content" data-aos="fade-up">
+   <div class="section_contact_content" data-aos="fade-up">
 
-      <div class="contact-primary">
+      <div class="section_contact_primary">
 
-         <h3 class="h6">Send Us A Message</h3>
+         <h3 class="send_message">Send Us A Message</h3>
 
          {{#if form_submitted}}
          <h3 class="landing-title-faded">Thank you for your feedback. <a href="/">Click here to go back.</a></h3>
@@ -221,15 +282,7 @@
             </div>
 
             <div class="form-field">
-               <button class="full-width btn--primary">Submit</button>
-               <div class="submit-loader">
-                  <div class="text-loader">Sending...</div>
-                  <div class="s-loader">
-                  <div class="bounce1"></div>
-                  <div class="bounce2"></div>
-                  <div class="bounce3"></div>
-                  </div>
-               </div>
+               <input type="submit" value="submit" />
             </div>
          </fieldset>
          </form>
@@ -241,17 +294,3 @@
 
 </section>
 <!-- /Contact Section -->
-
-
-<!-- Preloader-->
-<div id="preloader">
-   <div id="loader">
-      <div class="line-scale-pulse-out">
-         <div></div>
-         <div></div>
-         <div></div>
-         <div></div>
-         <div></div>
-      </div>
-   </div>
-</div>

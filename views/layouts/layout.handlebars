@@ -4,7 +4,7 @@
 {{else}}
 <!DOCTYPE html>
 
-<html class="no-js" lang="en">
+<html class="no-js {{#if welcomePage}}welcomePage{{/if}}" lang="en">
 
    <head>
 
@@ -52,32 +52,28 @@
       <link rel="icon"  href="/img/logos/hryzn-favicon.ico" />
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
       <link href="https://cdn.rawgit.com/harvesthq/chosen/gh-pages/chosen.min.css" rel="stylesheet"/>
+      <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.5.9/slick.min.css" />
+      <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.5.9/slick-theme.min.css" />
 
       {{! For DEV
       <link rel="stylesheet" type="text/css" href="/css/site/style.css" />
       <link rel="stylesheet" type="text/css" href="/css/site/topnav.css" />
-      <link rel="stylesheet" type="text/css" href="/css/site/main-forms.css" />
+      <link rel="stylesheet" type="text/css" href="/css/site/forms.css" />
       <link rel="stylesheet" type="text/css" href="/css/site/project.css" />
       <link rel="stylesheet" type="text/css" href="/css/site/edit-project.css" />
       <link rel="stylesheet" type="text/css" href="/css/site/about.css" />
       <link rel="stylesheet" type="text/css" href="/css/site/profile.css" />
       <link rel="stylesheet" type="text/css" href="/css/site/messages.css" />
       <link rel="stylesheet" type="text/css" href="/css/site/blog.css" />
+      <link rel="stylesheet" type="text/css" href="/css/site/welcome.css" />
+      <link rel="stylesheet" type="text/css" href="/css/site/vendor.css" />
       <link rel="stylesheet" type="text/css" href="/css/site/trumbowyg.min.css" />
       }}
 
 
-      {{! Landing page styling different than rest of site }}
-      {{#if user}}
-      {{else}}
-      <link rel="stylesheet" type="text/css" href="/css/welcomeNav.css" />
-      <link rel="stylesheet" type="text/css" href="/css/welcome.css" />
-      {{/if}}
-
-
       {{! For PROD }}
       <link rel="stylesheet" type="text/css" href="/dist/css/style.min.css" />
-   
+
 
       <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
@@ -94,7 +90,7 @@
 
       {{#if user}}
       <!-- Main Nav -->
-      <div class="topnav">
+      <header class="topnav">
          <div class="topnav-left">
             <a href="/" class="topnav__logo user_beta">
                Hryzn
@@ -126,7 +122,7 @@
             </div>
             <a href="/p/create-project" class="create-icon"><img src="/icons/create-icon.png" class="main-topnav__icon" /></a>
          </nav>
-      </div>
+      </header>
       <!-- /Main Nav -->
 
       <!-- Mobile Nav -->
@@ -155,54 +151,55 @@
 
       {{! User is not logged in }}
       <!-- Landing Nav -->
-      <header class="s-header {{#if welcomePage}}welcome_header{{/if}}">
+      <header class="landing-nav {{#if welcomePage}}welcome_header{{/if}}">
+         <div class="landing-nav_wrapper">
 
-         <div class="header-logo">
-            <a href="/" class="topnav__logo">Hryzn<em class="logo_beta">BETA</em></a>
-         </div>
-
-         <nav class="header-nav">
-
-            <a href="#0" class="header-nav__close" title="close"><span></span></a>
-
-            <div class="header-nav__content">
-               <h3>Find your voice</h3>
-
-               <ul class="header-nav__list">
-                  <li class="current"><a {{#if welcomePage}}class="smoothscroll"  href="#home"{{else}}href="https://www.myhryzn.com#home"{{/if}} title="home">Home</a></li>
-                  <li><a {{#if welcomePage}}class="smoothscroll"  href="#about" {{else}}href="https://www.myhryzn.com#about"{{/if}} title="about">About</a></li>
-                  <li><a {{#if welcomePage}}class="smoothscroll"  href="#works" {{else}}href="https://www.myhryzn.com#works"{{/if}} title="works">Works</a></li>
-                  <li><a {{#if welcomePage}}class="smoothscroll"  href="#features" {{else}}href="https://www.myhryzn.com#services"{{/if}} title="services">Features</a></li>
-                  <li><a href="/blog" title="blog">Blog</a></li>
-                  <li><a {{#if welcomePage}}class="smoothscroll"  href="#contact" {{else}}href="https://www.myhryzn.com#contact"{{/if}} title="contact">Contact</a></li>
-                  <li><a href="/users/login"><strong>Login</strong></a> | <a href="/users/register"><strong>Sign Up</strong></a></li>
-               </ul>
-
-               <p>Create, explore, and share your ideas on a powerful social writing platform.</p>
-
-               <ul class="header-nav__social">
-               <li><a href="https://twitter.com/myHryzn" target="_blank"><i class="fa fa-twitter"></i></a></li>
-               <li><a href="https://www.instagram.com/myHryzn/" target="_blank"><i class="fa fa-instagram"></i></a></li>
-               <li><a href="https://www.youtube.com/channel/UCHxZtvq7nc-cd9e88X9MHOQ" target="_blank"><i class="fa fa-youtube"></i></a></li>
-               </ul>
-
+            <div class="landing-nav__left">
+               <div class="header-logo">
+                  <a href="/" class="topnav__logo">Hryzn<em class="logo_beta">BETA</em></a>
+               </div>
             </div>
 
-         </nav>
+            <div class="landing-nav__right">
+               <ul class="nav_social">
+                  <li><a href="https://twitter.com/myHryzn" target="_blank"><i class="fa fa-twitter"></i></a></li>
+                  <li><a href="https://www.instagram.com/myHryzn/" target="_blank"><i class="fa fa-instagram"></i></a></li>
+                  <li><a href="https://www.youtube.com/channel/UCHxZtvq7nc-cd9e88X9MHOQ" target="_blank"><i class="fa fa-youtube"></i></a></li>
+               </ul>
 
-         {{#if welcomePage}}
-         <a class="header-menu-toggle" href="#0">
-            <span class="header-menu-icon"></span>
-         </a>
-         {{else}}
-         <a class="header-menu-toggle" href="#0">
-            <span class="header-menu-icon"></span>
-         </a>
-         <!-- <div class="landing-nav__right">
-            <a href="/users/register"><div class="auth-sign__btn btn__primary">Sign Up</div></a>
-         </div> -->
-         {{/if}}
+               <a class="hamburger_menu" href="#0">
+                  <span class="ingredients"></span>
+               </a>
+            </div>
 
+            <nav class="side_nav">
+               <a href="#0" class="side_nav__close" title="close"><span></span></a>
+
+               <div class="side_nav__content">
+                  <h3>Find your voice</h3>
+
+                  <ul class="side_nav__list">
+                     <li class="current"><a {{#if welcomePage}}class="smoothscroll"  href="#home"{{else}}href="https://www.myhryzn.com#home"{{/if}} title="home">Home</a></li>
+                     <li><a {{#if welcomePage}}class="smoothscroll"  href="#about" {{else}}href="https://www.myhryzn.com#about"{{/if}} title="about">About</a></li>
+                     <li><a {{#if welcomePage}}class="smoothscroll"  href="#works" {{else}}href="https://www.myhryzn.com#works"{{/if}} title="works">Works</a></li>
+                     <li><a {{#if welcomePage}}class="smoothscroll"  href="#features" {{else}}href="https://www.myhryzn.com#services"{{/if}} title="services">Features</a></li>
+                     <li><a href="/blog" title="blog">Blog</a></li>
+                     <li><a {{#if welcomePage}}class="smoothscroll"  href="#contact" {{else}}href="https://www.myhryzn.com#contact"{{/if}} title="contact">Contact</a></li>
+                     <li><a href="/users/login">Login</a> or <a href="/users/register">Sign Up</a></li>
+                  </ul>
+
+                  <p>Create, explore, and share your ideas on a powerful social writing platform.</p>
+
+                  <ul class="side_nav__social">
+                  <li><a href="https://twitter.com/myHryzn" target="_blank"><i class="fa fa-twitter"></i></a></li>
+                  <li><a href="https://www.instagram.com/myHryzn/" target="_blank"><i class="fa fa-instagram"></i></a></li>
+                  <li><a href="https://www.youtube.com/channel/UCHxZtvq7nc-cd9e88X9MHOQ" target="_blank"><i class="fa fa-youtube"></i></a></li>
+                  </ul>
+
+               </div>
+            </nav>
+
+         </div>
       </header>
       <!-- /Landing Nav -->
 
@@ -253,6 +250,7 @@
 
    <!-- Site JS-->
    <script src="//ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+   <script type="text/javascript" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
 
    {{#if editProject}}
    <script src="/scripts/trumbowyg/dist/trumbowyg.min.js" type="text/javascript"></script>
@@ -386,8 +384,8 @@
       max_selected_options: 5
    });
    </script>
-
    {{/if}}
+   {{! End IF EditProject }}
 
    {{#if projects}}
    <script src="/js/macy.js" type="text/javascript"></script>
@@ -403,7 +401,6 @@
    <script src="/js/welcome/modernizr.js"></script>
    <script src="/js/welcome/pace.min.js"></script>
    <script src="/js/welcome/plugins.js" type="text/javascript"></script>
-   <script src="/js/welcome/welcome.js" type="text/javascript"></script>
    {{/if}}
 
    {{! For DEV

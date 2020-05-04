@@ -44,7 +44,7 @@ router.get('/welcome', (req, res, next) => {
          '5e88f3ef6413750017b0304c',
          '5e8e799102b32d001725d5bb',
          '5e57414fe509772628eca160',
-         '5e8fdd1600584b0017693055'
+         '5e9379216387290017b85ebb'
       ];
 
       Project.find({ '_id': { $in: featured_projects } }, (err, projects) => {
