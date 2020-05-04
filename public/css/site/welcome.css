@@ -667,6 +667,14 @@ html.no-csstransitions .section_home_content__main {
 }
 /**********/
 
+/* Section Works */
+@media screen and (max-width: 595px) {
+   .section_works .section_title {
+      padding: 0 25px;
+   }
+}
+/**********/
+
 
 /* Section Top Picks*/
 .top_picks_container {
@@ -813,7 +821,7 @@ html.no-csstransitions .section_home_content__main {
    }
 
    .bg-square_text {
-      padding: 25px 50px;
+      padding: 25px;
       color: #fff;
       max-width: 800px;
       margin: 0;
@@ -825,8 +833,9 @@ html.no-csstransitions .section_home_content__main {
    }
 
    .bg-square-01 h3,
-   .bg-square-02 h3{
+   .bg-square-02 h3 {
       margin: 25px 0;
+      letter-spacing: 1px;
    }
 
    .bg-square-02 h3 {
@@ -955,7 +964,6 @@ html.no-csstransitions .section_home_content__main {
 /* Section Contact */
 .section_contact {
    background-color: #31375A;
-   background-image: url("../images/contact-bg.jpg");
    background-repeat: no-repeat;
    background-position: center, center;
    color: rgba(255, 255, 255, 0.5);
