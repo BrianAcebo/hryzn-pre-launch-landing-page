@@ -138,6 +138,33 @@ $(document).ready(function() {
    $(".go-back").click(function() {
       window.history.back();
    });
+
+   // Go back when swiped
+   // var $drag = $('#drag');
+   // var startingMousePos = { x: -1, y: -1 };
+   // var endingMousePos = { x: -1, y: -1 };
+   //
+   // var $windowWidth = $window.width();
+   // var $forty = $windowWidth * (40 / 100);
+   //
+   // $drag.on('mousedown', function (evt) {
+   //
+   //    startingMousePos.x = event.pageX;
+   //    startingMousePos.y = event.pageY;
+   //
+   //    console.log(startingMousePos);
+   //
+   //    $body.on('mouseup', function (evt) {
+   //
+   //       endingMousePos.x = event.pageX;
+   //       endingMousePos.y = event.pageY;
+   //
+   //       if ((endingMousePos.x - startingMousePos.x) > $forty) {
+   //          window.history.back();
+   //       }
+   //
+   //    });
+   // });
    /**********/
 
 
@@ -396,12 +423,14 @@ $(document).ready(function() {
    $relatedOpen.click(function() {
       if($window.width() <= 768) {
          $relatedNav.css({ "width": "100%", "box-shadow": "0 2px 4px 0 rgba(0,0,0,0.2)" });
+         $relatedClose.css({ "position": "fixed" });
       } else {
          $relatedNav.css({ "width": "350" });
       }
    });
 
    $relatedClose.click(function() {
+      $relatedClose.css({ "position": "absolute" });
       $relatedNav.css({ "width": "0" });
    });
    /**********/

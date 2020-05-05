@@ -25,10 +25,8 @@
 <div {{! Commenting out for now class="guestScroll" }}>
 {{/if}}
 
-<img src="/icons/left.png" class="go-back bck_btn" />
 
-
-<div class="project_section_container">
+<div id="drag" class="project_section_container">
 
 
    {{! Project }}
@@ -66,99 +64,111 @@
 
 
          {{! Project Title }}
+         {{#if project.project_url}}
+         <a target="_blank" class="project_url" href="https://{{project.project_url}}">
+            <h1 class="project_title">{{project.project_title}}</h1>
+         </a>
+         {{else}}
          <h1 class="project_title">{{project.project_title}}</h1>
+         {{/if}}
          {{#if project.is_private}}
          <br /><span style="font-size: 15px; font-weight: 600;">Set to private, so only you can see this.</span>
-         {{/if}}
-
-         {{#if project.project_url}}
-         <a target="_blank" class="project_url" href="https://{{project.project_url}}">{{project.project_url}}</a>
          {{/if}}
 
          <div class="project_title_container">
 
             {{! Project Admins }}
             {{#each project.admins}}
-            <a class="project_admins desktop_admin" href="/profile/{{this}}">@{{this}}</a>
+            <a class="project_admins" href="/profile/{{this}}">@{{this}}</a>
             {{/each}}
 
             {{! Checks if user has an account or a guest visit }}
             {{#if user}}
 
                <div class="row project_btn_container">
-                  {{! Project Admins Mobile }}
-                  {{#each project.admins}}
-                  <a class="project_admins mobile_admin" href="/profile/{{this}}">@{{this}}</a>
-                  {{/each}}
+
+                  <p id="relatedBtn" class="related_mobile">Related Projects</p>
 
                   <div class="project_btn_wrapper">
 
-                     <div class="project_action_btn">
-                        <img src="/icons/comment.png" class="project_icon" />
-                        {{#if enough_comments}}
-                        {{comment_amount}}
-                        {{/if}}
+                     {{#if is_admin_of_project}}
+
+                     {{! Admin Abilities }}
+
+                     <div class="row admin_btn_container">
+                        <a class="admin_btn" href="/p/details/edit/{{project._id}}">Edit</a>
+                        <div class="modalBtn admin_btn">Delete</div>
                      </div>
 
-                     {{! Save / Unsave Project }}
-                     {{#if is_admin_of_project}}
-                     {{else}}
-                     {{#if user_saved}}
-
-                     <form method="post" action="/p/details/unsave/{{project.id}}">
-                        <input type="hidden" name="username" value="{{user.username}}">
-                        <input type="hidden" name="project_id" value="{{project.id}}">
-                        <button class="project_action_btn" name="submit" type="submit">
-                           <img src="/icons/unsave.png" class="project_icon" />
-                           {{#if enough_saves}}
-                           {{saves_amount}}
-                           {{/if}}
-                        </button>
-                     </form>
-
                      {{else}}
 
-                     <form method="post" action="/p/details/save/{{project.id}}">
-                        <input type="hidden" name="username" value="{{user.username}}">
-                        <input type="hidden" name="project_id" value="{{project.id}}">
-                        <button class="project_action_btn" name="submit" type="submit">
-                           <img src="/icons/save.png" class="project_icon" />
-                           {{#if enough_saves}}
-                           {{saves_amount}}
+                        <div class="project_action_btn smoothscroll"  href="#comment">
+                           <img src="/icons/comment.png" class="project_icon" />
+                           {{#if enough_comments}}
+                           {{comment_amount}}
                            {{/if}}
-                        </button>
-                     </form>
+                        </div>
 
-                     {{/if}}
-                     {{/if}}
+                        {{#if user_saved}}
+
+                        {{! Save / Unsave Project }}
+
+                        <form method="post" action="/p/details/unsave/{{project.id}}">
+                           <input type="hidden" name="username" value="{{user.username}}">
+                           <input type="hidden" name="project_id" value="{{project.id}}">
+                           <button class="project_action_btn" name="submit" type="submit">
+                              <img src="/icons/unsave.png" class="project_icon" />
+                              {{#if enough_saves}}
+                              {{saves_amount}}
+                              {{/if}}
+                           </button>
+                        </form>
+
+                        {{else}}
+
+                        <form method="post" action="/p/details/save/{{project.id}}">
+                           <input type="hidden" name="username" value="{{user.username}}">
+                           <input type="hidden" name="project_id" value="{{project.id}}">
+                           <button class="project_action_btn" name="submit" type="submit">
+                              <img src="/icons/save.png" class="project_icon" />
+                              {{#if enough_saves}}
+                              {{saves_amount}}
+                              {{/if}}
+                           </button>
+                        </form>
+
+                        {{/if}}
 
 
-                     {{! Like / Unlike Project }}
-                     {{#if user_liked}}
+                        {{#if user_liked}}
 
-                     <form method="post" action="/p/details/unlike/{{project.id}}">
-                        <input type="hidden" name="username" value="{{user.username}}">
-                        <input type="hidden" name="project_id" value="{{project.id}}">
-                        <button class="project_action_btn" name="submit" type="submit">
-                           <img src="/icons/heart-liked.png" class="project_icon" />
-                           {{#if enough_likes}}
-                           {{likes_amount}}
-                           {{/if}}
-                        </button>
-                     </form>
+                        {{! Like / Unlike Project }}
 
-                     {{else}}
+                        <form method="post" action="/p/details/unlike/{{project.id}}">
+                           <input type="hidden" name="username" value="{{user.username}}">
+                           <input type="hidden" name="project_id" value="{{project.id}}">
+                           <button class="project_action_btn" name="submit" type="submit">
+                              <img src="/icons/heart-liked.png" class="project_icon" />
+                              {{#if enough_likes}}
+                              {{likes_amount}}
+                              {{/if}}
+                           </button>
+                        </form>
 
-                     <form method="post" action="/p/details/like/{{project.id}}">
-                        <input type="hidden" name="username" value="{{user.username}}">
-                        <input type="hidden" name="project_id" value="{{project.id}}">
-                        <button class="project_action_btn" name="submit" type="submit">
-                           <img src="/icons/heart-unliked.png" class="project_icon" />
-                           {{#if enough_likes}}
-                           {{likes_amount}}
-                           {{/if}}
-                        </button>
-                     </form>
+                        {{else}}
+
+                        <form method="post" action="/p/details/like/{{project.id}}">
+                           <input type="hidden" name="username" value="{{user.username}}">
+                           <input type="hidden" name="project_id" value="{{project.id}}">
+                           <button class="project_action_btn" name="submit" type="submit">
+                              <img src="/icons/heart-unliked.png" class="project_icon" />
+                              {{#if enough_likes}}
+                              {{likes_amount}}
+                              {{/if}}
+                           </button>
+                        </form>
+
+                        {{/if}}
 
                      {{/if}}
 
@@ -173,18 +183,7 @@
          </div>
 
 
-         <p id="relatedBtn">View Related</p>
-
-
-         {{#if is_admin_of_project}}
-
-            {{! Admin Abilities }}
-            <div class="row admin_btn_container">
-               <a class="admin_btn" href="/p/details/edit/{{project._id}}">Edit</a>
-               <div class="modalBtn admin_btn">Delete</div>
-            </div>
-
-         {{/if}}
+         <p id="relatedBtn" class="related_desktop">Related Projects</p>
 
 
       </div>
@@ -217,7 +216,7 @@
       {{/each}}
       {{/if}}
 
-      <form method="post" class="comment_form" action="/p/details/comment/{{project.id}}">
+      <form id="comment" method="post" class="comment_form" action="/p/details/comment/{{project.id}}">
          <input type="hidden" name="username" value="{{user.username}}">
          <input type="hidden" name="profileimage" value="{{user.profileimage}}">
          <input type="hidden" name="project_id" value="{{project.id}}">

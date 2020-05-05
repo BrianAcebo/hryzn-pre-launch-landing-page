@@ -84,7 +84,6 @@ a, p, div {
 h1, h2, h3, h4, h5 {
    font-family: "Poppins", sans-serif;
    letter-spacing: 1px;
-   line-height: 55px;
    font-weight: 700;
    -webkit-font-smoothing: auto;
    -webkit-font-smoothing: antialiased;
@@ -92,23 +91,28 @@ h1, h2, h3, h4, h5 {
    -moz-font-variant-ligatures: common-ligatures;
    font-variant-ligatures: common-ligatures;
    text-rendering: optimizeLegibility;
+   margin: 15px 0;
 }
 
 h1, h2 {
-   font-size: 28px;
+   font-size: 36px;
+   line-height: 55px;
 }
 
 h3, h4 {
    font-size: 25px;
+   line-height: 45px;
 }
 
 h5 {
    font-size: 20px;
+   line-height: 35px;
 }
 
 @media screen and (max-width: 992px) {
    h1, h2 {
-      font-size: 22px;
+      font-size: 28px;
+      line-height: 35px;
    }
 
    h3, h4, h5 {

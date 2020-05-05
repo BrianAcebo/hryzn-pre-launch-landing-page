@@ -368,8 +368,7 @@
    margin-right: 25px;
 }
 
-.profile__sidenav #settingsClose,
-.profile__sidenav #relatedClose {
+.profile__sidenav #settingsClose{
    position: absolute;
    top: 15px;
    right: 15px;
@@ -378,8 +377,7 @@
    cursor: pointer;
 }
 
-.profile__sidenav #settingsClose:hover,
-.profile__sidenav #relatedClose:hover {
+.profile__sidenav #settingsClose:hover {
    color: #333;
 }
 
