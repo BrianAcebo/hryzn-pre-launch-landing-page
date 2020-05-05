@@ -65,37 +65,48 @@ router.get('/welcome', (req, res, next) => {
 router.get('/', (req, res, next) => {
    if(req.isAuthenticated()) {
 
+      var now = new Date();
+      var time = now.getHours();
+
+      console.log(time);
+
+      if (time >= 0 && time < 12) {
+         var greeting = 'Good morning';
+      } else if (time >= 12 && time < 18) {
+         var greeting = 'Good afternoon';
+      } else {
+         var greeting = 'Good evening';
+      }
+
       // User's Subscriptions Feed
 
-      // if (req.user.following) {
-      //    User.find({ 'username': { $in: req.user.following } }, (err, profiles) => {
-      //       if (err) throw err;
-      //
-      //       var profile_project = []
-      //
-      //       profiles.forEach(function(profile, key) {
-      //          profile.own_projects.reverse().forEach(function(proj, key) {
-      //             profile_project.push(proj);
-      //          });
-      //       });
-      //
-      //       Project.find({ '_id': { $in: profile_project } }, (err, projects) => {
-      //          if (err) throw err;
-      //
-      //          res.render('explore', {
-      //             page_title: 'Explore Projects',
-      //             projects: projects,
-      //             profiles: profiles,
-      //             explore_default: true
-      //          });
-      //       });
-      //    });
-      // } else {
-      //    res.redirect('/explore');
-      // }
+      if (req.user.following) {
+         User.find({ 'username': { $in: req.user.following } }, (err, profiles) => {
+            if (err) throw err;
 
-      // For now just redirect to explore page
-      res.redirect('/explore');
+            var profile_project = []
+
+            profiles.forEach(function(profile, key) {
+               profile.own_projects.reverse().forEach(function(proj, key) {
+                  profile_project.push(proj);
+               });
+            });
+
+            Project.find({ '_id': { $in: profile_project } }, (err, projects) => {
+               if (err) throw err;
+
+               res.render('index', {
+                  page_title: 'Explore Projects',
+                  greeting: greeting,
+                  projects: projects,
+                  profiles: profiles,
+                  explore_default: true
+               });
+            });
+         });
+      } else {
+         res.redirect('/explore');
+      }
    } else {
       res.redirect('/welcome');
    }
@@ -216,7 +227,11 @@ router.post('/messages/chat/:messageId', (req, res, next) => {
       info = [];
       info['userUsername'] = req.body.username;
       info['messageId'] = req.params.messageId;
-      info['profileimage'] = req.body.profileimage;
+      if (req.body.profileimage) {
+         info['profileimage'] = req.body.profileimage;
+      } else {
+         info['profileimage'] = 'hryzn-placeholder-01.jpg';
+      }
       info['message'] = req.body.message.replace(/\r\n/g,'');
 
       // Add followers to profile
@@ -262,7 +277,11 @@ router.post('/messages/new/:username', (req, res, next) => {
 
       var users = req.body.users;
       var sent_by = req.user.username;
-      var profileimage = req.body.profileimage;
+      if (req.body.profileimage) {
+         info['profileimage'] = req.body.profileimage;
+      } else {
+         info['profileimage'] = 'hryzn-placeholder-01.jpg';
+      }
       var message = req.body.message.replace(/\r\n/g,'');
 
       var newMessage = new Message({
@@ -968,7 +987,8 @@ router.get('/explore/:category', (req, res, next) => {
          res.render('explore', {
             page_title: 'Explore ' + req.params.category,
             projects: reversed_projects,
-            explore_default: true
+            explore_default: true,
+            category_title: req.params.category
          });
       });
 

@@ -1,38 +1,60 @@
-<div class="feed__container">
-   <div class="feed__container-text">
-      {{#if user.firstname}}
-      <h1 class="main__title">Hi {{user.firstname}},</h1>
-      {{else}}
-      <h1 class="main__title">Hi {{user.username}},</h1>
-      {{/if}}
-      {{#if projects}}
-      {{else}}
-      <p class="main__info feed__text">We see you're not following anyone, <a href="/explore"><strong>let's go explore.</strong></a></p>
-      {{/if}}
+<div class="loader_overlay">
+   <div class="loader_wrapper">
+      <div class="loader"></div>
+      <p class="loader_text loader_text-1">Our robots are looking for the cool stuff.</p>
+      <p class="loader_text loader_text-2">Retrieving files... Accessing data... Planning world domination.</p>
+      <p class="loader_text loader_text-3">Soon the computers will just take over.</p>
+      <p class="loader_text loader_text-4">The things are doing the stuff.</p>
+      <p class="loader_text loader_text-5">Your hair looks pretty.</p>
    </div>
 </div>
 
-{{#if projects}}
+
+<div class="feed__container">
+   <div class="feed__container-text">
+      <h1 class="main__title">{{greeting}} {{user.username}},</h1>
+      <p class="main__info feed__text">{{#if projects}}I hope your having a nice day, {{else}}We see you're not following anyone, {{/if}}<a href="/explore"><strong>let's go explore.</strong></a></p>
+   </div>
+</div>
+
+<div class="explore_main">
+
+   <p class="top_results">From Your Subscriptions</p>
+   <hr class="top_results_underline" />
+
    <div class="masonryContainer">
+
+   {{#if projects}}
+
       {{#each projects}}
-         {{this.project_owner}}
+
          {{#if this.is_private}}
          {{! Check if the project is a private project, we do not want to show private projects }}
          {{else}}
-         <div class="masonryItem">
-            <a href="/p/details/{{this._id}}" class="projects__link">
-               <div class="projects__card">
-                  <img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{this.project_image}}" class="img-responsive" alt="{{project_title}}" />
-                  <p class="projects__card-title">{{this.project_title}}</p>
+
+         <div class="masonryItem" title="{{project_title}}">
+            <div class="project_card">
+               <a href="/p/details/{{id}}" class="project_link">
+                  <img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{project_image}}" class="img-responsive" alt="{{project_title}}" />
+               </a>
+               <div class="project_card_bottom">
+                  <div class="project_bottom_wrapper">
+                     <div class="bg_overlay"></div>
+                     <div class="project_bottom_details">
+                        <a href="/profile/{{project_owner}}"><p class="project_owner">@{{project_owner}}</p></a>
+                        <a href="/p/details/{{id}}" class="project_link">
+                           <p class="project_card_title">{{project_title}}</p>
+                        </a>
+                     </div>
+                  </div>
                </div>
-            </a>
-            <a href="/profile/{{this.project_owner}}"><p class="projects__card-owner">{{this.project_owner}}</p></a>
+            </div>
          </div>
+
          {{/if}}
       {{/each}}
+
+   {{/if}}
+
    </div>
-{{else}}
-{{! Something went wrong}}
-<p class="error-message">
-</p>
-{{/if}}
+</div>

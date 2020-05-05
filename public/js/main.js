@@ -90,8 +90,10 @@ $(document).ready(function() {
    var $dropNav = $('.dropNav');
    var $dropBtn = $('.dropBtn');
 
-   $dropBtn.click(function() {
-      $dropNav.toggleClass('showDrop')
+   $dropBtn.each(function() {
+      $(this).click(function() {
+         $dropNav.toggleClass('showDrop')
+      });
    });
    /**********/
 

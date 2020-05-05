@@ -234,7 +234,7 @@ nav.item-list {
 }
 
 .showDrop {
-   display: flex;
+   display: flex!important;
    flex-direction: column;
    justify-content: center;
    align-items: center;
@@ -260,6 +260,42 @@ nav.item-list {
 
    nav.item-list {
       display: none;
+   }
+
+   .mobile-nav {
+      overflow: visible!important;
+   }
+
+   .drop_nav {
+      display: none;
+      position: absolute;
+      min-width: 160px;
+      border-right: 1px solid #f1f1f1;
+      border-left: 1px solid #f1f1f1;
+      border-bottom: none;
+      background: #fff;
+      z-index: 9999999;
+      bottom: 62px;
+      top: auto;
+      right: 0;
+      transition: .3s;
+   }
+
+   .drop_nav.dropNavTop {
+      bottom: 62px;
+      top: auto;
+   }
+
+   .drop_nav a {
+      float: none;
+      color: black;
+      padding: 12px 15px;
+      border-top: 1px solid #f1f1f1;
+      border-bottom: none;
+      text-decoration: none;
+      font-size: 14px!important;
+      display: block;
+      text-align: left;
    }
 }
 

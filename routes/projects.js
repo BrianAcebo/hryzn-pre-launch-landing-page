@@ -839,7 +839,11 @@ router.post('/details/comment/:id', (req, res, next) => {
       info = [];
       info['profileUsername'] = req.user.username;
       info['projectId'] = req.body.project_id;
-      info['profileimage'] = req.body.profileimage;
+      if (req.body.profileimage) {
+         info['profileimage'] = req.body.profileimage;
+      } else {
+         info['profileimage'] = 'hryzn-placeholder-01.jpg';
+      }
       info['comment'] = req.body.comment.replace(/\r\n/g,'');
 
       // Add save to project
