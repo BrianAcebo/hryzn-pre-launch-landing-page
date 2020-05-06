@@ -386,7 +386,7 @@ section.project {
    max-height: 25px;
 }
 
-.project_action_btn.comment_btn {
+.project_action_btn.comments {
    cursor: default;
    justify-content: flex-start;
    margin: 50px 0;
