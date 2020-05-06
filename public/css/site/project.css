@@ -405,11 +405,15 @@ section.project {
 
    .project_action_btn {
       font-size: 12px;
-      margin: 5px 5px 5px 0;
+      margin: 0;
+   }
+
+   .project_action_btn.middle_btn {
+      margin: 5px;
    }
 
    .project_action_btn .project_icon {
-      max-width: 20px;
+      max-width: 18px;
    }
 }
 

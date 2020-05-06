@@ -141,7 +141,7 @@
                         <form title="unsave" method="post" action="/p/details/unsave/{{project.id}}">
                            <input type="hidden" name="username" value="{{user.username}}">
                            <input type="hidden" name="project_id" value="{{project.id}}">
-                           <button class="project_action_btn" name="submit" type="submit">
+                           <button class="project_action_btn middle_btn" name="submit" type="submit">
                               <img src="/icons/unsave.png" class="project_icon" />
                               {{#if enough_saves}}
                               {{saves_amount}}
@@ -154,7 +154,7 @@
                         <form title="save" method="post" action="/p/details/save/{{project.id}}">
                            <input type="hidden" name="username" value="{{user.username}}">
                            <input type="hidden" name="project_id" value="{{project.id}}">
-                           <button class="project_action_btn" name="submit" type="submit">
+                           <button class="project_action_btn middle_btn" name="submit" type="submit">
                               <img src="/icons/save.png" class="project_icon" />
                               {{#if enough_saves}}
                               {{saves_amount}}
