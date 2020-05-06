@@ -98,6 +98,29 @@
                      {{! Admin Abilities }}
 
                      <div class="row admin_btn_container">
+                        <div class="drop_menu">
+                           <a class="statsBtn admin_btn">Stats</a>
+                           <div class="stats_nav statsNav">
+                              <p>
+                                 <img src="/icons/repost.png" class="project_icon" />
+                                 {{#if enough_reposts}}
+                                 {{repost_amount}}
+                                 {{/if}}
+                              </p>
+                              <p>
+                                 <img src="/icons/save.png" class="project_icon" />
+                                 {{#if enough_saves}}
+                                 {{saves_amount}}
+                                 {{/if}}
+                              </p>
+                              <p>
+                                 <img src="/icons/heart-unliked.png" class="project_icon" />
+                                 {{#if enough_likes}}
+                                 {{likes_amount}}
+                                 {{/if}}
+                              </p>
+                           </div>
+                        </div>
                         <a class="admin_btn" href="/p/details/edit/{{project._id}}">Edit</a>
                         <div class="modalBtn admin_btn">Delete</div>
                      </div>

@@ -98,6 +98,18 @@ $(document).ready(function() {
    /**********/
 
 
+   // Stats on project dropdown
+   var $statsNav = $('.statsNav');
+   var $statsBtn = $('.statsBtn');
+
+   $statsBtn.each(function() {
+      $(this).click(function() {
+         $statsNav.toggleClass('showStats')
+      });
+   });
+   /**********/
+
+
    // Logged In Loader
    var $rand_loader = $('.loader_text-' + Math.floor(Math.random() * 6));
 

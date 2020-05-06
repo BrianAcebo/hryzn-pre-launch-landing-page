@@ -341,10 +341,11 @@ section.project {
    align-items: center;
    flex-direction: row;
    margin: 15px 0;
+   position: relative;
 }
 
-.admin_btn {
-   font-size: 14px;
+.admin_btn,
+.drop_menu .statsBtn {
    font-weight: bold;
    color: #333 !important;
    text-align: center;
@@ -354,6 +355,36 @@ section.project {
    max-width: 200px;
    cursor: pointer;
    margin: 0 35px 0 0;
+}
+
+
+.drop_menu {
+   float: left;
+   overflow: hidden;
+   width: 100%;
+}
+
+.stats_nav {
+   width: 100%;
+   top: 50px;
+   border: 1px solid #f1f1f1;
+   padding: 25px 0;
+   background: #fff;
+   display: none;
+   position: absolute;
+}
+
+.stats_nav p img {
+   font-size: 12px;
+   max-width: 18px;
+   margin: 0 10px;
+}
+
+.showStats {
+   display: flex!important;
+   flex-direction: row;
+   justify-content: space-around;
+   align-items: center;
 }
 
 .project_title_container {
