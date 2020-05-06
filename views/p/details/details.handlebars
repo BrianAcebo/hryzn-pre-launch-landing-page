@@ -104,18 +104,41 @@
 
                      {{else}}
 
-                        <div class="project_action_btn smoothscroll"  href="#comment">
-                           <img src="/icons/comment.png" class="project_icon" />
-                           {{#if enough_comments}}
-                           {{comment_amount}}
-                           {{/if}}
-                        </div>
+                        {{#if user_reposted}}
+
+                        {{! Repost / Unrepost Project }}
+
+                        <form title="unrepost" method="post" action="/p/details/unrepost/{{project.id}}">
+                           <input type="hidden" name="username" value="{{user.username}}">
+                           <input type="hidden" name="project_id" value="{{project.id}}">
+                           <button class="project_action_btn" name="submit" type="submit">
+                              <img src="/icons/repost.png" class="project_icon" />
+                              {{#if enough_reposts}}
+                              {{repost_amount}}
+                              {{/if}}
+                           </button>
+                        </form>
+
+                        {{else}}
+
+                        <form title="repost" method="post" action="/p/details/repost/{{project.id}}">
+                           <input type="hidden" name="username" value="{{user.username}}">
+                           <input type="hidden" name="project_id" value="{{project.id}}">
+                           <button class="project_action_btn" name="submit" type="submit">
+                              <img src="/icons/repost.png" class="project_icon" />
+                              {{#if enough_reposts}}
+                              {{repost_amount}}
+                              {{/if}}
+                           </button>
+                        </form>
+
+                        {{/if}}
 
                         {{#if user_saved}}
 
                         {{! Save / Unsave Project }}
 
-                        <form method="post" action="/p/details/unsave/{{project.id}}">
+                        <form title="unsave" method="post" action="/p/details/unsave/{{project.id}}">
                            <input type="hidden" name="username" value="{{user.username}}">
                            <input type="hidden" name="project_id" value="{{project.id}}">
                            <button class="project_action_btn" name="submit" type="submit">
@@ -128,7 +151,7 @@
 
                         {{else}}
 
-                        <form method="post" action="/p/details/save/{{project.id}}">
+                        <form title="save" method="post" action="/p/details/save/{{project.id}}">
                            <input type="hidden" name="username" value="{{user.username}}">
                            <input type="hidden" name="project_id" value="{{project.id}}">
                            <button class="project_action_btn" name="submit" type="submit">
@@ -146,7 +169,7 @@
 
                         {{! Like / Unlike Project }}
 
-                        <form method="post" action="/p/details/unlike/{{project.id}}">
+                        <form title="unlike" method="post" action="/p/details/unlike/{{project.id}}">
                            <input type="hidden" name="username" value="{{user.username}}">
                            <input type="hidden" name="project_id" value="{{project.id}}">
                            <button class="project_action_btn" name="submit" type="submit">
@@ -159,7 +182,7 @@
 
                         {{else}}
 
-                        <form method="post" action="/p/details/like/{{project.id}}">
+                        <form title="like" method="post" action="/p/details/like/{{project.id}}">
                            <input type="hidden" name="username" value="{{user.username}}">
                            <input type="hidden" name="project_id" value="{{project.id}}">
                            <button class="project_action_btn" name="submit" type="submit">
@@ -202,6 +225,9 @@
       {{#if user}}
 
       {{#if project.comments}}
+      <div class="project_action_btn">
+         Comments {{#if enough_comments}}- {{comment_amount}}{{/if}}
+      </div>
       {{#each project.comments}}
       <div class="project_comment">
          <a href="/profile/{{this.username}}">

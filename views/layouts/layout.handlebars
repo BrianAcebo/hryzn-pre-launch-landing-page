@@ -400,6 +400,11 @@
    {{#if projects}}
    <script src="/js/macy.js" type="text/javascript"></script>
    <script src="/js/macy.init.js" type="text/javascript"></script>
+   <script>
+   function adjust() {
+      masonry.recalculate(true);
+   }
+   </script>
    {{/if}}
 
    {{! For DEV

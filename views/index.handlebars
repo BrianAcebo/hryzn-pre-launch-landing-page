@@ -19,12 +19,12 @@
 
 <div class="explore_main">
 
-   <p class="top_results">From Your Subscriptions</p>
+   {{#if projects}}
+
+   <p class="top_results">Your Feed - Recent Posts &amp; Reposts</p>
    <hr class="top_results_underline" />
 
    <div class="masonryContainer">
-
-   {{#if projects}}
 
       {{#each projects}}
 
@@ -54,7 +54,8 @@
          {{/if}}
       {{/each}}
 
+   </div>
+
    {{/if}}
 
-   </div>
 </div>

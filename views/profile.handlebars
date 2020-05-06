@@ -56,8 +56,9 @@
 
             {{#if viewing_own_profile}}
             <div class="project_btn_wrapper">
-               <div class="own_btn">Created</div>
-               <div class="saved_btn">Saved</div>
+               <div class="own_btn" onclick="adjust()">Created</div>
+               <div class="saved_btn" onclick="adjust()">Saved</div>
+               <div class="repost_btn" onclick="adjust()">Reposted</div>
             </div>
 
             {{! The User is viewing their own profile, no need to follow }}
@@ -99,6 +100,7 @@
 
          {{#if viewing_own_profile}}
 
+            {{! User is viewing their own profile so show private projects }}
             {{#each projects}}
             <div class="masonryItem ownProject" title="{{project_title}}">
                <div class="project_card">
@@ -133,6 +135,7 @@
             {{! Can't show private projects to people other than logged in User }}
             {{else}}
 
+            {{! Projects with /guest link }}
             <div class="masonryItem" title="{{project_title}}">
                <div class="project_card">
                   <a href="/p/details/{{id}}/guest" class="project_link">
@@ -164,6 +167,7 @@
             {{! Can't show private projects to people other than logged in User }}
             {{else}}
 
+            {{! Someone logged in is viewing their own profile }}
             <div class="masonryItem ownProject" title="{{project_title}}">
                <div class="project_card">
                   <a href="/p/details/{{id}}" class="project_link">
@@ -204,8 +208,40 @@
 
       {{#if viewing_own_profile}}
 
+         {{! User's saved projects }}
          {{#each saved_projects}}
          <div class="masonryItem savedProject" title="{{project_title}}">
+            <div class="project_card">
+               <a href="/p/details/{{id}}" class="project_link">
+                  <img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{project_image}}" class="img-responsive" alt="{{project_title}}" />
+               </a>
+               <div class="project_card_bottom">
+                  <div class="project_bottom_wrapper">
+                     <div class="bg_overlay"></div>
+                     <div class="project_bottom_details">
+                        <a href="/profile/{{project_owner}}"><p class="project_owner">@{{project_owner}}</p></a>
+                        <a href="/p/details/{{id}}" class="project_link">
+                           <p class="project_card_title">{{project_title}}</p>
+                        </a>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+         {{/each}}
+
+      {{/if}}
+
+      {{/if}}
+
+
+      {{#if reposted_projects}}
+
+      {{#if viewing_own_profile}}
+
+         {{! User's reposted projects }}
+         {{#each reposted_projects}}
+         <div class="masonryItem repostedProject" title="{{project_title}}">
             <div class="project_card">
                <a href="/p/details/{{id}}" class="project_link">
                   <img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{project_image}}" class="img-responsive" alt="{{project_title}}" />

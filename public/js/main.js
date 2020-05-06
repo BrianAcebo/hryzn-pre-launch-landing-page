@@ -374,23 +374,32 @@ $(document).ready(function() {
    var $ownProfile = $(".masonryContainer").hasClass('ownProfile');
    var $savedBtn = $(".saved_btn");
    var $ownBtn = $(".own_btn");
+   var $repostBtn = $(".repost_btn");
    var $ownProject = $(".ownProject");
    var $savedProject = $(".savedProject");
+   var $repostedProject = $(".repostedProject");
 
-   setTimeout(function() {
-      $savedProject.css({ "display": "none" });
-   }, 3500);
+   $savedProject.css({ "display": "none" });
+   $repostedProject.css({ "display": "none" });
 
 
    if ($ownProfile) {
       $savedBtn.click(function() {
          $ownProject.css({ "display": "none" });
+         $repostedProject.css({ "display": "none" });
          $savedProject.css({ "display": "block" });
       });
 
       $ownBtn.click(function() {
          $savedProject.css({ "display": "none" });
+         $repostedProject.css({ "display": "none" });
          $ownProject.css({ "display": "block" });
+      });
+
+      $repostBtn.click(function() {
+         $savedProject.css({ "display": "none" });
+         $ownProject.css({ "display": "none" });
+         $repostedProject.css({ "display": "block" });
       });
    }
    /**********/

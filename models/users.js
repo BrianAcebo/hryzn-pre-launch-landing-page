@@ -50,6 +50,7 @@ const UserSchema = mongoose.Schema({
    following: [],
    own_projects: [],
    saved_projects: [],
+   reposted_projects: [],
    messages: []
 });
 
@@ -160,6 +161,43 @@ module.exports.unsaveToProfile = (info, callback) => {
    );
 
 }
+
+
+// Repost Project
+module.exports.repostProject = (info, callback) => {
+   profileUsername = info['profileUsername'];
+   projectId = info['projectId'];
+   projectTitle = info['projectTitle'];
+   isPrivate = info['isPrivate'];
+   projectImage = info['projectImage'];
+
+   const query = { username: profileUsername };
+
+   User.findOneAndUpdate(query,
+      {
+         $addToSet: {"reposted_projects": [projectId]},
+      },
+      { safe: true, upsert: true },
+      callback
+   );
+}
+
+// Unrepost Project
+module.exports.unrepostProject = (info, callback) => {
+   profileUsername = info['profileUsername'];
+   projectId = info['projectId'];
+   projectTitle = info['projectTitle'];
+
+   const query = { username: profileUsername };
+
+   User.findOneAndUpdate(query,
+      { $pull: { "reposted_projects": projectId  } },
+      { multi: true },
+      callback
+   );
+
+}
+
 
 // Add Followers
 module.exports.addFollowers = (info, callback) => {

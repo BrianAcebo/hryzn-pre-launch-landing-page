@@ -25,6 +25,7 @@ const ProjectSchema = mongoose.Schema({
    },
    admins: [],
    saves: [],
+   reposts: [],
    likes: [],
    comments: [{
       project_id: {
@@ -125,6 +126,36 @@ module.exports.removeSaves = (info, callback) => {
 
    Project.findOneAndUpdate(query,
       { $pull: { saves: profileUsername } },
+      { multi: true },
+      callback
+   );
+}
+
+// Add Repost
+module.exports.addReposts = (info, callback) => {
+   projectId = info['projectId'];
+   profileUsername = info['profileUsername'];
+
+   const query = { _id: projectId };
+
+   Project.findOneAndUpdate(query,
+      {
+         $addToSet: {"reposts": [profileUsername]},
+      },
+      { safe: true, upsert: true },
+      callback
+   );
+}
+
+// Remove Repost
+module.exports.removeReposts = (info, callback) => {
+   projectId = info['projectId'];
+   profileUsername = info['profileUsername'];
+
+   const query = { _id: projectId };
+
+   Project.findOneAndUpdate(query,
+      { $pull: { reposts: profileUsername } },
       { multi: true },
       callback
    );

@@ -84,13 +84,51 @@ router.get('/', (req, res, next) => {
          User.find({ 'username': { $in: req.user.following } }, (err, profiles) => {
             if (err) throw err;
 
-            var profile_project = []
+            var profile_project = [];
 
             profiles.forEach(function(profile, key) {
-               profile.own_projects.reverse().forEach(function(proj, key) {
-                  profile_project.push(proj);
-               });
+
+               // Limit to 5 projects per profile
+               var own = profile.own_projects.reverse();
+               var x;
+               var y = 0;
+               for (x of own) {
+               	y += 1;
+                  if (y < 6) {
+                   	profile_project.push(x);
+                  }
+               }
+
+               // Limit to 5 reposts per profile
+               var rep = profile.reposted_projects.reverse();
+               var x;
+               var y = 0;
+               for (x of rep) {
+               	y += 1;
+                  if (y < 6) {
+                   	profile_project.push(x);
+                  }
+               }
             });
+
+            function shuffle(array) {
+               var currentIndex = array.length, temporaryValue, randomIndex;
+
+               // While there remain elements to shuffle...
+               while (0 !== currentIndex) {
+
+               // Pick a remaining element...
+               randomIndex = Math.floor(Math.random() * currentIndex);
+               currentIndex -= 1;
+
+               // And swap it with the current element.
+               temporaryValue = array[currentIndex];
+               array[currentIndex] = array[randomIndex];
+               array[randomIndex] = temporaryValue;
+               }
+
+               return array;
+            }
 
             Project.find({ '_id': { $in: profile_project } }, (err, projects) => {
                if (err) throw err;
@@ -98,7 +136,7 @@ router.get('/', (req, res, next) => {
                res.render('index', {
                   page_title: 'Explore Projects',
                   greeting: greeting,
-                  projects: projects,
+                  projects: shuffle(projects),
                   profiles: profiles,
                   explore_default: true
                });
@@ -418,18 +456,25 @@ router.get('/profile/:username', (req, res, next) => {
 
             var reversed_saved_projects = saved_projects.reverse();
 
-            res.render('profile', {
-               page_title: profile.username,
-               profile: profile,
-               projects: reversed_projects,
-               saved_projects: reversed_saved_projects,
-               user_follows_profile: user_follows_profile,
-               amount_of_followers: amount_of_followers,
-               amount_of_following: amount_of_following,
-               amount_of_projects: amount_of_projects,
-               viewing_own_profile: viewing_own_profile,
-               guestUser: guestUser,
-               hryznAdmin: hryznAdmin
+            Project.find({ '_id': { $in: profile.reposted_projects} }, (err, reposted_projects) => {
+               if (err) throw err;
+
+               var reversed_reposted_projects = reposted_projects.reverse();
+
+               res.render('profile', {
+                  page_title: profile.username,
+                  profile: profile,
+                  projects: reversed_projects,
+                  saved_projects: reversed_saved_projects,
+                  reposted_projects: reversed_reposted_projects,
+                  user_follows_profile: user_follows_profile,
+                  amount_of_followers: amount_of_followers,
+                  amount_of_following: amount_of_following,
+                  amount_of_projects: amount_of_projects,
+                  viewing_own_profile: viewing_own_profile,
+                  guestUser: guestUser,
+                  hryznAdmin: hryznAdmin
+               });
             });
          });
       });

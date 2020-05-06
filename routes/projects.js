@@ -521,49 +521,62 @@ router.get('/details/:id', (req, res, next) => {
                res.redirect('/');
 
             } else {
+
+               // If the project has any saves
                if (project.saves) {
                   var saves_amount = project.saves.length;
-                  var likes_amount = project.likes.length;
-                  var comment_amount = project.comments.length;
-
-                  if (saves_amount >= 1) {
-                     var enough_saves = true;
-                  } else {
-                     var enough_saves = false;
-                  }
-
-                  if (likes_amount >= 1) {
-                     var enough_likes = true;
-                  } else {
-                     var enough_likes = false;
-                  }
-
-                  if (comment_amount >= 1) {
-                     var enough_comments = true;
-                  } else {
-                     var enough_comments = false;
-                  }
-
-                  if (project.saves.indexOf(req.user.username) === -1) {
-                     var user_saved = false;
-                  } else {
+                  var enough_saves = true;
+                  // If the person viewing saved the project
+                  if (project.saves.indexOf(req.user.username) > -1) {
                      var user_saved = true;
                   }
-
-                  if (project.likes.indexOf(req.user.username) === -1) {
-                     var user_liked = false;
-                  } else {
-                     var user_liked = true;
-                  }
-
                } else {
-                  // Project has no saves or likes
+                  // Project has no saves
                   var user_saved = false;
                   var saves_amount = 0;
+                  var enough_saves = false;
+               }
 
+               // If the project has any likes
+               if (project.likes) {
+                  var likes_amount = project.likes.length;
+                  var enough_likes = true;
+                  // If the person viewing liked the project
+                  if (project.likes.indexOf(req.user.username) > -1) {
+                     var user_liked = true;
+                  }
+               } else {
+                  // Project has no likes
                   var user_liked = false;
                   var likes_amount = 0;
+                  var enough_likes = false;
                }
+
+               // If the project has any comments
+               if (project.comments) {
+                  var comment_amount = project.comments.length
+                  var enough_comments = true;
+               } else {
+                  // Project has no comments
+                  var comment_amount = 0;
+                  var enough_comments = false;
+               }
+
+
+               // If the project has any reposts
+               if (project.reposts) {
+                  var repost_amount = project.reposts.length;
+                  var enough_reposts = true;
+                  // If the person viewing reposted the project
+                  if (project.reposts.indexOf(req.user.username) > -1) {
+                     var user_reposted = true;
+                  }
+               } else {
+                  // Project has no reposts
+                  var repost_amount = 0;
+                  var enough_reposts = false;
+               }
+
 
                var admin_amount = project.admins.length;
 
@@ -588,6 +601,9 @@ router.get('/details/:id', (req, res, next) => {
                         likes_amount: likes_amount,
                         user_saved: user_saved,
                         user_liked: user_liked,
+                        enough_reposts: enough_reposts,
+                        repost_amount: repost_amount,
+                        user_reposted: user_reposted,
                         admin_amount: admin_amount
                      });
                   } else {
@@ -610,6 +626,9 @@ router.get('/details/:id', (req, res, next) => {
                               likes_amount: likes_amount,
                               user_saved: user_saved,
                               user_liked: user_liked,
+                              enough_reposts: enough_reposts,
+                              repost_amount: repost_amount,
+                              user_reposted: user_reposted,
                               admin_amount: admin_amount
                            });
                         }).limit(8);
@@ -631,6 +650,9 @@ router.get('/details/:id', (req, res, next) => {
                               likes_amount: likes_amount,
                               user_saved: user_saved,
                               user_liked: user_liked,
+                              enough_reposts: enough_reposts,
+                              repost_amount: repost_amount,
+                              user_reposted: user_reposted,
                               admin_amount: admin_amount
                            });
                         }).limit(5);
@@ -786,6 +808,53 @@ router.post('/details/unsave/:id', (req, res, next) => {
       Project.removeSaves(info, (err, user) => {
          if(err) throw err;
          req.flash('success_msg', "Project Unsaved");
+         res.redirect('/p/details/' + req.body.project_id);
+      });
+   } else {
+      res.redirect('/welcome');
+   }
+});
+
+// Post Project Detail - Repost
+router.post('/details/repost/:id', (req, res, next) => {
+   if(req.isAuthenticated()) {
+      info = [];
+      info['profileUsername'] = req.user.username;
+      info['projectId'] = req.body.project_id;
+      info['projectTitle'] = req.body.project_title;
+      info['isPrivate'] = req.body.is_private;
+      info['projectImage'] = req.body.project_image;
+
+      User.repostProject(info, (err, user) => {
+         if(err) throw err;
+      });
+
+      // Add repost to project
+      Project.addReposts(info, (err, user) => {
+         if(err) throw err;
+         req.flash('success_msg', "Reposted Project");
+         res.redirect('/p/details/' + req.body.project_id);
+      });
+   } else {
+      res.redirect('/welcome');
+   }
+});
+
+// Post Project Detail - Unrepost
+router.post('/details/unrepost/:id', (req, res, next) => {
+   if(req.isAuthenticated()) {
+      info = [];
+      info['profileUsername'] = req.user.username;
+      info['projectId'] = req.body.project_id;
+
+      User.unrepostProject(info, (err, user) => {
+         if(err) throw err;
+      });
+
+      // Remove repost from project
+      Project.removeReposts(info, (err, user) => {
+         if(err) throw err;
+         req.flash('success_msg', "Unreposted Project");
          res.redirect('/p/details/' + req.body.project_id);
       });
    } else {
