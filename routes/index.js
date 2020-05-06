@@ -65,21 +65,24 @@ router.get('/welcome', (req, res, next) => {
 router.get('/', (req, res, next) => {
    if(req.isAuthenticated()) {
 
-      var now = new Date();
-      var time = now.getHours();
+      // Greeting was not working on iphone
 
-      console.log(time);
+      // var now = new Date();
+      // var time = now.getHours();
+      //
+      // console.log(time);
 
-      if (time >= 12 && time < 18) {
-         var greeting = 'Good afternoon';
-      } else if (time >= 18 && time < 24) {
-         var greeting = 'Good evening';
-      } else {
-         var greeting = 'Good morning';
-      }
+      // if (time >= 12 && time < 18) {
+      //    var greeting = 'Good afternoon';
+      // } else if (time >= 18 && time < 24) {
+      //    var greeting = 'Good evening';
+      // } else {
+      //    var greeting = 'Good morning';
+      // }
+
+      var greeting = 'Hello'
 
       // User's Subscriptions Feed
-
       if (req.user.following) {
          User.find({ 'username': { $in: req.user.following } }, (err, profiles) => {
             if (err) throw err;
