@@ -70,12 +70,12 @@ router.get('/', (req, res, next) => {
 
       console.log(time);
 
-      if (time >= 0 && time < 12) {
-         var greeting = 'Good morning';
-      } else if (time >= 12 && time < 18) {
+      if (time >= 12 && time < 18) {
          var greeting = 'Good afternoon';
-      } else {
+      } else if (time >= 18 && time < 24) {
          var greeting = 'Good evening';
+      } else {
+         var greeting = 'Good morning';
       }
 
       // User's Subscriptions Feed
