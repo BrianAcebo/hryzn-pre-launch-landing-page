@@ -386,6 +386,12 @@ section.project {
    max-height: 25px;
 }
 
+.project_action_btn.comment_btn {
+   cursor: default;
+   justify-content: flex-start;
+   margin: 50px 0;
+}
+
 .project_action_btn .project_icon {
    margin-right: 15px;
    max-width: 20px;
@@ -399,7 +405,7 @@ section.project {
 
    .project_action_btn {
       font-size: 12px;
-      margin: 10px;
+      margin: 5px 5px 5px 0;
    }
 
    .project_action_btn .project_icon {
