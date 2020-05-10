@@ -539,6 +539,12 @@ section.project {
    text-decoration: underline!important;
 }
 
+.project_notes .mention_tag {
+   font-weight: bold;
+   color: #DADCEB;
+   text-decoration: none!important;
+}
+
 .project_notes img {
    width: 100%;
    margin: 75px auto;

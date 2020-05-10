@@ -259,7 +259,6 @@
 
    <!-- Site JS-->
    <script src="//ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-   <script type="text/javascript" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
    <script src="/js/welcome/modernizr.js"></script>
    <script src="/js/welcome/pace.min.js"></script>
    <script src="/js/welcome/plugins.js" type="text/javascript"></script>
@@ -375,6 +374,7 @@
    {{! Do nothing }}
    {{else}}
    <script>
+   // Projects
    $(document).ready(function() {
       $('#editor').trumbowyg('html', '{{{project_notes}}}');
    });
@@ -383,6 +383,7 @@
 
    {{#if post}}
    <script>
+   // Blog Post
    $(document).ready(function() {
       $('#editor').trumbowyg('html', '{{{post.post_notes}}}');
    });
@@ -402,11 +403,6 @@
    {{#if projects}}
    <script src="/js/macy.js" type="text/javascript"></script>
    <script src="/js/macy.init.js" type="text/javascript"></script>
-   <script>
-   function adjust() {
-      masonry.recalculate(true);
-   }
-   </script>
    {{/if}}
 
    {{! For DEV
@@ -415,15 +411,6 @@
 
    {{! For PROD }}
    <script src="/dist/js/main.min.js" type="text/javascript"></script>
-
-   {{! Socket IO}}
-   {{!if chat}}
-   {{!<script src="/socket.io/socket.io.js"></script>
-   <script>
-   var socket = io();
-   socket.on(‘message’, addMessages)
-   </script>}}
-   {{!if}}
 
 </html>
 {{/if}}

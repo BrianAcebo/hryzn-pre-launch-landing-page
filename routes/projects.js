@@ -63,8 +63,54 @@ router.post('/create-project', upload.single('project_image'), (req, res, next) 
       var is_private = req.body.is_private;
       var id = req.body.id;
       var user = req.body.user;
-      var project_notes = req.body.project_notes.replace(/\r\n/g,'');
+      var req_project_notes = req.body.project_notes.replace(/\r\n/g,'');
       var project_url = req.body.project_url;
+
+      if (req.body.project_categories) {
+         if (req.body.project_categories.length > 0) {
+            var project_categories = req.body.project_categories;
+         } else {
+            var project_categories;
+         }
+      } else {
+         var project_categories;
+      }
+
+      // Check for mentions or hashtags
+      var notes_array = req_project_notes.split(" ");
+      var project_notes = '';
+      notes_array.forEach(function(word, key) {
+         if (word[0] == '@') {
+
+            if (word.indexOf("<") > -1) {
+               var pos = word.indexOf("<");
+            } else {
+               var pos = word.length;
+            }
+            var slice = word.slice(1, pos);
+            slice = slice.replace(/<\/?[^>]+(>|$)/g, "");
+            var clean_word = word.slice(0, pos);
+            project_notes += '<a class="mention_tag" href="/profile/' + slice + '">' + clean_word + '</a> ' + word.slice(pos, word.length) + ' ';
+
+         } else if (word[0] == '#') {
+
+            if (word.indexOf("<") > -1) {
+               var pos = word.indexOf("<");
+            } else {
+               var pos = word.length;
+            }
+            var slice = word.slice(1, pos);
+            slice = slice.replace(/<\/?[^>]+(>|$)/g, "");
+            var clean_word = word.slice(0, pos);
+            if (project_categories.indexOf(slice) === -1) {
+               project_categories.push(slice);
+            }
+            project_notes += '<a class="mention_tag" href="/explore/' + slice + '">' + clean_word + '</a> ' + word.slice(pos, word.length) + ' ';
+
+         } else {
+            project_notes += word + ' ';
+         }
+      });
 
       // See if project_url has https://
       var has_https = project_url.search("https://");
@@ -186,16 +232,6 @@ router.post('/create-project', upload.single('project_image'), (req, res, next) 
                // No errors have been made
                // var fileExt = req.file.originalname.split('.').pop();
                var project_image = dateNow + req.file.originalname;
-
-               if (req.body.project_categories) {
-                  if (req.body.project_categories.length > 0) {
-                     var project_categories = req.body.project_categories;
-                  } else {
-                     var project_categories;
-                  }
-               } else {
-                  var project_categories;
-               }
 
                var newProject = new Project({
                   project_title: project_title,
@@ -319,7 +355,7 @@ router.post('/details/edit/:id', upload.single('project_image'), (req, res, next
       var is_private = req.body.is_private;
       var user_id = req.body.id;
       var user = req.body.user;
-      var project_notes = req.body.project_notes.replace(/\r\n/g,'');
+      var req_project_notes = req.body.project_notes.replace(/\r\n/g,'');
       var project_url = req.body.project_url;
 
       // See if project_url has https://
@@ -445,6 +481,41 @@ router.post('/details/edit/:id', upload.single('project_image'), (req, res, next
                      var project_categories = project.categories;
                   }
 
+                  // Check for mentions or hashtags
+                  var notes_array = req_project_notes.split(" ");
+                  var project_notes = '';
+                  notes_array.forEach(function(word, key) {
+                     if (word[0] == '@') {
+
+                        if (word.indexOf("<") > -1) {
+                           var pos = word.indexOf("<");
+                        } else {
+                           var pos = word.length;
+                        }
+                        var slice = word.slice(1, pos);
+                        slice = slice.replace(/<\/?[^>]+(>|$)/g, "");
+                        var clean_word = word.slice(0, pos);
+                        project_notes += '<a class="mention_tag" href="/profile/' + slice + '">' + clean_word + '</a> ' + word.slice(pos, word.length) + ' ';
+
+                     } else if (word[0] == '#') {
+
+                        if (word.indexOf("<") > -1) {
+                           var pos = word.indexOf("<");
+                        } else {
+                           var pos = word.length;
+                        }
+                        var slice = word.slice(1, pos);
+                        slice = slice.replace(/<\/?[^>]+(>|$)/g, "");
+                        var clean_word = word.slice(0, pos);
+                        if (project_categories.indexOf(slice) === -1) {
+                           project_categories.push(slice);
+                        }
+                        project_notes += '<a class="mention_tag" href="/explore/' + slice + '">' + clean_word + '</a> ' + word.slice(pos, word.length) + ' ';
+
+                     } else {
+                        project_notes += word + ' ';
+                     }
+                  });
 
                   Project.findByIdAndUpdate(project_id, {
                      project_title: project_title,
@@ -477,6 +548,42 @@ router.post('/details/edit/:id', upload.single('project_image'), (req, res, next
                } else {
                   var project_categories = project.categories;
                }
+
+               // Check for mentions or hashtags
+               var notes_array = req_project_notes.split(" ");
+               var project_notes = '';
+               notes_array.forEach(function(word, key) {
+                  if (word[0] == '@') {
+
+                     if (word.indexOf("<") > -1) {
+                        var pos = word.indexOf("<");
+                     } else {
+                        var pos = word.length;
+                     }
+                     var slice = word.slice(1, pos);
+                     slice = slice.replace(/<\/?[^>]+(>|$)/g, "");
+                     var clean_word = word.slice(0, pos);
+                     project_notes += '<a class="mention_tag" href="/profile/' + slice + '">' + clean_word + '</a> ' + word.slice(pos, word.length) + ' ';
+
+                  } else if (word[0] == '#') {
+
+                     if (word.indexOf("<") > -1) {
+                        var pos = word.indexOf("<");
+                     } else {
+                        var pos = word.length;
+                     }
+                     var slice = word.slice(1, pos);
+                     slice = slice.replace(/<\/?[^>]+(>|$)/g, "");
+                     var clean_word = word.slice(0, pos);
+                     if (project_categories.indexOf(slice) === -1) {
+                        project_categories.push(slice);
+                     }
+                     project_notes += '<a class="mention_tag" href="/explore/' + slice + '">' + clean_word + '</a> ' + word.slice(pos, word.length) + ' ';
+
+                  } else {
+                     project_notes += word + ' ';
+                  }
+               });
 
                Project.findByIdAndUpdate(project_id, {
                   project_title: project_title,

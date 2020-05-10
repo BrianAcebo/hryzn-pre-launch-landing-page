@@ -23,31 +23,6 @@ $(document).ready(function() {
    /**********/
 
 
-   // Slick slider on welcomePage
-   $('.slider-for').slick({
-      slidesToShow: 1,
-      slidesToScroll: 1,
-      arrows: false,
-      fade: true,
-      asNavFor: '.slider-nav'
-   });
-
-   $('.slider-nav').slick({
-      slidesToShow: 3,
-      slidesToScroll: 1,
-      asNavFor: '.slider-for',
-      dots: true,
-      focusOnSelect: true
-   });
-
-   $('a[data-slide]').click(function(e) {
-      e.preventDefault();
-      var slideno = $(this).data('slide');
-      $('.slider-nav').slick('slickGoTo', slideno - 1);
-   });
-   /**********/
-
-
    // Smooth Scrolling
    $('.smoothscroll').on('click', function(e) {
       var target = $(this).attr('href');
@@ -439,17 +414,19 @@ $(document).ready(function() {
 
 
    // Open related projects nav on click
-   var $relatedOpen = $('#relatedBtn');
+   var $relatedOpen = $('.relatedBtn');
    var $relatedClose = $('#relatedClose');
    var $relatedNav = $('#relatedSideNav');
 
-   $relatedOpen.click(function() {
-      if($window.width() <= 768) {
-         $relatedNav.css({ "width": "100%", "box-shadow": "0 2px 4px 0 rgba(0,0,0,0.2)" });
-         $relatedClose.css({ "position": "fixed" });
-      } else {
-         $relatedNav.css({ "width": "350" });
-      }
+   $relatedOpen.each(function() {
+      $(this).click(function() {
+         if($window.width() <= 768) {
+            $relatedNav.css({ "width": "100%", "box-shadow": "0 2px 4px 0 rgba(0,0,0,0.2)" });
+            $relatedClose.css({ "position": "fixed" });
+         } else {
+            $relatedNav.css({ "width": "350" });
+         }
+      });
    });
 
    $relatedClose.click(function() {

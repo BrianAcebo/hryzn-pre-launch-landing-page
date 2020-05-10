@@ -190,7 +190,8 @@ textarea {
    color: #707070;
 }
 
-.form__sign-up-button {
+.form__sign-up-button,
+.form_submit_btn {
     background: #31375A;
     font-size: 12px;
     text-transform: uppercase;
@@ -198,7 +199,6 @@ textarea {
     color: #fff;
     margin: 0;
     padding: 15px 25px;
-    width: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -206,6 +206,14 @@ textarea {
     border: none;
     cursor: pointer;
     transition: 0.3s;
+}
+
+.form__sign-up-button {
+   width: 50%;
+}
+
+.form_submit_btn {
+   width: 100%;
 }
 
 .form__sign-up-button:hover {

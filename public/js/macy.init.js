@@ -24,3 +24,7 @@ var masonry = new Macy({
 masonry.runOnImageLoad(function () {
    masonry.recalculate(true);
 }, true);
+
+function adjust() {
+   masonry.recalculate(true);
+}
