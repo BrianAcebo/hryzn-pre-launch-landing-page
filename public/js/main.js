@@ -286,7 +286,7 @@ $(document).ready(function() {
 
    // Modal pop up for micro post
    var $modal = $(".popModal.microPost");
-   var $modalBtn = $("#microPostBtn");
+   var $modalBtn = $(".micro_post_btn");
    var $closeBtn = $(".closeModal");
 
    $modalBtn.each(function() {
