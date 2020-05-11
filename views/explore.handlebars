@@ -52,6 +52,21 @@
                {{! Check if the project is a private project, we do not want to show private projects }}
                {{else}}
 
+               {{#if is_micro_post}}
+               <div class="masonryItem ownProject" title="{{project_title}}">
+                  <div class="micropost">
+                     <div class="micropost_card">
+                        <p>{{{micro_body}}}</p>
+                        {{#if micro_image}}
+                        <img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{micro_image}}" class="img-responsive" alt="{{micro_body}}" />
+                        {{/if}}
+                     </div>
+                     <a class="micro_tag" href="/profile/{{project_owner}}">@{{project_owner}}</a>
+                  </div>
+               </div>
+
+               {{else}}
+
                <div class="masonryItem" title="{{project_title}}">
                   <div class="project_card">
                      <a href="/p/details/{{id}}" class="project_link">
@@ -70,6 +85,8 @@
                      </div>
                   </div>
                </div>
+
+               {{/if}}
 
                {{/if}}
 
@@ -99,6 +116,21 @@
                {{! Check if the project is a private project, we do not want to show private projects }}
                {{else}}
 
+               {{#if is_micro_post}}
+               <div class="masonryItem ownProject" title="{{project_title}}">
+                  <div class="micropost">
+                     <div class="micropost_card">
+                        <p>{{{micro_body}}}</p>
+                        {{#if micro_image}}
+                        <img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{micro_image}}" class="img-responsive" alt="{{micro_body}}" />
+                        {{/if}}
+                     </div>
+                     <a class="micro_tag" href="/profile/{{project_owner}}">@{{project_owner}}</a>
+                  </div>
+               </div>
+
+               {{else}}
+
                <div class="masonryItem" title="{{project_title}}">
                   <div class="project_card">
                      <a href="/p/details/{{id}}" class="project_link">
@@ -117,6 +149,8 @@
                      </div>
                   </div>
                </div>
+
+               {{/if}}
 
                {{/if}}
 
