@@ -130,7 +130,7 @@ h5 {
    }
 
    a, p, div {
-      line-height: 30px;
+      line-height: 20px;
    }
 }
 
@@ -146,6 +146,13 @@ a {
   color: #333;
   text-decoration: none!important;
 }
+
+.mention_tag {
+   font-weight: bold;
+   color: #DADCEB;
+   text-decoration: none!important;
+}
+
 
 iframe {
    width: 100%!important;
@@ -416,6 +423,11 @@ input {
 
 #mainBody {
    padding: 100px 0;
+   transition: 0.3s;
+}
+
+.bodyBlur {
+   filter: blur(10px);
 }
 
 #mainWelcome {
@@ -830,7 +842,7 @@ input {
 .modalBackground {
    display: none;
    position: fixed;
-   z-index: 999998;
+   z-index: 999999;
    padding: 150px 0;
    left: 0;
    top: 0;

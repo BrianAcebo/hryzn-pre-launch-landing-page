@@ -51,7 +51,10 @@ const UserSchema = mongoose.Schema({
    own_projects: [],
    saved_projects: [],
    reposted_projects: [],
-   messages: []
+   messages: [],
+   has_notification: {
+      type: Boolean
+   }
 });
 
 const User = module.exports = mongoose.model('User', UserSchema);
@@ -270,6 +273,22 @@ module.exports.addChat = (info, callback) => {
    User.findOneAndUpdate(query,
       {
          $addToSet: {"messages": [messageId]},
+      },
+      { safe: true, upsert: true },
+      callback
+   );
+}
+
+
+// Add Notification
+module.exports.addNotification = (info, callback) => {
+   username = info['username'];
+
+   const query = { username: username };
+
+   User.findOneAndUpdate(query,
+      {
+         $addToSet: {"has_notification": "true"},
       },
       { safe: true, upsert: true },
       callback

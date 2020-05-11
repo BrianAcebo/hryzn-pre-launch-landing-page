@@ -1,0 +1,25 @@
+<div class="notification_container">
+   <p class="top_results">Notifications</p>
+   <hr class="top_results_underline" />
+
+   {{#if notifications}}
+   {{#each notifications}}
+   <div class="notification_wrapper">
+      <a class="notification" href="{{this.link}}">{{this.type}}</a>
+      <form method="post" class="" action="/notifications/remove/{{this._id}}">
+         <input type="hidden" name="notification_id" value="{{this._id}}">
+         <button class="project_action_btn" name="submit" type="submit">
+            <img src="/icons/delete-ticket-item.png" class="main-topnav__icon">
+         </button>
+      </form>
+   </div>
+   {{/each}}
+
+   {{else}}
+
+   <div class="notification_wrapper">
+      <p class="notification">Sorry, there's no notifications</p>
+   </div>
+
+   {{/if}}
+</div>

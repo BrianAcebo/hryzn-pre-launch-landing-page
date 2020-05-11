@@ -1,6 +1,6 @@
-{{#if other_users}}
-
 <div class="explore_main">
+
+{{#if other_users}}
 
    <p class="top_results">Your Chats</p>
    <hr class="top_results_underline" />
@@ -21,12 +21,12 @@
    <div class="spacer"></div>
    <p class="error-message">No messages</p>
 
-   {{/if}}
+{{/if}}
 
-   <p class="top_results">Following</p>
+{{#if following}}
+
+   <p class="top_results">Chat with someone you follow</p>
    <hr class="top_results_underline" />
-
-   {{#if following}}
 
    <section class="follower__profiles-section">
       {{#each following}}
@@ -39,6 +39,6 @@
       {{/each}}
    </section>
 
-</div>
-
 {{/if}}
+
+</div>

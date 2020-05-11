@@ -47,7 +47,16 @@ const ProjectSchema = mongoose.Schema({
    project_url: {
       type: String
    },
-   categories: []
+   categories: [],
+   is_micro_post: {
+      type: Boolean
+   },
+   micro_body: {
+      type: String
+   },
+   micro_image: {
+      type: String
+   },
 });
 
 const Project = module.exports = mongoose.model('Project', ProjectSchema);

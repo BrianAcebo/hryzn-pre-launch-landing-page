@@ -68,6 +68,7 @@
       <link rel="stylesheet" type="text/css" href="/css/site/blog.css" />
       <link rel="stylesheet" type="text/css" href="/css/site/welcome.css" />
       <link rel="stylesheet" type="text/css" href="/css/site/vendor.css" />
+      <link rel="stylesheet" type="text/css" href="/css/site/notifications.css" />
       <link rel="stylesheet" type="text/css" href="/css/site/trumbowyg.min.css" />
       }}
 
@@ -103,25 +104,35 @@
             </div>
          </div>
          <nav class="item-list">
-            <a href="/profile/{{user.username}}" class="main-topnav__profile">
-               <div class="topnav__user">
-                  <div class="topnav__profile-img-container">
-                     <img class="profile__img" {{#if user.profileimage}}src="https://s3.amazonaws.com/hryzn-app-static-assets/{{user.profileimage}}"{{else}}src="/img/site/hryzn-placeholder-01.jpg"{{/if}} />
-                  </div>
-                  @{{user.username}}
-               </div>
-            </a>
-            <a href="/explore"><img src="/icons/explore-black.png" class="main-topnav__icon" /></a>
             <div class="drop_menu">
-               <a class="dropBtn"><img src="/icons/settings-black.png" class="main-topnav__icon" /></a>
+               <a class="dropBtn" class="main-topnav__profile">
+                  <div class="topnav__user">
+                     <div class="topnav__profile-img-container">
+                        <img class="profile__img" {{#if user.profileimage}}src="https://s3.amazonaws.com/hryzn-app-static-assets/{{user.profileimage}}"{{else}}src="/img/site/hryzn-placeholder-01.jpg"{{/if}} />
+                     </div>
+                     @{{user.username}}
+                  </div>
+               </a>
                <div class="drop_nav dropNav">
-                  <a href="/">Feed</a>
-                  <a href="/settings">Settings</a>
+                  <a href="/profile/{{user.username}}">Profile</a>
                   <a href="/blog/hryzn-tutorial---site-walk-through">Help</a>
                   <a href="/logout">Logout</a>
                </div>
             </div>
-            <a href="/p/create-project" class="create-icon"><img src="/icons/create-icon.png" class="main-topnav__icon" /></a>
+            <a href="/"><img src="/icons/home.png" class="main-topnav__icon" /></a>
+            <a href="/explore"><img src="/icons/explore-black.png" class="main-topnav__icon" /></a>
+            {{#if user.has_notification}}
+            <a href="/notifications"><img src="/icons/notification-unread.png" class="main-topnav__icon" /></a>
+            {{else}}
+            <a href="/notifications"><img src="/icons/notification.png" class="main-topnav__icon" /></a>
+            {{/if}}
+            <a class="create-icon"><img src="/icons/create-icon.png" class="main-topnav__icon" /></a>
+            <div class="post_container">
+               <div href="/p/create-project" class="blog_post_btn">
+                  <a href="/p/create-project">Blog Post</a>
+               </div>
+               <div id="microPostBtn" class="micro_post_btn">Micro Post</div>
+            </div>
          </nav>
       </header>
       <!-- /Main Nav -->
@@ -130,7 +141,7 @@
       <nav class="mobile-nav">
          <ul class="mobile-nav__item-list">
             <li class="mobile-nav__item">
-               <a href="/profile/{{user.username}}"><img src="/icons/user-black.png" class="mobile-nav__icon" /></a>
+               <a href="/"><img src="/icons/home.png" class="mobile-nav__icon" /></a>
             </li>
 
             <li class="mobile-nav__item">
@@ -138,14 +149,30 @@
             </li>
 
             <li class="mobile-nav__item">
-               <a href="/p/create-project"><img src="/icons/create-icon.png" class="mobile-nav__icon" /></a>
+               <a class="create-icon"><img src="/icons/create-icon.png" class="mobile-nav__icon" /></a>
+               <div class="post_container">
+                  <div href="/p/create-project" class="blog_post_btn">
+                     <a href="/p/create-project">Blog Post</a>
+                  </div>
+                  <div id="microPostBtn" class="micro_post_btn">Micro Post</div>
+               </div>
             </li>
+
+            {{#if user.has_notification}}
+            <li class="mobile-nav__item">
+               <a href="/notifications"><img src="/icons/notification-unread.png" class="mobile-nav__icon" /></a>
+            </li>
+            {{else}}
+            <li class="mobile-nav__item">
+               <a href="/notifications"><img src="/icons/notification.png" class="mobile-nav__icon" /></a>
+            </li>
+            {{/if}}
 
             <li class="mobile-nav__item">
                <div class="drop_menu">
-                  <a class="dropBtn"><img src="/icons/settings-black.png" class="main-topnav__icon" /></a>
+                  <a class="dropBtn"><img src="/icons/user-black.png" class="mobile-nav__icon" /></a>
                   <div class="drop_nav dropNav">
-                     <a href="/">Feed</a>
+                     <a href="/profile/{{user.username}}">Profile</a>
                      <a href="/settings">Settings</a>
                      <a href="/blog/hryzn-tutorial---site-walk-through">Help</a>
                      <a href="/logout">Logout</a>
@@ -242,6 +269,30 @@
          {{/if}}
          {{{body}}}
       </main>
+
+      <div class="popModal microPost modalBackground">
+         <div class="modal-content">
+
+         <form method="post" class="edit-project-form" action="/p/create-micro" enctype="multipart/form-data">
+            {{! Micro Body }}
+            <label for="micro_body" class="form__label" style="margin-top: 25px;">Speak Your Mind</label>
+            <textarea class="project-description__input" type="text" name="micro_body" value="{{project.micro_body}}"></textarea>
+
+            {{! Micro Image }}
+            <label for="micro_image" class="form__label">Add Image</label>
+            <input class="form__input" type="file" name="micro_image" value="{{project.micro_image}}" />
+
+            <input type="hidden" name="admin" value="{{user.username}}">
+            <input type="hidden" name="id" value="{{user._id}}">
+
+            <div class="modal-footer">
+               <input type="submit" class="btn__secondary project_submit" value="Submit" />
+               <span class="closeModal btn__primary">Cancel</span>
+            </div>
+         </form>
+
+         </div>
+      </div>
 
       {{#if user}}
       {{else}}

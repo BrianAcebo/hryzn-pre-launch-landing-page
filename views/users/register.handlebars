@@ -36,18 +36,16 @@
          <div class="container">
             <div class="form_row">
                <div class="col-lg-6">
-                  <input class="form__input" type="text" placeholder="First name" name="firstname" value="{{firstname}}" />
+                  <input class="form__input" type="text" placeholder="Enter username" name="username" value="{{username}}" required autocapitalize="none" />
                </div>
 
                <div class="col-lg-6">
-                  <input class="form__input" type="text" placeholder="Last name" name="lastname" value="{{lastname}}" />
+                  <input class="form__input" type="email" placeholder="Enter email address" name="email" value="{{email}}" required autocapitalize="none" />
                </div>
             </div>
-            <input class="form__input" type="text" placeholder="Enter username" name="username" value="{{username}}" required autocapitalize="none" />
-            <input class="form__input" type="email" placeholder="Enter email address" name="email" value="{{email}}" required autocapitalize="none" />
             <input class="form__input" type="password" placeholder="Enter password" name="password" value="{{password}}" required autocapitalize="none" />
             <input class="form__input" type="password" placeholder="Confirm password" name="password2" value="{{password2}}" required autocapitalize="none" />
-            <label for="profileimage" class="form__label">Select your profile image</label>
+            <label for="profileimage" class="form__label">Select your profile image ( Optional )</label>
             <input class="form__input" type="file" name="profileimage" value="{{profileimage}}" />
             <div class="form_row auth_btn">
              <button class="form__sign-up-button login_page_btn" name="submit" type="submit">Sign Up</button>

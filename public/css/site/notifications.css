@@ -1,0 +1,40 @@
+.notification_container {
+   width: 100%;
+   max-width: 1000px;
+   margin: 0 auto;
+   display: flex;
+   flex-direction: column;
+   padding: 100px;
+}
+
+.notification_wrapper {
+   display: flex;
+   align-items: center;
+   justify-content: space-between;
+   flex-direction: row;
+}
+
+.notification_container .notification {
+   font-size: 18px;
+   font-weight: bold;
+   height: 75px;
+   display: flex;
+   margin: 25px 25px 25px 0;
+   width: 100%;
+   text-align: center;
+   justify-content: center;
+   align-items: center;
+   border: 1px solid #ccc;
+}
+
+@media screen and (max-width: 595px) {
+   .notification_container {
+      padding: 25px;
+   }
+
+   .notification_container .notification {
+      font-size: 14px;
+      height: 50px;
+      margin: 10px 25px 10px 0;
+   }
+}

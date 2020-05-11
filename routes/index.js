@@ -29,6 +29,7 @@ const multipleUpload = multer({storage: multerS3(storage)}).any();
 const User = require('../models/users');
 const Project = require('../models/projects');
 const Message = require('../models/messages');
+const Notification = require('../models/notifications');
 
 // Get Welcome Landing Page
 router.get('/welcome', (req, res, next) => {
@@ -261,6 +262,23 @@ router.get('/messages/chat/:messageId', (req, res, next) => {
 });
 
 
+// Delete Old Message Chat
+router.get('/messages/chat/delete/:messageId', (req, res, next) => {
+   if(req.isAuthenticated()) {
+
+      Message.findByIdAndRemove(req.params.messageId, (err) => {
+         if (err) throw err;
+
+         req.flash('success_msg', "Chat was deleted.");
+         res.redirect('/messages');
+      });
+
+   } else {
+      res.redirect('/welcome');
+   }
+});
+
+
 // Post Old Message Chat
 router.post('/messages/chat/:messageId', (req, res, next) => {
    if(req.isAuthenticated()) {
@@ -275,9 +293,37 @@ router.post('/messages/chat/:messageId', (req, res, next) => {
       }
       info['message'] = req.body.message.replace(/\r\n/g,'');
 
-      // Add followers to profile
+      // Add message
       Message.addMessage(info, (err, message) => {
          if(err) throw err
+
+         Message.findOne({ '_id': { $in: req.params.messageId} }, (err, message) => {
+            message.users.forEach(function(user, key) {
+               if (user != req.user.username) {
+                  // Send notification to the user mentioned
+                  User.findOne({ 'username': { $in: user} }, (err, reciever) => {
+                     if (err) throw err;
+
+                     var newNotification = new Notification({
+                        sender: req.user._id,
+                        reciever: reciever._id,
+                        type: '@' + req.body.username + ' messaged you.',
+                        link: '/messages/chat/' + req.params.messageId
+                     });
+
+                     // Create notification in database
+                     Notification.saveNotification(newNotification, (err, notification) => {
+                        if(err) throw err;
+
+                        // Add Notification for User
+                        User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+                           if (err) throw err;
+                        });
+                     });
+                  });
+               }
+            });
+         });
 
          req.flash('success_msg', "Message Sent");
          res.redirect('/messages/chat/' + req.params.messageId);
@@ -316,6 +362,8 @@ router.get('/messages/new/:username', (req, res, next) => {
 router.post('/messages/new/:username', (req, res, next) => {
    if(req.isAuthenticated()) {
 
+      var info = [];
+
       var users = req.body.users;
       var sent_by = req.user.username;
       if (req.body.profileimage) {
@@ -329,7 +377,7 @@ router.post('/messages/new/:username', (req, res, next) => {
          users: users,
          messages: {
             username: sent_by,
-            profileimage: profileimage,
+            profileimage: info['profileimage'],
             message: message
          }
       });
@@ -346,6 +394,28 @@ router.post('/messages/new/:username', (req, res, next) => {
 
             User.addChat(info, (err, user) => {
                if(err) throw err;
+            });
+         });
+
+         // Send notification to the user mentioned
+         User.findOne({ 'username': { $in: req.params.username} }, (err, reciever) => {
+            if (err) throw err;
+
+            var newNotification = new Notification({
+               sender: req.user._id,
+               reciever: reciever._id,
+               type: '@' + req.user.username + ' messaged you.',
+               link: '/messages/chat/' + message._id
+            });
+
+            // Create notification in database
+            Notification.saveNotification(newNotification, (err, notification) => {
+               if(err) throw err;
+
+               // Add Notification for User
+               User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+                  if (err) throw err;
+               });
             });
          });
 
@@ -367,6 +437,49 @@ router.get('/logout', (req, res, next) => {
          res.clearCookie('connect.sid');
          res.redirect('/welcome');
       });
+   } else {
+      res.redirect('/welcome');
+   }
+});
+
+
+// Get Notifications
+router.get('/notifications', (req, res, next) => {
+   if(req.isAuthenticated()) {
+      Notification.find({ 'reciever': { $in: req.user._id} }, (err, notifications) => {
+
+         if (err) throw err;
+
+         // Add Notification for User
+         User.findByIdAndUpdate(req.user._id, { has_notification: false }, (err, user) => {
+            if (err) throw err;
+         });
+
+         res.render('notifications', {
+            page_title: 'Notifications',
+            notifications: notifications.reverse(),
+            notification_page: true
+         });
+
+      });
+
+   } else {
+      res.redirect('/welcome');
+   }
+});
+
+
+// Post Notifications - Delete
+router.post('/notifications/remove/:id', (req, res, next) => {
+   if(req.isAuthenticated()) {
+
+      Notification.findByIdAndRemove(req.params.id, (err) => {
+         if (err) throw err;
+
+         req.flash('success_msg', "Notification was deleted.");
+         res.redirect('/notifications');
+      });
+
    } else {
       res.redirect('/welcome');
    }

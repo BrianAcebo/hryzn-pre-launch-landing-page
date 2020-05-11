@@ -5,30 +5,30 @@ const keys = require('../config/keys');
 mongoose.connect(keys.mongoURI);
 
 // User Schema
-const MessageSchema = mongoose.Schema({
-   users: [],
-   messages: [{
-      username: {
-         type: String
-      },
-      profileimage: {
-         type: String
-      },
-      message: {
-         type: String
-      }
-   }]
+const NotificationSchema = mongoose.Schema({
+   sender: {
+      type: String
+   },
+   reciever: {
+      type: String
+   },
+   type: {
+      type: String
+   },
+   link: {
+      type: String
+   }
 });
 
-const Message = module.exports = mongoose.model('Message', MessageSchema);
+const Notification = module.exports = mongoose.model('Notification', NotificationSchema);
 
-// Create Message
-module.exports.saveMessage = (newMessage, callback) => {
-   newMessage.save(callback);
+// Create Notification
+module.exports.saveNotification = (newNotification, callback) => {
+   newNotification.save(callback);
 }
 
-// Add Message
-module.exports.addMessage = (info, callback) => {
+// Add Following
+module.exports.addNotification = (info, callback) => {
    username = info['userUsername'];
    messageId = info['messageId'];
    profileimage = info['profileimage'];
@@ -36,7 +36,7 @@ module.exports.addMessage = (info, callback) => {
 
    const query = { _id: messageId };
 
-   Message.findOneAndUpdate(query,
+   Notification.findOneAndUpdate(query,
       {
          $addToSet: {"messages": [{
             "username": username,

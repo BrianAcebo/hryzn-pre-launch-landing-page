@@ -29,6 +29,7 @@ const multipleUpload = multer({storage: multerS3(storage)});
 // Connection to Models
 const User = require('../models/users');
 const Project = require('../models/projects');
+const Notification = require('../models/notifications');
 
 
 // GET Create Project
@@ -82,6 +83,7 @@ router.post('/create-project', upload.single('project_image'), (req, res, next) 
       notes_array.forEach(function(word, key) {
          if (word[0] == '@') {
 
+            // Slice the '@' and name from mention
             if (word.indexOf("<") > -1) {
                var pos = word.indexOf("<");
             } else {
@@ -92,8 +94,32 @@ router.post('/create-project', upload.single('project_image'), (req, res, next) 
             var clean_word = word.slice(0, pos);
             project_notes += '<a class="mention_tag" href="/profile/' + slice + '">' + clean_word + '</a> ' + word.slice(pos, word.length) + ' ';
 
+            // Send notification to the user mentioned
+            User.findOne({ 'username': { $in: slice} }, (err, reciever) => {
+               if (err) throw err;
+
+               var newNotification = new Notification({
+                  sender: req.user._id,
+                  reciever: reciever._id,
+                  type: '@' + req.user.username + ' mentioned you in their new post.',
+                  link: '/profile/' + req.user.username
+               });
+
+               // Create notification in database
+               Notification.saveNotification(newNotification, (err, notification) => {
+                  if(err) throw err;
+
+                  // Add Notification for User
+                  User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+                     if (err) throw err;
+                  });
+
+               });
+            });
+
          } else if (word[0] == '#') {
 
+            // Slice the '#' and word from hashtag
             if (word.indexOf("<") > -1) {
                var pos = word.indexOf("<");
             } else {
@@ -180,7 +206,6 @@ router.post('/create-project', upload.single('project_image'), (req, res, next) 
       }
 
       // Form Validation
-      req.checkBody('project_title', 'Please Enter A Project Title').notEmpty();
       req.checkBody('project_title', 'Project Title Is Too Long').isLength({ min: 0, max:200 });
       req.checkBody('project_description', 'Description Must Be Less Than 500 Characters').isLength({ min: 0, max: 500 });
 
@@ -426,7 +451,6 @@ router.post('/details/edit/:id', upload.single('project_image'), (req, res, next
       }
 
       // Form Validation
-      req.checkBody('project_title', 'Please Enter A Project Title').notEmpty();
       req.checkBody('project_title', 'Project Title Is Too Long').isLength({ min: 0, max:200 });
       req.checkBody('project_description', 'Description Must Be Less Than 500 Characters').isLength({ min: 0, max: 500 });
 
@@ -497,6 +521,28 @@ router.post('/details/edit/:id', upload.single('project_image'), (req, res, next
                         var clean_word = word.slice(0, pos);
                         project_notes += '<a class="mention_tag" href="/profile/' + slice + '">' + clean_word + '</a> ' + word.slice(pos, word.length) + ' ';
 
+                        // Send notification to the user mentioned
+                        User.findOne({ 'username': { $in: slice} }, (err, reciever) => {
+                           if (err) throw err;
+
+                           var newNotification = new Notification({
+                              sender: req.user._id,
+                              reciever: reciever._id,
+                              type: '@' + req.user.username + ' mentioned you in their post.',
+                              link: '/p/details/' + project_id
+                           });
+
+                           // Create notification in database
+                           Notification.saveNotification(newNotification, (err, notification) => {
+                              if(err) throw err;
+
+                              // Add Notification for User
+                              User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+                                 if (err) throw err;
+                              });
+                           });
+                        });
+
                      } else if (word[0] == '#') {
 
                         if (word.indexOf("<") > -1) {
@@ -564,6 +610,28 @@ router.post('/details/edit/:id', upload.single('project_image'), (req, res, next
                      slice = slice.replace(/<\/?[^>]+(>|$)/g, "");
                      var clean_word = word.slice(0, pos);
                      project_notes += '<a class="mention_tag" href="/profile/' + slice + '">' + clean_word + '</a> ' + word.slice(pos, word.length) + ' ';
+
+                     // Send notification to the user mentioned
+                     User.findOne({ 'username': { $in: slice} }, (err, reciever) => {
+                        if (err) throw err;
+
+                        var newNotification = new Notification({
+                           sender: req.user._id,
+                           reciever: reciever._id,
+                           type: '@' + req.user.username + ' mentioned you in their post.',
+                           link: '/p/details/' + project_id
+                        });
+
+                        // Create notification in database
+                        Notification.saveNotification(newNotification, (err, notification) => {
+                           if(err) throw err;
+
+                           // Add Notification for User
+                           User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+                              if (err) throw err;
+                           });
+                        });
+                     });
 
                   } else if (word[0] == '#') {
 
@@ -878,6 +946,9 @@ router.get('/details/:id/guest', (req, res, next) => {
 // Post Project Detail - Save
 router.post('/details/save/:id', (req, res, next) => {
    if(req.isAuthenticated()) {
+
+      var project_owner = req.body.project_owner;
+
       info = [];
       info['profileUsername'] = req.user.username;
       info['projectId'] = req.body.project_id;
@@ -892,6 +963,29 @@ router.post('/details/save/:id', (req, res, next) => {
       // Add save to project
       Project.addSaves(info, (err, user) => {
          if(err) throw err;
+
+         // Send notification to the user mentioned
+         User.findOne({ 'username': { $in: project_owner} }, (err, reciever) => {
+            if (err) throw err;
+
+            var newNotification = new Notification({
+               sender: req.user._id,
+               reciever: reciever._id,
+               type: '@' + req.user.username + ' saved your post.',
+               link: '/p/details/' + req.params.id
+            });
+
+            // Create notification in database
+            Notification.saveNotification(newNotification, (err, notification) => {
+               if(err) throw err;
+
+               // Add Notification for User
+               User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+                  if (err) throw err;
+               });
+            });
+         });
+
          req.flash('success_msg', "Project Saved");
          res.redirect('/p/details/' + req.body.project_id);
       });
@@ -925,6 +1019,9 @@ router.post('/details/unsave/:id', (req, res, next) => {
 // Post Project Detail - Repost
 router.post('/details/repost/:id', (req, res, next) => {
    if(req.isAuthenticated()) {
+
+      var project_owner = req.body.project_owner;
+
       info = [];
       info['profileUsername'] = req.user.username;
       info['projectId'] = req.body.project_id;
@@ -939,6 +1036,29 @@ router.post('/details/repost/:id', (req, res, next) => {
       // Add repost to project
       Project.addReposts(info, (err, user) => {
          if(err) throw err;
+
+         // Send notification to the user mentioned
+         User.findOne({ 'username': { $in: project_owner} }, (err, reciever) => {
+            if (err) throw err;
+
+            var newNotification = new Notification({
+               sender: req.user._id,
+               reciever: reciever._id,
+               type: '@' + req.user.username + ' reposted your post.',
+               link: '/p/details/' + req.params.id
+            });
+
+            // Create notification in database
+            Notification.saveNotification(newNotification, (err, notification) => {
+               if(err) throw err;
+
+               // Add Notification for User
+               User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+                  if (err) throw err;
+               });
+            });
+         });
+
          req.flash('success_msg', "Reposted Project");
          res.redirect('/p/details/' + req.body.project_id);
       });
@@ -972,6 +1092,9 @@ router.post('/details/unrepost/:id', (req, res, next) => {
 // Post Project Detail - Like
 router.post('/details/like/:id', (req, res, next) => {
    if(req.isAuthenticated()) {
+
+      var project_owner = req.body.project_owner;
+
       info = [];
       info['profileUsername'] = req.user.username;
       info['projectId'] = req.body.project_id;
@@ -982,6 +1105,29 @@ router.post('/details/like/:id', (req, res, next) => {
       // Add like to project
       Project.addLikes(info, (err, user) => {
          if(err) throw err;
+
+         // Send notification to the user mentioned
+         User.findOne({ 'username': { $in: project_owner} }, (err, reciever) => {
+            if (err) throw err;
+
+            var newNotification = new Notification({
+               sender: req.user._id,
+               reciever: reciever._id,
+               type: '@' + req.user.username + ' liked your post.',
+               link: '/p/details/' + req.params.id
+            });
+
+            // Create notification in database
+            Notification.saveNotification(newNotification, (err, notification) => {
+               if(err) throw err;
+
+               // Add Notification for User
+               User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+                  if (err) throw err;
+               });
+            });
+         });
+
          req.flash('success_msg', "Project Liked");
          res.redirect('/p/details/' + req.body.project_id);
       });
@@ -1012,6 +1158,9 @@ router.post('/details/unlike/:id', (req, res, next) => {
 // Post Project Detail - Comment
 router.post('/details/comment/:id', (req, res, next) => {
    if(req.isAuthenticated()) {
+
+      var project_owner = req.body.project_owner;
+
       info = [];
       info['profileUsername'] = req.user.username;
       info['projectId'] = req.body.project_id;
@@ -1020,11 +1169,80 @@ router.post('/details/comment/:id', (req, res, next) => {
       } else {
          info['profileimage'] = 'hryzn-placeholder-01.jpg';
       }
-      info['comment'] = req.body.comment.replace(/\r\n/g,'');
+
+      var req_comment = req.body.comment.replace(/\r\n/g,'');
+
+      // Check for mentions or hashtags
+      var comment_array = req_comment.split(" ");
+      var comment_notes = '';
+      comment_array.forEach(function(word, key) {
+         if (word[0] == '@') {
+
+            if (word.indexOf("<") > -1) {
+               var pos = word.indexOf("<");
+            } else {
+               var pos = word.length;
+            }
+            var slice = word.slice(1, pos);
+            slice = slice.replace(/<\/?[^>]+(>|$)/g, "");
+            var clean_word = word.slice(0, pos);
+            comment_notes += '<a class="mention_tag" href="/profile/' + slice + '">' + clean_word + '</a> ' + word.slice(pos, word.length) + ' ';
+
+            // Send notification to the user mentioned
+            User.findOne({ 'username': { $in: slice} }, (err, reciever) => {
+               if (err) throw err;
+
+               var newNotification = new Notification({
+                  sender: req.user._id,
+                  reciever: reciever._id,
+                  type: '@' + req.user.username + ' mentioned you in a comment.',
+                  link: '/p/details/' + req.params.id
+               });
+
+               // Create notification in database
+               Notification.saveNotification(newNotification, (err, notification) => {
+                  if(err) throw err;
+
+                  // Add Notification for User
+                  User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+                     if (err) throw err;
+                  });
+               });
+            });
+
+         } else {
+            comment_notes += word + ' ';
+         }
+      });
+
+      info['comment'] = comment_notes;
 
       // Add save to project
       Project.addComment(info, (err, user) => {
          if(err) throw err;
+
+         // Send notification to the user mentioned
+         User.findOne({ 'username': { $in: project_owner} }, (err, reciever) => {
+            if (err) throw err;
+
+            var newNotification = new Notification({
+               sender: req.user._id,
+               reciever: reciever._id,
+               type: '@' + req.user.username + ' commented on your post.',
+               link: '/p/details/' + req.params.id
+            });
+
+            // Create notification in database
+            Notification.saveNotification(newNotification, (err, notification) => {
+               if(err) throw err;
+
+               // Add Notification for User
+               User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+                  if (err) throw err;
+               });
+            });
+         });
+
          req.flash('success_msg', "Added Comment");
          res.redirect('/p/details/' + req.body.project_id);
       });
@@ -1135,6 +1353,176 @@ router.post('/upload', upload.single('editor_image'), (req, res, next) => {
    if(req.isAuthenticated()) {
       // var fileExt = req.file.originalname.split('.').pop();
       res.status(200).send({"file": "https://s3.amazonaws.com/hryzn-app-static-assets/" + dateNow + req.file.originalname, "success":true});
+   } else {
+      res.redirect('/welcome');
+   }
+});
+
+// POST Create Micropost
+router.post('/create-micro', upload.single('micro_image'), (req, res, next) => {
+
+   if(req.isAuthenticated()) {
+
+      var admin = req.body.admin; // Owner of project
+      var id = req.body.id;
+      var user = req.body.user;
+      var req_micro_body = req.body.micro_body.replace(/\r\n/g,'');
+      var project_categories;
+
+
+      // Check for mentions or hashtags
+      var micro_array = req_micro_body.split(" ");
+      var micro_body  = '';
+      micro_array.forEach(function(word, key) {
+         if (word[0] == '@') {
+
+            // Slice the '@' and name from mention
+            if (word.indexOf("<") > -1) {
+               var pos = word.indexOf("<");
+            } else {
+               var pos = word.length;
+            }
+            var slice = word.slice(1, pos);
+            slice = slice.replace(/<\/?[^>]+(>|$)/g, "");
+            var clean_word = word.slice(0, pos);
+            micro_body += '<a class="mention_tag" href="/profile/' + slice + '">' + clean_word + '</a> ' + word.slice(pos, word.length) + ' ';
+
+            // Send notification to the user mentioned
+            User.findOne({ 'username': { $in: slice} }, (err, reciever) => {
+               if (err) throw err;
+
+               var newNotification = new Notification({
+                  sender: req.user._id,
+                  reciever: reciever._id,
+                  type: '@' + req.user.username + ' mentioned you in their new post.',
+                  link: '/profile/' + req.user.username
+               });
+
+               // Create notification in database
+               Notification.saveNotification(newNotification, (err, notification) => {
+                  if(err) throw err;
+
+                  // Add Notification for User
+                  User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+                     if (err) throw err;
+                  });
+
+               });
+            });
+
+         } else if (word[0] == '#') {
+
+            // Slice the '#' and word from hashtag
+            if (word.indexOf("<") > -1) {
+               var pos = word.indexOf("<");
+            } else {
+               var pos = word.length;
+            }
+            var slice = word.slice(1, pos);
+            slice = slice.replace(/<\/?[^>]+(>|$)/g, "");
+            var clean_word = word.slice(0, pos);
+            if (project_categories.indexOf(slice) === -1) {
+               project_categories.push(slice);
+            }
+            micro_body += '<a class="mention_tag" href="/explore/' + slice + '">' + clean_word + '</a> ' + word.slice(pos, word.length) + ' ';
+
+         } else {
+            micro_body += word + ' ';
+         }
+      });
+
+      if(req.file) {
+
+         // If user uploaded an image for project
+         var ext = path.extname(req.file.originalname);
+
+         // Check if file is an image
+         if(ext !== '.png' && ext !== '.PNG' && ext !== '.jpg' && ext !== '.JPG' && ext !== '.gif' && ext !== '.GIF' && ext !== '.jpeg' && ext !== '.JPEG') {
+
+            User.findById(id, (err, user) => {
+               if(err) throw err;
+
+               res.render('p/create-project', {
+                  error_msg: 'Uploaded File Must End With .jpg .jpeg .png .gif',
+                  page_title: 'Create Project',
+                  user: user
+               });
+            });
+
+         } else {
+            // No errors have been made
+            // var fileExt = req.file.originalname.split('.').pop();
+            var micro_image = dateNow + req.file.originalname;
+
+            var newProject = new Project({
+               micro_image: micro_image,
+               categories: project_categories,
+               project_owner: req.user.username,
+               micro_body: micro_body,
+               is_micro_post: true
+            });
+
+            // Create project in database
+            Project.saveProject(newProject, (err, project) => {
+               if(err) throw err;
+
+               // Add project to User document
+               info = [];
+               info['profileUsername'] = req.user.username;
+               info['projectId'] = project._id.toString();
+
+               User.createToProfile(info, (err, user) => {
+                  if(err) throw err;
+               });
+
+               req.flash('success_msg', "Project was created.");
+               res.redirect('/profile/' + req.user.username);
+            });
+
+         }
+      } else {
+
+         var newProject = new Project({
+            categories: project_categories,
+            project_owner: req.user.username,
+            micro_body: micro_body,
+            is_micro_post: true
+         });
+
+         // Create project in database
+         Project.saveProject(newProject, (err, project) => {
+            if(err) throw err;
+
+            // Add project to User document
+            info = [];
+            info['profileUsername'] = req.user.username;
+            info['projectId'] = project._id.toString();
+
+            User.createToProfile(info, (err, user) => {
+               if(err) throw err;
+            });
+
+            req.flash('success_msg', "Micropost was created.");
+            res.redirect('/profile/' + req.user.username);
+         });
+      }
+
+   } else {
+      res.redirect('/welcome');
+   }
+});
+
+// Delete Micropost
+router.get('/micro/delete/:id', (req, res, next) => {
+   if(req.isAuthenticated()) {
+
+      Project.findByIdAndRemove(req.params.id, (err) => {
+         if (err) throw err;
+
+         req.flash('success_msg', "Micropost was deleted.");
+         res.redirect('/profile/' + req.user.username);
+      });
+
    } else {
       res.redirect('/welcome');
    }
