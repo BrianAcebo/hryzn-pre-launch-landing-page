@@ -70,7 +70,7 @@
       <link rel="stylesheet" type="text/css" href="/css/site/vendor.css" />
       <link rel="stylesheet" type="text/css" href="/css/site/notifications.css" />
       <link rel="stylesheet" type="text/css" href="/css/site/trumbowyg.min.css" />
-      }}
+   }}
 
       {{! For PROD }}
       <link rel="stylesheet" type="text/css" href="/dist/css/style.min.css" />
@@ -120,14 +120,39 @@
                   <a href="/logout">Logout</a>
                </div>
             </div>
-            <a href="/"><img src="/icons/home.png" class="main-topnav__icon" /></a>
-            <a href="/explore"><img src="/icons/explore-black.png" class="main-topnav__icon" /></a>
+            <a href="/">
+               <div class="tooltip">
+                  <img src="/icons/home.png" class="main-topnav__icon" />
+                  <span class="tooltiptext">Feed</span>
+               </div>
+            </a>
+            <a href="/explore">
+               <div class="tooltip">
+                  <img src="/icons/explore-black.png" class="main-topnav__icon" />
+                  <span class="tooltiptext">Explore</span>
+               </div>
+            </a>
             {{#if user.has_notification}}
-            <a href="/notifications"><img src="/icons/notification-unread.png" class="main-topnav__icon" /></a>
+            <a href="/notifications">
+               <div class="tooltip">
+                  <img src="/icons/notification-unread.png" class="main-topnav__icon" />
+                  <span class="tooltiptext">Notifications</span>
+               </div>
+            </a>
             {{else}}
-            <a href="/notifications"><img src="/icons/notification.png" class="main-topnav__icon" /></a>
+            <a href="/notifications">
+               <div class="tooltip">
+                  <img src="/icons/notification.png" class="main-topnav__icon" />
+                  <span class="tooltiptext">Notifications</span>
+               </div>
+            </a>
             {{/if}}
-            <a class="create-icon"><img src="/icons/create-icon.png" class="main-topnav__icon" /></a>
+            <a class="create-icon">
+               <div class="tooltip">
+                  <img src="/icons/create-icon.png" class="main-topnav__icon" />
+                  <span class="tooltiptext">Create Post</span>
+               </div>
+            </a>
             <div class="post_container">
                <div href="/p/create-project" class="blog_post_btn">
                   <a href="/p/create-project">Blog Post</a>
@@ -340,7 +365,6 @@
       mentions.push({login: "{{{this.username}}}"})
       {{/each}}
       {{/if}}
-      console.log(mentions);
 
       // Editor
       $('#editor').trumbowyg({
@@ -427,6 +451,16 @@
    });
    </script>
 
+   {{#if project_error}}
+   <script>
+   // Projects
+   $(document).ready(function() {
+      $('#editor').trumbowyg('html', '{{{project_notes}}}');
+   });
+   </script>
+   {{/if}}
+
+
    {{#if notes_is_empty_string}}
    {{! Do nothing }}
    {{else}}
@@ -464,7 +498,7 @@
 
    {{! For DEV
    <script src="/js/main.js" type="text/javascript"></script>
-   }}
+}}
 
    {{! For PROD }}
    <script src="/dist/js/main.min.js" type="text/javascript"></script>

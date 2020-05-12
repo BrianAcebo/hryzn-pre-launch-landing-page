@@ -219,13 +219,24 @@ router.post('/create-project', upload.single('project_image'), (req, res, next) 
          User.findById(id, (err, user) => {
             if(err) throw err;
 
-            res.render('p/create-project', {
-               errors: errors,
-               page_title: 'Create Project',
-               project_title: project_title,
-               project_description: project_description,
-               project_notes: project_notes,
-               user: user
+            User.find({ 'username': { $in: user.following} }, (err, profiles) => {
+               if (err) throw err;
+               res.render('p/create-project', {
+                  errors: errors,
+                  page_title: 'Create Project',
+                  project_title: project_title,
+                  project_description: project_description,
+                  project_notes: project_notes,
+                  is_private: is_private,
+                  project_video: project_video,
+                  project_url: project_url,
+                  categories: project_categories,
+                  project_notes: project_notes,
+                  editProject: true,
+                  project_error: true,
+                  mention: profiles,
+                  user: user
+               });
             });
          });
 
@@ -241,18 +252,24 @@ router.post('/create-project', upload.single('project_image'), (req, res, next) 
                User.findById(id, (err, user) => {
                   if(err) throw err;
 
-                  res.render('p/create-project', {
-                     error_msg: 'Uploaded File Must End With .jpg .jpeg .png .gif',
-                     page_title: 'Create Project',
-                     project_title: project_title,
-                     project_description: project_description,
-                     project_notes: project_notes,
-                     is_private: is_private,
-                     project_video: project_video,
-                     project_url: project_url,
-                     categories: project_categories,
-                     project_notes: project_notes,
-                     user: user
+                  User.find({ 'username': { $in: user.following} }, (err, profiles) => {
+                     if (err) throw err;
+                     res.render('p/create-project', {
+                        error_msg: 'Uploaded File Must End With .jpg .jpeg .png .gif',
+                        page_title: 'Create Project',
+                        project_title: project_title,
+                        project_description: project_description,
+                        project_notes: project_notes,
+                        is_private: is_private,
+                        project_video: project_video,
+                        project_url: project_url,
+                        categories: project_categories,
+                        project_notes: project_notes,
+                        editProject: true,
+                        project_error: true,
+                        mention: profiles,
+                        user: user
+                     });
                   });
                });
 
@@ -297,18 +314,24 @@ router.post('/create-project', upload.single('project_image'), (req, res, next) 
             User.findById(id, (err, user) => {
                if(err) throw err;
 
-               res.render('p/create-project', {
-                  error_msg: 'Please upload an image for the project.',
-                  page_title: 'Create Project',
-                  project_title: project_title,
-                  project_description: project_description,
-                  project_notes: project_notes,
-                  is_private: is_private,
-                  project_video: project_video,
-                  project_url: project_url,
-                  categories: project_categories,
-                  project_notes: project_notes,
-                  user: user
+               User.find({ 'username': { $in: user.following} }, (err, profiles) => {
+                  if (err) throw err;
+                  res.render('p/create-project', {
+                     error_msg: 'Please upload an image for blog post',
+                     page_title: 'Create Project',
+                     project_title: project_title,
+                     project_description: project_description,
+                     project_notes: project_notes,
+                     is_private: is_private,
+                     project_video: project_video,
+                     project_url: project_url,
+                     categories: project_categories,
+                     project_notes: project_notes,
+                     editProject: true,
+                     project_error: true,
+                     mention: profiles,
+                     user: user
+                  });
                });
             });
          }
@@ -464,12 +487,19 @@ router.post('/details/edit/:id', upload.single('project_image'), (req, res, next
          Project.findById(project_id, (err, project) => {
             if(err) throw err;
 
-            res.render('p/details/edit-project', {
-               errors_2: errors,
-               user: req.user,
-               project: project,
-               page_title: project.project_title,
-               is_admin_of_project: true
+            User.find({ 'username': { $in: req.user.following} }, (err, profiles) => {
+               if (err) throw err;
+               res.render('p/details/edit-project', {
+                  errors_2: errors,
+                  user: req.user,
+                  project: project,
+                  page_title: project.project_title,
+                  is_admin_of_project: true,
+                  editProject: true,
+                  project_error: true,
+                  mention: profiles,
+                  user: user
+               });
             });
          });
 
@@ -483,12 +513,19 @@ router.post('/details/edit/:id', upload.single('project_image'), (req, res, next
                Project.findById(project_id, (err, project) => {
                   if(err) throw err;
 
-                  res.render('p/details/edit-project', {
-                     errors_2: 'Uploaded File Must End With .jpg .jpeg .png .gif',
-                     user: req.user,
-                     project: project,
-                     page_title: project.project_title,
-                     is_admin_of_project: true
+                  User.find({ 'username': { $in: req.user.following} }, (err, profiles) => {
+                     if (err) throw err;
+                     res.render('p/details/edit-project', {
+                        errors_2: 'Uploaded File Must End With .jpg .jpeg .png .gif',
+                        user: req.user,
+                        project: project,
+                        page_title: project.project_title,
+                        is_admin_of_project: true,
+                        editProject: true,
+                        project_error: true,
+                        mention: profiles,
+                        user: user
+                     });
                   });
                });
             } else {
@@ -1492,10 +1529,17 @@ router.post('/create-micro', upload.single('micro_image'), (req, res, next) => {
             User.findById(id, (err, user) => {
                if(err) throw err;
 
-               res.render('p/create-project', {
-                  error_msg: 'Uploaded File Must End With .jpg .jpeg .png .gif',
-                  page_title: 'Create Project',
-                  user: user
+               User.find({ 'username': { $in: user.following} }, (err, profiles) => {
+                  if (err) throw err;
+                  res.render('p/create-project', {
+                     error_msg: 'Micropost File Must End With .jpg .jpeg .png .gif',
+                     page_title: 'Create Project',
+                     notes_is_empty_string: true,
+                     editProject: true,
+                     project_error: true,
+                     mention: profiles,
+                     user: user
+                  });
                });
             });
 
