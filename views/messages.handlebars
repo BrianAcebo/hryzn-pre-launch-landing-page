@@ -1,31 +1,8 @@
 <div class="explore_main">
 
-{{#if other_users}}
-
-   <p class="top_results">Your Chats</p>
-   <hr class="top_results_underline" />
-
-   <section class="follower__profiles-section">
-      {{#each other_users}}
-
-      <a href="/messages/{{this}}" class="follower__profile">
-         @{{this}}
-      </a>
-
-      {{/each}}
-   </section>
-
-   {{else}}
-
-   {{! User has no messages }}
-   <div class="spacer"></div>
-   <p class="error-message">No messages</p>
-
-{{/if}}
-
 {{#if following}}
 
-   <p class="top_results">Chat with someone you follow</p>
+   <p class="top_results">Chat With Someone</p>
    <hr class="top_results_underline" />
 
    <section class="follower__profiles-section">

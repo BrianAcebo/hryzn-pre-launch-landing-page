@@ -336,7 +336,7 @@ nav.item-list {
 }
 
 .mobile-nav__item {
-   margin: 0 20px;
+   margin: 0 18px;
 }
 
 .main-topnav__profile {
@@ -373,8 +373,7 @@ nav.item-list {
 }
 
 .mobile-nav__item .create-icon {
-   margin-top: -50px;
-   padding: 20px;
+   padding: 15px;
    cursor: pointer;
 }
 

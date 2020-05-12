@@ -4,9 +4,10 @@
 }
 
 .top_results {
-   font-size: 16px;
+   font-size: 20px;
    font-weight: bold;
-   margin: 50px 0 0 0;
+   margin: 50px 0 15px 0;
+   font-family: 'Poppins', sans-serif;
 }
 
 .top_results_underline {
@@ -58,6 +59,7 @@
 }
 
 .project_link {
+   line-height: 30px;
    box-sizing: border-box;
 }
 
@@ -677,37 +679,46 @@ section.project {
    }
 }
 
+.micro_submit {
+   padding: 15px 25px;
+}
+
 .micropost_card {
-   padding: 25px 0;
+   display: flex;
+   flex-direction: column;
    border: 1px solid #ccc;
    background: #fff;
    border-radius: 15px;
    text-align: left;
+   position: relative;
 }
 
 .micropost_card p {
    font-weight: bold;
    color: #333;
-   font-size: 20px;
-   padding: 0 25px;
+   font-size: 16px;
+   padding: 25px;
+   line-height: 30px;
 }
 
 @media screen and (max-width: 768px) {
    .micropost_card p {
-      font-weight: bold;
-      color: #333;
-      font-size: 16px;
+      font-size: 14px;
+      line-height: 20px;
+      padding: 15px;
    }
 }
 
 .micropost_card img {
-   margin-top: 25px;
+   border-bottom-left-radius: 15px;
+   border-bottom-right-radius: 15px;
 }
 
 .micro_tag {
    font-weight: bold;
    font-size: 12px;
    display: inline-block;
+   margin-top: 10px;
 }
 
 .micro_delete {
@@ -715,7 +726,7 @@ section.project {
    font-size: 12px;
    text-align: center;
    color: #a8add0;
-   margin: 0 15px 0 0;
+   margin: 10px 15px 0 0;
    display: inline-block;
    float: right;
 }
@@ -731,5 +742,23 @@ section.project {
    position: absolute;
    -ms-transform: scale(1.5);
    transform: scale(1.5);
+}
+
+.micro_link {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   border-radius: 50%;
+   right: 5px;
+   top: -25px;
+   margin: 10px 0 0 0;
+   width: 35px;
+   height: 35px;
+   background: #f1f1f1;
+   position: absolute;
+}
+
+.micro_link img {
+   max-width: 14px;
 }
 /**********/

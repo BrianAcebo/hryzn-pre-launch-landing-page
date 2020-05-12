@@ -91,48 +91,13 @@ router.get('/', (req, res, next) => {
             var profile_project = [];
 
             profiles.forEach(function(profile, key) {
-
-               // Limit to 5 projects per profile
-               var own = profile.own_projects.reverse();
-               var x;
-               var y = 0;
-               for (x of own) {
-               	y += 1;
-                  if (y < 6) {
-                   	profile_project.push(x);
-                  }
-               }
-
-               // Limit to 5 reposts per profile
-               var rep = profile.reposted_projects.reverse();
-               var x;
-               var y = 0;
-               for (x of rep) {
-               	y += 1;
-                  if (y < 6) {
-                   	profile_project.push(x);
-                  }
-               }
+               profile.own_projects.forEach(function(proj, key) {
+                  profile_project.push(proj);
+               });
+               profile.reposted_projects.forEach(function(proj, key) {
+                  profile_project.push(proj);
+               });
             });
-
-            function shuffle(array) {
-               var currentIndex = array.length, temporaryValue, randomIndex;
-
-               // While there remain elements to shuffle...
-               while (0 !== currentIndex) {
-
-               // Pick a remaining element...
-               randomIndex = Math.floor(Math.random() * currentIndex);
-               currentIndex -= 1;
-
-               // And swap it with the current element.
-               temporaryValue = array[currentIndex];
-               array[currentIndex] = array[randomIndex];
-               array[randomIndex] = temporaryValue;
-               }
-
-               return array;
-            }
 
             Project.find({ '_id': { $in: profile_project } }, (err, projects) => {
                if (err) throw err;
@@ -140,7 +105,7 @@ router.get('/', (req, res, next) => {
                res.render('index', {
                   page_title: 'Explore Projects',
                   greeting: greeting,
-                  projects: shuffle(projects),
+                  projects: projects.reverse(),
                   profiles: profiles,
                   explore_default: true
                });
@@ -172,21 +137,10 @@ router.get('/messages', (req, res, next) => {
 
             if (err) throw err;
 
-            var other_users = [];
-
-            messages.forEach(function(msg, key) {
-               msg.users.forEach(function(user, key) {
-                  if (user != req.user.username) {
-                     other_users.push(user);
-                  }
-               });
-            });
-
             res.render('messages', {
                page_title: 'Messages',
                has_messages: has_messages,
                messages: messages,
-               other_users: other_users,
                following: following
             });
 
@@ -266,11 +220,32 @@ router.get('/messages/chat/:messageId', (req, res, next) => {
 router.get('/messages/chat/delete/:messageId', (req, res, next) => {
    if(req.isAuthenticated()) {
 
-      Message.findByIdAndRemove(req.params.messageId, (err) => {
-         if (err) throw err;
+      Message.findById(req.params.messageId, (err, message) => {
+         if(err) throw err;
 
-         req.flash('success_msg', "Chat was deleted.");
-         res.redirect('/messages');
+         var info = [];
+
+         // Delete chat from user's profile
+         if(message.users.length) {
+
+            for (var i = 0, len = message.users.length; i < len; i++) {
+               info['profileUsername'] = message.users[i];
+               info['messageId'] = req.params.messageId;
+
+               User.removeChat(info, (err, user) => {
+                  if(err) throw err;
+               });
+            }
+
+         }
+
+         Message.findByIdAndRemove(message._id, (err) => {
+            if (err) throw err;
+
+            req.flash('success_msg', "Chat was deleted.");
+            res.redirect('/messages');
+         });
+
       });
 
    } else {
@@ -622,6 +597,29 @@ router.post('/profile/follow/:id', (req, res, next) => {
       // Add followers to profile
       User.addFollowers(info, (err, user) => {
          if(err) throw err;
+
+         // Send notification to the user mentioned
+         User.findOne({ 'username': { $in: req.body.profile_username } }, (err, reciever) => {
+            if (err) throw err;
+
+            var newNotification = new Notification({
+               sender: req.user._id,
+               reciever: reciever._id,
+               type: '@' + req.user.username + ' started following you.',
+               link: '/profile/' + req.user.username
+            });
+
+            // Create notification in database
+            Notification.saveNotification(newNotification, (err, notification) => {
+               if(err) throw err;
+
+               // Add Notification for User
+               User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+                  if (err) throw err;
+               });
+            });
+         });
+
          req.flash('success_msg', "Following " + info['profileUsername']);
          res.redirect('/profile/' + info['profileUsername']);
       });

@@ -80,6 +80,11 @@ $(document).ready(function() {
          $mainBody.toggleClass('bodyBlur');
       });
    });
+
+   $mainBody.on('click', function(e){
+      $post_container.removeClass('showPostBtns');
+      $mainBody.removeClass('bodyBlur');
+   });
    /**********/
 
 
@@ -285,18 +290,18 @@ $(document).ready(function() {
    }
 
    // Modal pop up for micro post
-   var $modal = $(".popModal.microPost");
-   var $modalBtn = $(".micro_post_btn");
-   var $closeBtn = $(".closeModal");
+   var $modalMicro = $(".microPostModal");
+   var $modalBtnMicro = $(".micro_post_btn");
+   var $closeBtnMicro = $(".closeModal");
 
-   $modalBtn.each(function() {
+   $modalBtnMicro.each(function() {
       $(this).click(function() {
-         $modal.css({ "display": "block" });
+         $modalMicro.css({ "display": "block" });
       });
    });
 
-   $closeBtn.click(function() {
-      $modal.css({ "display": "none" });
+   $closeBtnMicro.click(function() {
+      $modalMicro.css({ "display": "none" });
    });
    /**********/
 

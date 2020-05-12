@@ -115,6 +115,7 @@
                </a>
                <div class="drop_nav dropNav">
                   <a href="/profile/{{user.username}}">Profile</a>
+                  <a href="/messages">Messages</a>
                   <a href="/blog/hryzn-tutorial---site-walk-through">Help</a>
                   <a href="/logout">Logout</a>
                </div>
@@ -173,6 +174,7 @@
                   <a class="dropBtn"><img src="/icons/user-black.png" class="mobile-nav__icon" /></a>
                   <div class="drop_nav dropNav">
                      <a href="/profile/{{user.username}}">Profile</a>
+                     <a href="/messages">Messages</a>
                      <a href="/settings">Settings</a>
                      <a href="/blog/hryzn-tutorial---site-walk-through">Help</a>
                      <a href="/logout">Logout</a>
@@ -270,7 +272,7 @@
          {{{body}}}
       </main>
 
-      <div class="popModal microPost modalBackground">
+      <div class="microPostModal microModalBackground">
          <div class="modal-content">
 
          <form method="post" class="edit-project-form" action="/p/create-micro" enctype="multipart/form-data">
@@ -282,11 +284,15 @@
             <label for="micro_image" class="form__label">Add Image</label>
             <input class="form__input" type="file" name="micro_image" value="{{project.micro_image}}" />
 
+            {{! Micro URL }}
+            <label for="project_url" class="form__label" style="margin-top: 25px;">Add a link</label>
+            <input class="form__input" type="text" placeholder="Enter a link" name="project_url" value="{{project.project_url}}" />
+
             <input type="hidden" name="admin" value="{{user.username}}">
             <input type="hidden" name="id" value="{{user._id}}">
 
             <div class="modal-footer">
-               <input type="submit" class="btn__secondary project_submit" value="Submit" />
+               <input type="submit" class="btn__secondary micro_submit" value="Submit" />
                <span class="closeModal btn__primary">Cancel</span>
             </div>
          </form>

@@ -280,6 +280,22 @@ module.exports.addChat = (info, callback) => {
 }
 
 
+// Remove Chat
+module.exports.removeChat = (info, callback) => {
+   profileUsername = info['profileUsername'];
+   messageId = info['messageId'];
+
+   const query = { username: profileUsername };
+
+   User.findOneAndUpdate(query,
+      { $pull: { "messages": messageId  } },
+      { multi: true },
+      callback
+   );
+
+}
+
+
 // Add Notification
 module.exports.addNotification = (info, callback) => {
    username = info['username'];

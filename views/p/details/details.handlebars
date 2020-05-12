@@ -284,24 +284,43 @@
         {{! Check if the project is a private project, we do not want to show private projects }}
         {{else}}
 
-        <div class="masonryItem" title="{{project_title}}">
-           <div class="project_card">
-             <a href="/p/details/{{id}}/guest" class="project_link">
-                 <img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{project_image}}" class="img-responsive" alt="{{project_title}}" />
-             </a>
-             <div class="project_card_bottom">
-                 <div class="project_bottom_wrapper">
-                    <div class="bg_overlay"></div>
-                    <div class="project_bottom_details">
-                       <a href="/profile/{{project_owner}}"><p class="project_owner">@{{project_owner}}</p></a>
-                       <a href="/p/details/{{id}}/guest" class="project_link">
-                          <p class="project_card_title">{{project_title}}</p>
-                       </a>
-                    </div>
-                 </div>
-             </div>
+           {{#if is_micro_post}}
+           <div class="masonryItem ownProject" title="{{project_title}}">
+              <div class="micropost">
+                {{#if project_url}}<a target="_blank" href="https://{{project_url}}">{{/if}}
+                <div class="micropost_card">
+                     {{#if project_url}}<div class="micro_link"><img src="/icons/link.png" class="mobile-nav__icon" /></div>{{/if}}
+                    <p>{{{micro_body}}}</p>
+                    {{#if micro_image}}
+                    <img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{micro_image}}" class="img-responsive" alt="{{micro_body}}" />
+                    {{/if}}
+                </div>
+                {{#if project_url}}</a>{{/if}}
+                <a class="micro_tag" href="/profile/{{project_owner}}">@{{project_owner}}</a>
+              </div>
            </div>
-        </div>
+           {{else}}
+
+           <div class="masonryItem" title="{{project_title}}">
+              <div class="project_card">
+                <a href="/p/details/{{id}}/guest" class="project_link">
+                    <img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{project_image}}" class="img-responsive" alt="{{project_title}}" />
+                </a>
+                <div class="project_card_bottom">
+                    <div class="project_bottom_wrapper">
+                       <div class="bg_overlay"></div>
+                       <div class="project_bottom_details">
+                          <a href="/profile/{{project_owner}}"><p class="project_owner">@{{project_owner}}</p></a>
+                          <a href="/p/details/{{id}}/guest" class="project_link">
+                             <p class="project_card_title">{{project_title}}</p>
+                          </a>
+                       </div>
+                    </div>
+                </div>
+              </div>
+           </div>
+
+           {{/if}}
 
         {{/if}}
         {{/each}}

@@ -71,72 +71,75 @@ router.post('/create-project', upload.single('project_image'), (req, res, next) 
          if (req.body.project_categories.length > 0) {
             var project_categories = req.body.project_categories;
          } else {
-            var project_categories;
+            var project_categories = [];
          }
       } else {
-         var project_categories;
+         var project_categories = [];
       }
 
       // Check for mentions or hashtags
-      var notes_array = req_project_notes.split(" ");
-      var project_notes = '';
-      notes_array.forEach(function(word, key) {
-         if (word[0] == '@') {
-
-            // Slice the '@' and name from mention
-            if (word.indexOf("<") > -1) {
-               var pos = word.indexOf("<");
+      var tag_indices = []
+      function find_tag(index) {
+         var tag = '';
+         for (var i = 0; i < 200; i++) {
+            if (req_project_notes[index + i] == ' ' || req_project_notes[index + i] == '<') {
+               break;
+            } else if (req_project_notes[index + i] == '&' && req_project_notes[index + i + 2] == 'b'){
+               break;
             } else {
-               var pos = word.length;
+               tag += req_project_notes[index + i];
+               tag_indices.push(index + i);
             }
-            var slice = word.slice(1, pos);
-            slice = slice.replace(/<\/?[^>]+(>|$)/g, "");
-            var clean_word = word.slice(0, pos);
-            project_notes += '<a class="mention_tag" href="/profile/' + slice + '">' + clean_word + '</a> ' + word.slice(pos, word.length) + ' ';
+         }
+         return tag;
+      }
+      var project_notes = '';
+      var slice;
+      var mention;
+      for (var i = 0; i < req_project_notes.length; i++) {
+         if(req_project_notes.charAt(i) == '#') {
+
+            slice = find_tag(i);
+            var clean_word = slice.slice(1, slice.length);
+            project_notes += '<a class="mention_tag" href="/explore/' + clean_word + '">' + slice + '</a> ';
+            if (project_categories.indexOf(clean_word) === -1) {
+               project_categories.push(clean_word);
+            }
+
+         } else if (req_project_notes.charAt(i) == '@') {
+
+            slice = find_tag(i);
+            var clean_word = slice.slice(1, slice.length);
+            project_notes += '<a class="mention_tag" href="/profile/' + clean_word + '">' + slice + '</a> ';
 
             // Send notification to the user mentioned
-            User.findOne({ 'username': { $in: slice} }, (err, reciever) => {
-               if (err) throw err;
+            User.findOne({ 'username': { $in: clean_word} }, (err, reciever) => {
+              if (err) throw err;
 
-               var newNotification = new Notification({
-                  sender: req.user._id,
-                  reciever: reciever._id,
-                  type: '@' + req.user.username + ' mentioned you in their new post.',
-                  link: '/profile/' + req.user.username
-               });
+              var newNotification = new Notification({
+                 sender: req.user._id,
+                 reciever: reciever._id,
+                 type: '@' + req.user.username + ' mentioned you in their new post.',
+                 link: '/profile/' + req.user.username
+              });
 
-               // Create notification in database
-               Notification.saveNotification(newNotification, (err, notification) => {
-                  if(err) throw err;
+              // Create notification in database
+              Notification.saveNotification(newNotification, (err, notification) => {
+                 if(err) throw err;
 
-                  // Add Notification for User
-                  User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
-                     if (err) throw err;
-                  });
+                 // Add Notification for User
+                 User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+                    if (err) throw err;
+                 });
+              });
+           });
 
-               });
-            });
-
-         } else if (word[0] == '#') {
-
-            // Slice the '#' and word from hashtag
-            if (word.indexOf("<") > -1) {
-               var pos = word.indexOf("<");
-            } else {
-               var pos = word.length;
-            }
-            var slice = word.slice(1, pos);
-            slice = slice.replace(/<\/?[^>]+(>|$)/g, "");
-            var clean_word = word.slice(0, pos);
-            if (project_categories.indexOf(slice) === -1) {
-               project_categories.push(slice);
-            }
-            project_notes += '<a class="mention_tag" href="/explore/' + slice + '">' + clean_word + '</a> ' + word.slice(pos, word.length) + ' ';
-
-         } else {
-            project_notes += word + ' ';
+        } else if (tag_indices.indexOf(i) > -1) {
+           // do nothing
+        } else {
+            project_notes += req_project_notes.charAt(i);
          }
-      });
+      }
 
       // See if project_url has https://
       var has_https = project_url.search("https://");
@@ -506,62 +509,68 @@ router.post('/details/edit/:id', upload.single('project_image'), (req, res, next
                   }
 
                   // Check for mentions or hashtags
-                  var notes_array = req_project_notes.split(" ");
-                  var project_notes = '';
-                  notes_array.forEach(function(word, key) {
-                     if (word[0] == '@') {
-
-                        if (word.indexOf("<") > -1) {
-                           var pos = word.indexOf("<");
+                  var tag_indices = []
+                  function find_tag(index) {
+                     var tag = '';
+                     for (var i = 0; i < 200; i++) {
+                        if (req_project_notes[index + i] == ' ' || req_project_notes[index + i] == '<') {
+                           break;
+                        } else if (req_project_notes[index + i] == '&' && req_project_notes[index + i + 2] == 'b'){
+                           break;
                         } else {
-                           var pos = word.length;
+                           tag += req_project_notes[index + i];
+                           tag_indices.push(index + i);
                         }
-                        var slice = word.slice(1, pos);
-                        slice = slice.replace(/<\/?[^>]+(>|$)/g, "");
-                        var clean_word = word.slice(0, pos);
-                        project_notes += '<a class="mention_tag" href="/profile/' + slice + '">' + clean_word + '</a> ' + word.slice(pos, word.length) + ' ';
+                     }
+                     return tag;
+                  }
+                  var project_notes = '';
+                  var slice;
+                  var mention;
+                  for (var i = 0; i < req_project_notes.length; i++) {
+                     if(req_project_notes.charAt(i) == '#') {
+
+                        slice = find_tag(i);
+                        var clean_word = slice.slice(1, slice.length);
+                        project_notes += '<a class="mention_tag" href="/explore/' + clean_word + '">' + slice + '</a> ';
+                        if (project_categories.indexOf(clean_word) === -1) {
+                           project_categories.push(clean_word);
+                        }
+
+                     } else if (req_project_notes.charAt(i) == '@') {
+
+                        slice = find_tag(i);
+                        var clean_word = slice.slice(1, slice.length);
+                        project_notes += '<a class="mention_tag" href="/profile/' + clean_word + '">' + slice + '</a> ';
 
                         // Send notification to the user mentioned
-                        User.findOne({ 'username': { $in: slice} }, (err, reciever) => {
-                           if (err) throw err;
+                        User.findOne({ 'username': { $in: clean_word} }, (err, reciever) => {
+                          if (err) throw err;
 
-                           var newNotification = new Notification({
-                              sender: req.user._id,
-                              reciever: reciever._id,
-                              type: '@' + req.user.username + ' mentioned you in their post.',
-                              link: '/p/details/' + project_id
-                           });
+                          var newNotification = new Notification({
+                             sender: req.user._id,
+                             reciever: reciever._id,
+                             type: '@' + req.user.username + ' mentioned you in their post.',
+                             link: '/p/details/' + project_id
+                          });
 
-                           // Create notification in database
-                           Notification.saveNotification(newNotification, (err, notification) => {
-                              if(err) throw err;
+                          // Create notification in database
+                          Notification.saveNotification(newNotification, (err, notification) => {
+                             if(err) throw err;
 
-                              // Add Notification for User
-                              User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
-                                 if (err) throw err;
-                              });
-                           });
-                        });
+                             // Add Notification for User
+                             User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+                                if (err) throw err;
+                             });
+                          });
+                       });
 
-                     } else if (word[0] == '#') {
-
-                        if (word.indexOf("<") > -1) {
-                           var pos = word.indexOf("<");
-                        } else {
-                           var pos = word.length;
-                        }
-                        var slice = word.slice(1, pos);
-                        slice = slice.replace(/<\/?[^>]+(>|$)/g, "");
-                        var clean_word = word.slice(0, pos);
-                        if (project_categories.indexOf(slice) === -1) {
-                           project_categories.push(slice);
-                        }
-                        project_notes += '<a class="mention_tag" href="/explore/' + slice + '">' + clean_word + '</a> ' + word.slice(pos, word.length) + ' ';
-
-                     } else {
-                        project_notes += word + ' ';
+                    } else if (tag_indices.indexOf(i) > -1) {
+                       // do nothing
+                    } else {
+                        project_notes += req_project_notes.charAt(i);
                      }
-                  });
+                  }
 
                   Project.findByIdAndUpdate(project_id, {
                      project_title: project_title,
@@ -596,62 +605,68 @@ router.post('/details/edit/:id', upload.single('project_image'), (req, res, next
                }
 
                // Check for mentions or hashtags
-               var notes_array = req_project_notes.split(" ");
-               var project_notes = '';
-               notes_array.forEach(function(word, key) {
-                  if (word[0] == '@') {
-
-                     if (word.indexOf("<") > -1) {
-                        var pos = word.indexOf("<");
+               var tag_indices = []
+               function find_tag(index) {
+                  var tag = '';
+                  for (var i = 0; i < 200; i++) {
+                     if (req_project_notes[index + i] == ' ' || req_project_notes[index + i] == '<') {
+                        break;
+                     } else if (req_project_notes[index + i] == '&' && req_project_notes[index + i + 2] == 'b'){
+                        break;
                      } else {
-                        var pos = word.length;
+                        tag += req_project_notes[index + i];
+                        tag_indices.push(index + i);
                      }
-                     var slice = word.slice(1, pos);
-                     slice = slice.replace(/<\/?[^>]+(>|$)/g, "");
-                     var clean_word = word.slice(0, pos);
-                     project_notes += '<a class="mention_tag" href="/profile/' + slice + '">' + clean_word + '</a> ' + word.slice(pos, word.length) + ' ';
+                  }
+                  return tag;
+               }
+               var project_notes = '';
+               var slice;
+               var mention;
+               for (var i = 0; i < req_project_notes.length; i++) {
+                  if(req_project_notes.charAt(i) == '#') {
+
+                     slice = find_tag(i);
+                     var clean_word = slice.slice(1, slice.length);
+                     project_notes += '<a class="mention_tag" href="/explore/' + clean_word + '">' + slice + '</a> ';
+                     if (project_categories.indexOf(clean_word) === -1) {
+                        project_categories.push(clean_word);
+                     }
+
+                  } else if (req_project_notes.charAt(i) == '@') {
+
+                     slice = find_tag(i);
+                     var clean_word = slice.slice(1, slice.length);
+                     project_notes += '<a class="mention_tag" href="/profile/' + clean_word + '">' + slice + '</a> ';
 
                      // Send notification to the user mentioned
-                     User.findOne({ 'username': { $in: slice} }, (err, reciever) => {
-                        if (err) throw err;
+                     User.findOne({ 'username': { $in: clean_word} }, (err, reciever) => {
+                       if (err) throw err;
 
-                        var newNotification = new Notification({
-                           sender: req.user._id,
-                           reciever: reciever._id,
-                           type: '@' + req.user.username + ' mentioned you in their post.',
-                           link: '/p/details/' + project_id
-                        });
+                       var newNotification = new Notification({
+                          sender: req.user._id,
+                          reciever: reciever._id,
+                          type: '@' + req.user.username + ' mentioned you in their post.',
+                          link: '/p/details/' + project_id
+                       });
 
-                        // Create notification in database
-                        Notification.saveNotification(newNotification, (err, notification) => {
-                           if(err) throw err;
+                       // Create notification in database
+                       Notification.saveNotification(newNotification, (err, notification) => {
+                          if(err) throw err;
 
-                           // Add Notification for User
-                           User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
-                              if (err) throw err;
-                           });
-                        });
-                     });
+                          // Add Notification for User
+                          User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+                             if (err) throw err;
+                          });
+                       });
+                    });
 
-                  } else if (word[0] == '#') {
-
-                     if (word.indexOf("<") > -1) {
-                        var pos = word.indexOf("<");
-                     } else {
-                        var pos = word.length;
-                     }
-                     var slice = word.slice(1, pos);
-                     slice = slice.replace(/<\/?[^>]+(>|$)/g, "");
-                     var clean_word = word.slice(0, pos);
-                     if (project_categories.indexOf(slice) === -1) {
-                        project_categories.push(slice);
-                     }
-                     project_notes += '<a class="mention_tag" href="/explore/' + slice + '">' + clean_word + '</a> ' + word.slice(pos, word.length) + ' ';
-
-                  } else {
-                     project_notes += word + ' ';
+                 } else if (tag_indices.indexOf(i) > -1) {
+                    // do nothing
+                 } else {
+                     project_notes += req_project_notes.charAt(i);
                   }
-               });
+               }
 
                Project.findByIdAndUpdate(project_id, {
                   project_title: project_title,
@@ -1179,9 +1194,17 @@ router.post('/details/comment/:id', (req, res, next) => {
          if (word[0] == '@') {
 
             if (word.indexOf("<") > -1) {
-               var pos = word.indexOf("<");
+               if (word.indexOf("&nbsp") > -1) {
+                  var pos = word.indexOf("&nbsp");
+               }  else {
+                  var pos = word.indexOf("<");
+               }
             } else {
-               var pos = word.length;
+               if (word.indexOf("&nbsp") > -1) {
+                  var pos = word.indexOf("&nbsp");
+               }  else {
+                  var pos = word.length;
+               }
             }
             var slice = word.slice(1, pos);
             slice = slice.replace(/<\/?[^>]+(>|$)/g, "");
@@ -1280,7 +1303,7 @@ router.get('/details/delete/:id', (req, res, next) => {
       Project.findById(req.params.id, (err, project) => {
          if(err) throw err;
 
-         if(project.admins.indexOf(req.user.username) > -1 || req.user.username === 'hryzn') {
+         if(project.project_owner === req.user.username || req.user.username === 'hryzn') {
 
             // Only delete if admin
 
@@ -1301,12 +1324,22 @@ router.get('/details/delete/:id', (req, res, next) => {
             }
 
             // If project has admins
-            if(project.admins.length > 0) {
-               for (var i = 0, len = project.admins.length; i < len; i++) {
-                  info['profileUsername'] = project.admins[i];
+            if(project.project_owner) {
+               info['profileUsername'] = project.project_owner;
+               info['projectId'] = req.params.id;
+
+               User.deleteFromProfile(info, (err, user) => {
+                  if(err) throw err;
+               });
+            }
+
+            // If project has reposts
+            if(project.reposts.length > 0) {
+               for (var i = 0, len = project.reposts.length; i < len; i++) {
+                  info['profileUsername'] = project.reposts[i];
                   info['projectId'] = req.params.id;
 
-                  User.deleteFromProfile(info, (err, user) => {
+                  User.unrepostProject(info, (err, user) => {
                      if(err) throw err;
                   });
                }
@@ -1330,9 +1363,8 @@ router.get('/details/delete/:id', (req, res, next) => {
             // Delete the project
             Project.findByIdAndRemove(req.params.id, (err) => {
               if (err) throw err;
-              req.flash('success_msg', "Project Deleted");
-              res.location('/');
-              res.redirect('/');
+              req.flash('success_msg', "Destroyed From Existence...");
+              res.redirect('/profile/' + req.user.username);
             });
 
          } else {
@@ -1367,7 +1399,17 @@ router.post('/create-micro', upload.single('micro_image'), (req, res, next) => {
       var id = req.body.id;
       var user = req.body.user;
       var req_micro_body = req.body.micro_body.replace(/\r\n/g,'');
-      var project_categories;
+      var project_categories = [];
+      var project_url = req.body.project_url;
+
+      // See if project_url has https://
+      var has_https = project_url.search("https://");
+      if(has_https > -1) {
+
+         var url_without_https = project_url.split("https://")[1];
+         project_url = url_without_https;
+
+      }
 
 
       // Check for mentions or hashtags
@@ -1378,9 +1420,17 @@ router.post('/create-micro', upload.single('micro_image'), (req, res, next) => {
 
             // Slice the '@' and name from mention
             if (word.indexOf("<") > -1) {
-               var pos = word.indexOf("<");
+               if (word.indexOf("&nbsp") > -1) {
+                  var pos = word.indexOf("&nbsp");
+               }  else {
+                  var pos = word.indexOf("<");
+               }
             } else {
-               var pos = word.length;
+               if (word.indexOf("&nbsp") > -1) {
+                  var pos = word.indexOf("&nbsp");
+               }  else {
+                  var pos = word.length;
+               }
             }
             var slice = word.slice(1, pos);
             slice = slice.replace(/<\/?[^>]+(>|$)/g, "");
@@ -1459,6 +1509,7 @@ router.post('/create-micro', upload.single('micro_image'), (req, res, next) => {
                categories: project_categories,
                project_owner: req.user.username,
                micro_body: micro_body,
+               project_url: project_url,
                is_micro_post: true
             });
 
@@ -1486,6 +1537,7 @@ router.post('/create-micro', upload.single('micro_image'), (req, res, next) => {
             categories: project_categories,
             project_owner: req.user.username,
             micro_body: micro_body,
+            project_url: project_url,
             is_micro_post: true
          });
 
@@ -1506,22 +1558,6 @@ router.post('/create-micro', upload.single('micro_image'), (req, res, next) => {
             res.redirect('/profile/' + req.user.username);
          });
       }
-
-   } else {
-      res.redirect('/welcome');
-   }
-});
-
-// Delete Micropost
-router.get('/micro/delete/:id', (req, res, next) => {
-   if(req.isAuthenticated()) {
-
-      Project.findByIdAndRemove(req.params.id, (err) => {
-         if (err) throw err;
-
-         req.flash('success_msg', "Micropost was deleted.");
-         res.redirect('/profile/' + req.user.username);
-      });
 
    } else {
       res.redirect('/welcome');
