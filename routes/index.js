@@ -1958,7 +1958,7 @@ router.get('/explore', (req, res, next) => {
                groups: groups.reverse(),
                explore_default: true
             });
-         });
+         }).limit(3);
 
       });
 
