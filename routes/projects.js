@@ -886,7 +886,7 @@ router.get('/details/:id', (req, res, next) => {
 
                   var reverse_related_projects = related_projects.reverse();
 
-                  if (related_projects.length > 0) {
+                  if (related_projects.length > 4) {
                      res.render('p/details/details', {
                         project: project,
                         related_projects: reverse_related_projects,
@@ -906,7 +906,7 @@ router.get('/details/:id', (req, res, next) => {
                         admin_amount: admin_amount
                      });
                   } else {
-                     if (project.categories.length > 0) {
+                     if (project.categories.length > 4) {
                         Project.find({ 'categories': { $in: project.categories} }, (err, related_projects) => {
                            if (err) throw err;
 
