@@ -376,7 +376,7 @@ router.post('/groups/edit/:id', upload.single('group_image'), (req, res, next) =
       if (req.body.group_categories) {
          var group_categories = req.body.group_categories;
       } else {
-         var group_categories;
+         var group_categories = false;
       }
 
       if(req.file) {
@@ -439,22 +439,30 @@ router.post('/groups/edit/:id', upload.single('group_image'), (req, res, next) =
                }
             });
 
-            Group.findByIdAndUpdate(req.params.id, {
-               group_name: group_name,
-               is_private: is_private,
-               group_image: group_image,
-               group_categories: group_categories
-            }, (err, user) => {
-               if (err) throw err;
-            });
+            if (group_categories) {
+               Group.findByIdAndUpdate(req.params.id, {
+                  group_name: group_name,
+                  is_private: is_private,
+                  group_image: group_image,
+                  group_categories: group_categories
+               }, (err, user) => {
+                  if (err) throw err;
+               });
+            } else {
+               Group.findByIdAndUpdate(req.params.id, {
+                  group_name: group_name,
+                  is_private: is_private,
+                  group_image: group_image
+               }, (err, user) => {
+                  if (err) throw err;
+               });
+            }
 
             req.flash('success_msg', "Group was updated.");
             res.redirect('/groups/' + req.params.id);
 
          }
       } else {
-
-         var group_image = 'hryzn-placeholder-01.jpg';
 
          var info = [];
          info['groupId'] = req.params.id;
@@ -491,14 +499,22 @@ router.post('/groups/edit/:id', upload.single('group_image'), (req, res, next) =
             }
          });
 
-         Group.findByIdAndUpdate(req.params.id, {
-            group_name: group_name,
-            is_private: is_private,
-            group_image: group_image,
-            group_categories: group_categories
-         }, (err, user) => {
-            if (err) throw err;
-         });
+         if (group_categories) {
+            Group.findByIdAndUpdate(req.params.id, {
+               group_name: group_name,
+               is_private: is_private,
+               group_categories: group_categories
+            }, (err, user) => {
+               if (err) throw err;
+            });
+         } else {
+            Group.findByIdAndUpdate(req.params.id, {
+               group_name: group_name,
+               is_private: is_private
+            }, (err, user) => {
+               if (err) throw err;
+            });
+         }
 
          req.flash('success_msg', "Group was updated.");
          res.redirect('/groups/' + req.params.id);
