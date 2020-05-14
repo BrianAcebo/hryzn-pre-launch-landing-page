@@ -107,7 +107,7 @@
                   <div class="micropost">
                      {{#if posted_to_group}}
                      {{#each posted_to_group}}
-                     <a class="posted_to_group" href="/groups/{{this.group_id}}">Posted to "{{this.group_name}}"</a>
+                     <a class="posted_to_group" href="/groups/{{this.group_id}}">Posted to <br />"{{this.group_name}}"</a>
                      {{/each}}
                      {{/if}}
                      <div class="micropost_card">
@@ -124,7 +124,7 @@
                <div class="masonryItem ownProject" title="{{project_title}}">
                   {{#if posted_to_group}}
                   {{#each posted_to_group}}
-                  <a class="posted_to_group" href="/groups/{{this.group_id}}">Posted to "{{this.group_name}}"</a>
+                  <a class="posted_to_group" href="/groups/{{this.group_id}}">Posted to <br />"{{this.group_name}}"</a>
                   {{/each}}
                   {{/if}}
                   <div class="project_card">
@@ -169,7 +169,7 @@
                      {{else}}
                         <div class="masonryItem ownProject" title="{{../project_title}}">
                            <div class="micropost">
-                              <a class="posted_to_group" href="/groups/{{this.group_id}}">Posted to "{{this.group_name}}"</a>
+                              <a class="posted_to_group" href="/groups/{{this.group_id}}">Posted to <br />"{{this.group_name}}"</a>
                               {{#if ../project_url}}<a target="_blank" href="https://{{../project_url}}">{{/if}}
                               <div class="micropost_card">
                                  {{#if ../project_url}}<div class="micro_link"><img src="/icons/link.png" class="mobile-nav__icon" /></div>{{/if}}
@@ -205,7 +205,7 @@
                         {{! Don't show projects in private groups }}
                      {{else}}
                         <div class="masonryItem ownProject" title="{{../project_title}}">
-                           <a class="posted_to_group" href="/groups/{{this.group_id}}">Posted to "{{this.group_name}}"</a>
+                           <a class="posted_to_group" href="/groups/{{this.group_id}}">Posted to <br />"{{this.group_name}}"</a>
                            <div class="project_card">
                               <a href="/p/details/{{../id}}/guest" class="project_link">
                                  <img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{../project_image}}" class="img-responsive" alt="{{../project_title}}" />
@@ -270,7 +270,7 @@
                         {{else}}
                            <div class="masonryItem ownProject" title="{{../project_title}}">
                               <div class="micropost">
-                                 <a class="posted_to_group" href="/groups/{{this.group_id}}">Posted to "{{this.group_name}}"</a>
+                                 <a class="posted_to_group" href="/groups/{{this.group_id}}">Posted to <br />"{{this.group_name}}"</a>
                                  {{#if ../project_url}}<a target="_blank" href="https://{{../project_url}}">{{/if}}
                                  <div class="micropost_card">
                                     {{#if ../project_url}}<div class="micro_link"><img src="/icons/link.png" class="mobile-nav__icon" /></div>{{/if}}
@@ -306,7 +306,7 @@
                            {{! Don't show projects in private groups }}
                         {{else}}
                            <div class="masonryItem ownProject" title="{{../project_title}}">
-                              <a class="posted_to_group" href="/groups/{{this.group_id}}">Posted to "{{this.group_name}}"</a>
+                              <a class="posted_to_group" href="/groups/{{this.group_id}}">Posted to <br />"{{this.group_name}}"</a>
                               <div class="project_card">
                                  <a href="/p/details/{{../id}}" class="project_link">
                                     <img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{../project_image}}" class="img-responsive" alt="{{../project_title}}" />

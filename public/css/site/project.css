@@ -766,5 +766,7 @@ section.project {
    color: #bfb1c4;
    font-weight: bold;
    font-size: 12px;
+   margin-bottom: 10px;
+   display: block;
 }
 /**********/

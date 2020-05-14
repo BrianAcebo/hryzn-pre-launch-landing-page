@@ -106,7 +106,8 @@
    align-items: center;
 }
 
-.group_user_container {
+.group_user_container,
+.explore_groups_container .group_wrapper {
    display: block;
    padding: 25px 0;
    border-top: 1px solid #ccc;
@@ -135,9 +136,35 @@ p.group_admin {
    font-size: 14px;
 }
 
-.group_user_container .group_user {
+.explore_groups_container .group_wrapper {
+   text-align: center;
+}
+
+.group_user_container .group_user,
+.explore_groups_container .follower__profile {
    display: inline-block;
    margin: 0 25px;
+}
+
+.explore_groups_container .follower__profile {
+   margin: 15px;
+   min-width: 0!important;
+   padding: 15px 25px;
+}
+
+.explore_groups_container .follower__profile .follower__profile-img-container {
+   width: 50px;
+   height: 50px;
+   border-radius: 50%;
+   text-align: center;
+   margin-right: 10px;
+   vertical-align: middle;
+   position: relative;
+   overflow: hidden;
+   border: 1px solid #394961;
+   display: inline-block;
+   justify-content: center;
+
 }
 
 .group_user_wrapper {
