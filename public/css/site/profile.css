@@ -205,6 +205,12 @@
    text-transform: uppercase;
 }
 
+@media screen and (max-width: 992px) {
+   .profile__projects-p {
+      display: none;
+   }
+}
+
 .project_btn_wrapper {
    display: flex;
    flex-direction: row;

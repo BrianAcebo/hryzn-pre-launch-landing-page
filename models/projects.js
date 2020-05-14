@@ -57,6 +57,17 @@ const ProjectSchema = mongoose.Schema({
    micro_image: {
       type: String
    },
+   posted_to_group: [{
+      group_id: {
+         type: String
+      },
+      group_name: {
+         type: String
+      },
+      group_is_private: {
+         type: String
+      }
+   }]
 });
 
 const Project = module.exports = mongoose.model('Project', ProjectSchema);
@@ -212,6 +223,71 @@ module.exports.addAdmin = (info, callback) => {
          $addToSet: {"admins": [profileUsername]},
       },
       { safe: true, upsert: true },
+      callback
+   );
+}
+
+// Add Group
+module.exports.addGroup = (info, callback) => {
+   projectId = info['projectId'];
+   groupName = info['groupName'];
+   groupId = info['groupId'];
+   groupIsPrivate = info['groupIsPrivate'];
+
+   const query = { _id: projectId };
+
+   Project.findOneAndUpdate(query,
+      {
+         $addToSet: {
+            "posted_to_group": {
+               "group_id": groupId,
+               "group_name": groupName,
+               "group_is_private": groupIsPrivate
+            }
+         },
+      },
+      { safe: true, upsert: true },
+      callback
+   );
+}
+
+
+// Update Group
+module.exports.updateGroup = (info, callback) => {
+   projectId = info['projectId'];
+   groupName = info['groupName'];
+   groupId = info['groupId'];
+   groupIsPrivate = info['groupIsPrivate'];
+
+   const query = { _id: projectId };
+
+   Project.findOneAndUpdate(query,
+      {
+         $set: {
+            "posted_to_group": {
+               "group_id": groupId,
+               "group_name": groupName,
+               "group_is_private": groupIsPrivate
+            }
+         },
+      },
+      { safe: true, upsert: true },
+      callback
+   );
+}
+
+// Remove Group
+module.exports.removeGroup = (info, callback) => {
+   groupId = info['groupId'];
+   projectId = info['projectId'];
+
+   const query = { _id: projectId };
+
+   Project.findOneAndUpdate(query,
+      {
+         $set: { "posted_to_group": [] }
+      },
+      { multi: true },
       callback
    );
 }

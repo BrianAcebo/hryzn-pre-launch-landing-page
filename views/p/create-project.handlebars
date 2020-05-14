@@ -72,6 +72,15 @@
         <label for="project_image" class="form__label">Add Project Image <span style="color: #999; font-size: 10px; margin-left: 8px;">* Required *</span></label>
         <input class="form__input" type="file" name="project_image" value="{{project.project_image}}" />
 
+        {{! Post To }}
+        <label for="post_to" class="form__label" style="margin-top: 25px;">Post To <span style="color: #999; font-size: 10px; margin-left: 8px;">( Optional )</span></label>
+        <select data-placeholder="Post to..." class="chosen-select form__input" name="post_to">
+           <option value=""></option>
+           <option value="followers">Followers</option>
+           {{#each user.groups}}
+           <option value="{{this.group_id}}">Your Group "{{this.group_name}}"</option>
+           {{/each}}
+        </select>
 
         {{! Project Video }}
         <label for="project_video" class="form__label" style="margin-top: 25px;">Add Project Video <span style="color: #999; font-size: 10px; margin-left: 8px;">( Optional )</span></label>

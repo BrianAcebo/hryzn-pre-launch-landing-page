@@ -54,7 +54,15 @@ const UserSchema = mongoose.Schema({
    messages: [],
    has_notification: {
       type: Boolean
-   }
+   },
+   groups: [{
+      group_name: {
+         type: String
+      },
+      group_id: {
+         type: String
+      }
+   }]
 });
 
 const User = module.exports = mongoose.model('User', UserSchema);
@@ -305,6 +313,61 @@ module.exports.addNotification = (info, callback) => {
    User.findOneAndUpdate(query,
       {
          $addToSet: {"has_notification": "true"},
+      },
+      { safe: true, upsert: true },
+      callback
+   );
+}
+
+// Add Group
+module.exports.addGroup = (info, callback) => {
+   groupId = info['groupId'];
+   profileUsername = info['profileUsername'];
+   groupName = info['groupName'];
+
+   const query = { username: profileUsername };
+
+   User.findOneAndUpdate(query,
+      {
+         $addToSet: {
+            "groups": {
+               "group_name": groupName,
+               "group_id": groupId
+            }
+         },
+      },
+      { safe: true, upsert: true },
+      callback
+   );
+}
+
+// Remove Group
+module.exports.removeGroup = (info, callback) => {
+   groupId = info['groupId'];
+   profileUsername = info['profileUsername'];
+
+   const query = { username: profileUsername };
+
+   User.findOneAndUpdate(query,
+      { $pull: { groups: { 'group_id': groupId } } },
+      { multi: true },
+      callback
+   );
+}
+
+// Update Group
+module.exports.updateGroup = (info, callback) => {
+   userId = info['userId'];
+   groupName = info['groupName'];
+   groupId = info['groupId'];
+
+   const query = { _id: userId, "groups.group_id": groupId };
+
+   User.findOneAndUpdate(query,
+      {
+         $set: {
+            "groups.$.group_name": groupName
+         },
       },
       { safe: true, upsert: true },
       callback

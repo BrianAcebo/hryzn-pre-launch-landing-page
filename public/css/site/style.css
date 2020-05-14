@@ -682,7 +682,8 @@ input {
 /**********/
 
 /* loader for create project */
-.loader_project {
+.loader_project,
+.loader_micro {
    width: 100%;
    height: 100%;
    position: fixed;
@@ -697,11 +698,13 @@ input {
    align-items: center;
 }
 
-.loader_project .loader-container {
+.loader_project .loader-container,
+.loader_micro .loader-container {
    width: 220px;
 }
 
-.loader_project .ball-wrapper {
+.loader_project .ball-wrapper,
+.loader_micro .ball-wrapper {
    position: relative;
    display: inline-block;
    width: 50px;
@@ -709,13 +712,15 @@ input {
    padding-bottom: 10px;
 }
 
-.loader_project .ball-holder {
+.loader_project .ball-holder,
+.loader_micro .ball-holder {
    position: relative;
    overflow: hidden;
    height: 130px;
 }
 
-.loader_project .ball {
+.loader_project .ball,
+.loader_micro .ball {
    position: absolute;
    bottom:0; left: 50%;
    display: block;
@@ -730,7 +735,8 @@ input {
    z-index: 2;
 }
 
-.loader_project .shadow {
+.loader_project .shadow,
+.loader_micro .shadow {
    position: absolute;
    bottom: 9px;
    width: 100%;
@@ -854,6 +860,20 @@ input {
 }
 
 .microModalBackground {
+   display: none;
+   position: fixed;
+   z-index: 999999;
+   padding: 150px 0;
+   left: 0;
+   top: 0;
+   width: 100%;
+   height: 100%;
+   overflow: auto;
+   background-color: rgb(0,0,0);
+   background-color: rgba(0,0,0,0.4);
+}
+
+.groupModalBackground {
    display: none;
    position: fixed;
    z-index: 999999;

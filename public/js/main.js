@@ -82,6 +82,11 @@ $(document).ready(function() {
    });
 
    $mainBody.on('click', function(e){
+      if($mainBody.hasClass('bodyBlur')) {
+         e.preventDefault();
+         e.stopPropagation();
+      }
+      $dropNav.removeClass('showDrop');
       $post_container.removeClass('showPostBtns');
       $mainBody.removeClass('bodyBlur');
    });
@@ -303,6 +308,26 @@ $(document).ready(function() {
    $closeBtnMicro.click(function() {
       $modalMicro.css({ "display": "none" });
    });
+
+   // Modal pop up for groups
+   var $modalGroup= $(".groupModal");
+   var $modalBtnGroup = $(".create_group_btn");
+   var $closeBtnGroup = $(".closeModal");
+   var $body = $("body");
+
+   $modalBtnGroup.each(function() {
+      $(this).click(function() {
+         $modalGroup.css({ "display": "block" });
+      });
+   });
+
+   $closeBtnGroup.click(function() {
+      $modalGroup.css({ "display": "none" });
+   });
+
+   if ($modalGroup.hasClass('groupError')) {
+      $modalGroup.css({ "display": "block" });
+   }
    /**********/
 
 
@@ -335,6 +360,13 @@ $(document).ready(function() {
       $checkbox.attr("value", "true");
       $changeText.html("A private project can only be seen by you");
    });
+
+   // Default check on load
+   if ($isPrivate.hasClass('checked')) {
+      $checkbox.attr("value", "true");
+   } else {
+      $checkbox.attr("value", "false");
+   }
 
    // Save as draft
    $(".draft_btn").click(function() {
@@ -464,12 +496,19 @@ $(document).ready(function() {
    });
    /**********/
 
-   // Add loader for create project
+   // Add loader for create project / micropost
    var $projectLoader = $('.loader_project');
    var $projectSub = $('.project_submit');
 
    $projectSub.click(function() {
       $projectLoader.css({ "display": "flex" });
+   });
+
+   var $microLoader = $('.loader_micro');
+   var $microSub = $('#microSubmit');
+
+   $microSub.click(function() {
+      $microLoader.css({ "display": "flex" });
    });
    /**********/
 
@@ -480,6 +519,48 @@ $(document).ready(function() {
       $(this).click(function() {
          $(this).parent().toggleClass('enlarge');
       });
+   });
+   /**********/
+
+
+   // Kick out user in group
+   var $group_user_container = $('.group_user_container');
+   var $group_user = $('.group_user_container .group_user');
+   var $group_project = $('.group_project');
+   var $btnCon = $('.create_group_btn_container');
+   var $topRes = $('.top_results_underline');
+   var $masCon = $('.masonryContainer');
+   var $kickBtn = $('#userKickBtn');
+   var $projRemBtn = $('#projRemBtn');
+   var $sideNav = $('#profileSideNav');
+   var $tagId = $('#tagId').text();
+
+   var $userLink;
+
+   $kickBtn.click(function() {
+      $sideNav.css({ "width": "0" });
+      $btnCon.toggleClass('bodyBlur');
+      $topRes.toggleClass('bodyBlur');
+      $masCon.toggleClass('bodyBlur');
+
+      $group_user.each(function() {
+         $userLink = $(this).attr('href');
+         $(this).attr('href', '/groups/' + $tagId + '/kick' + $userLink);
+      });
+
+   });
+
+   $projRemBtn.click(function() {
+      $sideNav.css({ "width": "0" });
+      $btnCon.toggleClass('bodyBlur');
+      $topRes.toggleClass('bodyBlur');
+      $group_user_container.toggleClass('bodyBlur');
+
+      $group_project.each(function() {
+         $projLink = $(this).attr('value');
+         $(this).attr('href', '/groups/' + $tagId + '/remove/' + $projLink);
+      });
+
    });
    /**********/
 

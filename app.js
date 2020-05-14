@@ -28,6 +28,11 @@ app.set('view engine', 'handlebars');
 
 app.use('/scripts', express.static(__dirname + '/node_modules/'));
 
+var hbs = exphbs.create({});
+
+hbs.handlebars.registerHelper('ifEquals', function(arg1, arg2, options) {
+    return (arg1 == arg2) ? options.fn(this) : options.inverse(this);
+});
 
 app.use(logger('dev'));
 app.use(bodyParser.json());

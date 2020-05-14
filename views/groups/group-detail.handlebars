@@ -1,0 +1,192 @@
+{{#if group}}
+
+<div class="loader_overlay">
+   <div class="loader_wrapper">
+      <div class="loader"></div>
+      <p class="loader_text loader_text-1">Our robots are looking for the cool stuff.</p>
+      <p class="loader_text loader_text-2">I hope your having a nice day.</p>
+      <p class="loader_text loader_text-3">Soon the computers will just take over.</p>
+      <p class="loader_text loader_text-4">The things are doing the stuff.</p>
+      <p class="loader_text loader_text-5">Your hair looks pretty.</p>
+   </div>
+</div>
+
+<div class="group_detail">
+<div class="explore_main">
+
+   <div class="create_group_btn_container">
+      <p class="top_results">{{group.group_name}} {{#if group.is_private}}<span>Private</span>{{/if}}</p>
+
+      {{#if groupAdmin}}
+      <span id="settingsBtn"><img src="/icons/settings-black.png" class="mobile-nav__icon"/></span>
+      {{else}}
+      {{#if userNotJoined}}
+      <a href="/groups/{{group._id}}/join">
+         <div class="add_post_to_group">
+            Join
+            <div class="create_group_btn group_post_btn">
+               <img src="/icons/plus-black.png" class="main-topnav__icon" />
+            </div>
+         </div>
+      </a>
+      {{else}}
+      <a href="/groups/{{group._id}}/kick/profile/{{user.username}}">
+         <div class="add_post_to_group">
+            Drop
+            <div class="create_group_btn group_post_btn">
+               <img src="/icons/delete-ticket-item.png" class="main-topnav__icon" />
+            </div>
+         </div>
+      </a>
+      {{/if}}
+      {{/if}}
+   </div>
+   <hr class="top_results_underline" />
+
+
+   <div class="group_detail_container">
+
+      <div class="group_user_container">
+         {{#if group.group_admin}}
+         <div class="group_admin_container">
+            <p class="group_admin">Group Admin</p>
+            <a class="group_admin" href="/profile/{{group.group_admin}}">@{{group.group_admin}}</a>
+         </div>
+         {{/if}}
+         {{#if users}}
+         {{#each users}}
+         <a href="/profile/{{this.username}}" class="group_user">
+            <div class="topnav__user">
+               <div class="topnav__profile-img-container">
+                  <img class="profile__img" src="https://s3.amazonaws.com/hryzn-app-static-assets/{{#if this.profileimage}}{{this.profileimage}}{{else}}hryzn-placeholder-01.jpg{{/if}}">
+               </div>
+               {{this.username}}
+            </div>
+         </a>
+         {{/each}}
+         {{/if}}
+      </div>
+
+
+      {{#if projects}}
+
+      <div class="masonryContainer">
+
+         {{#each projects}}
+
+            {{#if is_private}}
+            {{! Check if the project is a private project, we do not want to show private projects }}
+            {{else}}
+
+            {{#if is_micro_post}}
+            <div class="masonryItem ownProject" title="{{project_title}}">
+               <a class="group_project" value="{{_id}}">
+               <div class="micropost">
+                  {{#if project_url}}<a target="_blank" href="https://{{project_url}}">{{/if}}
+                  <div class="micropost_card">
+                     {{#if project_url}}<div class="micro_link"><img src="/icons/link.png" class="mobile-nav__icon" /></div>{{/if}}
+                     <p>{{{micro_body}}}</p>
+                     {{#if micro_image}}
+                     <img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{micro_image}}" class="img-responsive" alt="{{micro_body}}" />
+                  {{/if}}
+                  </div>
+                  {{#if project_url}}</a>{{/if}}
+                  <a class="micro_tag" href="/profile/{{project_owner}}">@{{project_owner}}</a>
+               </div>
+               </a>
+            </div>
+            {{else}}
+
+            <div class="masonryItem" title="{{project_title}}">
+               <div class="project_card">
+                  <a href="/p/details/{{id}}" class="project_link group_project" value="{{_id}}">
+                     <img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{project_image}}" class="img-responsive" alt="{{project_title}}" />
+                  </a>
+                  <div class="project_card_bottom">
+                     <div class="project_bottom_wrapper">
+                        <div class="bg_overlay"></div>
+                        <div class="project_bottom_details">
+                           <a href="/profile/{{project_owner}}"><p class="project_owner">@{{project_owner}}</p></a>
+                           <a href="/p/details/{{id}}" class="project_link">
+                              <p class="project_card_title">{{project_title}}</p>
+                           </a>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+
+            {{/if}}
+
+            {{/if}}
+
+         {{/each}}
+
+      </div>
+
+      {{/if}}
+
+   </div>
+
+
+</div>
+
+{{#if groupAdmin}}
+<div id="profileSideNav" class="profile__sidenav">
+   <a href="javascript:void(0)" id="settingsClose">&times;</a>
+
+   <h3 class="settings__header">Admin Settings</h3>
+   <hr class="settings__underline" />
+
+   {{#if group.is_private}}
+   <p>Privacy Code - {{group.group_code}}</p>
+   {{/if}}
+
+   <a href="/groups/edit/{{group._id}}">Edit Group</a>
+   <a class="modalBtn">Delete Group</a>
+   <a id="userKickBtn">Kick Out User</a>
+   <a id="projRemBtn">Remove Project</a>
+
+   <p id="tagId" style="display:none">{{group._id}}</p>
+</div>
+{{/if}}
+
+
+{{#if groupAdmin}}
+{{! Hidden Delete Modal }}
+<div class="popModal modalBackground">
+  <div class="modal-content">
+
+    <div class="modal-header ">
+      <p>Are You Sure?</p>
+    </div>
+
+    <div class="modal-body">
+      <p>
+         Deleting this is permanent and cannot be undone.
+         {{#if group.is_private}}
+         {{else}}
+         <br />
+         All projects in a public group will be unharmed.
+         {{/if}}
+      </p>
+    </div>
+
+    <div class="modal-footer {{#if group.is_private}}modal-footer_private-group{{/if}}">
+      {{#if group.is_private}}
+      <a href="/groups/delete/{{group._id}}/true" class="btn__secondary project_submit">Yes I'm sure, delete everything</a>
+      <a href="/groups/delete/{{group._id}}/false" class="btn__secondary project_submit">Yes I'm sure, but keep the projects</a>
+      {{else}}
+      <a href="/groups/delete/{{group._id}}/false" class="btn__secondary project_submit">Yes I'm sure</a>
+      {{/if}}
+      <span class="closeModal btn__primary">Cancel</span>
+    </div>
+
+  </div>
+
+</div>
+{{/if}}
+
+</div>
+
+{{/if}}

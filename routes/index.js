@@ -30,6 +30,7 @@ const User = require('../models/users');
 const Project = require('../models/projects');
 const Message = require('../models/messages');
 const Notification = require('../models/notifications');
+const Group = require('../models/groups');
 
 // Get Welcome Landing Page
 router.get('/welcome', (req, res, next) => {
@@ -114,6 +115,829 @@ router.get('/', (req, res, next) => {
       } else {
          res.redirect('/explore');
       }
+   } else {
+      res.redirect('/welcome');
+   }
+});
+
+
+// Get All Groups
+router.get('/groups', (req, res, next) => {
+   if(req.isAuthenticated()) {
+
+      var group_ids = [];
+
+      req.user.groups.forEach(function(group, key) {
+         group_ids.push(group.group_id);
+      });
+      Group.find({ '_id': { $in: group_ids} }, (err, groups) => {
+
+         if (err) throw err;
+
+         res.render('groups', {
+            page_title: 'Groups',
+            groups: groups,
+            groupEdit: true
+         });
+
+      });
+
+   } else {
+      res.redirect('/welcome');
+   }
+});
+
+
+// POST Create Group
+router.post('/create-group', upload.single('group_image'), (req, res, next) => {
+
+   if(req.isAuthenticated()) {
+
+      var id = req.body.id;
+      var user = req.body.user;
+      var group_name = req.body.group_name.replace(/\r\n/g,'');
+      var is_private = req.body.is_private;
+      var group_admin = req.user.username;
+      var users = [user];
+
+      if (req.body.group_categories) {
+         var group_categories = req.body.group_categories;
+      } else {
+         var group_categories = [];
+      }
+
+      if(is_private) {
+         var hex = 'G'+(Math.random()*0xFFFFFF<<0).toString(16);
+         var dateNow = Date.now().toString();
+         dateNow = dateNow.slice(0,3);
+         var group_code = hex + dateNow;
+      }
+
+      if(req.file) {
+
+         // If user uploaded an image for project
+         var ext = path.extname(req.file.originalname);
+
+         // Check if file is an image
+         if(ext !== '.png' && ext !== '.PNG' && ext !== '.jpg' && ext !== '.JPG' && ext !== '.gif' && ext !== '.GIF' && ext !== '.jpeg' && ext !== '.JPEG') {
+
+            User.findById(id, (err, user) => {
+               if(err) throw err;
+
+               res.render('groups', {
+                  error_msg: 'File Must End With .jpg .jpeg .png .gif',
+                  page_title: 'Groups',
+                  group_name: group_name,
+                  is_private: is_private,
+                  group_admin: group_admin,
+                  group_error: true,
+                  groupEdit: true,
+                  user: user
+               });
+            });
+
+         } else {
+            // No errors have been made
+            // var fileExt = req.file.originalname.split('.').pop();
+            var group_image = dateNow + req.file.originalname;
+
+            var newGroup = new Group({
+               users: users,
+               group_name: group_name,
+               is_private: is_private,
+               group_admin: group_admin,
+               group_image: group_image,
+               group_code: group_code,
+               group_categories: group_categories
+            });
+
+            // Create group in database
+            Group.saveGroup(newGroup, (err, group) => {
+               if(err) throw err;
+
+               // Add group to User document
+               info = [];
+               info['profileUsername'] = req.user.username;
+               info['groupId'] = group._id.toString();
+               info['groupName'] = group.group_name.toString();
+
+               User.addGroup(info, (err, user) => {
+                  if(err) throw err;
+               });
+
+               req.flash('success_msg', "Group was created.");
+               res.redirect('/groups/' + group._id);
+            });
+
+         }
+      } else {
+
+         var group_image = 'hryzn-placeholder-01.jpg';
+
+         var newGroup = new Group({
+            users: users,
+            group_name: group_name,
+            is_private: is_private,
+            group_admin: group_admin,
+            group_image: group_image,
+            group_code: group_code,
+            group_categories: group_categories
+         });
+
+         // Create group in database
+         Group.saveGroup(newGroup, (err, group) => {
+            if(err) throw err;
+
+            // Add group to User document
+            info = [];
+            info['profileUsername'] = req.user.username;
+            info['groupId'] = group._id.toString();
+            info['groupName'] = group.group_name.toString();
+
+            User.addGroup(info, (err, user) => {
+               if(err) throw err;
+            });
+
+            req.flash('success_msg', "Group was created.");
+            res.redirect('/groups/' + group._id);
+         });
+      }
+
+   } else {
+      res.redirect('/welcome');
+   }
+});
+
+
+// Get Group Detail
+router.get('/groups/:id', (req, res, next) => {
+   if(req.isAuthenticated()) {
+      Group.findOne({ '_id': { $in: req.params.id} }, (err, group) => {
+
+         if (err) throw err;
+
+         if (group) {
+
+            if (group.users.indexOf(req.user.username) > -1) {
+               var userNotJoined = false;
+            } else {
+               var userNotJoined = true;
+            }
+
+            var allowed;
+
+            if (group.is_private) {
+               group.users.forEach(function(user, key) {
+                  if (user === req.user.username) {
+                     allowed = true;
+                  } else {
+                     allowed = false;
+                  }
+               });
+            } else {
+               allowed = true;
+            }
+
+            if (allowed) {
+
+               if (group.group_admin === req.user.username) {
+                  var groupAdmin = true;
+               } else {
+                  var groupAdmin = false;
+               }
+
+               Project.find({ '_id': { $in: group.projects} }, (err, projects) => {
+                  if (err) throw err;
+
+                  User.find({ 'username': { $in: group.users} }, (err, users) => {
+                     if (err) throw err;
+
+                     res.render('groups/group-detail', {
+                        page_title: group.group_name,
+                        group: group,
+                        projects: projects,
+                        groupAdmin: groupAdmin,
+                        users: users,
+                        userNotJoined: userNotJoined
+                     });
+                  });
+               });
+            } else {
+               res.redirect('/groups');
+            }
+         } else {
+            res.redirect('/groups');
+         }
+
+      });
+
+   } else {
+      res.redirect('/welcome');
+   }
+});
+
+
+// Get Edit Group
+router.get('/groups/edit/:id', (req, res, next) => {
+   if(req.isAuthenticated()) {
+
+      Group.findOne({ '_id': { $in: req.params.id} }, (err, group) => {
+
+         if (err) throw err;
+
+         if (group.group_admin === req.user.username) {
+            res.render('groups/edit-group', {
+               page_title: group.group_name,
+               group: group,
+               groupEdit: true
+            });
+         } else {
+            res.redirect('/groups');
+         }
+
+      });
+
+   } else {
+      res.redirect('/welcome');
+   }
+});
+
+
+// POST Edit Group
+router.post('/groups/edit/:id', upload.single('group_image'), (req, res, next) => {
+
+   if(req.isAuthenticated()) {
+
+      var id = req.body.id;
+      var user = req.body.user;
+      var group_name = req.body.group_name.replace(/\r\n/g,'');
+      var is_private = req.body.is_private;
+
+      if (req.body.group_categories) {
+         var group_categories = req.body.group_categories;
+      } else {
+         var group_categories;
+      }
+
+      if(req.file) {
+
+         // If user uploaded an image for project
+         var ext = path.extname(req.file.originalname);
+
+         // Check if file is an image
+         if(ext !== '.png' && ext !== '.PNG' && ext !== '.jpg' && ext !== '.JPG' && ext !== '.gif' && ext !== '.GIF' && ext !== '.jpeg' && ext !== '.JPEG') {
+
+            User.findById(id, (err, user) => {
+               if(err) throw err;
+
+               res.render('groups/edit-group', {
+                  error_msg: 'File Must End With .jpg .jpeg .png .gif',
+                  page_title: 'Groups',
+                  group_name: group_name,
+                  is_private: is_private,
+                  group_error: true,
+                  groupEdit: true,
+                  user: user
+               });
+            });
+
+         } else {
+            // No errors have been made
+            // var fileExt = req.file.originalname.split('.').pop();
+            var group_image = dateNow + req.file.originalname;
+
+            var info = [];
+            info['groupId'] = req.params.id;
+            info['groupName'] = group_name;
+            info['groupIsPrivate'] = is_private;
+
+            Group.findOne({ '_id': { $in: req.params.id} }, (err, group) => {
+               if (group.projects) {
+                  group.projects.forEach(function(project, key) {
+                     Project.findOne({ '_id': { $in: project} }, (err, project) => {
+                        if (project) {
+                           info['projectId'] = project._id.toString();
+                           Project.updateGroup(info, (err, project) => {
+                              if(err) throw err;
+                           });
+                        }
+                     });
+                  });
+               }
+
+               if (group.users) {
+                  group.users.forEach(function(user, key) {
+                     User.findOne({ 'username': { $in: user} }, (err, user) => {
+                        if (user) {
+                           info['userId'] = user._id.toString();
+                           User.updateGroup(info, (err, user) => {
+                              if(err) throw err;
+                           });
+                        }
+                     });
+                  });
+               }
+            });
+
+            Group.findByIdAndUpdate(req.params.id, {
+               group_name: group_name,
+               is_private: is_private,
+               group_image: group_image,
+               group_categories: group_categories
+            }, (err, user) => {
+               if (err) throw err;
+            });
+
+            req.flash('success_msg', "Group was updated.");
+            res.redirect('/groups/' + req.params.id);
+
+         }
+      } else {
+
+         var group_image = 'hryzn-placeholder-01.jpg';
+
+         var info = [];
+         info['groupId'] = req.params.id;
+         info['groupName'] = group_name;
+         info['groupIsPrivate'] = is_private;
+
+         Group.findOne({ '_id': { $in: req.params.id} }, (err, group) => {
+            if (group.projects) {
+               group.projects.forEach(function(project, key) {
+                  Project.findOne({ '_id': { $in: project} }, (err, project) => {
+                     if (project) {
+                        info['projectId'] = project._id.toString();
+                        Project.updateGroup(info, (err, project) => {
+                           if(err) throw err;
+                        });
+                     }
+                  });
+               });
+            }
+
+            if (group.users) {
+               group.users.forEach(function(user, key) {
+                  User.findOne({ 'username': { $in: user} }, (err, user) => {
+                     if (user) {
+                        info['userId'] = user._id.toString();
+                        User.updateGroup(info, (err, user) => {
+                           if(err) throw err;
+
+                           console.log(user);
+                        });
+                     }
+                  });
+               });
+            }
+         });
+
+         Group.findByIdAndUpdate(req.params.id, {
+            group_name: group_name,
+            is_private: is_private,
+            group_image: group_image,
+            group_categories: group_categories
+         }, (err, user) => {
+            if (err) throw err;
+         });
+
+         req.flash('success_msg', "Group was updated.");
+         res.redirect('/groups/' + req.params.id);
+      }
+
+   } else {
+      res.redirect('/welcome');
+   }
+});
+
+
+// Get Join Group
+router.get('/groups/:groupId/join', (req, res, next) => {
+   if(req.isAuthenticated()) {
+
+      Group.findOne({ '_id': { $in: req.params.groupId} }, (err, group) => {
+
+         if (err) throw err;
+
+         if (group) {
+            if (group.users.indexOf(req.user.username) > -1) {
+               res.redirect('/groups/' + req.params.groupId);
+            } else {
+               // Add group to User document
+               info = [];
+               info['profileUsername'] = req.user.username;
+               info['groupId'] = req.params.groupId;
+               info['groupName'] = group.group_name.toString();
+
+               // Send notification to the user mentioned
+               User.findOne({ 'username': { $in: group.group_admin} }, (err, reciever) => {
+                  if (err) throw err;
+
+                  var newNotification = new Notification({
+                     sender: req.user._id,
+                     reciever: reciever._id,
+                     type: '@' + req.user.username + ' joined your group.',
+                     link: '/groups/' + req.params.groupId
+                  });
+
+                  // Create notification in database
+                  Notification.saveNotification(newNotification, (err, notification) => {
+                     if(err) throw err;
+
+                     // Add Notification for User
+                     User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+                        if (err) throw err;
+                     });
+                  });
+               });
+
+               User.addGroup(info, (err, user) => {
+                  if(err) throw err;
+               });
+
+               Group.addUser(info, (err, group) => {
+                  if(err) throw err;
+
+                  req.flash('success_msg', "Joined group.");
+                  res.redirect('/groups/' + req.params.groupId);
+               });
+            }
+         } else {
+            res.redirect('/groups');
+         }
+
+      });
+
+   } else {
+      res.redirect('/welcome');
+   }
+});
+
+
+// Post Join Private Group
+router.post('/groups/join/private/code', (req, res, next) => {
+   if(req.isAuthenticated()) {
+
+      Group.findOne({ 'group_code': { $in: req.body.group_code} }, (err, group) => {
+
+         if (err) throw err;
+
+         if (group) {
+            if (group.group_admin === req.user.username) {
+               res.redirect('/groups');
+            } else {
+               // Add group to User document
+               info = [];
+               info['profileUsername'] = req.user.username;
+               info['groupId'] = group._id;
+               info['groupName'] = group.group_name.toString();
+
+               // Send notification to group admin
+               User.findOne({ 'username': { $in: group.group_admin} }, (err, reciever) => {
+                  if (err) throw err;
+
+                  var newNotification = new Notification({
+                     sender: req.user._id,
+                     reciever: reciever._id,
+                     type: '@' + req.user.username + ' joined your group.',
+                     link: '/groups/' + group._id
+                  });
+
+                  // Create notification in database
+                  Notification.saveNotification(newNotification, (err, notification) => {
+                     if(err) throw err;
+
+                     // Add Notification for User
+                     User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+                        if (err) throw err;
+                     });
+                  });
+               });
+
+               User.addGroup(info, (err, user) => {
+                  if(err) throw err;
+               });
+
+               Group.addUser(info, (err, group) => {
+                  if(err) throw err;
+
+                  req.flash('success_msg', "Joined group.");
+                  res.redirect('/groups/' + group._id);
+               });
+            }
+         } else {
+            res.redirect('/groups');
+         }
+
+      });
+
+   } else {
+      res.redirect('/welcome');
+   }
+});
+
+
+// Get Kick Out User
+router.get('/groups/:groupId/kick/profile/:username', (req, res, next) => {
+   if(req.isAuthenticated()) {
+
+      if (req.params.username === req.user.username) {
+         var self_kick = true;
+      } else {
+         var self_kick = false;
+      }
+
+      Group.findOne({ '_id': { $in: req.params.groupId} }, (err, group) => {
+
+         if (err) throw err;
+
+         if (group.group_admin === req.user.username || self_kick) {
+            if (group.group_admin === req.params.username) {
+               res.redirect('/groups/' + req.params.groupId);
+            } else {
+               // Add group to User document
+               info = [];
+               info['profileUsername'] = req.params.username;
+               info['groupId'] = req.params.groupId;
+               info['groupName'] = group.group_name.toString();
+
+
+               if (self_kick) {
+                  var link = '/groups';
+                  var msg = 'Left the group.'
+               } else {
+                  var link = '/groups/' + req.params.groupId;
+                  var msg = 'User was removed.'
+
+                  // Send notification to the user mentioned
+                  User.findOne({ 'username': { $in: req.params.username} }, (err, reciever) => {
+                     if (err) throw err;
+
+                     var newNotification = new Notification({
+                        sender: req.user._id,
+                        reciever: reciever._id,
+                        type: 'Sorry, you were removed from the group ' + group.group_name,
+                        link: '/groups'
+                     });
+
+                     // Create notification in database
+                     Notification.saveNotification(newNotification, (err, notification) => {
+                        if(err) throw err;
+
+                        // Add Notification for User
+                        User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+                           if (err) throw err;
+                        });
+                     });
+                  });
+               }
+
+               User.removeGroup(info, (err, user) => {
+                  if(err) throw err;
+               });
+
+               Group.removeUser(info, (err, group) => {
+                  if(err) throw err;
+
+                  req.flash('success_msg', msg);
+                  res.redirect(link);
+               });
+            }
+         } else {
+            res.redirect('/groups');
+         }
+
+      });
+
+   } else {
+      res.redirect('/welcome');
+   }
+});
+
+
+// Get Remove Project
+router.get('/groups/:groupId/remove/:projectId', (req, res, next) => {
+   if(req.isAuthenticated()) {
+
+      Group.findOne({ '_id': { $in: req.params.groupId} }, (err, group) => {
+
+         if (err) throw err;
+
+         if (group.group_admin === req.user.username) {
+
+            Project.findOne({ '_id': { $in: req.params.projectId} }, (err, project) => {
+
+               info = [];
+               info['projectId'] = req.params.projectId;
+               info['groupId'] = req.params.groupId;
+               info['groupName'] = group.group_name.toString();
+
+               // Send notification to the user mentioned
+               User.findOne({ 'username': { $in: project.project_owner} }, (err, reciever) => {
+                  if (err) throw err;
+
+                  var newNotification = new Notification({
+                     sender: req.user._id,
+                     reciever: reciever._id,
+                     type: 'Sorry, your project removed from the group ' + group.group_name,
+                     link: '/groups'
+                  });
+
+                  // Create notification in database
+                  Notification.saveNotification(newNotification, (err, notification) => {
+                     if(err) throw err;
+
+                     // Add Notification for User
+                     User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+                        if (err) throw err;
+                     });
+                  });
+               });
+
+               Project.removeGroup(info, (err, user) => {
+                  if(err) throw err;
+               });
+
+               Group.removeProject(info, (err, group) => {
+                  if(err) throw err;
+
+                  req.flash('success_msg', "Project was removed.");
+                  res.redirect('/groups/' + group._id);
+               });
+            });
+         } else {
+            res.redirect('/groups');
+         }
+
+      });
+
+   } else {
+      res.redirect('/welcome');
+   }
+});
+
+
+// Delete Group
+router.get('/groups/delete/:id/:deleteAll', (req, res, next) => {
+   if(req.isAuthenticated()) {
+
+      if (req.params.deleteAll === 'true') {
+         var deleteProjects = true;
+      } else  {
+         var deleteProjects = false;
+      }
+
+      Group.findById(req.params.id, (err, group) => {
+         if(err) throw err;
+
+         if (group.group_admin === req.user.username) {
+
+            if (group.is_private && deleteProjects) {
+
+               // Delete Everything
+
+               if(group.projects) {
+
+                  group.projects.forEach(function(proj, key) {
+                     // Find project to delete
+                     Project.findById(proj, (err, project) => {
+                        if(err) throw err;
+
+                        var info = [];
+
+                        // If project has saves
+                        if(project.saves.length) {
+
+                           for (var i = 0, len = project.saves.length; i < len; i++) {
+                              info['profileUsername'] = project.saves[i];
+                              info['projectId'] = project._id;
+
+                              User.unsaveToProfile(info, (err, user) => {
+                                 if(err) throw err;
+                              });
+                           }
+
+                        }
+
+                        // If project has admins
+                        if(project.project_owner.length) {
+                           info['profileUsername'] = project.project_owner;
+                           info['projectId'] = project._id;
+
+                           console.log(info['projectId']);
+
+                           User.deleteFromProfile(info, (err, user) => {
+                              if(err) throw err;
+
+                              console.log(user);
+                           });
+                        }
+
+                        // If project has reposts
+                        if(project.reposts.length) {
+                           for (var i = 0, len = project.reposts.length; i < len; i++) {
+                              info['profileUsername'] = project.reposts[i];
+                              info['projectId'] = project._id;
+
+                              User.unrepostProject(info, (err, user) => {
+                                 if(err) throw err;
+                              });
+                           }
+                        }
+
+                        // Delete project image
+                        var s3_instance = new aws.S3();
+                        var s3_params = {
+                           Bucket: 'hryzn-app-static-assets',
+                           Key: project.project_image
+                        };
+                        s3_instance.deleteObject(s3_params, (err, data) => {
+                           if(data) {
+                              console.log("File deleted");
+                           }
+                           else {
+                              console.log("No delete : " + err);
+                           }
+                        });
+
+                        // Delete the project
+                        Project.findByIdAndRemove(project._id, (err) => {
+                          if (err) throw err;
+
+                          // If group has users
+                          if(group.users) {
+
+                             for (var i = 0, len = group.users.length; i < len; i++) {
+                                var info = [];
+                                info['profileUsername'] = group.users[i];
+                                info['groupId'] = req.params.id;
+
+                                User.removeGroup(info, (err, user) => {
+                                   if(err) throw err;
+                                });
+                             }
+
+                          }
+
+                          // Delete the Group
+                          Group.findByIdAndRemove(req.params.id, (err) => {
+                            if (err) throw err;
+                            req.flash('success_msg', "Destroyed From Existence...");
+                            res.redirect('/groups');
+                          });
+                        });
+
+                     });
+                  });
+
+               }
+
+            } else {
+
+               // Keep Projects
+
+               if(group.projects) {
+
+                  group.projects.forEach(function(proj, key) {
+                     var info = [];
+                     info['projectId'] = proj;
+                     info['groupId'] = req.params.id;
+
+                     Project.removeGroup(info, (err, project) => {
+                        if(err) throw err;
+
+                        // If group has users
+                        if(group.users.length) {
+
+                           for (var i = 0, len = group.users.length; i < len; i++) {
+                              var info = [];
+                              info['profileUsername'] = group.users[i];
+                              info['groupId'] = req.params.id;
+
+                              User.removeGroup(info, (err, user) => {
+                                 if(err) throw err;
+                              });
+                           }
+
+                        }
+
+                        // Delete the Group
+                        Group.findByIdAndRemove(req.params.id, (err) => {
+                          if (err) throw err;
+                          req.flash('success_msg', "Destroyed From Existence...");
+                          res.redirect('/groups');
+                        });
+                     });
+
+                  });
+
+               }
+
+            }
+
+         } else {
+            res.redirect('/groups');
+         }
+      });
    } else {
       res.redirect('/welcome');
    }
@@ -1127,13 +1951,15 @@ router.get('/explore', (req, res, next) => {
       Project.find({}, (err, projects) => {
          if (err) throw err;
 
-         var reversed_projects = projects.reverse();
-
-         res.render('explore', {
-            page_title: 'Explore Projects',
-            projects: reversed_projects,
-            explore_default: true
+         Group.find({}, (err, groups) => {
+            res.render('explore', {
+               page_title: 'Explore Projects',
+               projects: projects.reverse(),
+               groups: groups.reverse(),
+               explore_default: true
+            });
          });
+
       });
 
    } else {
@@ -1148,13 +1974,16 @@ router.get('/explore/:category', (req, res, next) => {
       Project.find({ 'categories': { $in: req.params.category} }, (err, projects) => {
          if (err) throw err;
 
-         var reversed_projects = projects.reverse();
+         Group.find({ 'group_categories': { $in: req.params.category} }, (err, groups) => {
 
-         res.render('explore', {
-            page_title: 'Explore ' + req.params.category,
-            projects: reversed_projects,
-            explore_default: true,
-            category_title: req.params.category
+            res.render('explore', {
+               page_title: 'Explore ' + req.params.category,
+               projects: projects.reverse(),
+               groups: groups.reverse(),
+               explore_default: true,
+               category_title: req.params.category
+            });
+
          });
       });
 
@@ -1174,15 +2003,18 @@ router.get('/search', (req, res, next) => {
          Project.find({$text: { $search: searchTerm }}, {score: { $meta: "textScore" }}, (err, projects) => {
             if (err) throw err;
 
-            // No need to reverse order of projects
+            Group.find({$text: { $search: searchTerm }}, {score: { $meta: "textScore" }}, (err, groups) => {
+               if (err) throw err;
 
-            res.render('explore', {
-               page_title: 'Explore Projects',
-               projects: projects,
-               user_search: user,
-               project_search: projects,
-               explore_default: false
-            });
+               res.render('explore', {
+                  page_title: 'Explore Projects',
+                  projects: projects,
+                  group_search: groups,
+                  user_search: user,
+                  project_search: projects,
+                  explore_default: false
+               });
+            }).sort({score: { $meta: "textScore" }});
          }).sort({score: { $meta: "textScore" }});
       }).sort({score: { $meta: "textScore" }});
 

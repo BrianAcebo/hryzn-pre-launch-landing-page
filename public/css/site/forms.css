@@ -165,7 +165,9 @@ textarea {
 }
 
 .form__container .chosen-choices,
-.edit-project-form .chosen-choices {
+.edit-project-form .chosen-choices,
+.form__container .chosen-single,
+.edit-project-form .chosen-single {
    width: 100%;
    padding: 15px 20px!important;
    margin: 15px 0 25px 0!important;
@@ -177,6 +179,7 @@ textarea {
    background-image: none!important;
    background-image: none!important;
    cursor: pointer!important;
+   height: auto!important;
 
 }
 
@@ -354,4 +357,8 @@ textarea {
    .login_page_secondary {
       margin-left: 15%;
    }
+}
+
+.chosen-container {
+   width: 100%!important;
 }

@@ -1,0 +1,184 @@
+.create_group_btn_container {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   position: relative;
+   flex-direction: row;
+   margin: 50px 0 15px 0;
+}
+
+.create_group_btn_container .top_results {
+   margin: 0;
+}
+
+.create_group_btn_container .top_results span {
+   margin-left: 15px;
+   opacity: 0.6;
+}
+
+.create_group_btn_container #settingsBtn {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   cursor: pointer;
+}
+
+.create_group_btn_container #settingsBtn img {
+   max-width: 25px;
+}
+
+.group_detail #profileSideNav {
+   border-left: 1px solid #ccc;
+}
+
+.group_detail #profileSideNav a {
+   cursor: pointer;
+}
+
+.group_detail #profileSideNav p {
+   margin: 25px 0 25px 50px;
+   font-size: 14px;
+   color: #333;
+   display: block;
+   transition: 0.3s;
+   font-weight: bold;
+}
+
+.group_btn_blue {
+   cursor: pointer;
+   padding: 15px;
+   border-radius: 50%;
+   background: #31375A;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+}
+
+.make_group_tag {
+   cursor: pointer;
+}
+
+.groups_container {
+   display: flex;
+   justify-content: center;
+   align-items: flex-start;
+   flex-wrap: wrap;
+   flex-direction: row;
+}
+
+.group_wrapper {
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+   align-items: center;
+}
+
+.group_wrapper .is_private {
+   max-width: 250px;
+}
+
+.group_detail_container {
+   padding: 0;
+}
+
+.add_post_to_group {
+   max-width: 300px;
+   border-radius: 35px;
+   font-weight: bold;
+   float: right;
+   background: #f1f1f1;
+   padding: 10px 25px;
+   color: #333;
+   display: flex;
+   justify-content: space-between;
+   flex-direction: row;
+   align-items: center;
+   cursor: pointer;
+   line-height: 20px;
+}
+
+.add_post_to_group .group_post_btn {
+   margin-left: 10px;
+   cursor: pointer;
+   border-radius: 50%;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+}
+
+.group_user_container {
+   display: block;
+   padding: 25px 0;
+   border-top: 1px solid #ccc;
+   border-bottom: 1px solid #ccc;
+   overflow: auto;
+   white-space: nowrap;
+   margin-bottom: 50px;
+}
+
+.group_admin_container {
+   display: inline-block;
+   background: #bfb1c4;
+   padding: 15px 25px;
+   border-radius: 35px;
+}
+
+.group_user_container .group_admin {
+   display: block;
+   margin: 0;
+   color: #fff;
+   line-height: 25px;
+}
+
+p.group_admin {
+   font-weight: bold;
+   font-size: 14px;
+}
+
+.group_user_container .group_user {
+   display: inline-block;
+   margin: 0 25px;
+}
+
+.group_user_wrapper {
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+   align-items: center;
+}
+
+.modal-footer_private-group {
+   flex-direction: column;
+}
+
+.modal-footer_private-group a {
+   margin: 0 0 25px 0;
+}
+
+.group_code_container {
+   display: flex;
+   justify-content: center;
+   flex-direction: row;
+   align-items: center;
+   max-width: 300px;
+   margin: 0 auto;
+}
+
+.group_code_container .form__input {
+   border-top: 1px solid #ccc;
+   border-bottom: 1px solid #ccc;
+   border-left: 1px solid #ccc;
+   border-radius: 0;
+   font-size: 12px;
+}
+
+.group_code_container .btn__secondary {
+   cursor: pointer;
+   padding: 15px 20px;
+   margin: 15px 0 25px 0;
+   display: inline-block;
+   border: 1px solid #ccc;
+   font-size: 12px;
+   border-radius: 0;
+   letter-spacing: 1px;
+}

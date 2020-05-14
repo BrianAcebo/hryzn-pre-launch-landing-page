@@ -761,4 +761,10 @@ section.project {
 .micro_link img {
    max-width: 14px;
 }
+
+.posted_to_group {
+   color: #bfb1c4;
+   font-weight: bold;
+   font-size: 12px;
+}
 /**********/
