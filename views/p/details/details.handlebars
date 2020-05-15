@@ -90,7 +90,7 @@
                            <a class="statsBtn admin_btn">Stats</a>
                            <div class="stats_nav statsNav">
 
-                              <div class="detailsRepostModalBtn project_action_btn">
+                              <div class="repostModalBtn project_action_btn">
                                  <img src="/icons/repost.png" class="project_icon" />
                                  {{#if enough_reposts}}
                                  {{repost_amount}}
@@ -167,7 +167,7 @@
 
                      {{else}}
 
-                        <div class="repostModalBtn project_action_btn">
+                        <div class="detailsRepostModalBtn project_action_btn">
                            <img src="/icons/repost.png" class="project_icon" />
                            {{#if enough_reposts}}
                            {{repost_amount}}
@@ -427,31 +427,110 @@
   <h3 class="settings__header">Related</h3>
   <hr class="settings__underline" />
   {{#each related_projects}}
-  {{#if is_private}}
-  {{! Check if the project is a private project, we do not want to show private projects }}
-  {{else}}
+ {{#if is_private}}
+ {{! Check if the project is a private project, we do not want to show private projects }}
+ {{else}}
 
-  <div class="masonryItem" title="{{project_title}}">
-     <div class="project_card">
-        <a href="/p/details/{{id}}/guest" class="project_link">
-           <img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{project_image}}" class="img-responsive" alt="{{project_title}}" />
-        </a>
-        <div class="project_card_bottom">
-           <div class="project_bottom_wrapper">
-              <div class="bg_overlay"></div>
-              <div class="project_bottom_details">
-                 <a href="/profile/{{project_owner}}"><p class="project_owner">@{{project_owner}}</p></a>
-                 <a href="/p/details/{{id}}/guest" class="project_link">
-                    <p class="project_card_title">{{project_title}}</p>
-                 </a>
+ {{#if is_micro_post}}
+
+    {{#if posted_to_group}}
+        {{#each posted_to_group}}
+           {{#ifEquals this.group_is_private "true"}}
+              {{! Don't show projects in private groups }}
+           {{else}}
+              <div class="masonryItem ownProject" title="{{../project_title}}">
+                 <div class="micropost">
+                    <input class="likes_length" type="hidden" name="likes_length" value="{{../likes.length}}">
+                    <input class="reposts_length" type="hidden" name="reposts_length" value="{{../reposts.length}}">
+                    <input class="saves_length" type="hidden" name="saves_length" value="{{../saves.length}}">
+                    <input class="micro_project" type="hidden" name="project_id" value="{{../_id}}">
+                    <input class="micro_owner" type="hidden" name="project_owner" value="{{../project_owner}}">
+                    <a class="posted_to_group" href="/groups/{{this.group_id}}">Posted to "{{this.group_name}}"</a>
+                    {{#if ../project_url}}<a target="_blank" href="https://{{../project_url}}">{{/if}}
+                    <div class="micropost_card">
+                       {{#if ../project_url}}<div class="micro_link"><img src="/icons/link.png" class="mobile-nav__icon" /></div>{{/if}}
+                       <p>{{{../micro_body}}}</p>
+                       {{#if ../micro_image}}<img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{../micro_image}}" class="img-responsive" alt="{{../micro_body}}" />{{/if}}
+                    </div>
+                    {{#if ../project_url}}</a>{{/if}}
+                    <a class="micro_tag" href="/profile/{{../project_owner}}">@{{../project_owner}}</a>
+                 </div>
+              </div>
+           {{/ifEquals}}
+        {{/each}}
+    {{else}}
+        <div class="masonryItem ownProject" title="{{project_title}}">
+           <div class="micropost">
+              <input class="likes_length" type="hidden" name="likes_length" value="{{likes.length}}">
+              <input class="reposts_length" type="hidden" name="reposts_length" value="{{reposts.length}}">
+              <input class="saves_length" type="hidden" name="saves_length" value="{{saves.length}}">
+              <input class="micro_project" type="hidden" name="project_id" value="{{_id}}">
+              <input class="micro_owner" type="hidden" name="project_owner" value="{{project_owner}}">
+           {{#if project_url}}<a target="_blank" href="https://{{project_url}}">{{/if}}
+           <div class="micropost_card">
+              {{#if project_url}}<div class="micro_link"><img src="/icons/link.png" class="mobile-nav__icon" /></div>{{/if}}
+              <p>{{{micro_body}}}</p>
+              {{#if micro_image}}<img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{micro_image}}" class="img-responsive" alt="{{micro_body}}" />{{/if}}
+           </div>
+           {{#if project_url}}</a>{{/if}}
+           <a class="micro_tag" href="/profile/{{project_owner}}">@{{project_owner}}</a>
+           </div>
+        </div>
+    {{/if}}
+
+ {{else}}
+
+    {{#if posted_to_group}}
+        {{#each posted_to_group}}
+           {{#ifEquals this.group_is_private "true"}}
+              {{! Don't show projects in private groups }}
+           {{else}}
+              <div class="masonryItem ownProject" title="{{../project_title}}">
+                 <a class="posted_to_group" href="/groups/{{this.group_id}}">Posted to "{{this.group_name}}"</a>
+                 <div class="project_card">
+                    <a href="/p/details/{{../id}}" class="project_link">
+                       <img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{../project_image}}" class="img-responsive" alt="{{../project_title}}" />
+                    </a>
+                    <div class="project_card_bottom">
+                       <div class="project_bottom_wrapper">
+                          <div class="bg_overlay"></div>
+                          <div class="project_bottom_details">
+                             <a href="/profile/{{../project_owner}}"><p class="project_owner">@{{../project_owner}}</p></a>
+                             <a href="/p/details/{{../id}}" class="project_link">
+                                <p class="project_card_title">{{../project_title}}</p>
+                             </a>
+                          </div>
+                       </div>
+                    </div>
+                 </div>
+              </div>
+           {{/ifEquals}}
+        {{/each}}
+    {{else}}
+        <div class="masonryItem ownProject" title="{{project_title}}">
+           <div class="project_card">
+              <a href="/p/details/{{id}}" class="project_link">
+                 <img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{project_image}}" class="img-responsive" alt="{{project_title}}" />
+              </a>
+              <div class="project_card_bottom">
+                 <div class="project_bottom_wrapper">
+                    <div class="bg_overlay"></div>
+                    <div class="project_bottom_details">
+                       <a href="/profile/{{project_owner}}"><p class="project_owner">@{{project_owner}}</p></a>
+                       <a href="/p/details/{{id}}" class="project_link">
+                          <p class="project_card_title">{{project_title}}</p>
+                       </a>
+                    </div>
+                 </div>
               </div>
            </div>
         </div>
-     </div>
-  </div>
+    {{/if}}
 
-  {{/if}}
-  {{/each}}
+ {{/if}}
+
+ {{/if}}
+ {{/each}}
 </div>
 {{/if}}
 
