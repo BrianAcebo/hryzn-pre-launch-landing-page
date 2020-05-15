@@ -285,6 +285,12 @@
    width: 100%;
 }
 
+@media screen and (max-width: 595px) {
+   .section_home_content {
+      bottom: 200px;
+   }
+}
+
 .section_home_content__main {
    padding: 0 50px;
    width: 100%;
@@ -335,8 +341,9 @@
    }
 
    .section_home_content h1 {
-      font-size: 45px;
-      line-height: 55px;
+      font-size: 40px;
+      font-weight: 600;
+      line-height: 50px;
    }
 }
 
