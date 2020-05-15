@@ -115,7 +115,14 @@
    overflow: auto;
    white-space: nowrap;
    margin-bottom: 50px;
+   -ms-overflow-style: none;
 }
+
+.group_user_container::-webkit-scrollbar,
+.explore_groups_container .group_wrapper::-webkit-scrollbar {
+  display: none;
+}
+
 
 .group_admin_container {
    display: inline-block;

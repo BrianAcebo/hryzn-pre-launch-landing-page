@@ -569,7 +569,6 @@ input {
 .masonry-with-columns .loader_card {
   width: 150px;
   background: #f1f1f1;
-  border-radius: 25px;
   color: white;
   margin: 0 0 35px 0;
   display: inline-block;
@@ -845,7 +844,8 @@ input {
   100% { transform: rotate(360deg); }
 }
 
-.modalBackground {
+.modalBackground,
+#micropostPop {
    display: none;
    position: fixed;
    z-index: 999999;

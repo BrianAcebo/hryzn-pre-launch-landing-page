@@ -328,6 +328,37 @@ $(document).ready(function() {
    if ($modalGroup.hasClass('groupError')) {
       $modalGroup.css({ "display": "block" });
    }
+
+
+   // Modal pop up for repost
+   var $modalRepost = $(".repostModal");
+   var $modalBtnRepost = $(".repostModalBtn");
+   var $closeBtnRepost = $(".closeModal");
+
+   $modalBtnRepost.each(function() {
+      $(this).click(function() {
+         $modalRepost.css({ "display": "block" });
+      });
+   });
+
+   $closeBtnRepost.click(function() {
+      $modalRepost.css({ "display": "none" });
+   });
+
+   // Modal pop up for repost in details page
+   var $detailsModalRepost = $(".detailsRepostModal");
+   var $detailsModalBtnRepost = $(".detailsRepostModalBtn");
+   var $closeBtnRepost = $(".closeModal");
+
+   $detailsModalBtnRepost.each(function() {
+      $(this).click(function() {
+         $detailsModalRepost.css({ "display": "block" });
+      });
+   });
+
+   $closeBtnRepost.click(function() {
+      $detailsModalRepost.css({ "display": "none" });
+   });
    /**********/
 
 
@@ -512,16 +543,6 @@ $(document).ready(function() {
    });
    /**********/
 
-   // Enlargen Micropost
-   var $micropost = $('.micropost .micropost_card');
-   var $mainBody = $('main');
-   $micropost.each(function() {
-      $(this).click(function() {
-         $(this).parent().toggleClass('enlarge');
-      });
-   });
-   /**********/
-
 
    // Kick out user in group
    var $group_user_container = $('.group_user_container');
@@ -561,6 +582,63 @@ $(document).ready(function() {
          $(this).attr('href', '/groups/' + $tagId + '/remove/' + $projLink);
       });
 
+   });
+   /**********/
+
+
+   // Micropost popup
+   var $microPop = $('#micropostPop');
+   var $microPopContainer = $('.micropostPop_container');
+   var $micropost = $('.micropost');
+   var $mainBody = $('#mainBody');
+   var $microRepost = $('#micro_repost');
+   var $microUnrepost = $('#micro_unrepost');
+   var $microSave = $('#micro_save');
+   var $microLike = $('#micro_like');
+   var $repostModalBtn = $('.repostModalBtn');
+   var $ogPath = window.location.pathname;
+
+   $micropost.each(function() {
+      $(this).click(function() {
+         var $micro_project = $(this).children('.micro_project').val();
+         var $micro_owner = $(this).children('.micro_owner').val();
+         var $reposts_length = $(this).children('.reposts_length').val();
+         var $likes_length = $(this).children('.likes_length').val();
+         var $saves_length = $(this).children('.saves_length').val();
+
+         $microRepost.attr('action', '/p/details/micro/repost/' + $micro_project);
+         $microUnrepost.attr('action', '/p/details/micro/unrepost/' + $micro_project);
+         $microSave.attr('action', '/p/details/micro/save/' + $micro_project);
+         $microLike.attr('action', '/p/details/micro/like/' + $micro_project);
+
+         $microRepost.children('.micro_project').val($micro_project);
+         $microRepost.children('.micro_owner').val($micro_owner);
+         $microRepost.children('.og_path').val($ogPath);
+         $repostModalBtn.children('.reposts_length').text($reposts_length);
+
+         $microUnrepost.children('.micro_project').val($micro_project);
+         $microUnrepost.children('.og_path').val($ogPath);
+
+         $microSave.children('.micro_project').val($micro_project);
+         $microSave.children('.micro_owner').val($micro_owner);
+         $microSave.children('.og_path').val($ogPath);
+         $microSave.children().children('.saves_length').text($saves_length);
+
+         $microLike.children('.micro_project').val($micro_project);
+         $microLike.children('.micro_owner').val($micro_owner);
+         $microLike.children('.og_path').val($ogPath);
+         $microLike.children().children('.likes_length').text($likes_length);
+
+         $microPopContainer.append($(this).clone());
+         $microPop.addClass('microPop');
+         $mainBody.addClass('mainBodyPop');
+      });
+   });
+
+   $('.microPopClose').click(function() {
+      $microPop.removeClass('microPop');
+      $mainBody.removeClass('mainBodyPop');
+      $microPopContainer.children().remove();
    });
    /**********/
 

@@ -1140,11 +1140,155 @@ router.post('/details/unsave/:id', (req, res, next) => {
    }
 });
 
+
+// Micropost - Save
+router.post('/details/micro/save/:id', (req, res, next) => {
+   if(req.isAuthenticated()) {
+
+      var project_owner = req.body.project_owner;
+      var og_path = req.body.og_path;
+
+      Project.findOne({ '_id': { $in: req.params.id} }, (err, project) => {
+
+         if (project.saves.length) {
+            project.saves.forEach(function(save, key) {
+
+               if (save === req.user.username) {
+                  info = [];
+                  info['profileUsername'] = req.user.username;
+                  info['projectId'] = req.params.id;
+
+                  User.unsaveToProfile(info, (err, user) => {
+                     if(err) throw err;
+                  });
+
+                  // Remove save from project
+                  Project.removeSaves(info, (err, user) => {
+                     if(err) throw err;
+                     req.flash('success_msg', "Project Unsaved");
+                     res.redirect(og_path);
+                  });
+               } else {
+                  info = [];
+                  info['profileUsername'] = req.user.username;
+                  info['projectId'] = req.body.project_id;
+                  info['projectTitle'] = req.body.project_title;
+                  info['isPrivate'] = req.body.is_private;
+                  info['projectImage'] = req.body.project_image;
+
+                  User.saveToProfile(info, (err, user) => {
+                     if(err) throw err;
+                  });
+
+                  // Add save to project
+                  Project.addSaves(info, (err, user) => {
+                     if(err) throw err;
+
+                     // Send notification to the user mentioned
+                     User.findOne({ 'username': { $in: project_owner} }, (err, reciever) => {
+                        if (err) throw err;
+
+                        var newNotification = new Notification({
+                           sender: req.user._id,
+                           reciever: reciever._id,
+                           type: '@' + req.user.username + ' saved your post.',
+                           link: 'profile/' + project_owner
+                        });
+
+                        // Create notification in database
+                        Notification.saveNotification(newNotification, (err, notification) => {
+                           if(err) throw err;
+
+                           // Add Notification for User
+                           User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+                              if (err) throw err;
+                           });
+                        });
+                     });
+
+                     req.flash('success_msg', "Project Saved");
+                     res.redirect(og_path);
+                  });
+               }
+
+            });
+         } else {
+            info = [];
+            info['profileUsername'] = req.user.username;
+            info['projectId'] = req.body.project_id;
+            info['projectTitle'] = req.body.project_title;
+            info['isPrivate'] = req.body.is_private;
+            info['projectImage'] = req.body.project_image;
+
+            User.saveToProfile(info, (err, user) => {
+               if(err) throw err;
+            });
+
+            // Add save to project
+            Project.addSaves(info, (err, user) => {
+               if(err) throw err;
+
+               // Send notification to the user mentioned
+               User.findOne({ 'username': { $in: project_owner} }, (err, reciever) => {
+                  if (err) throw err;
+
+                  var newNotification = new Notification({
+                     sender: req.user._id,
+                     reciever: reciever._id,
+                     type: '@' + req.user.username + ' saved your post.',
+                     link: 'profile/' + project_owner
+                  });
+
+                  // Create notification in database
+                  Notification.saveNotification(newNotification, (err, notification) => {
+                     if(err) throw err;
+
+                     // Add Notification for User
+                     User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+                        if (err) throw err;
+                     });
+                  });
+               });
+
+               req.flash('success_msg', "Project Saved");
+               res.redirect(og_path);
+            });
+         }
+
+      });
+
+   } else {
+      res.redirect('/welcome');
+   }
+});
+
+
 // Post Project Detail - Repost
 router.post('/details/repost/:id', (req, res, next) => {
    if(req.isAuthenticated()) {
 
       var project_owner = req.body.project_owner;
+      var posted_to_group;
+      var groupName;
+      var groupId;
+
+      if (req.body.repost_to != '') {
+         if (req.body.repost_to != 'Followers') {
+            Group.findOne({ '_id': { $in: req.body.repost_to } }, (err, group) => {
+               if (group) {
+                  groupId = group._id;
+                  groupName = group.group_name;
+                  posted_to_group = true;
+               } else {
+                  posted_to_group = false;
+               }
+            });
+         } else {
+            posted_to_group = false;
+         }
+      } else {
+         posted_to_group = false;
+      }
 
       info = [];
       info['profileUsername'] = req.user.username;
@@ -1153,13 +1297,34 @@ router.post('/details/repost/:id', (req, res, next) => {
       info['isPrivate'] = req.body.is_private;
       info['projectImage'] = req.body.project_image;
 
-      User.repostProject(info, (err, user) => {
-         if(err) throw err;
+      User.findOne({ 'username': { $in: req.user.username} }, (err, user) => {
+
+         if (user.reposted_projects.length) {
+            if (user.reposted_projects.indexOf(req.body.project_id) === -1) {
+               User.repostProject(info, (err, user) => {
+                  if(err) throw err;
+               });
+            }
+         } else {
+            User.repostProject(info, (err, user) => {
+               if(err) throw err;
+            });
+         }
+
       });
+
 
       // Add repost to project
       Project.addReposts(info, (err, user) => {
          if(err) throw err;
+
+         if(posted_to_group) {
+            var notif = '@' + req.user.username + ' reposted your post to the group ' + groupName;
+            var link = '/groups/' + groupId;
+         } else {
+            var notif = '@' + req.user.username + ' reposted your post.';
+            var link = '/p/details/' + req.params.id;
+         }
 
          // Send notification to the user mentioned
          User.findOne({ 'username': { $in: project_owner} }, (err, reciever) => {
@@ -1168,8 +1333,8 @@ router.post('/details/repost/:id', (req, res, next) => {
             var newNotification = new Notification({
                sender: req.user._id,
                reciever: reciever._id,
-               type: '@' + req.user.username + ' reposted your post.',
-               link: '/p/details/' + req.params.id
+               type: notif,
+               link: link
             });
 
             // Create notification in database
@@ -1183,8 +1348,52 @@ router.post('/details/repost/:id', (req, res, next) => {
             });
          });
 
-         req.flash('success_msg', "Reposted Project");
-         res.redirect('/p/details/' + req.body.project_id);
+         if (posted_to_group) {
+            Group.findOne({ '_id': { $in: req.body.repost_to } }, (err, group) => {
+
+               info['groupId'] = group._id;
+               info['groupName'] = group.group_name;
+               info['groupIsPrivate'] = group.is_private;
+
+               Group.addProject(info, (err, group) => {
+                  if(err) throw err;
+               });
+
+
+               // Send notification to the user mentioned
+               group.users.forEach(function(user, key) {
+                  User.findOne({ 'username': { $in: user} }, (err, reciever) => {
+                     if (err) throw err;
+
+                     var newNotification = new Notification({
+                        sender: req.user._id,
+                        reciever: reciever._id,
+                        type: '@' + req.user.username + ' added a repost in the group ' + group.group_name,
+                        link: '/groups/' + group._id
+                     });
+
+                     // Create notification in database
+                     Notification.saveNotification(newNotification, (err, notification) => {
+                        if(err) throw err;
+
+                        // Add Notification for User
+                        User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+                           if (err) throw err;
+                        });
+                     });
+                  });
+               });
+
+               req.flash('success_msg', "Reposted Project");
+               res.redirect('/groups/' + group._id);
+
+            });
+
+         } else {
+            req.flash('success_msg', "Reposted Project");
+            res.redirect('/p/details/' + req.body.project_id);
+         }
+
       });
    } else {
       res.redirect('/welcome');
@@ -1212,6 +1421,175 @@ router.post('/details/unrepost/:id', (req, res, next) => {
       res.redirect('/welcome');
    }
 });
+
+
+// Micropost - Unrepost
+router.post('/details/micro/unrepost/:id', (req, res, next) => {
+   if(req.isAuthenticated()) {
+      info = [];
+      info['profileUsername'] = req.user.username;
+      info['projectId'] = req.body.project_id;
+      var og_path = req.body.og_path;
+
+      if (og_path != '') {
+         var path = og_path;
+      } else {
+         var path = '/p/details/' + req.body.project_id;
+      }
+
+      User.unrepostProject(info, (err, user) => {
+         if(err) throw err;
+      });
+
+      // Remove repost from project
+      Project.removeReposts(info, (err, user) => {
+         if(err) throw err;
+         req.flash('success_msg', "Unreposted Project");
+         res.redirect(path);
+      });
+   } else {
+      res.redirect('/welcome');
+   }
+});
+
+
+// Micropost - Repost
+router.post('/details/micro/repost/:id', (req, res, next) => {
+   if(req.isAuthenticated()) {
+
+      var project_owner = req.body.project_owner;
+      var posted_to_group;
+      var groupName;
+      var groupId;
+      var og_path = req.body.og_path;
+
+      if (req.body.repost_to != '') {
+         if (req.body.repost_to != 'Followers') {
+            Group.findOne({ '_id': { $in: req.body.repost_to } }, (err, group) => {
+               if (group) {
+                  groupId = group._id;
+                  groupName = group.group_name;
+                  posted_to_group = true;
+               } else {
+                  posted_to_group = false;
+               }
+            });
+         } else {
+            posted_to_group = false;
+         }
+      } else {
+         posted_to_group = false;
+      }
+
+      info = [];
+      info['profileUsername'] = req.user.username;
+      info['projectId'] = req.body.project_id;
+      info['projectTitle'] = req.body.project_title;
+      info['isPrivate'] = req.body.is_private;
+      info['projectImage'] = req.body.project_image;
+
+      User.findOne({ 'username': { $in: req.user.username} }, (err, user) => {
+
+         if (user.reposted_projects.length) {
+            if (user.reposted_projects.indexOf(req.body.project_id) === -1) {
+               User.repostProject(info, (err, user) => {
+                  if(err) throw err;
+               });
+            }
+         } else {
+            User.repostProject(info, (err, user) => {
+               if(err) throw err;
+            });
+         }
+
+      });
+
+      // Add repost to project
+      Project.addReposts(info, (err, user) => {
+         if(err) throw err;
+
+         if(posted_to_group) {
+            var notif = '@' + req.user.username + ' reposted your post to the group ' + groupName;
+            var link = '/groups/' + groupId;
+         } else {
+            var notif = '@' + req.user.username + ' reposted your post.';
+            var link = '/p/details/' + req.params.id;
+         }
+
+         // Send notification to the user mentioned
+         User.findOne({ 'username': { $in: project_owner} }, (err, reciever) => {
+            if (err) throw err;
+
+            var newNotification = new Notification({
+               sender: req.user._id,
+               reciever: reciever._id,
+               type: notif,
+               link: link
+            });
+
+            // Create notification in database
+            Notification.saveNotification(newNotification, (err, notification) => {
+               if(err) throw err;
+
+               // Add Notification for User
+               User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+                  if (err) throw err;
+               });
+            });
+         });
+
+         if (posted_to_group) {
+            Group.findOne({ '_id': { $in: req.body.repost_to } }, (err, group) => {
+
+               info['groupId'] = group._id;
+               info['groupName'] = group.group_name;
+               info['groupIsPrivate'] = group.is_private;
+
+               Group.addProject(info, (err, group) => {
+                  if(err) throw err;
+               });
+
+
+               // Send notification to the user mentioned
+               group.users.forEach(function(user, key) {
+                  User.findOne({ 'username': { $in: user} }, (err, reciever) => {
+                     if (err) throw err;
+
+                     var newNotification = new Notification({
+                        sender: req.user._id,
+                        reciever: reciever._id,
+                        type: '@' + req.user.username + ' added a repost in the group ' + group.group_name,
+                        link: '/groups/' + group._id
+                     });
+
+                     // Create notification in database
+                     Notification.saveNotification(newNotification, (err, notification) => {
+                        if(err) throw err;
+
+                        // Add Notification for User
+                        User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+                           if (err) throw err;
+                        });
+                     });
+                  });
+               });
+
+               req.flash('success_msg', "Reposted Project");
+               res.redirect(og_path);
+
+            });
+
+         } else {
+            req.flash('success_msg', "Reposted Project");
+            res.redirect(og_path);
+         }
+
+      });
+   } else {
+      res.redirect('/welcome');
+   }
+});
+
 
 // Post Project Detail - Like
 router.post('/details/like/:id', (req, res, next) => {
@@ -1272,6 +1650,116 @@ router.post('/details/unlike/:id', (req, res, next) => {
          if(err) throw err;
          req.flash('success_msg', "Project Unliked");
          res.redirect('/p/details/' + req.body.project_id);
+      });
+   } else {
+      res.redirect('/welcome');
+   }
+});
+
+
+// Micropost - Like
+router.post('/details/micro/like/:id', (req, res, next) => {
+   if(req.isAuthenticated()) {
+
+      var project_owner = req.body.project_owner;
+      var og_path = req.body.og_path;
+
+      Project.findOne({ '_id': { $in: req.params.id} }, (err, project) => {
+
+         if (project.likes.length) {
+
+            project.likes.forEach(function(user, key) {
+
+               if (user === req.user.username) {
+                  info = [];
+                  info['profileUsername'] = req.user.username;
+                  info['projectId'] = req.params.id;
+
+                  // Remove like from project
+                  Project.removeLikes(info, (err, user) => {
+                     if(err) throw err;
+                     req.flash('success_msg', "Project Unliked");
+                     res.redirect(og_path);
+                  });
+               } else {
+                  info = [];
+                  info['profileUsername'] = req.user.username;
+                  info['projectId'] = req.body.project_id;
+                  info['projectTitle'] = req.body.project_title;
+                  info['isPrivate'] = req.body.is_private;
+                  info['projectImage'] = req.body.project_image;
+
+                  // Add like to project
+                  Project.addLikes(info, (err, user) => {
+                     if(err) throw err;
+
+                     // Send notification to the user mentioned
+                     User.findOne({ 'username': { $in: project_owner} }, (err, reciever) => {
+                        if (err) throw err;
+
+                        var newNotification = new Notification({
+                           sender: req.user._id,
+                           reciever: reciever._id,
+                           type: '@' + req.user.username + ' liked your post.',
+                           link: '/profile/' + project_owner
+                        });
+
+                        // Create notification in database
+                        Notification.saveNotification(newNotification, (err, notification) => {
+                           if(err) throw err;
+
+                           // Add Notification for User
+                           User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+                              if (err) throw err;
+                           });
+                        });
+                     });
+
+                     req.flash('success_msg', "Project Liked");
+                     res.redirect(og_path);
+                  });
+               }
+
+            });
+         } else {
+            info = [];
+            info['profileUsername'] = req.user.username;
+            info['projectId'] = req.body.project_id;
+            info['projectTitle'] = req.body.project_title;
+            info['isPrivate'] = req.body.is_private;
+            info['projectImage'] = req.body.project_image;
+
+            // Add like to project
+            Project.addLikes(info, (err, user) => {
+               if(err) throw err;
+
+               // Send notification to the user mentioned
+               User.findOne({ 'username': { $in: project_owner} }, (err, reciever) => {
+                  if (err) throw err;
+
+                  var newNotification = new Notification({
+                     sender: req.user._id,
+                     reciever: reciever._id,
+                     type: '@' + req.user.username + ' liked your post.',
+                     link: '/profile/' + project_owner
+                  });
+
+                  // Create notification in database
+                  Notification.saveNotification(newNotification, (err, notification) => {
+                     if(err) throw err;
+
+                     // Add Notification for User
+                     User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+                        if (err) throw err;
+                     });
+                  });
+               });
+
+               req.flash('success_msg', "Project Liked");
+               res.redirect(og_path);
+            });
+         }
+
       });
    } else {
       res.redirect('/welcome');

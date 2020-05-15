@@ -25,7 +25,7 @@
 
 
 {{! Project Form }}
-<form method="post" class="edit-project-form" action="/p/details/edit/{{project._id}}" enctype="multipart/form-data">
+<form id="createProjectForm" method="post" class="edit-project-form" action="/p/details/edit/{{project._id}}" enctype="multipart/form-data">
 
 
    {{! Public or Private checkbox }}
@@ -120,7 +120,7 @@
 
 
    {{! Submit }}
-   <button class="form_submit_btn project_submit edit-project__form-btn" name="submit" type="submit">Save</button>
+   <button class="form_submit_btn draft_btn project_submit edit-project__form-btn" name="submit" type="submit">Save</button>
 
 
 </form>
@@ -128,7 +128,7 @@
 <p class="go-back back-btn" style="margin-top: 50px;">Cancel</p>
 
 <!-- Loader Balls -->
-<div class="loader_project">
+<div id="autoLoader" class="loader_project">
    <div class='loader-container'>
       <div class='ball-wrapper'>
          <div class='ball-holder'>
@@ -150,8 +150,7 @@
          </div>
          <div class='shadow'></div>
       </div>
-      <p class="loader_text">Thank you, please wait the computer is doing its thing.</p>
+      <p id="autoText" class="loader_text">Thank you, please wait the computer is doing its thing.</p>
    </div>
 </div>
-
 {{/if}}

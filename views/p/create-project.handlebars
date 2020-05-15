@@ -4,7 +4,7 @@
    </div>
 </div>
 
-<form method="post" class="edit-project-form" action="/p/create-project" enctype="multipart/form-data">
+<form id="createProjectForm" method="post" class="edit-project-form" action="/p/create-project" enctype="multipart/form-data">
    <div class="form__container">
 
       <div class="modalBtnMeta project_meta_btn">
@@ -149,7 +149,7 @@
 <p class="go-back back-btn" style="margin-top: 50px;">Cancel</p>
 
 <!-- Loader Balls -->
-<div class="loader_project">
+<div id="autoLoader" class="loader_project">
    <div class='loader-container'>
       <div class='ball-wrapper'>
          <div class='ball-holder'>
@@ -171,6 +171,6 @@
          </div>
          <div class='shadow'></div>
       </div>
-      <p class="loader_text">Thank you, please wait the computer is doing its thing.</p>
+      <p id="autoText" class="loader_text">Thank you, please wait the computer is doing its thing.</p>
    </div>
 </div>
