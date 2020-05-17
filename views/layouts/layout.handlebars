@@ -485,13 +485,29 @@
          }
       });
 
-      setTimeout(function() {
-         $("#autoLoader").css({"display": "flex"});
-         $("#autoText").text("Autosaving every 5 minutes...");
-         setTimeout(function() {
-            $('.draft_btn.project_submit').trigger('click');
-         }, 3000);
-      }, 300000);
+      var idleTime = 0;
+      var idleInterval = setInterval(timerIncrement, 60000); // 1 minute
+
+      //Zero the idle timer on mouse movement.
+      $(this).mousemove(function (e) {
+         idleTime = 0;
+         console.log('ok mouse');
+      });
+      $(this).keypress(function (e) {
+         idleTime = 0;
+         console.log('ok press');
+      });
+
+      function timerIncrement() {
+      idleTime = idleTime + 1;
+         if (idleTime > 1) { // 2 minutes
+            $("#autoLoader").css({"display": "flex"});
+            $("#autoText").text("Autosaving after 2 minutes of inactivity...");
+            setTimeout(function() {
+               $('.draft_btn.project_submit').trigger('click');
+            }, 3000);
+         }
+      }
 
    });
    </script>

@@ -40,21 +40,21 @@
    {{#if group_search}}
    <p class="top_results">Top Groups</p>
    <hr class="top_results_underline" />
-   <section class="groups_container">
-      {{#each group_search}}
-      {{#if is_private}}
-      {{else}}
+      <section class="explore_groups_container">
          <div class="group_wrapper">
-         <a href="/groups/{{this._id}}" class="follower__profile">
-            <div class="follower__profile-img-container">
-               <img class="profile__img" src="https://s3.amazonaws.com/hryzn-app-static-assets/{{this.group_image}}" />
-            </div>
-            {{this.group_name}}
-         </a>
+            {{#each group_search}}
+            {{#if this.is_private}}
+            {{else}}
+               <a href="/groups/{{this._id}}" class="follower__profile">
+                  <div class="follower__profile-img-container">
+                     <img class="profile__img" src="https://s3.amazonaws.com/hryzn-app-static-assets/{{this.group_image}}" />
+                  </div>
+                  {{this.group_name}}
+               </a>
+            {{/if}}
+            {{/each}}
          </div>
-      {{/if}}
-      {{/each}}
-   </section>
+      </section>
    {{/if}}
 
    {{#if project_search}}
@@ -185,21 +185,21 @@
    {{#if explore_default}}
 
       {{#if groups}}
-         {{#if is_private}}
-         {{else}}
          <section class="explore_groups_container">
-            {{#each groups}}
-               <div class="group_wrapper">
-               <a href="/groups/{{this._id}}" class="follower__profile">
-                  <div class="follower__profile-img-container">
-                     <img class="profile__img" src="https://s3.amazonaws.com/hryzn-app-static-assets/{{this.group_image}}" />
-                  </div>
-                  {{this.group_name}}
-               </a>
-               </div>
-            {{/each}}
+            <div class="group_wrapper">
+               {{#each groups}}
+               {{#if this.is_private}}
+               {{else}}
+                  <a href="/groups/{{this._id}}" class="follower__profile">
+                     <div class="follower__profile-img-container">
+                        <img class="profile__img" src="https://s3.amazonaws.com/hryzn-app-static-assets/{{this.group_image}}" />
+                     </div>
+                     {{this.group_name}}
+                  </a>
+               {{/if}}
+               {{/each}}
+            </div>
          </section>
-         {{/if}}
       {{/if}}
 
       {{#if projects}}
