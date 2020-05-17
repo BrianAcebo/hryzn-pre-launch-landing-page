@@ -400,7 +400,7 @@ $(document).ready(function() {
    }
 
    // Save as draft
-   $(".draft_btn").click(function() {
+   $(".save_as_draft_btn").click(function() {
       $isPrivate.attr("checked", "checked");
       $isPrivate.addClass("checked");
       $isPublic.removeClass("checked");

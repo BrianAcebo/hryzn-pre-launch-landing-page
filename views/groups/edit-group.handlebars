@@ -3,11 +3,11 @@
    {{! Public or Private }}
    <div class="checkbox__wrapper">
       <label class="check__container">
-         <input id="isPrivateCheck" class="form__input-checkbox {{#if group.is_private}}checked{{/if}}" type="checkbox">
+         <input id="isPrivateCheck" class="form__input-checkbox editGroup {{#if group.is_private}}checked{{/if}}" type="checkbox">
          <span class="checkmark">Private Group</span>
       </label>
       <label class="check__container">
-         <input id="isPublicCheck" class="form__input-checkbox {{#if group.is_private}}{{else}}checked{{/if}}" type="checkbox" checked>
+         <input id="isPublicCheck" class="form__input-checkbox editGroup {{#if group.is_private}}{{else}}checked{{/if}}" type="checkbox" checked>
          <span class="checkmark">Public Group</span>
       </label>
    </div>

@@ -31,11 +31,11 @@
    {{! Public or Private checkbox }}
    <div class="checkbox__wrapper">
       <label class="check__container">
-         <input id="isPrivateCheck" class="form__input-checkbox {{#if project.is_private}}checked{{/if}}" type="checkbox">
+         <input id="isPrivateCheck" class="form__input-checkbox editGroup {{#if project.is_private}}checked{{/if}}" type="checkbox">
          <span class="checkmark">Private Project</span>
       </label>
       <label class="check__container">
-         <input id="isPublicCheck" class="form__input-checkbox {{#if project.is_private}}{{else}}checked{{/if}}" type="checkbox" checked>
+         <input id="isPublicCheck" class="form__input-checkbox editGroup {{#if project.is_private}}{{else}}checked{{/if}}" type="checkbox" checked>
          <span class="checkmark">Public Project</span>
       </label>
    </div>
