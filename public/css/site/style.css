@@ -438,42 +438,6 @@ input {
    padding: 50px 0;
 }
 
-.icon-bar {
-  position: fixed;
-  top: 50%;
-  left: 1%;
-  -webkit-transform: translateY(-50%);
-  -ms-transform: translateY(-50%);
-  transform: translateY(-50%);
-}
-
-.icon-bar a {
-   display: flex;
-   align-items: center;
-   justify-content: center;
-   text-align: center;
-   width: 35px;
-   height: 35px;
-   border-radius: 50%;
-   transition: all 0.3s ease;
-   color: #333;
-   font-size: 15px;
-   margin: 10px 0;
-}
-
-.icon-bar a:hover {
-  background-color: #f1f1f1;
-  color: #fff;
-  cursor: pointer;
-}
-
-@media screen and (max-width: 992px) {
-   .icon-bar {
-     left: 0;
-     border-right: 1px solid #f1f1f1;
-   }
-}
-
 /********************/
 /* Pre Loaders */
 /********************/
@@ -1238,5 +1202,65 @@ input {
 @media screen and (max-width: 768px) {
    .hero__img-container {
       min-height: 450px;
+   }
+}
+
+.icon-bar {
+  position: fixed;
+  top: 50%;
+  left: 1%;
+  -webkit-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
+
+.icon-bar a {
+   display: flex;
+   -webkit-align-items: center;
+   -ms-flex-align: center;
+   align-items: center;
+   -webkit-justify-content: center;
+   -ms-flex-pack: center;
+   justify-content: center;
+   width: 40px;
+   height: 35px;
+   transition: all .3s ease;
+   color: #333;
+   font-size: 15px;
+   margin: 10px 0;
+}
+
+.icon-bar a:hover {
+  color: #747eb4;
+  cursor: pointer;
+}
+
+.icon-bar iframe#twitter-widget-0 {
+   height: 35px!important;
+   min-height: 0!important;
+}
+
+.icon-bar #twitter-widget-0 body {
+   margin: 0;
+   padding: 0;
+   background: 0 0;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+}
+
+.icon-bar #twitter-widget-0 i {
+   height: auto!important;
+   background-image: none!important;
+   content: "\f099"!important;
+}
+
+.icon-bar #twitter-widget-0 .btn .label {
+   display: none!important;
+}
+
+@media screen and (max-width: 992px) {
+   .icon-bar {
+     left: 0;
    }
 }

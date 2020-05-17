@@ -642,4 +642,18 @@ $(document).ready(function() {
    });
    /**********/
 
+
+   // Add flash message on project details link copied
+   var $copy = $('.check');
+   var $flashMsg = $('#flashMsg');
+   var $flash = '<div class="success__msg"><p>Link was copied.</p><p class="error__exit">×</p></div>';
+
+   $copy.click(function() {
+      $flashMsg.append($flash);
+      setTimeout(function() {
+         $($flashMsg).remove();
+      }, 3000);
+   });
+   /**********/
+
 });
