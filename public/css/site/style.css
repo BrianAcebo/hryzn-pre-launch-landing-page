@@ -1264,3 +1264,11 @@ input {
      left: 0;
    }
 }
+
+.modal-footer_private-group {
+   flex-direction: column;
+}
+
+.modal-footer_private-group a {
+   margin: 0 0 25px 0;
+}

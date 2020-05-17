@@ -181,14 +181,6 @@ p.group_admin {
    align-items: center;
 }
 
-.modal-footer_private-group {
-   flex-direction: column;
-}
-
-.modal-footer_private-group a {
-   margin: 0 0 25px 0;
-}
-
 .group_code_container {
    display: flex;
    justify-content: center;
