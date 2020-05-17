@@ -811,7 +811,7 @@ router.get('/groups/delete/:id/:deleteAll', (req, res, next) => {
 
                // Delete Everything
 
-               if(group.projects) {
+               if(group.projects.length) {
 
                   group.projects.forEach(function(proj, key) {
                      // Find project to delete
@@ -878,28 +878,6 @@ router.get('/groups/delete/:id/:deleteAll', (req, res, next) => {
                         // Delete the project
                         Project.findByIdAndRemove(project._id, (err) => {
                           if (err) throw err;
-
-                          // If group has users
-                          if(group.users) {
-
-                             for (var i = 0, len = group.users.length; i < len; i++) {
-                                var info = [];
-                                info['profileUsername'] = group.users[i];
-                                info['groupId'] = req.params.id;
-
-                                User.removeGroup(info, (err, user) => {
-                                   if(err) throw err;
-                                });
-                             }
-
-                          }
-
-                          // Delete the Group
-                          Group.findByIdAndRemove(req.params.id, (err) => {
-                            if (err) throw err;
-                            req.flash('success_msg', "Destroyed From Existence...");
-                            res.redirect('/groups');
-                          });
                         });
 
                      });
@@ -907,11 +885,33 @@ router.get('/groups/delete/:id/:deleteAll', (req, res, next) => {
 
                }
 
+               // If group has users
+               if(group.users.length) {
+
+                  for (var i = 0, len = group.users.length; i < len; i++) {
+                     var info = [];
+                     info['profileUsername'] = group.users[i];
+                     info['groupId'] = req.params.id;
+
+                     User.removeGroup(info, (err, user) => {
+                        if(err) throw err;
+                     });
+                  }
+
+               }
+
+               // Delete the Group
+               Group.findByIdAndRemove(req.params.id, (err) => {
+                 if (err) throw err;
+                 req.flash('success_msg', "Destroyed From Existence...");
+                 res.redirect('/groups');
+               });
+
             } else {
 
                // Keep Projects
 
-               if(group.projects) {
+               if(group.projects.length) {
 
                   group.projects.forEach(function(proj, key) {
                      var info = [];
@@ -920,33 +920,33 @@ router.get('/groups/delete/:id/:deleteAll', (req, res, next) => {
 
                      Project.removeGroup(info, (err, project) => {
                         if(err) throw err;
-
-                        // If group has users
-                        if(group.users.length) {
-
-                           for (var i = 0, len = group.users.length; i < len; i++) {
-                              var info = [];
-                              info['profileUsername'] = group.users[i];
-                              info['groupId'] = req.params.id;
-
-                              User.removeGroup(info, (err, user) => {
-                                 if(err) throw err;
-                              });
-                           }
-
-                        }
-
-                        // Delete the Group
-                        Group.findByIdAndRemove(req.params.id, (err) => {
-                          if (err) throw err;
-                          req.flash('success_msg', "Destroyed From Existence...");
-                          res.redirect('/groups');
-                        });
                      });
 
                   });
 
                }
+
+               // If group has users
+               if(group.users.length) {
+
+                  for (var i = 0, len = group.users.length; i < len; i++) {
+                     var info = [];
+                     info['profileUsername'] = group.users[i];
+                     info['groupId'] = req.params.id;
+
+                     User.removeGroup(info, (err, user) => {
+                        if(err) throw err;
+                     });
+                  }
+
+               }
+
+               // Delete the Group
+               Group.findByIdAndRemove(req.params.id, (err) => {
+                 if (err) throw err;
+                 req.flash('success_msg', "Destroyed From Existence...");
+                 res.redirect('/groups');
+               });
 
             }
 
