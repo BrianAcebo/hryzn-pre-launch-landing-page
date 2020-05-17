@@ -491,11 +491,9 @@
       //Zero the idle timer on mouse movement.
       $(this).mousemove(function (e) {
          idleTime = 0;
-         console.log('ok mouse');
       });
       $(this).keypress(function (e) {
          idleTime = 0;
-         console.log('ok press');
       });
 
       function timerIncrement() {
