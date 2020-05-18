@@ -52,21 +52,8 @@ router.post('/register', upload.single('profileimage'), (req, res, next) => {
    var password = req.body.password.replace(/\r\n/g,'').trim();
    var password2 = req.body.password2.replace(/\r\n/g,'').trim();
 
-   if(req.body.firstname === "") {
-      var firstname = "";
-   } else {
-      var firstname = req.body.firstname;
-      firstname = capitalize(firstname);
-      req.checkBody('firstname', 'First Name Is Too Long').isLength({ min: 0, max:50 });
-   }
-
-   if(req.body.lastname === "") {
-      var lastname = "";
-   } else {
-      var lastname = req.body.lastname;
-      lastname = capitalize(lastname);
-      req.checkBody('lastname', 'Last Name Is Too Long').isLength({ min: 0, max:50 });
-   }
+   var firstname = "";
+   var lastname = "";
 
    // Form Validation
    req.checkBody('username', 'Please Enter A Username').notEmpty();
