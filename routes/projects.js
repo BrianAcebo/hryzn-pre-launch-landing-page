@@ -965,7 +965,15 @@ router.get('/details/:id', (req, res, next) => {
          }
       });
    } else {
-      res.redirect('/welcome');
+      Project.findById(req.params.id, (err, project) => {
+         if (err) throw err;
+
+         if (project) {
+            res.redirect('/p/details/' + req.params.id + '/guest');
+         } else {
+            res.redirect('/welcome');
+         }
+      });
    }
 });
 
