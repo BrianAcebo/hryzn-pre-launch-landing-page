@@ -31,7 +31,7 @@
          </div>
 
          <div class="name_container">
-            <p id="firstChar" class="profile__name">{{profile.firstname}} {{profile.lastname}}</p>
+            <p id="firstChar" class="profile__name">{{#if profile.firstname}}{{profile.firstname}} {{profile.lastname}}{{else}}Hryzn was here...{{/if}}</p>
             <h3 class="profile__username">@{{profile.username}}</h3>
          </div>
       </div>

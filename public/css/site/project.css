@@ -792,6 +792,22 @@ section.project {
    background: #fff;
 }
 
+
+#micropostPop .micropost_card p {
+   font-weight: 700;
+   color: #333;
+   font-size: 16px;
+   padding: 25px;
+   line-height: 30px;
+   max-height: none;
+   overflow: hidden;
+   word-wrap: break-word;
+   text-overflow: inherit;
+   display: block;
+   -webkit-line-clamp: inherit;
+   -webkit-box-orient: inherit;
+}
+
 #micropostPop .micropost {
    padding: 25px 25px 0 25px;
 }
