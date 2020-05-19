@@ -121,6 +121,9 @@
    letter-spacing: 1px;
    line-height: 15px;
    z-index: 555555;
+   overflow: hidden;
+   text-overflow: ellipsis;
+   white-space: nowrap
 }
 
 .project_owner:hover {
@@ -686,11 +689,19 @@ section.project {
 }
 
 .micropost_card p {
-   font-weight: bold;
+   font-weight: 700;
    color: #333;
    font-size: 16px;
    padding: 25px;
    line-height: 30px;
+   text-overflow: ellipsis;
+   max-height: 210px;
+   overflow: hidden;
+   word-wrap: break-word;
+   text-overflow: ellipsis;
+   display: -webkit-box;
+   -webkit-line-clamp: 6;
+   -webkit-box-orient: vertical;
 }
 
 @media screen and (max-width: 768px) {
@@ -698,6 +709,13 @@ section.project {
       font-size: 14px;
       line-height: 20px;
       padding: 15px;
+      text-overflow: ellipsis;
+      max-height: 115px;
+      overflow: hidden;
+      word-wrap: break-word;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 5;
    }
 }
 

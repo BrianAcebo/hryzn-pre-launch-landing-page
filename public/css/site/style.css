@@ -14,8 +14,7 @@ body {
    background: #fff;
    word-wrap: break-word;
    text-rendering: optimizeLegibility;
-   -webkit-overflow-scrolling: touch;
-   -webkit-text-size-adjust: none;
+   width: 100vw;
 }
 
 * {

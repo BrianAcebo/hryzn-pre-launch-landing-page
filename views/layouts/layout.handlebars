@@ -495,12 +495,18 @@
       $(this).keypress(function (e) {
          idleTime = 0;
       });
+      $(this).bind('touchstart', function (e) {
+         idleTime = 0;
+      });
+      $(this).bind('touchmove', function (e) {
+         idleTime = 0;
+      });
 
       function timerIncrement() {
       idleTime = idleTime + 1;
-         if (idleTime > 1) { // 2 minutes
+         if (idleTime > 2) { // 3 minutes
             $("#autoLoader").css({"display": "flex"});
-            $("#autoText").text("Autosaving after 2 minutes of inactivity...");
+            $("#autoText").text("Autosaving after 3 minutes of inactivity...");
             setTimeout(function() {
                $('.draft_btn.project_submit').trigger('click');
             }, 3000);
