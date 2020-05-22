@@ -39,14 +39,14 @@ router.get('/welcome', (req, res, next) => {
    } else {
 
       var featured_projects = [
-         '5cda25cc5f66f6001759268a',
          '5cdc5b07294e1e0017d3f87e',
-         '5e88ee436413750017b0304b',
+         '5ec2d44b3140810017388fd9',
+         '5ec7e44081ccba00177f86d0',
+         '5ec16bceb65710001792819c',
+         '5e9379216387290017b85ebb',
+         '5cda25cc5f66f6001759268a',
          '5e7d700888041a0017351dc4',
-         '5e88f3ef6413750017b0304c',
-         '5e8e799102b32d001725d5bb',
-         '5e57414fe509772628eca160',
-         '5e9379216387290017b85ebb'
+         '5e8e799102b32d001725d5bb'
       ];
 
       Project.find({ '_id': { $in: featured_projects } }, (err, projects) => {
