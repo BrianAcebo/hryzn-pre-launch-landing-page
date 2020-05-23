@@ -51,6 +51,37 @@ router.post('/register', upload.single('profileimage'), (req, res, next) => {
    var email = req.body.email.replace(/\r\n/g,'').trim();
    var password = req.body.password.replace(/\r\n/g,'').trim();
    var password2 = req.body.password2.replace(/\r\n/g,'').trim();
+   var promo_code = req.body.promo_code.replace(/\r\n/g,'').trim();
+
+   if (promo_code != '') {
+      if (promo_code === 'deathB4DECAF') {
+         // Gmail Credentials
+         var transporter = nodemailer.createTransport({
+            service: 'Gmail',
+            auth: {
+               user: 'hello@myhryzn.com',
+               pass: '+ar+oo-55'
+            }
+         });
+
+         // Mail Body
+         var mailOptions = {
+            from: '"Hryzn" <hello@myhryzn.com>',
+            to: 'hello@myhryzn.com',
+            subject: 'User Registered With Free Website Promo Code!',
+            text: username + ' created an account and used the promo_code for a free website.'
+         }
+
+         transporter.sendMail(mailOptions, (error, info) => {
+         });
+      } else {
+         var promo_error = [{
+            param: 'promo_error',
+            msg: "Sorry, we couldn't recognize that promotional code. Please try again.",
+            value: ''
+         }]
+      }
+   }
 
    var firstname = "";
    var lastname = "";
@@ -64,12 +95,17 @@ router.post('/register', upload.single('profileimage'), (req, res, next) => {
    req.checkBody('password', 'Password Must Be Greater Than 8 Characters').isLength({ min: 8, max:50 });
    req.checkBody('password2', 'Passwords Do Not Match').equals(req.body.password);
 
-   errors = req.validationErrors();
+   var errors = req.validationErrors();
 
-   if(errors) {
-      console.log(errors);
+   if(errors || promo_error) {
+      if (errors) {
+         var err = errors;
+      } else {
+         var err = promo_error;
+      }
+      console.log(promo_error);
       res.render('users/register', {
-         errors: errors,
+         errors: err,
          firstname: firstname,
          lastname: lastname,
          username: username,
