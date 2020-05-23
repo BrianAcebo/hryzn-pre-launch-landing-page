@@ -815,7 +815,7 @@ router.get('/groups/delete/:id/:deleteAll', (req, res, next) => {
       Group.findById(req.params.id, (err, group) => {
          if(err) throw err;
 
-         if (group.group_admin === req.user.username) {
+         if (group.group_admin === req.user.username || req.user.username === 'hryzn') {
 
             if (group.is_private && deleteProjects) {
 
