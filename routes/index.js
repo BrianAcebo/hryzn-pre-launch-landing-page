@@ -291,7 +291,12 @@ router.get('/groups/:id', (req, res, next) => {
                   if (user === req.user.username) {
                      allowed = true;
                   } else {
-                     allowed = false;
+                     // Hryzn Admin
+                     if (req.user.username === 'hryzn') {
+                        allowed = true;
+                     } else {
+                        allowed = false;
+                     }
                   }
                });
             } else {
@@ -303,7 +308,12 @@ router.get('/groups/:id', (req, res, next) => {
                if (group.group_admin === req.user.username) {
                   var groupAdmin = true;
                } else {
-                  var groupAdmin = false;
+                  // Hryzn Admin
+                  if (req.user.username === 'hryzn') {
+                     var groupAdmin = true;
+                  } else {
+                     var groupAdmin = false;
+                  }
                }
 
                Project.find({ '_id': { $in: group.projects} }, (err, projects) => {
@@ -1319,13 +1329,15 @@ router.get('/profile/:username', (req, res, next) => {
             // User is seeing their own profile
             if(profile.username === req.user.username) {
                var viewing_own_profile = true;
-               if (profile.username === 'hryzn') {
-                  var hryznAdmin = true;
-               } else {
-                  var hryznAdmin = false;
-               }
             } else {
                var viewing_own_profile = false;
+            }
+
+            // Hryzn Admin
+            if (req.user.username === 'hryzn') {
+               var hryznAdmin = true;
+            } else {
+               var hryznAdmin = false;
             }
          } else {
             var viewing_own_profile = false;
