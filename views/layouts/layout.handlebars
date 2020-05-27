@@ -301,6 +301,8 @@
          <div class="modal-content">
 
          <form method="post" class="edit-project-form" action="/p/create-micro" enctype="multipart/form-data">
+            <input type="hidden" name="_c_" value="{{req.token}}" />
+            <input type="hidden" name="_x_" value="$2a$10$BJn0b4OzBarDigcTUl0kejbffkejbfvxSI.JrlLKeSsOi8oKqBAK" />
             {{! Micro Body }}
             <label for="micro_body" class="form__label" style="margin-top: 25px;">Speak Your Mind</label>
             <textarea class="project-description__input" type="text" name="micro_body" value="{{project.micro_body}}"></textarea>

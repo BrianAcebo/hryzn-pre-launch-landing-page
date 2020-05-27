@@ -12,6 +12,8 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const mongo = require('mongodb');
 const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
+const helmet = require('helmet');
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
@@ -21,6 +23,10 @@ const blogRouter = require('./routes/blog');
 
 const app = express();
 
+app.use(helmet());
+
+const hbs = exphbs.create({});
+
 // View Engine
 app.set('views', path.join(__dirname, 'views'));
 app.engine('handlebars', exphbs({defaultLayout: 'layout'}));
@@ -28,26 +34,66 @@ app.set('view engine', 'handlebars');
 
 app.use('/scripts', express.static(__dirname + '/node_modules/'));
 
-var hbs = exphbs.create({});
-
-hbs.handlebars.registerHelper('ifEquals', function(arg1, arg2, options) {
-    return (arg1 == arg2) ? options.fn(this) : options.inverse(this);
-});
-
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+hbs.handlebars.registerHelper('ifEquals', function(arg1, arg2, options) {
+    return (arg1 == arg2) ? options.fn(this) : options.inverse(this);
+});
+
+var cookieDomain;
+var cookieHttp;
+var cookieSecure;
+
+// Redirect http to https
+app.use(function (req, res, next) {
+
+   var url_host = req.get('Host');
+
+   if (url_host === 'localhost:5000' || url_host === '127.0.0.1:5000') {
+
+      // Set to development
+      var env = process.env.NODE_ENV || 'development';
+      var cookieDomain = 'localhost:5000';
+      var cookieHttp = false;
+      var cookieSecure = false;
+      console.log('In development mode');
+
+   } else {
+
+      // Set to production
+      var env = process.env.NODE_ENV || 'production';
+      var cookieDomain = 'myhryzn.com';
+      var cookieHttp = true;
+      var cookieSecure = true;
+
+      if (req.headers['x-forwarded-proto'] !== 'https') {
+         return res.redirect(['https://', req.get('Host'), req.url].join(''));
+      }
+
+   }
+
+   next();
+});
+
+
 // Express Session
+app.set('trust proxy', 1);
 app.use(session({
-   secret: 'sessionSecretKey',
+   secret: '$2a$10$BJn0b4OzBarDigcTVxUl0urmExfHuhuVxSI.JrlLKeSsOi8oKqBAK',
    saveUninitialized: true,
    resave: true,
    rolling: true,
    cookie: {
-      maxAge: 365 * 24 * 60 * 60 * 1000 // One Year
+      maxAge: 365 * 24 * 60 * 60 * 1000, // One Year
+      secure: cookieSecure,
+      httpOnly: cookieHttp,
+      domain: cookieDomain,
+      expires: 365 * 24 * 60 * 60 * 1000,
+      sameSite: 'none'
    }
 }));
 
@@ -96,31 +142,11 @@ app.use(function (req, res, next) {
    next();
 });
 
-// Redirect http to https
-app.use(function (req, res, next) {
-
-   var url_host = req.get('Host');
-
-   if (url_host === 'localhost:5000' || url_host === '127.0.0.1:5000') {
-
-      // Set to development
-      var env = process.env.NODE_ENV || 'development';
-      console.log('In development mode');
-
-   } else {
-
-      // Set to production
-      var env = process.env.NODE_ENV || 'production';
-
-      if (req.headers['x-forwarded-proto'] !== 'https') {
-         return res.redirect(['https://', req.get('Host'), req.url].join(''));
-      }
-
-   }
-
+app.use((req, res, next) => {
+   res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+   res.header('Access-Control-Allow-Headers', 'Authorization');
    next();
 });
-
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);

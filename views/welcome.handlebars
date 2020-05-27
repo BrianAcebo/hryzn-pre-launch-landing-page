@@ -123,29 +123,22 @@
       {{#if projects}}
       <div class="masonryContainer">
          {{#each projects}}
-            {{#if is_private}}
+            {{#if this.is_private}}
             {{! Check if the project is a private project, we do not want to show private projects }}
             {{else}}
-            <!-- <div class="masonryItem">
-               <a href="/p/details/{{id}}/guest" class="project_link">
-                  <div class="project_card">
-                     <img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{project_image}}" class="img-responsive" alt="{{project_title}}" />
-                  </div>
-               </a>
-            </div> -->
 
-            <div class="masonryItem" title="{{project_title}}">
+            <div class="masonryItem" title="{{this.project_title}}">
                <div class="project_card">
-                  <a href="/p/details/{{id}}/guest" class="project_link">
-                     <img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{project_image}}" class="img-responsive" alt="{{project_title}}" />
+                  <a href="/p/details/{{this._id}}/guest" class="project_link">
+                     <img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{this.project_image}}" class="img-responsive" alt="{{this.project_title}}" />
                   </a>
                   <div class="project_card_bottom">
                      <div class="project_bottom_wrapper">
                         <div class="bg_overlay"></div>
                         <div class="project_bottom_details">
-                           <a href="/profile/{{project_owner}}"><p class="project_owner">@{{project_owner}}</p></a>
-                           <a href="/p/details/{{id}}/guest" class="project_link">
-                              <p class="project_card_title">{{project_title}}</p>
+                           <a href="/profile/{{this.project_owner}}"><p class="project_owner">@{{this.project_owner}}</p></a>
+                           <a href="/p/details/{{this._id}}/guest" class="project_link">
+                              <p class="project_card_title">{{this.project_title}}</p>
                            </a>
                         </div>
                      </div>

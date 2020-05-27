@@ -1996,293 +1996,322 @@ router.post('/upload', upload.single('editor_image'), (req, res, next) => {
 });
 
 // POST Create Micropost
-router.post('/create-micro', upload.single('micro_image'), (req, res, next) => {
+router.post('/create-micro', upload.single('micro_image'), verifyToken, (req, res, next) => {
 
    if(req.isAuthenticated()) {
 
-      var admin = req.body.admin; // Owner of project
-      var id = req.body.id;
-      var user = req.body.user;
-      var req_micro_body = req.body.micro_body.replace(/\r\n/g,'');
-      var project_categories = [];
-      var project_url = req.body.project_url;
-      var posted_to_group;
-      if (req.body.post_to != '') {
-         if (req.body.post_to != 'Followers') {
-            Group.findOne({ '_id': { $in: req.body.post_to } }, (err, group) => {
-               if (group) {
-                  posted_to_group = true;
+      jwt.verify(req.token, 'SuperSecretKey', (err, authData) => {
+         if (err) {
+            res.sendStatus(403);
+         } else {
+
+            var admin = req.body.admin; // Owner of project
+            var id = req.body.id;
+            var user = req.body.user;
+            var req_micro_body = req.body.micro_body.replace(/\r\n/g,'');
+            var project_categories = [];
+            var project_url = req.body.project_url;
+            var posted_to_group;
+            if (req.body.post_to != '') {
+               if (req.body.post_to != 'Followers') {
+                  Group.findOne({ '_id': { $in: req.body.post_to } }, (err, group) => {
+                     if (group) {
+                        posted_to_group = true;
+                     } else {
+                        posted_to_group = false;
+                     }
+                  });
                } else {
                   posted_to_group = false;
                }
-            });
-         } else {
-            posted_to_group = false;
-         }
-      } else {
-         posted_to_group = false;
-      }
-
-      // See if project_url has https://
-      var has_https = project_url.search("https://");
-      if(has_https > -1) {
-
-         var url_without_https = project_url.split("https://")[1];
-         project_url = url_without_https;
-
-      }
-
-      // Check for mentions or hashtags
-      var micro_array = req_micro_body.split(" ");
-      var micro_body  = '';
-      micro_array.forEach(function(word, key) {
-         if (word[0] == '@') {
-
-            // Slice the '@' and name from mention
-            if (word.indexOf("<") > -1) {
-               if (word.indexOf("&nbsp") > -1) {
-                  var pos = word.indexOf("&nbsp");
-               }  else {
-                  var pos = word.indexOf("<");
-               }
             } else {
-               if (word.indexOf("&nbsp") > -1) {
-                  var pos = word.indexOf("&nbsp");
-               }  else {
-                  var pos = word.length;
-               }
+               posted_to_group = false;
             }
-            var slice = word.slice(1, pos);
-            slice = slice.replace(/<\/?[^>]+(>|$)/g, "");
-            var clean_word = word.slice(0, pos);
-            micro_body += '<a class="mention_tag" href="/profile/' + slice + '">' + clean_word + '</a> ' + word.slice(pos, word.length) + ' ';
 
-            // Send notification to the user mentioned
-            User.findOne({ 'username': { $in: slice} }, (err, reciever) => {
-               if (err) throw err;
+            // See if project_url has https://
+            var has_https = project_url.search("https://");
+            if(has_https > -1) {
 
-               var newNotification = new Notification({
-                  sender: req.user._id,
-                  reciever: reciever._id,
-                  type: '@' + req.user.username + ' mentioned you in their new post.',
-                  link: '/profile/' + req.user.username
-               });
+               var url_without_https = project_url.split("https://")[1];
+               project_url = url_without_https;
 
-               // Create notification in database
-               Notification.saveNotification(newNotification, (err, notification) => {
-                  if(err) throw err;
+            }
 
-                  // Add Notification for User
-                  User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+            // Check for mentions or hashtags
+            var micro_array = req_micro_body.split(" ");
+            var micro_body  = '';
+            micro_array.forEach(function(word, key) {
+               if (word[0] == '@') {
+
+                  // Slice the '@' and name from mention
+                  if (word.indexOf("<") > -1) {
+                     if (word.indexOf("&nbsp") > -1) {
+                        var pos = word.indexOf("&nbsp");
+                     }  else {
+                        var pos = word.indexOf("<");
+                     }
+                  } else {
+                     if (word.indexOf("&nbsp") > -1) {
+                        var pos = word.indexOf("&nbsp");
+                     }  else {
+                        var pos = word.length;
+                     }
+                  }
+                  var slice = word.slice(1, pos);
+                  slice = slice.replace(/<\/?[^>]+(>|$)/g, "");
+                  var clean_word = word.slice(0, pos);
+                  micro_body += '<a class="mention_tag" href="/profile/' + slice + '">' + clean_word + '</a> ' + word.slice(pos, word.length) + ' ';
+
+                  // Send notification to the user mentioned
+                  User.findOne({ 'username': { $in: slice} }, (err, reciever) => {
                      if (err) throw err;
-                  });
 
-               });
-            });
-
-         } else if (word[0] == '#') {
-
-            // Slice the '#' and word from hashtag
-            if (word.indexOf("<") > -1) {
-               var pos = word.indexOf("<");
-            } else {
-               var pos = word.length;
-            }
-            var slice = word.slice(1, pos);
-            slice = slice.replace(/<\/?[^>]+(>|$)/g, "");
-            var clean_word = word.slice(0, pos);
-            if (project_categories.indexOf(slice) === -1) {
-               project_categories.push(slice);
-            }
-            micro_body += '<a class="mention_tag" href="/explore/' + slice + '">' + clean_word + '</a> ' + word.slice(pos, word.length) + ' ';
-
-         } else {
-            micro_body += word + ' ';
-         }
-      });
-
-      if(req.file) {
-
-         // If user uploaded an image for project
-         var ext = path.extname(req.file.originalname);
-
-         // Check if file is an image
-         if(ext !== '.png' && ext !== '.PNG' && ext !== '.jpg' && ext !== '.JPG' && ext !== '.gif' && ext !== '.GIF' && ext !== '.jpeg' && ext !== '.JPEG') {
-
-            User.findById(id, (err, user) => {
-               if(err) throw err;
-
-               User.find({ 'username': { $in: user.following} }, (err, profiles) => {
-                  if (err) throw err;
-                  res.render('p/create-project', {
-                     error_msg: 'Micropost File Must End With .jpg .jpeg .png .gif',
-                     page_title: 'Create Project',
-                     notes_is_empty_string: true,
-                     editProject: true,
-                     project_error: true,
-                     mention: profiles,
-                     user: user
-                  });
-               });
-            });
-
-         } else {
-            // No errors have been made
-            // var fileExt = req.file.originalname.split('.').pop();
-            var micro_image = dateNow + req.file.originalname;
-
-            var newProject = new Project({
-               micro_image: micro_image,
-               categories: project_categories,
-               project_owner: req.user.username,
-               micro_body: micro_body,
-               project_url: project_url,
-               is_micro_post: true
-            });
-
-            // Create project in database
-            Project.saveProject(newProject, (err, project) => {
-               if(err) throw err;
-
-               // Add project to User document
-               info = [];
-               info['profileUsername'] = req.user.username;
-               info['projectId'] = project._id.toString();
-
-               User.createToProfile(info, (err, user) => {
-                  if(err) throw err;
-               });
-
-               if (posted_to_group) {
-                  Group.findOne({ '_id': { $in: req.body.post_to } }, (err, group) => {
-
-                     info['groupId'] = group._id;
-                     info['groupName'] = group.group_name;
-                     info['groupIsPrivate'] = group.is_private;
-
-                     Group.addProject(info, (err, group) => {
-                        if(err) throw err;
+                     var newNotification = new Notification({
+                        sender: req.user._id,
+                        reciever: reciever._id,
+                        type: '@' + req.user.username + ' mentioned you in their new post.',
+                        link: '/profile/' + req.user.username
                      });
 
-                     Project.addGroup(info, (err, project) => {
+                     // Create notification in database
+                     Notification.saveNotification(newNotification, (err, notification) => {
                         if(err) throw err;
-                     });
 
-                     // Send notification to the user mentioned
-                     group.users.forEach(function(user, key) {
-                        User.findOne({ 'username': { $in: user} }, (err, reciever) => {
+                        // Add Notification for User
+                        User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
                            if (err) throw err;
+                        });
 
-                           var newNotification = new Notification({
-                              sender: req.user._id,
-                              reciever: reciever._id,
-                              type: '@' + req.user.username + ' added a post in the group ' + group.group_name,
-                              link: '/groups/' + group._id
-                           });
+                     });
+                  });
 
-                           // Create notification in database
-                           Notification.saveNotification(newNotification, (err, notification) => {
-                              if(err) throw err;
+               } else if (word[0] == '#') {
 
-                              // Add Notification for User
-                              User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
-                                 if (err) throw err;
-                              });
-                           });
+                  // Slice the '#' and word from hashtag
+                  if (word.indexOf("<") > -1) {
+                     var pos = word.indexOf("<");
+                  } else {
+                     var pos = word.length;
+                  }
+                  var slice = word.slice(1, pos);
+                  slice = slice.replace(/<\/?[^>]+(>|$)/g, "");
+                  var clean_word = word.slice(0, pos);
+                  if (project_categories.indexOf(slice) === -1) {
+                     project_categories.push(slice);
+                  }
+                  micro_body += '<a class="mention_tag" href="/explore/' + slice + '">' + clean_word + '</a> ' + word.slice(pos, word.length) + ' ';
+
+               } else {
+                  micro_body += word + ' ';
+               }
+            });
+
+            if(req.file) {
+
+               // If user uploaded an image for project
+               var ext = path.extname(req.file.originalname);
+
+               // Check if file is an image
+               if(ext !== '.png' && ext !== '.PNG' && ext !== '.jpg' && ext !== '.JPG' && ext !== '.gif' && ext !== '.GIF' && ext !== '.jpeg' && ext !== '.JPEG') {
+
+                  User.findById(id, (err, user) => {
+                     if(err) throw err;
+
+                     User.find({ 'username': { $in: user.following} }, (err, profiles) => {
+                        if (err) throw err;
+                        res.render('p/create-project', {
+                           error_msg: 'Micropost File Must End With .jpg .jpeg .png .gif',
+                           page_title: 'Create Project',
+                           notes_is_empty_string: true,
+                           editProject: true,
+                           project_error: true,
+                           mention: profiles,
+                           user: user
                         });
                      });
-
-                     req.flash('success_msg', "Micropost was created.");
-                     res.redirect('/groups/' + group._id);
-
                   });
 
                } else {
-                  req.flash('success_msg', "Micropost was created.");
-                  res.redirect('/p/details/' + project._id);
-               }
-            });
+                  // No errors have been made
+                  // var fileExt = req.file.originalname.split('.').pop();
+                  var micro_image = dateNow + req.file.originalname;
 
-         }
-      } else {
-
-         var newProject = new Project({
-            categories: project_categories,
-            project_owner: req.user.username,
-            micro_body: micro_body,
-            project_url: project_url,
-            is_micro_post: true
-         });
-
-         // Create project in database
-         Project.saveProject(newProject, (err, project) => {
-            if(err) throw err;
-
-            // Add project to User document
-            info = [];
-            info['profileUsername'] = req.user.username;
-            info['projectId'] = project._id.toString();
-
-            User.createToProfile(info, (err, user) => {
-               if(err) throw err;
-            });
-
-            if (posted_to_group) {
-               Group.findOne({ '_id': { $in: req.body.post_to } }, (err, group) => {
-
-                  info['groupId'] = group._id;
-                  info['groupName'] = group.group_name;
-                  info['groupIsPrivate'] = group.is_private;
-
-                  console.log(info['projectId']);
-
-                  Group.addProject(info, (err, group) => {
-                     if(err) throw err;
+                  var newProject = new Project({
+                     micro_image: micro_image,
+                     categories: project_categories,
+                     project_owner: req.user.username,
+                     micro_body: micro_body,
+                     project_url: project_url,
+                     is_micro_post: true
                   });
 
-                  Project.addGroup(info, (err, project) => {
+                  // Create project in database
+                  Project.saveProject(newProject, (err, project) => {
                      if(err) throw err;
-                  });
 
-                  // Send notification to the user mentioned
-                  group.users.forEach(function(user, key) {
-                     User.findOne({ 'username': { $in: user} }, (err, reciever) => {
-                        if (err) throw err;
+                     // Add project to User document
+                     info = [];
+                     info['profileUsername'] = req.user.username;
+                     info['projectId'] = project._id.toString();
 
-                        var newNotification = new Notification({
-                           sender: req.user._id,
-                           reciever: reciever._id,
-                           type: '@' + req.user.username + ' added a post in the group ' + group.group_name,
-                           link: '/groups/' + group._id
-                        });
-
-                        // Create notification in database
-                        Notification.saveNotification(newNotification, (err, notification) => {
-                           if(err) throw err;
-
-                           // Add Notification for User
-                           User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
-                              if (err) throw err;
-                           });
-                        });
+                     User.createToProfile(info, (err, user) => {
+                        if(err) throw err;
                      });
+
+                     if (posted_to_group) {
+                        Group.findOne({ '_id': { $in: req.body.post_to } }, (err, group) => {
+
+                           info['groupId'] = group._id;
+                           info['groupName'] = group.group_name;
+                           info['groupIsPrivate'] = group.is_private;
+
+                           Group.addProject(info, (err, group) => {
+                              if(err) throw err;
+                           });
+
+                           Project.addGroup(info, (err, project) => {
+                              if(err) throw err;
+                           });
+
+                           // Send notification to the user mentioned
+                           group.users.forEach(function(user, key) {
+                              User.findOne({ 'username': { $in: user} }, (err, reciever) => {
+                                 if (err) throw err;
+
+                                 var newNotification = new Notification({
+                                    sender: req.user._id,
+                                    reciever: reciever._id,
+                                    type: '@' + req.user.username + ' added a post in the group ' + group.group_name,
+                                    link: '/groups/' + group._id
+                                 });
+
+                                 // Create notification in database
+                                 Notification.saveNotification(newNotification, (err, notification) => {
+                                    if(err) throw err;
+
+                                    // Add Notification for User
+                                    User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+                                       if (err) throw err;
+                                    });
+                                 });
+                              });
+                           });
+
+                           req.flash('success_msg', "Micropost was created.");
+                           res.redirect('/groups/' + group._id);
+
+                        });
+
+                     } else {
+                        req.flash('success_msg', "Micropost was created.");
+                        res.redirect('/p/details/' + project._id);
+                     }
                   });
 
-                  req.flash('success_msg', "Micropost was created.");
-                  res.redirect('/groups/' + group._id);
+               }
+            } else {
 
+               var newProject = new Project({
+                  categories: project_categories,
+                  project_owner: req.user.username,
+                  micro_body: micro_body,
+                  project_url: project_url,
+                  is_micro_post: true
                });
 
-            } else {
-               req.flash('success_msg', "Micropost was created.");
-               res.redirect('/p/details/' + project._id);
+               // Create project in database
+               Project.saveProject(newProject, (err, project) => {
+                  if(err) throw err;
+
+                  // Add project to User document
+                  info = [];
+                  info['profileUsername'] = req.user.username;
+                  info['projectId'] = project._id.toString();
+
+                  User.createToProfile(info, (err, user) => {
+                     if(err) throw err;
+                  });
+
+                  if (posted_to_group) {
+                     Group.findOne({ '_id': { $in: req.body.post_to } }, (err, group) => {
+
+                        info['groupId'] = group._id;
+                        info['groupName'] = group.group_name;
+                        info['groupIsPrivate'] = group.is_private;
+
+                        console.log(info['projectId']);
+
+                        Group.addProject(info, (err, group) => {
+                           if(err) throw err;
+                        });
+
+                        Project.addGroup(info, (err, project) => {
+                           if(err) throw err;
+                        });
+
+                        // Send notification to the user mentioned
+                        group.users.forEach(function(user, key) {
+                           User.findOne({ 'username': { $in: user} }, (err, reciever) => {
+                              if (err) throw err;
+
+                              var newNotification = new Notification({
+                                 sender: req.user._id,
+                                 reciever: reciever._id,
+                                 type: '@' + req.user.username + ' added a post in the group ' + group.group_name,
+                                 link: '/groups/' + group._id
+                              });
+
+                              // Create notification in database
+                              Notification.saveNotification(newNotification, (err, notification) => {
+                                 if(err) throw err;
+
+                                 // Add Notification for User
+                                 User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+                                    if (err) throw err;
+                                 });
+                              });
+                           });
+                        });
+
+                        req.flash('success_msg', "Micropost was created.");
+                        res.redirect('/groups/' + group._id);
+
+                     });
+
+                  } else {
+                     req.flash('success_msg', "Micropost was created.");
+                     res.redirect('/p/details/' + project._id);
+                  }
+               });
             }
-         });
-      }
+
+         }
+      });
 
    } else {
       res.redirect('/welcome');
    }
 });
+
+// Verify JS Web Token
+function verifyToken(req, res, next) {
+
+   // var bearerHeader = req.headers.authorization;
+   //
+   // console.log(bearerHeader);
+
+   // if (typeof bearerHeader !== 'undefined') {
+   //
+   //    var bearerToken = bearerHeader.split(' ')[1];
+   //    req.token = bearerToken;
+   //
+   //    next();
+   //
+   // } else {
+   //    res.sendStatus(403);
+   // }
+
+   next()
+}
 
 module.exports = router;

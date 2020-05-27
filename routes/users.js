@@ -9,6 +9,7 @@ const keys = require('../config/keys');
 const aws = require('aws-sdk');
 const multerS3 = require('multer-s3');
 const dateNow = Date.now().toString();
+const jwt = require('jsonwebtoken');
 
 var thanks_email = path.join(__dirname, '../public', 'email/register.html');
 
@@ -198,6 +199,37 @@ router.post('/register', upload.single('profileimage'), (req, res, next) => {
                         if(err) throw err;
                      });
 
+
+                     //////////
+
+                     // Thank you email //
+                     // Gmail Credentials
+                     var transporter = nodemailer.createTransport({
+                        service: 'Gmail',
+                        auth: {
+                           user: 'hello@myhryzn.com',
+                           pass: '+ar+oo-55'
+                        }
+                     });
+
+                     var ip = req.header('x-forwarded-for') || req.connection.remoteAddress;
+
+                     // Mail Body
+                     var mailOptions = {
+                        from: '"Hryzn" <hello@myhryzn.com>',
+                        to: '"Brian" <brianacebo@gmail.com>',
+                        subject: 'New User',
+                        text: email + ' created a new account with IP = ' + ip
+                     }
+
+                     transporter.sendMail(mailOptions, (error, info) => {
+                        if(!error) {
+                        }
+                     });
+
+                     ///////////
+
+
                      // Thank you email //
                      // Gmail Credentials
                      var transporter = nodemailer.createTransport({
@@ -267,14 +299,28 @@ router.get('/login', (req, res, next) => {
    });
 });
 
-passport.serializeUser( (user, done) => { done(null, user._id); });
+passport.serializeUser( (user, done) => {
+   done(null, user._id);
+});
 
 passport.deserializeUser( (id, done) => {
-   User.getUserById(id, (err, user) => { done(err, user); });
+   User.getUserById(id, (err, user) => {
+      done(err, user);
+   });
 });
 
 // POST Login
 router.post('/login', passport.authenticate('local-login', { failureRedirect:'/users/login', failureFlash: true }), (req, res, next) => {
+   // Logged In successfully
+   // jwt.sign({user: req.user}, 'SuperSecretKey', { expiresIn: "1h" }, (err, token) => {
+   //    //res.header('Authorization', 'Bearer '+ token);
+   //    console.log(res.header('Authorization', 'Bearer '+ token));
+   //    res.header('Authorization', 'Bearer '+ token)
+   //    res.send();
+   //    console.log(req.headers['Authorization']);
+   //    //res.redirect('/');
+   // });
+
    res.redirect('/');
 });
 
