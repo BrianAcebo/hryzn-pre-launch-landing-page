@@ -159,7 +159,7 @@ router.post('/register', upload.single('profileimage'), (req, res, next) => {
                         // Mail Body
                         var mailOptions = {
                            from: '"Hryzn" <hello@myhryzn.com>',
-                           to: 'brianacebo@gmail.com',//email,
+                           to: email,
                            subject: 'Verify Your Account',
                            html: '<p>Hi there, your verification code: ' + hex + '</p><br /><p>If this was not you, please <a href="https://www.myhryzn.com/welcome#contact">contact us</a></p>',
                         }
@@ -201,7 +201,7 @@ router.post('/register', upload.single('profileimage'), (req, res, next) => {
                      // Mail Body
                      var mailOptions = {
                         from: '"Hryzn" <hello@myhryzn.com>',
-                        to: 'brianacebo@gmail.com',//email,
+                        to: email,
                         subject: 'Verify Your Account',
                         html: '<p>Hi there, your verification code: ' + hex + '</p><br /><p>If this was not you, please <a href="https://www.myhryzn.com/welcome#contact">contact us</a></p>',
                      }
