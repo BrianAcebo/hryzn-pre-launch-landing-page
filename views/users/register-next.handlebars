@@ -1,0 +1,32 @@
+<div class="landing-main__container">
+   {{#if error_msg}}
+   <div class="error__msg-2">
+      <p>{{error_msg}}</p>
+      <p class="error__exit">&times;</p>
+   </div>
+   {{/if}}
+
+   <div class="form-container-2 auth_form">
+      <h3 class="landing-title-faded">Verify Your Email</h3>
+      <form method="post" action="/users/register-next">
+         <input class="form__input" type="hidden" name="username" value="{{username}}" required autocapitalize="none" />
+         <input class="form__input" type="hidden" name="email" value="{{email}}" required autocapitalize="none" />
+         <input class="form__input" type="hidden" name="password" value="{{password}}" required autocapitalize="none" />
+         <input class="form__input" type="hidden" name="profileimage" value="{{profileimage}}" />
+         <input class="form__input" type="hidden" name="verify_code" value="{{verify_code}}" required />
+         <input class="form__input" type="text" placeholder="Please enter the verification code that we emailed you to finish signing up" name="user_code" value="{{user_code}}" required />
+         <button class="form__sign-up-button login_page_btn" name="submit" type="submit">Sign Up</button>
+      </form>
+
+      <!-- <div class="form__href-container">
+         <form method="post" action="/users/register-next/text">
+            <input class="form__input" type="hidden" value="{{username}}" required autocapitalize="none" />
+            <input class="form__input" type="hidden" name="email" value="{{email}}" required autocapitalize="none" />
+            <input class="form__input" type="hidden" name="password" value="{{password}}" required autocapitalize="none" />
+            <input class="form__input" type="hidden" name="profileimage" value="{{profileimage}}" />
+            <input class="form__input" type="hidden" name="verify_code" value="{{verify_code}}" required />
+            <input class ="form__input" style="font-size: 12px; margin-top: 15px; display: block; cursor:pointer; border-bottom: none;" name="submit" type="submit" value="I'd rather recieve the verification code through text."/>
+         </form>
+      </div> -->
+   </div>
+</div>

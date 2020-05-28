@@ -43,17 +43,20 @@
 
 <!-- Hidden Delete Modal -->
 <div class="popModal modalBackground">
-  <div class="modal-content">
-    <div class="modal-header">
-      <p>Are You Sure?</p>
-    </div>
-    <div class="modal-body">
-      <p>Deleting your account is permanent and cannot be undone.</p>
-      <p><small>All of your projects and information will be deleted.</small></p>
-    </div>
-    <div class="modal-footer">
-      <a href="/delete/{{user.id}}" class="btn__secondary">Yes I'm Sure</a>
-      <span class="closeModal btn__primary">Cancel</span>
-    </div>
-  </div>
+   <div class="modal-content">
+      <form method="post" action="/delete/{{user.id}}" >
+         <div class="modal-header">
+           <p>Are You Sure?</p>
+         </div>
+         <div class="modal-body">
+           <p>Deleting your account is permanent and cannot be undone.</p>
+           <p><small>All of your projects and information will be deleted.</small></p>
+           <input class="form__input" type="text" placeholder="Please enter your username" name="check_username" value="{{check_username}}" required />
+         </div>
+         <div class="modal-footer">
+           <input type="submit" class="btn__secondary" value="Yes I'm Sure" />
+           <span class="closeModal btn__primary">Cancel</span>
+         </div>
+      </form>
+   </div>
 </div>

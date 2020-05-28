@@ -172,7 +172,7 @@ router.post('/create-group', upload.single('group_image'), (req, res, next) => {
       }
 
       if(is_private) {
-         var hex = 'G'+(Math.random()*0xFFFFFF<<0).toString(16);
+         var hex = 'H'+(Math.random()*0xFFFFFF<<0).toString(16);
          var dateNow = Date.now().toString();
          dateNow = dateNow.slice(0,3);
          var group_code = hex + dateNow;
@@ -1887,94 +1887,73 @@ router.post('/settings', upload.array('images[]', 2), (req, res, next) => {
 });
 
 // Delete Profile
-router.get('/delete/:id', (req, res, next) => {
-   //if(req.isAuthenticated()) {
+router.post('/delete/:id', (req, res, next) => {
+   if(req.isAuthenticated()) {
 
-      fuckers = [
-         '5ecd8b1a3dabad0017ca3521',
-         '5ecd874e42619000170b343d',
-         '5ecd874d42619000170b343c',
-         '5ecd82266f430d0017979bd8',
-         '5ecd7e703cdca400177df4a9',
-         '5ecd7c47314c4700170d6b1f',
-         '5ecd7c40314c4700170d6b1e',
-         '5ecd7b22d3bfb60017356548',
-         '5ecd6f997f5e260017d8780d',
-         '5ecd6ee3525517001790dfbb',
-         '5ecd6ee2525517001790dfba',
-         '5ecd60ec78a0900017131b54',
-         '5ecd5d12536d3700171ca914',
-         '5ecd58489b32bb001765ec71',
-         '5ecd582120d39500174ef71b',
-         '5ecd45245aad510017c9f449'
-      ];
+      if (req.body.check_username === req.user.username) {
 
-      fuckers.forEach(function(fucker, key) {
-
-
-         // User.findById(req.params.id, (err, user) => {
-         User.findById(fucker, (err, user) => {
+         User.findById(req.params.id, (err, user) => {
             if(err) throw err;
 
-            //if (req.user.username === user.username || req.user.username === 'hryzn') {
-               // if(user.projects) {
-               //
-               //    var info = [];
-               //
-               //    for (var i = 0, len = user.projects.length; i < len; i++) {
-               //       info['projectId'] = user.projects[i]._id;
-               //
-               //       // Find project to delete
-               //       Project.findById(info['projectId'], (err, project) => {
-               //          if(err) throw err;
-               //
-               //          // User would no longer have project saved
-               //          if(project.followers.length > 0) {
-               //             for (var i = 0, len = project.followers.length; i < len; i++) {
-               //                info['profileUsername'] = project.followers[i];
-               //
-               //                User.unsaveToProfile(info, (err, user) => {
-               //                   if(err) throw err;
-               //                });
-               //             }
-               //          }
-               //
-               //          // User will no longer be an admin
-               //          if(project.admins.length > 0) {
-               //             for (var i = 0, len = project.admins.length; i < len; i++) {
-               //                info['profileUsername'] = project.admins[i];
-               //
-               //                User.deleteFromProfile(info, (err, user) => {
-               //                   if(err) throw err;
-               //                });
-               //             }
-               //          }
-               //
-               //          // Delete project image
-               //          var s3_instance = new aws.S3();
-               //          var s3_params = {
-               //             Bucket: 'hryzn-app-static-assets',
-               //             Key: project.project_image
-               //          };
-               //          s3_instance.deleteObject(s3_params, (err, data) => {
-               //             if(data) {
-               //                console.log("File deleted");
-               //             }
-               //             else {
-               //                console.log("No delete : " + err);
-               //             }
-               //          });
-               //
-               //          // Delete the project if owner
-               //          if(project.project_owner === req.user.username) {
-               //             Project.findByIdAndRemove(info['projectId'], (err) => {
-               //               if (err) throw err;
-               //             });
-               //          }
-               //
-               //       });
-               //    }
-               // }
+            if (req.user.username === user.username || req.user.username === 'hryzn') {
+               if(user.projects) {
+
+                  var info = [];
+
+                  for (var i = 0, len = user.projects.length; i < len; i++) {
+                     info['projectId'] = user.projects[i]._id;
+
+                     // Find project to delete
+                     Project.findById(info['projectId'], (err, project) => {
+                        if(err) throw err;
+
+                        // User would no longer have project saved
+                        if(project.followers.length > 0) {
+                           for (var i = 0, len = project.followers.length; i < len; i++) {
+                              info['profileUsername'] = project.followers[i];
+
+                              User.unsaveToProfile(info, (err, user) => {
+                                 if(err) throw err;
+                              });
+                           }
+                        }
+
+                        // User will no longer be an admin
+                        if(project.admins.length > 0) {
+                           for (var i = 0, len = project.admins.length; i < len; i++) {
+                              info['profileUsername'] = project.admins[i];
+
+                              User.deleteFromProfile(info, (err, user) => {
+                                 if(err) throw err;
+                              });
+                           }
+                        }
+
+                        // Delete project image
+                        var s3_instance = new aws.S3();
+                        var s3_params = {
+                           Bucket: 'hryzn-app-static-assets',
+                           Key: project.project_image
+                        };
+                        s3_instance.deleteObject(s3_params, (err, data) => {
+                           if(data) {
+                              console.log("File deleted");
+                           }
+                           else {
+                              console.log("AWS Project Image Not Deleted:" + err);
+                           }
+                        });
+
+                        // Delete the project if owner
+                        if(project.project_owner === req.user.username) {
+                           Project.findByIdAndRemove(info['projectId'], (err) => {
+                             if (err) throw err;
+                           });
+                        }
+
+                     });
+                  }
+               }
 
                // Delete profile image
                var s3_instance = new aws.S3();
@@ -1987,26 +1966,25 @@ router.get('/delete/:id', (req, res, next) => {
                      console.log("File deleted");
                   }
                   else {
-                     console.log("No delete : " + err);
+                     console.log("AWS Profile Image Not Deleted: " + err);
                   }
                });
 
-               User.findByIdAndRemove(fucker, (err) => {
+               User.findByIdAndRemove(user._id, (err) => {
                  if (err) throw err;
-                 // res.location('/welcome');
-                 // res.redirect('/welcome');
                  res.redirect('/');
                });
-            // } else {
-            //    res.redirect('/');
-            // }
+            } else {
+               res.redirect('/');
+            }
 
          });
 
-      });
-   // } else {
-   //    res.redirect('/welcome');
-   // }
+      }
+
+   } else {
+      res.redirect('/welcome');
+   }
 });
 
 // Get Explore
