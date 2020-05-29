@@ -38,7 +38,8 @@
     "passport-jwt": "^4.0.0",
     "passport-local": "*",
     "socket.io": "^2.3.0",
-    "trumbowyg": "^2.15.2"
+    "trumbowyg": "^2.15.2",
+    "twilio": "^3.44.0"
   },
   "devDependencies": {
     "del": "*",

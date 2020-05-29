@@ -115,7 +115,7 @@ button {
 
 .form-container-2 .form__input {
    width: 100%;
-   padding: 15px 0;
+   padding: 25px 0;
    margin: 18px 10px 18px 0;
    display: inline-block;
    border: none;
@@ -125,6 +125,16 @@ button {
    background: transparent;
    font-size: 12px;
    letter-spacing: 1px;
+}
+
+.form-container-2  label[for=profileimage] {
+   margin: 25px 0 0 0;
+   display: block;
+}
+
+.form-container-2 input[type="file"] {
+   padding: 25px;
+   border: 1px solid #ccc;
 }
 
 .auth_form .form__input {

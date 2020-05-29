@@ -7,26 +7,71 @@
    {{/if}}
 
    <div class="form-container-2 auth_form">
-      <h3 class="landing-title-faded">Verify Your Email</h3>
-      <form method="post" action="/users/register-next">
-         <input class="form__input" type="hidden" name="username" value="{{username}}" required autocapitalize="none" />
-         <input class="form__input" type="hidden" name="email" value="{{email}}" required autocapitalize="none" />
-         <input class="form__input" type="hidden" name="password" value="{{password}}" required autocapitalize="none" />
-         <input class="form__input" type="hidden" name="profileimage" value="{{profileimage}}" />
-         <input class="form__input" type="hidden" name="verify_code" value="{{verify_code}}" required />
-         <input class="form__input" type="text" placeholder="Please enter the verification code that we emailed you to finish signing up" name="user_code" value="{{user_code}}" required />
-         <button class="form__sign-up-button login_page_btn" name="submit" type="submit">Sign Up</button>
-      </form>
+      <h3 class="landing-title-faded">Verify Your Account</h3>
 
-      <!-- <div class="form__href-container">
-         <form method="post" action="/users/register-next/text">
-            <input class="form__input" type="hidden" value="{{username}}" required autocapitalize="none" />
+      {{#if verify_through_email}}
+      <div class="verify_email_display">
+         <form method="post" action="/users/register-next">
+            <input class="form__input" type="hidden" name="username" value="{{username}}" required autocapitalize="none" />
             <input class="form__input" type="hidden" name="email" value="{{email}}" required autocapitalize="none" />
             <input class="form__input" type="hidden" name="password" value="{{password}}" required autocapitalize="none" />
             <input class="form__input" type="hidden" name="profileimage" value="{{profileimage}}" />
             <input class="form__input" type="hidden" name="verify_code" value="{{verify_code}}" required />
-            <input class ="form__input" style="font-size: 12px; margin-top: 15px; display: block; cursor:pointer; border-bottom: none;" name="submit" type="submit" value="I'd rather recieve the verification code through text."/>
+            <input class="form__input" type="text" placeholder="Please enter the verification code that we emailed you to finish signing up" name="user_code" value="{{user_code}}" required />
+            <button class="form__sign-up-button login_page_btn" name="submit" type="submit">Sign Up</button>
+            <div class="form__href-container">
+               <p id="verify_phone_btn" class="form__href" style="font-size: 12px; margin-top: 15px; display: block; cursor: pointer;">I'd rather recieve the verification code through text.</p>
+            </div>
          </form>
-      </div> -->
+      </div>
+
+      <div class="verify_phone_display">
+         <form method="post" action="/users/register-next/text">
+            <input class="form__input" type="hidden" name="username" value="{{username}}" required autocapitalize="none" />
+            <input class="form__input" type="hidden" name="email" value="{{email}}" required autocapitalize="none" />
+            <input class="form__input" type="hidden" name="password" value="{{password}}" required autocapitalize="none" />
+            <input class="form__input" type="hidden" name="profileimage" value="{{profileimage}}" />
+            <input class="form__input" type="hidden" name="verify_code" value="{{verify_code}}" required />
+            <input class="form__input" type="text" placeholder="Please enter your phone number 555-555-5555" name="phone" value="{{phone}}" required pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"/>
+            <button class="form__sign-up-button login_page_btn" name="submit" type="submit">Send</button>
+         </form>
+         <div class="form__href-container">
+            <p id="verify_email_btn" class="form__href" style="font-size: 12px; margin-top: 15px; display: block; cursor: pointer;">I'd rather recieve the verification code through email.</p>
+         </div>
+      </div>
+
+      {{else}}
+
+      <div class="verify_phone_display_2">
+         <form method="post" action="/users/register-next/text/1">
+            <input class="form__input" type="hidden" name="username" value="{{username}}" required autocapitalize="none" />
+            <input class="form__input" type="hidden" name="email" value="{{email}}" required autocapitalize="none" />
+            <input class="form__input" type="hidden" name="password" value="{{password}}" required autocapitalize="none" />
+            <input class="form__input" type="hidden" name="profileimage" value="{{profileimage}}" />
+            <input class="form__input" type="hidden" name="verify_code" value="{{verify_code}}" required />
+            <input class="form__input" type="text" placeholder="Please enter the verification code that we texted you to finish signing up" name="user_code" value="{{user_code}}" required />
+            <button class="form__sign-up-button login_page_btn" name="submit" type="submit">Sign Up</button>
+         </form>
+         <div class="form__href-container">
+            <p id="verify_email_btn" class="form__href" style="font-size: 12px; margin-top: 15px; display: block; cursor: pointer;">I'd rather recieve the verification code through email.</p>
+         </div>
+      </div>
+
+      <div class="verify_email_display_2">
+         <form method="post" action="/users/register-next">
+            <input class="form__input" type="hidden" name="username" value="{{username}}" required autocapitalize="none" />
+            <input class="form__input" type="hidden" name="email" value="{{email}}" required autocapitalize="none" />
+            <input class="form__input" type="hidden" name="password" value="{{password}}" required autocapitalize="none" />
+            <input class="form__input" type="hidden" name="profileimage" value="{{profileimage}}" />
+            <input class="form__input" type="hidden" name="verify_code" value="{{verify_code}}" required />
+            <input class="form__input" type="text" placeholder="Please enter the verification code that we emailed you to finish signing up" name="user_code" value="{{user_code}}" required />
+            <button class="form__sign-up-button login_page_btn" name="submit" type="submit">Sign Up</button>
+            <div class="form__href-container">
+               <p id="verify_phone_btn" class="form__href" style="font-size: 12px; margin-top: 15px; display: block; cursor: pointer;">I'd rather recieve the verification code through text.</p>
+            </div>
+         </form>
+      </div>
+
+      {{/if}}
    </div>
 </div>

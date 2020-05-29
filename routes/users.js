@@ -10,6 +10,9 @@ const aws = require('aws-sdk');
 const multerS3 = require('multer-s3');
 const dateNow = Date.now().toString();
 const jwt = require('jsonwebtoken');
+const accountSid = 'AC270b0d054e0fc564733342d934441402';
+const authToken = '8b8b777629c294c6379a848a8dec1430';
+const client = require('twilio')(accountSid, authToken);
 
 var thanks_email = path.join(__dirname, '../public', 'email/register.html');
 
@@ -178,6 +181,7 @@ router.post('/register', upload.single('profileimage'), (req, res, next) => {
                            profileimage: profileimage,
                            inviteAllowed: true,
                            verify_code: verify_code,
+                           verify_through_email: true,
                            page_title: 'Verify Your Account',
                            notLoginPage: false
                         });
@@ -219,6 +223,7 @@ router.post('/register', upload.single('profileimage'), (req, res, next) => {
                         password: password,
                         inviteAllowed: true,
                         verify_code: verify_code,
+                        verify_through_email: true,
                         page_title: 'Verify Your Account',
                         notLoginPage: false
                      });
@@ -285,6 +290,35 @@ router.post('/register-next', (req, res, next) => {
          User.saveUser(newUser, (err, user) => {
             if(err) throw err;
          });
+
+         //////////
+
+         // Thank you email //
+         // Gmail Credentials
+         var transporter = nodemailer.createTransport({
+            service: 'Gmail',
+            auth: {
+               user: 'hello@myhryzn.com',
+               pass: '+ar+oo-55'
+            }
+         });
+
+         var ip = req.header('x-forwarded-for') || req.connection.remoteAddress;
+
+         // Mail Body
+         var mailOptions = {
+            from: '"Hryzn" <hello@myhryzn.com>',
+            to: '"Brian" <brianacebo@gmail.com>',
+            subject: 'New User',
+            text: email + ' created a new account with IP = ' + ip
+         }
+
+         transporter.sendMail(mailOptions, (error, info) => {
+            if(!error) {
+            }
+         });
+
+         ///////////
 
          // Thank you email //
          // Gmail Credentials
@@ -379,9 +413,6 @@ router.post('/register-next', (req, res, next) => {
                res.redirect('/users/login');
             }
          });
-
-         req.flash('success_msg', "Account Created. Please Log In");
-         res.redirect('/users/login');
       }
 
    } else {
@@ -396,6 +427,105 @@ router.post('/register-next', (req, res, next) => {
          profileimage: req.body.profileimage,
          verify_code: verify_code
       });
+   }
+});
+
+// POST Register Next / Text
+router.post('/register-next/text', (req, res, next) => {
+
+   var username = req.body.username.replace(/\r\n/g,'').trim();
+   var email = req.body.email.replace(/\r\n/g,'').trim();
+   var password = req.body.password.replace(/\r\n/g,'').trim();
+   var phone = req.body.phone.replace(/\r\n/g,'').trim();
+   var profileimage = req.body.profileimage;
+   var verify_code = req.body.verify_code.split('$21B3')[0];
+
+   client.messages
+     .create({
+        body: 'Hryzn | Hi there, your verification code: ' + verify_code,
+        from: '+12078025238',
+        to: '+17862740326'
+      })
+     .then(message => console.log(message.sid));
+
+   res.render('users/register-next', {
+      username: username,
+      email: email,
+      password: password,
+      profileimage: profileimage,
+      inviteAllowed: true,
+      verify_code: req.body.verify_code,
+      page_title: 'Verify Your Account',
+      verify_through_email: false,
+      notLoginPage: false
+   });
+});
+
+// POST Register Next / Text - Sign Up
+router.post('/register-next/text/1', (req, res, next) => {
+
+   var username = req.body.username.replace(/\r\n/g,'').trim();
+   var email = req.body.email.replace(/\r\n/g,'').trim();
+   var password = req.body.password.replace(/\r\n/g,'').trim();
+   var profileimage = req.body.profileimage;
+
+   var user_code = req.body.user_code.replace(/\r\n/g,'').trim();
+
+   var verify_code = req.body.verify_code.split('$21B3')[0];
+
+   user_code = user_code.toUpperCase();
+   verify_code = verify_code.toUpperCase();
+
+   if (user_code === verify_code) {
+
+      if (req.body.profileimage) {
+         var newUser = new User({
+            username: username,
+            email: email,
+            password: password,
+            profileimage: req.body.profileimage
+         });
+
+         // Create user in database
+         User.saveUser(newUser, (err, user) => {
+            if(err) throw err;
+         });
+
+         client.messages
+           .create({
+              body: 'Hi, we want to say thank you for signing up and welcome to our community! Hryzn is a social network so you can connect and collaborate with your friends, show off your content to followers, or simply just write privately. Hryzn can also help you rank higher in search engines, showcase expertise in your field, and promote your brand\'s awareness.',
+              from: '+12078025238',
+              to: '+17862740326'
+            })
+           .then(message => console.log(message.sid));
+
+         req.flash('success_msg', "Account Created. Please Log In");
+         res.redirect('/users/login');
+      } else {
+         var newUser = new User({
+            username: username,
+            email: email,
+            password: password
+         });
+
+         // Create user in database
+         User.saveUser(newUser, (err, user) => {
+            if(err) throw err;
+         });
+
+
+         client.messages
+           .create({
+              body: 'Hi, we want to say thank you for signing up and welcome to our community! Hryzn is a social network so you can connect and collaborate with your friends, show off your content to followers, or simply just write privately. Hryzn can also help you rank higher in search engines, showcase expertise in your field, and promote your brand\'s awareness.',
+              from: '+12078025238',
+              to: '+17862740326'
+            })
+           .then(message => console.log(message.sid));
+
+         req.flash('success_msg', "Account Created. Please Log In");
+         res.redirect('/users/login');
+      }
+
    }
 });
 

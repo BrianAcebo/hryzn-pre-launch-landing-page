@@ -656,4 +656,31 @@ $(document).ready(function() {
    });
    /**********/
 
+
+   // Phone or email verification for sign up
+   var $emailDisplay = $('.verify_email_display');
+   var $phoneDisplay = $('.verify_phone_display');
+   var $emailDisplay_2 = $('.verify_email_display_2');
+   var $phoneDisplay_2 = $('.verify_phone_display_2');
+   var $emailDisplayBtn = $('#verify_email_btn');
+   var $phoneDisplayBtn = $('#verify_phone_btn');
+
+   $phoneDisplay.css({ "display": "none" });
+   $emailDisplay_2.css({ "display": "none" });
+
+   $emailDisplayBtn.click(function() {
+      $phoneDisplay.css({ "display": "none" });
+      $phoneDisplay_2.css({ "display": "none" });
+      $emailDisplay.css({ "display": "block" });
+      $emailDisplay_2.css({ "display": "block" });
+   });
+
+   $phoneDisplayBtn.click(function() {
+      $emailDisplay.css({ "display": "none" });
+      $emailDisplay_2.css({ "display": "none" });
+      $phoneDisplay.css({ "display": "block" });
+      $phoneDisplay_2.css({ "display": "block" });
+   });
+   /**********/
+
 });
