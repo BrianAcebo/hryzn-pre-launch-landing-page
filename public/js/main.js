@@ -683,4 +683,11 @@ $(document).ready(function() {
    });
    /**********/
 
+   // Original Path
+   var $ogPath = window.location.pathname;
+   $('.og_path').each(function() {
+      $(this).val($ogPath);
+   });
+   /**********/
+
 });

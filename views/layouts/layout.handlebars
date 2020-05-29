@@ -297,12 +297,15 @@
          {{{body}}}
       </main>
 
+      {{#if user}}
       <div class="microPostModal microModalBackground">
          <div class="modal-content">
 
-         <form method="post" class="edit-project-form" action="/p/create-micro" enctype="multipart/form-data">
-            <input type="hidden" name="_c_" value="{{req.token}}" />
+         <form method="post" class="edit-project-form" action="/p/create-micro/micro" enctype="multipart/form-data">
             <input type="hidden" name="_x_" value="$2a$10$BJn0b4OzBarDigcTUl0kejbffkejbfvxSI.JrlLKeSsOi8oKqBAK" />
+            <input type="hidden" name="_c_" value="{{csrf_web_token}}" />
+            <input type="hidden" name="orange_blossom" value="" />
+            <input type="hidden" name="og_path" value="" class="og_path"/>
             {{! Micro Body }}
             <label for="micro_body" class="form__label" style="margin-top: 25px;">Speak Your Mind</label>
             <textarea class="project-description__input" type="text" name="micro_body" value="{{project.micro_body}}"></textarea>
@@ -363,8 +366,6 @@
             <p class="loader_text">Thank you, please wait the computer is doing its thing.</p>
          </div>
       </div>
-
-      {{#if user}}
       {{else}}
       <footer class="footer__container">
          <a href="/">About</a>

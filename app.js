@@ -130,6 +130,10 @@ app.get('*', function(req, res, next) {
       res.locals.email = req.user.email;
       res.locals.profileimage = req.user.profileimage;
    }
+
+   jwt.sign({user: req.user}, 'SuperSecretKey', { expiresIn: "1h" }, (err, token) => {
+      res.locals.csrf_web_token = 'Bearer '+ token;
+   });
    next();
 });
 

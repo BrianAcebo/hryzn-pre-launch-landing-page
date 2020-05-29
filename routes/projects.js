@@ -6,6 +6,7 @@ const keys = require('../config/keys');
 const aws = require('aws-sdk');
 const multerS3 = require('multer-s3');
 const dateNow = Date.now().toString();
+const jwt = require('jsonwebtoken');
 
 // AWS S3 Access
 aws.config.update({
@@ -35,383 +36,387 @@ const Group = require('../models/groups');
 
 // GET Create Project
 router.get('/create-project', (req, res, next) => {
-   // if(req.isAuthenticated()) {
-   //    User.getUserByUsername(req.user.username, (err, profile) => {
-   //       if(err) throw err;
-   //
-   //       User.find({ 'username': { $in: profile.following} }, (err, profiles) => {
-   //          if (err) throw err;
-   //          res.render('p/create-project', {
-   //             page_title: 'Create Project',
-   //             editProject: true,
-   //             mention: profiles
-   //          });
-   //       });
-   //    });
-   // } else {
-   //    res.redirect('/welcome');
-   // }
-   req.flash('error_msg', "Sorry the site is under construction...");
-   res.redirect('/');
+   if(req.isAuthenticated()) {
+      User.getUserByUsername(req.user.username, (err, profile) => {
+         if(err) throw err;
+
+         User.find({ 'username': { $in: profile.following} }, (err, profiles) => {
+            if (err) throw err;
+            res.render('p/create-project', {
+               page_title: 'Create Project',
+               editProject: true,
+               mention: profiles
+            });
+         });
+      });
+   } else {
+      res.redirect('/welcome');
+   }
 });
 
 
 // POST Create Project
-router.post('/create-project', upload.single('project_image'), (req, res, next) => {
+router.post('/create-project/blog', upload.single('project_image'), verifyToken, (req, res, next) => {
 
-   req.flash('error_msg', "Sorry the site is under construction...");
-   res.redirect('/');
+   if(req.isAuthenticated()) {
 
-   // if(req.isAuthenticated()) {
-   //
-   //    var project_title = req.body.project_title;
-   //    var project_description = req.body.project_description.replace(/\r\n/g,'');
-   //    var admin = req.body.admin; // Owner of project
-   //    var is_private = req.body.is_private;
-   //    var id = req.body.id;
-   //    var user = req.body.user;
-   //    var req_project_notes = req.body.project_notes.replace(/\r\n/g,'');
-   //    var project_url = req.body.project_url;
-   //    var posted_to_group;
-   //    if (req.body.post_to != '') {
-   //       if (req.body.post_to != 'Followers') {
-   //          Group.findOne({ '_id': { $in: req.body.post_to } }, (err, group) => {
-   //             if (group) {
-   //                posted_to_group = true;
-   //             } else {
-   //                posted_to_group = false;
-   //             }
-   //          });
-   //       } else {
-   //          posted_to_group = false;
-   //       }
-   //    } else {
-   //       posted_to_group = false;
-   //    }
-   //
-   //    if (req.body.project_categories) {
-   //       if (req.body.project_categories.length > 0) {
-   //          var project_categories = req.body.project_categories;
-   //       } else {
-   //          var project_categories = [];
-   //       }
-   //    } else {
-   //       var project_categories = [];
-   //    }
-   //
-   //    // Check for mentions or hashtags
-   //    var tag_indices = []
-   //    function find_tag(index) {
-   //       var tag = '';
-   //       for (var i = 0; i < 200; i++) {
-   //          if (req_project_notes[index + i] == ' ' || req_project_notes[index + i] == '<') {
-   //             break;
-   //          } else if (req_project_notes[index + i] == '&' && req_project_notes[index + i + 2] == 'b'){
-   //             break;
-   //          } else {
-   //             tag += req_project_notes[index + i];
-   //             tag_indices.push(index + i);
-   //          }
-   //       }
-   //       return tag;
-   //    }
-   //    var project_notes = '';
-   //    var slice;
-   //    var mention;
-   //    for (var i = 0; i < req_project_notes.length; i++) {
-   //       if(req_project_notes.charAt(i) == '#') {
-   //
-   //          slice = find_tag(i);
-   //          var clean_word = slice.slice(1, slice.length);
-   //          project_notes += '<a class="mention_tag" href="/explore/' + clean_word + '">' + slice + '</a> ';
-   //          if (project_categories.indexOf(clean_word) === -1) {
-   //             project_categories.push(clean_word);
-   //          }
-   //
-   //       } else if (req_project_notes.charAt(i) == '@') {
-   //
-   //          slice = find_tag(i);
-   //          var clean_word = slice.slice(1, slice.length);
-   //          project_notes += '<a class="mention_tag" href="/profile/' + clean_word + '">' + slice + '</a> ';
-   //
-   //          // Send notification to the user mentioned
-   //          User.findOne({ 'username': { $in: clean_word} }, (err, reciever) => {
-   //            if (err) throw err;
-   //
-   //            if (reciever) {
-   //               var newNotification = new Notification({
-   //                  sender: req.user._id,
-   //                  reciever: reciever._id,
-   //                  type: '@' + req.user.username + ' mentioned you in their new post.',
-   //                  link: '/profile/' + req.user.username
-   //               });
-   //
-   //               // Create notification in database
-   //               Notification.saveNotification(newNotification, (err, notification) => {
-   //                  if(err) throw err;
-   //
-   //                  // Add Notification for User
-   //                  User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
-   //                     if (err) throw err;
-   //                  });
-   //               });
-   //            }
-   //         });
-   //
-   //      } else if (tag_indices.indexOf(i) > -1) {
-   //         // do nothing
-   //      } else {
-   //          project_notes += req_project_notes.charAt(i);
-   //       }
-   //    }
-   //
-   //    // See if project_url has https://
-   //    var has_https = project_url.search("https://");
-   //    if(has_https > -1) {
-   //
-   //       var url_without_https = project_url.split("https://")[1];
-   //       project_url = url_without_https;
-   //
-   //    }
-   //
-   //    // Embed video
-   //    var project_video = '';
-   //    var url = req.body.project_video;
-   //    var is_youtube_video = url.search("https://www.youtube.com");
-   //    var is_vimeo_video = url.search("https://vimeo.com");
-   //
-   //    // Check if it is Youtube video ->
-   //    // Check if there's an unwanted playlist ->
-   //    // Check if it's already an embedded video ->
-   //    // Grab the video id and attach it to new link
-   //
-   //    if(is_youtube_video === -1) {
-   //       // It is not a Youtube video
-   //    } else {
-   //
-   //       // See if link has unwanted playlist
-   //       var has_unwanted_playlist = url.search("&list=");
-   //       if(has_unwanted_playlist === -1) {
-   //
-   //          // See if video is already embedded
-   //          var is_already_embed = url.search("https://www.youtube.com/embed");
-   //          if(is_already_embed === -1) {
-   //             // It is not a an embedded video
-   //             var video_id = url.split("?v=")[1];
-   //             project_video = "https://www.youtube.com/embed/" + video_id;
-   //          } else {
-   //             project_video = req.body.project_video;
-   //          }
-   //
-   //       } else {
-   //          // It has an unwanted playlist attached to the url
-   //          var url_end = url.split("?v=")[1];
-   //          var video_id = url_end.split("&list=")[0];
-   //          project_video = "https://www.youtube.com/embed/" + video_id;
-   //       }
-   //
-   //    }
-   //
-   //    // Check if it is Vimeo video ->
-   //    // Check if it's already an embedded video ->
-   //    // Grab the video id and attach it to new link
-   //
-   //    if(is_vimeo_video === -1) {
-   //       // It is not a Vimeo video
-   //    } else {
-   //
-   //       // See if video is already embedded
-   //       var is_already_embed = url.search("https://player.vimeo.com/video/");
-   //       if(is_already_embed === -1) {
-   //          // It is not a an embedded video
-   //          var video_id = url.split("https://vimeo.com/")[1];
-   //          project_video = "https://player.vimeo.com/video/" + video_id;
-   //       } else {
-   //          project_video = req.body.project_video;
-   //       }
-   //
-   //    }
-   //
-   //    // Form Validation
-   //    req.checkBody('project_title', 'Project Title Is Too Long').isLength({ min: 0, max:200 });
-   //    req.checkBody('project_description', 'Description Must Be Less Than 500 Characters').isLength({ min: 0, max: 500 });
-   //
-   //    errors = req.validationErrors();
-   //
-   //    if(errors) {
-   //
-   //       User.findById(id, (err, user) => {
-   //          if(err) throw err;
-   //
-   //          User.find({ 'username': { $in: user.following} }, (err, profiles) => {
-   //             if (err) throw err;
-   //             res.render('p/create-project', {
-   //                errors: errors,
-   //                page_title: 'Create Project',
-   //                project_title: project_title,
-   //                project_description: project_description,
-   //                project_notes: project_notes,
-   //                is_private: is_private,
-   //                project_video: project_video,
-   //                project_url: project_url,
-   //                categories: project_categories,
-   //                project_notes: project_notes,
-   //                editProject: true,
-   //                project_error: true,
-   //                mention: profiles,
-   //                user: user
-   //             });
-   //          });
-   //       });
-   //
-   //    } else {
-   //       if(req.file) {
-   //
-   //          // If user uploaded an image for project
-   //          var ext = path.extname(req.file.originalname);
-   //
-   //          // Check if file is an image
-   //          if(ext !== '.png' && ext !== '.PNG' && ext !== '.jpg' && ext !== '.JPG' && ext !== '.gif' && ext !== '.GIF' && ext !== '.jpeg' && ext !== '.JPEG') {
-   //
-   //             User.findById(id, (err, user) => {
-   //                if(err) throw err;
-   //
-   //                User.find({ 'username': { $in: user.following} }, (err, profiles) => {
-   //                   if (err) throw err;
-   //                   res.render('p/create-project', {
-   //                      error_msg: 'Uploaded File Must End With .jpg .jpeg .png .gif',
-   //                      page_title: 'Create Project',
-   //                      project_title: project_title,
-   //                      project_description: project_description,
-   //                      project_notes: project_notes,
-   //                      is_private: is_private,
-   //                      project_video: project_video,
-   //                      project_url: project_url,
-   //                      categories: project_categories,
-   //                      project_notes: project_notes,
-   //                      editProject: true,
-   //                      project_error: true,
-   //                      mention: profiles,
-   //                      user: user
-   //                   });
-   //                });
-   //             });
-   //
-   //          } else {
-   //             // No errors have been made
-   //             // var fileExt = req.file.originalname.split('.').pop();
-   //             var project_image = dateNow + req.file.originalname;
-   //
-   //             var newProject = new Project({
-   //                project_title: project_title,
-   //                project_description: project_description,
-   //                is_private: is_private,
-   //                project_image: project_image,
-   //                project_video: project_video,
-   //                project_url: project_url,
-   //                admins: admin,
-   //                categories: project_categories,
-   //                project_owner: admin,
-   //                project_notes: project_notes
-   //             });
-   //
-   //             // Create project in database
-   //             Project.saveProject(newProject, (err, project) => {
-   //                if(err) throw err;
-   //
-   //                // Add project to User document
-   //                info = [];
-   //                info['profileUsername'] = req.user.username;
-   //                info['projectId'] = project._id.toString();
-   //
-   //                User.createToProfile(info, (err, user) => {
-   //                   if(err) throw err;
-   //                });
-   //
-   //                if (posted_to_group) {
-   //                   Group.findOne({ '_id': { $in: req.body.post_to } }, (err, group) => {
-   //
-   //                      info['groupId'] = group._id;
-   //                      info['groupName'] = group.group_name;
-   //                      info['groupIsPrivate'] = group.is_private;
-   //
-   //                      console.log(info['projectId']);
-   //
-   //                      Group.addProject(info, (err, group) => {
-   //                         if(err) throw err;
-   //                      });
-   //
-   //                      Project.addGroup(info, (err, project) => {
-   //                         if(err) throw err;
-   //                      });
-   //
-   //                      // Send notification to the user mentioned
-   //                      group.users.forEach(function(user, key) {
-   //                         User.findOne({ 'username': { $in: user} }, (err, reciever) => {
-   //                            if (err) throw err;
-   //
-   //                            var newNotification = new Notification({
-   //                               sender: req.user._id,
-   //                               reciever: reciever._id,
-   //                               type: '@' + req.user.username + ' added a post in the group ' + group.group_name,
-   //                               link: '/groups/' + group._id
-   //                            });
-   //
-   //                            // Create notification in database
-   //                            Notification.saveNotification(newNotification, (err, notification) => {
-   //                               if(err) throw err;
-   //
-   //                               // Add Notification for User
-   //                               User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
-   //                                  if (err) throw err;
-   //                               });
-   //                            });
-   //                         });
-   //                      });
-   //
-   //                      req.flash('success_msg', "Project was created.");
-   //                      res.redirect('/groups/' + group._id);
-   //
-   //                   });
-   //
-   //                } else {
-   //                   req.flash('success_msg', "Project was created.");
-   //                   res.redirect('/p/details/' + project._id);
-   //                }
-   //             });
-   //
-   //          }
-   //       } else {
-   //          // If user did not upload an image for project
-   //          User.findById(id, (err, user) => {
-   //             if(err) throw err;
-   //
-   //             User.find({ 'username': { $in: user.following} }, (err, profiles) => {
-   //                if (err) throw err;
-   //                res.render('p/create-project', {
-   //                   error_msg: 'Please upload an image for blog post',
-   //                   page_title: 'Create Project',
-   //                   project_title: project_title,
-   //                   project_description: project_description,
-   //                   project_notes: project_notes,
-   //                   is_private: is_private,
-   //                   project_video: project_video,
-   //                   project_url: project_url,
-   //                   categories: project_categories,
-   //                   project_notes: project_notes,
-   //                   editProject: true,
-   //                   project_error: true,
-   //                   mention: profiles,
-   //                   user: user
-   //                });
-   //             });
-   //          });
-   //       }
-   //    }
-   //
-   // } else {
-   //    res.redirect('/welcome');
-   // }
+      jwt.verify(req.token, 'SuperSecretKey', (err, authData) => {
+         if (err) {
+            res.sendStatus(403);
+         } else if (req.body.orange_blossom != '') {
+            res.sendStatus(403);
+         } else {
+
+            var project_title = req.body.project_title;
+            var project_description = req.body.project_description.replace(/\r\n/g,'');
+            var admin = req.body.admin; // Owner of project
+            var is_private = req.body.is_private;
+            var id = req.body.id;
+            var user = req.body.user;
+            var req_project_notes = req.body.project_notes.replace(/\r\n/g,'');
+            var project_url = req.body.project_url;
+            var posted_to_group;
+            if (req.body.post_to != '') {
+               if (req.body.post_to != 'Followers') {
+                  Group.findOne({ '_id': { $in: req.body.post_to } }, (err, group) => {
+                     if (group) {
+                        posted_to_group = true;
+                     } else {
+                        posted_to_group = false;
+                     }
+                  });
+               } else {
+                  posted_to_group = false;
+               }
+            } else {
+               posted_to_group = false;
+            }
+
+            if (req.body.project_categories) {
+               if (req.body.project_categories.length > 0) {
+                  var project_categories = req.body.project_categories;
+               } else {
+                  var project_categories = [];
+               }
+            } else {
+               var project_categories = [];
+            }
+
+            // Check for mentions or hashtags
+            var tag_indices = []
+            function find_tag(index) {
+               var tag = '';
+               for (var i = 0; i < 200; i++) {
+                  if (req_project_notes[index + i] == ' ' || req_project_notes[index + i] == '<') {
+                     break;
+                  } else if (req_project_notes[index + i] == '&' && req_project_notes[index + i + 2] == 'b'){
+                     break;
+                  } else {
+                     tag += req_project_notes[index + i];
+                     tag_indices.push(index + i);
+                  }
+               }
+               return tag;
+            }
+            var project_notes = '';
+            var slice;
+            var mention;
+            for (var i = 0; i < req_project_notes.length; i++) {
+               if(req_project_notes.charAt(i) == '#') {
+
+                  slice = find_tag(i);
+                  var clean_word = slice.slice(1, slice.length);
+                  project_notes += '<a class="mention_tag" href="/explore/' + clean_word + '">' + slice + '</a> ';
+                  if (project_categories.indexOf(clean_word) === -1) {
+                     project_categories.push(clean_word);
+                  }
+
+               } else if (req_project_notes.charAt(i) == '@') {
+
+                  slice = find_tag(i);
+                  var clean_word = slice.slice(1, slice.length);
+                  project_notes += '<a class="mention_tag" href="/profile/' + clean_word + '">' + slice + '</a> ';
+
+                  // Send notification to the user mentioned
+                  User.findOne({ 'username': { $in: clean_word} }, (err, reciever) => {
+                    if (err) throw err;
+
+                    if (reciever) {
+                       var newNotification = new Notification({
+                          sender: req.user._id,
+                          reciever: reciever._id,
+                          type: '@' + req.user.username + ' mentioned you in their new post.',
+                          link: '/profile/' + req.user.username
+                       });
+
+                       // Create notification in database
+                       Notification.saveNotification(newNotification, (err, notification) => {
+                          if(err) throw err;
+
+                          // Add Notification for User
+                          User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+                             if (err) throw err;
+                          });
+                       });
+                    }
+                 });
+
+              } else if (tag_indices.indexOf(i) > -1) {
+                 // do nothing
+              } else {
+                  project_notes += req_project_notes.charAt(i);
+               }
+            }
+
+            // See if project_url has https://
+            var has_https = project_url.search("https://");
+            if(has_https > -1) {
+
+               var url_without_https = project_url.split("https://")[1];
+               project_url = url_without_https;
+
+            }
+
+            // Embed video
+            var project_video = '';
+            var url = req.body.project_video;
+            var is_youtube_video = url.search("https://www.youtube.com");
+            var is_vimeo_video = url.search("https://vimeo.com");
+
+            // Check if it is Youtube video ->
+            // Check if there's an unwanted playlist ->
+            // Check if it's already an embedded video ->
+            // Grab the video id and attach it to new link
+
+            if(is_youtube_video === -1) {
+               // It is not a Youtube video
+            } else {
+
+               // See if link has unwanted playlist
+               var has_unwanted_playlist = url.search("&list=");
+               if(has_unwanted_playlist === -1) {
+
+                  // See if video is already embedded
+                  var is_already_embed = url.search("https://www.youtube.com/embed");
+                  if(is_already_embed === -1) {
+                     // It is not a an embedded video
+                     var video_id = url.split("?v=")[1];
+                     project_video = "https://www.youtube.com/embed/" + video_id;
+                  } else {
+                     project_video = req.body.project_video;
+                  }
+
+               } else {
+                  // It has an unwanted playlist attached to the url
+                  var url_end = url.split("?v=")[1];
+                  var video_id = url_end.split("&list=")[0];
+                  project_video = "https://www.youtube.com/embed/" + video_id;
+               }
+
+            }
+
+            // Check if it is Vimeo video ->
+            // Check if it's already an embedded video ->
+            // Grab the video id and attach it to new link
+
+            if(is_vimeo_video === -1) {
+               // It is not a Vimeo video
+            } else {
+
+               // See if video is already embedded
+               var is_already_embed = url.search("https://player.vimeo.com/video/");
+               if(is_already_embed === -1) {
+                  // It is not a an embedded video
+                  var video_id = url.split("https://vimeo.com/")[1];
+                  project_video = "https://player.vimeo.com/video/" + video_id;
+               } else {
+                  project_video = req.body.project_video;
+               }
+
+            }
+
+            // Form Validation
+            req.checkBody('project_title', 'Project Title Is Too Long').isLength({ min: 0, max:200 });
+            req.checkBody('project_description', 'Description Must Be Less Than 500 Characters').isLength({ min: 0, max: 500 });
+
+            errors = req.validationErrors();
+
+            if(errors) {
+
+               User.findById(id, (err, user) => {
+                  if(err) throw err;
+
+                  User.find({ 'username': { $in: user.following} }, (err, profiles) => {
+                     if (err) throw err;
+                     res.render('p/create-project', {
+                        errors: errors,
+                        page_title: 'Create Project',
+                        project_title: project_title,
+                        project_description: project_description,
+                        project_notes: project_notes,
+                        is_private: is_private,
+                        project_video: project_video,
+                        project_url: project_url,
+                        categories: project_categories,
+                        project_notes: project_notes,
+                        editProject: true,
+                        project_error: true,
+                        mention: profiles,
+                        user: user
+                     });
+                  });
+               });
+
+            } else {
+               if(req.file) {
+
+                  // If user uploaded an image for project
+                  var ext = path.extname(req.file.originalname);
+
+                  // Check if file is an image
+                  if(ext !== '.png' && ext !== '.PNG' && ext !== '.jpg' && ext !== '.JPG' && ext !== '.gif' && ext !== '.GIF' && ext !== '.jpeg' && ext !== '.JPEG') {
+
+                     User.findById(id, (err, user) => {
+                        if(err) throw err;
+
+                        User.find({ 'username': { $in: user.following} }, (err, profiles) => {
+                           if (err) throw err;
+                           res.render('p/create-project', {
+                              error_msg: 'Uploaded File Must End With .jpg .jpeg .png .gif',
+                              page_title: 'Create Project',
+                              project_title: project_title,
+                              project_description: project_description,
+                              project_notes: project_notes,
+                              is_private: is_private,
+                              project_video: project_video,
+                              project_url: project_url,
+                              categories: project_categories,
+                              project_notes: project_notes,
+                              editProject: true,
+                              project_error: true,
+                              mention: profiles,
+                              user: user
+                           });
+                        });
+                     });
+
+                  } else {
+                     // No errors have been made
+                     // var fileExt = req.file.originalname.split('.').pop();
+                     var project_image = dateNow + req.file.originalname;
+
+                     var newProject = new Project({
+                        project_title: project_title,
+                        project_description: project_description,
+                        is_private: is_private,
+                        project_image: project_image,
+                        project_video: project_video,
+                        project_url: project_url,
+                        admins: admin,
+                        categories: project_categories,
+                        project_owner: admin,
+                        project_notes: project_notes
+                     });
+
+                     // Create project in database
+                     Project.saveProject(newProject, (err, project) => {
+                        if(err) throw err;
+
+                        // Add project to User document
+                        info = [];
+                        info['profileUsername'] = req.user.username;
+                        info['projectId'] = project._id.toString();
+
+                        User.createToProfile(info, (err, user) => {
+                           if(err) throw err;
+                        });
+
+                        if (posted_to_group) {
+                           Group.findOne({ '_id': { $in: req.body.post_to } }, (err, group) => {
+
+                              info['groupId'] = group._id;
+                              info['groupName'] = group.group_name;
+                              info['groupIsPrivate'] = group.is_private;
+
+                              console.log(info['projectId']);
+
+                              Group.addProject(info, (err, group) => {
+                                 if(err) throw err;
+                              });
+
+                              Project.addGroup(info, (err, project) => {
+                                 if(err) throw err;
+                              });
+
+                              // Send notification to the user mentioned
+                              group.users.forEach(function(user, key) {
+                                 User.findOne({ 'username': { $in: user} }, (err, reciever) => {
+                                    if (err) throw err;
+
+                                    var newNotification = new Notification({
+                                       sender: req.user._id,
+                                       reciever: reciever._id,
+                                       type: '@' + req.user.username + ' added a post in the group ' + group.group_name,
+                                       link: '/groups/' + group._id
+                                    });
+
+                                    // Create notification in database
+                                    Notification.saveNotification(newNotification, (err, notification) => {
+                                       if(err) throw err;
+
+                                       // Add Notification for User
+                                       User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+                                          if (err) throw err;
+                                       });
+                                    });
+                                 });
+                              });
+
+                              req.flash('success_msg', "Project was created.");
+                              res.redirect('/groups/' + group._id);
+
+                           });
+
+                        } else {
+                           req.flash('success_msg', "Project was created.");
+                           res.redirect('/p/details/' + project._id);
+                        }
+                     });
+
+                  }
+               } else {
+                  // If user did not upload an image for project
+                  User.findById(id, (err, user) => {
+                     if(err) throw err;
+
+                     User.find({ 'username': { $in: user.following} }, (err, profiles) => {
+                        if (err) throw err;
+                        res.render('p/create-project', {
+                           error_msg: 'Please upload an image for blog post',
+                           page_title: 'Create Project',
+                           project_title: project_title,
+                           project_description: project_description,
+                           project_notes: project_notes,
+                           is_private: is_private,
+                           project_video: project_video,
+                           project_url: project_url,
+                           categories: project_categories,
+                           project_notes: project_notes,
+                           editProject: true,
+                           project_error: true,
+                           mention: profiles,
+                           user: user
+                        });
+                     });
+                  });
+               }
+            }
+         }
+      });
+
+   } else {
+      res.redirect('/welcome');
+   }
 });
 
 // Get Edit Project
@@ -2001,323 +2006,328 @@ router.post('/upload', upload.single('editor_image'), (req, res, next) => {
 });
 
 // POST Create Micropost
-router.post('/create-micro', upload.single('micro_image'), verifyToken, (req, res, next) => {
+router.post('/create-micro/micro', upload.single('micro_image'), verifyToken, (req, res, next) => {
 
-   req.flash('error_msg', "Sorry the site is under construction...");
-   res.redirect('/');
+   if(req.isAuthenticated()) {
 
-   // if(req.isAuthenticated()) {
-   //
-   //    jwt.verify(req.token, 'SuperSecretKey', (err, authData) => {
-   //       if (err) {
-   //          res.sendStatus(403);
-   //       } else {
-   //
-   //          var admin = req.body.admin; // Owner of project
-   //          var id = req.body.id;
-   //          var user = req.body.user;
-   //          var req_micro_body = req.body.micro_body.replace(/\r\n/g,'');
-   //          var project_categories = [];
-   //          var project_url = req.body.project_url;
-   //          var posted_to_group;
-   //          if (req.body.post_to != '') {
-   //             if (req.body.post_to != 'Followers') {
-   //                Group.findOne({ '_id': { $in: req.body.post_to } }, (err, group) => {
-   //                   if (group) {
-   //                      posted_to_group = true;
-   //                   } else {
-   //                      posted_to_group = false;
-   //                   }
-   //                });
-   //             } else {
-   //                posted_to_group = false;
-   //             }
-   //          } else {
-   //             posted_to_group = false;
-   //          }
-   //
-   //          // See if project_url has https://
-   //          var has_https = project_url.search("https://");
-   //          if(has_https > -1) {
-   //
-   //             var url_without_https = project_url.split("https://")[1];
-   //             project_url = url_without_https;
-   //
-   //          }
-   //
-   //          // Check for mentions or hashtags
-   //          var micro_array = req_micro_body.split(" ");
-   //          var micro_body  = '';
-   //          micro_array.forEach(function(word, key) {
-   //             if (word[0] == '@') {
-   //
-   //                // Slice the '@' and name from mention
-   //                if (word.indexOf("<") > -1) {
-   //                   if (word.indexOf("&nbsp") > -1) {
-   //                      var pos = word.indexOf("&nbsp");
-   //                   }  else {
-   //                      var pos = word.indexOf("<");
-   //                   }
-   //                } else {
-   //                   if (word.indexOf("&nbsp") > -1) {
-   //                      var pos = word.indexOf("&nbsp");
-   //                   }  else {
-   //                      var pos = word.length;
-   //                   }
-   //                }
-   //                var slice = word.slice(1, pos);
-   //                slice = slice.replace(/<\/?[^>]+(>|$)/g, "");
-   //                var clean_word = word.slice(0, pos);
-   //                micro_body += '<a class="mention_tag" href="/profile/' + slice + '">' + clean_word + '</a> ' + word.slice(pos, word.length) + ' ';
-   //
-   //                // Send notification to the user mentioned
-   //                User.findOne({ 'username': { $in: slice} }, (err, reciever) => {
-   //                   if (err) throw err;
-   //
-   //                   var newNotification = new Notification({
-   //                      sender: req.user._id,
-   //                      reciever: reciever._id,
-   //                      type: '@' + req.user.username + ' mentioned you in their new post.',
-   //                      link: '/profile/' + req.user.username
-   //                   });
-   //
-   //                   // Create notification in database
-   //                   Notification.saveNotification(newNotification, (err, notification) => {
-   //                      if(err) throw err;
-   //
-   //                      // Add Notification for User
-   //                      User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
-   //                         if (err) throw err;
-   //                      });
-   //
-   //                   });
-   //                });
-   //
-   //             } else if (word[0] == '#') {
-   //
-   //                // Slice the '#' and word from hashtag
-   //                if (word.indexOf("<") > -1) {
-   //                   var pos = word.indexOf("<");
-   //                } else {
-   //                   var pos = word.length;
-   //                }
-   //                var slice = word.slice(1, pos);
-   //                slice = slice.replace(/<\/?[^>]+(>|$)/g, "");
-   //                var clean_word = word.slice(0, pos);
-   //                if (project_categories.indexOf(slice) === -1) {
-   //                   project_categories.push(slice);
-   //                }
-   //                micro_body += '<a class="mention_tag" href="/explore/' + slice + '">' + clean_word + '</a> ' + word.slice(pos, word.length) + ' ';
-   //
-   //             } else {
-   //                micro_body += word + ' ';
-   //             }
-   //          });
-   //
-   //          if(req.file) {
-   //
-   //             // If user uploaded an image for project
-   //             var ext = path.extname(req.file.originalname);
-   //
-   //             // Check if file is an image
-   //             if(ext !== '.png' && ext !== '.PNG' && ext !== '.jpg' && ext !== '.JPG' && ext !== '.gif' && ext !== '.GIF' && ext !== '.jpeg' && ext !== '.JPEG') {
-   //
-   //                User.findById(id, (err, user) => {
-   //                   if(err) throw err;
-   //
-   //                   User.find({ 'username': { $in: user.following} }, (err, profiles) => {
-   //                      if (err) throw err;
-   //                      res.render('p/create-project', {
-   //                         error_msg: 'Micropost File Must End With .jpg .jpeg .png .gif',
-   //                         page_title: 'Create Project',
-   //                         notes_is_empty_string: true,
-   //                         editProject: true,
-   //                         project_error: true,
-   //                         mention: profiles,
-   //                         user: user
-   //                      });
-   //                   });
-   //                });
-   //
-   //             } else {
-   //                // No errors have been made
-   //                // var fileExt = req.file.originalname.split('.').pop();
-   //                var micro_image = dateNow + req.file.originalname;
-   //
-   //                var newProject = new Project({
-   //                   micro_image: micro_image,
-   //                   categories: project_categories,
-   //                   project_owner: req.user.username,
-   //                   micro_body: micro_body,
-   //                   project_url: project_url,
-   //                   is_micro_post: true
-   //                });
-   //
-   //                // Create project in database
-   //                Project.saveProject(newProject, (err, project) => {
-   //                   if(err) throw err;
-   //
-   //                   // Add project to User document
-   //                   info = [];
-   //                   info['profileUsername'] = req.user.username;
-   //                   info['projectId'] = project._id.toString();
-   //
-   //                   User.createToProfile(info, (err, user) => {
-   //                      if(err) throw err;
-   //                   });
-   //
-   //                   if (posted_to_group) {
-   //                      Group.findOne({ '_id': { $in: req.body.post_to } }, (err, group) => {
-   //
-   //                         info['groupId'] = group._id;
-   //                         info['groupName'] = group.group_name;
-   //                         info['groupIsPrivate'] = group.is_private;
-   //
-   //                         Group.addProject(info, (err, group) => {
-   //                            if(err) throw err;
-   //                         });
-   //
-   //                         Project.addGroup(info, (err, project) => {
-   //                            if(err) throw err;
-   //                         });
-   //
-   //                         // Send notification to the user mentioned
-   //                         group.users.forEach(function(user, key) {
-   //                            User.findOne({ 'username': { $in: user} }, (err, reciever) => {
-   //                               if (err) throw err;
-   //
-   //                               var newNotification = new Notification({
-   //                                  sender: req.user._id,
-   //                                  reciever: reciever._id,
-   //                                  type: '@' + req.user.username + ' added a post in the group ' + group.group_name,
-   //                                  link: '/groups/' + group._id
-   //                               });
-   //
-   //                               // Create notification in database
-   //                               Notification.saveNotification(newNotification, (err, notification) => {
-   //                                  if(err) throw err;
-   //
-   //                                  // Add Notification for User
-   //                                  User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
-   //                                     if (err) throw err;
-   //                                  });
-   //                               });
-   //                            });
-   //                         });
-   //
-   //                         req.flash('success_msg', "Micropost was created.");
-   //                         res.redirect('/groups/' + group._id);
-   //
-   //                      });
-   //
-   //                   } else {
-   //                      req.flash('success_msg', "Micropost was created.");
-   //                      res.redirect('/p/details/' + project._id);
-   //                   }
-   //                });
-   //
-   //             }
-   //          } else {
-   //
-   //             var newProject = new Project({
-   //                categories: project_categories,
-   //                project_owner: req.user.username,
-   //                micro_body: micro_body,
-   //                project_url: project_url,
-   //                is_micro_post: true
-   //             });
-   //
-   //             // Create project in database
-   //             Project.saveProject(newProject, (err, project) => {
-   //                if(err) throw err;
-   //
-   //                // Add project to User document
-   //                info = [];
-   //                info['profileUsername'] = req.user.username;
-   //                info['projectId'] = project._id.toString();
-   //
-   //                User.createToProfile(info, (err, user) => {
-   //                   if(err) throw err;
-   //                });
-   //
-   //                if (posted_to_group) {
-   //                   Group.findOne({ '_id': { $in: req.body.post_to } }, (err, group) => {
-   //
-   //                      info['groupId'] = group._id;
-   //                      info['groupName'] = group.group_name;
-   //                      info['groupIsPrivate'] = group.is_private;
-   //
-   //                      console.log(info['projectId']);
-   //
-   //                      Group.addProject(info, (err, group) => {
-   //                         if(err) throw err;
-   //                      });
-   //
-   //                      Project.addGroup(info, (err, project) => {
-   //                         if(err) throw err;
-   //                      });
-   //
-   //                      // Send notification to the user mentioned
-   //                      group.users.forEach(function(user, key) {
-   //                         User.findOne({ 'username': { $in: user} }, (err, reciever) => {
-   //                            if (err) throw err;
-   //
-   //                            var newNotification = new Notification({
-   //                               sender: req.user._id,
-   //                               reciever: reciever._id,
-   //                               type: '@' + req.user.username + ' added a post in the group ' + group.group_name,
-   //                               link: '/groups/' + group._id
-   //                            });
-   //
-   //                            // Create notification in database
-   //                            Notification.saveNotification(newNotification, (err, notification) => {
-   //                               if(err) throw err;
-   //
-   //                               // Add Notification for User
-   //                               User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
-   //                                  if (err) throw err;
-   //                               });
-   //                            });
-   //                         });
-   //                      });
-   //
-   //                      req.flash('success_msg', "Micropost was created.");
-   //                      res.redirect('/groups/' + group._id);
-   //
-   //                   });
-   //
-   //                } else {
-   //                   req.flash('success_msg', "Micropost was created.");
-   //                   res.redirect('/p/details/' + project._id);
-   //                }
-   //             });
-   //          }
-   //
-   //       }
-   //    });
-   //
-   // } else {
-   //    res.redirect('/welcome');
-   // }
+      jwt.verify(req.token, 'SuperSecretKey', (err, authData) => {
+         if (err) {
+            res.sendStatus(403);
+         } else if (req.body.orange_blossom != '') {
+            res.sendStatus(403);
+         } else {
+
+            var admin = req.body.admin; // Owner of project
+            var id = req.body.id;
+            var user = req.body.user;
+            var req_micro_body = req.body.micro_body.replace(/\r\n/g,'');
+            var project_categories = [];
+            var project_url = req.body.project_url;
+            var posted_to_group;
+            if (req.body.post_to != '') {
+               if (req.body.post_to != 'Followers') {
+                  Group.findOne({ '_id': { $in: req.body.post_to } }, (err, group) => {
+                     if (group) {
+                        posted_to_group = true;
+                     } else {
+                        posted_to_group = false;
+                     }
+                  });
+               } else {
+                  posted_to_group = false;
+               }
+            } else {
+               posted_to_group = false;
+            }
+
+            var og_path = req.body.og_path;
+
+            if (og_path != '') {
+               var path = og_path;
+            } else {
+               var path = '/profile/' + req.user.username;
+            }
+
+            // See if project_url has https://
+            var has_https = project_url.search("https://");
+            if(has_https > -1) {
+
+               var url_without_https = project_url.split("https://")[1];
+               project_url = url_without_https;
+
+            }
+
+            // Check for mentions or hashtags
+            var micro_array = req_micro_body.split(" ");
+            var micro_body  = '';
+            micro_array.forEach(function(word, key) {
+               if (word[0] == '@') {
+
+                  // Slice the '@' and name from mention
+                  if (word.indexOf("<") > -1) {
+                     if (word.indexOf("&nbsp") > -1) {
+                        var pos = word.indexOf("&nbsp");
+                     }  else {
+                        var pos = word.indexOf("<");
+                     }
+                  } else {
+                     if (word.indexOf("&nbsp") > -1) {
+                        var pos = word.indexOf("&nbsp");
+                     }  else {
+                        var pos = word.length;
+                     }
+                  }
+                  var slice = word.slice(1, pos);
+                  slice = slice.replace(/<\/?[^>]+(>|$)/g, "");
+                  var clean_word = word.slice(0, pos);
+                  micro_body += '<a class="mention_tag" href="/profile/' + slice + '">' + clean_word + '</a> ' + word.slice(pos, word.length) + ' ';
+
+                  // Send notification to the user mentioned
+                  User.findOne({ 'username': { $in: slice} }, (err, reciever) => {
+                     if (err) throw err;
+
+                     var newNotification = new Notification({
+                        sender: req.user._id,
+                        reciever: reciever._id,
+                        type: '@' + req.user.username + ' mentioned you in their new post.',
+                        link: '/profile/' + req.user.username
+                     });
+
+                     // Create notification in database
+                     Notification.saveNotification(newNotification, (err, notification) => {
+                        if(err) throw err;
+
+                        // Add Notification for User
+                        User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+                           if (err) throw err;
+                        });
+
+                     });
+                  });
+
+               } else if (word[0] == '#') {
+
+                  // Slice the '#' and word from hashtag
+                  if (word.indexOf("<") > -1) {
+                     var pos = word.indexOf("<");
+                  } else {
+                     var pos = word.length;
+                  }
+                  var slice = word.slice(1, pos);
+                  slice = slice.replace(/<\/?[^>]+(>|$)/g, "");
+                  var clean_word = word.slice(0, pos);
+                  if (project_categories.indexOf(slice) === -1) {
+                     project_categories.push(slice);
+                  }
+                  micro_body += '<a class="mention_tag" href="/explore/' + slice + '">' + clean_word + '</a> ' + word.slice(pos, word.length) + ' ';
+
+               } else {
+                  micro_body += word + ' ';
+               }
+            });
+
+            if(req.file) {
+
+               // If user uploaded an image for project
+               var ext = path.extname(req.file.originalname);
+
+               // Check if file is an image
+               if(ext !== '.png' && ext !== '.PNG' && ext !== '.jpg' && ext !== '.JPG' && ext !== '.gif' && ext !== '.GIF' && ext !== '.jpeg' && ext !== '.JPEG') {
+
+                  User.findById(id, (err, user) => {
+                     if(err) throw err;
+
+                     User.find({ 'username': { $in: user.following} }, (err, profiles) => {
+                        if (err) throw err;
+                        res.render('p/create-project', {
+                           error_msg: 'Micropost File Must End With .jpg .jpeg .png .gif',
+                           page_title: 'Create Project',
+                           notes_is_empty_string: true,
+                           editProject: true,
+                           project_error: true,
+                           mention: profiles,
+                           user: user
+                        });
+                     });
+                  });
+
+               } else {
+                  // No errors have been made
+                  // var fileExt = req.file.originalname.split('.').pop();
+                  var micro_image = dateNow + req.file.originalname;
+
+                  var newProject = new Project({
+                     micro_image: micro_image,
+                     categories: project_categories,
+                     project_owner: req.user.username,
+                     micro_body: micro_body,
+                     project_url: project_url,
+                     is_micro_post: true
+                  });
+
+                  // Create project in database
+                  Project.saveProject(newProject, (err, project) => {
+                     if(err) throw err;
+
+                     // Add project to User document
+                     info = [];
+                     info['profileUsername'] = req.user.username;
+                     info['projectId'] = project._id.toString();
+
+                     User.createToProfile(info, (err, user) => {
+                        if(err) throw err;
+                     });
+
+                     if (posted_to_group) {
+                        Group.findOne({ '_id': { $in: req.body.post_to } }, (err, group) => {
+
+                           info['groupId'] = group._id;
+                           info['groupName'] = group.group_name;
+                           info['groupIsPrivate'] = group.is_private;
+
+                           Group.addProject(info, (err, group) => {
+                              if(err) throw err;
+                           });
+
+                           Project.addGroup(info, (err, project) => {
+                              if(err) throw err;
+                           });
+
+                           // Send notification to the user mentioned
+                           group.users.forEach(function(user, key) {
+                              User.findOne({ 'username': { $in: user} }, (err, reciever) => {
+                                 if (err) throw err;
+
+                                 var newNotification = new Notification({
+                                    sender: req.user._id,
+                                    reciever: reciever._id,
+                                    type: '@' + req.user.username + ' added a post in the group ' + group.group_name,
+                                    link: '/groups/' + group._id
+                                 });
+
+                                 // Create notification in database
+                                 Notification.saveNotification(newNotification, (err, notification) => {
+                                    if(err) throw err;
+
+                                    // Add Notification for User
+                                    User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+                                       if (err) throw err;
+                                    });
+                                 });
+                              });
+                           });
+
+                           req.flash('success_msg', "Micropost was created.");
+                           res.redirect('/groups/' + group._id);
+
+                        });
+
+                     } else {
+                        req.flash('success_msg', "Micropost was created.");
+                        res.redirect('/p/details/' + project._id);
+                     }
+                  });
+
+               }
+            } else {
+
+               var newProject = new Project({
+                  categories: project_categories,
+                  project_owner: req.user.username,
+                  micro_body: micro_body,
+                  project_url: project_url,
+                  is_micro_post: true
+               });
+
+               // Create project in database
+               Project.saveProject(newProject, (err, project) => {
+                  if(err) throw err;
+
+                  // Add project to User document
+                  info = [];
+                  info['profileUsername'] = req.user.username;
+                  info['projectId'] = project._id.toString();
+
+                  User.createToProfile(info, (err, user) => {
+                     if(err) throw err;
+                  });
+
+                  if (posted_to_group) {
+                     Group.findOne({ '_id': { $in: req.body.post_to } }, (err, group) => {
+
+                        info['groupId'] = group._id;
+                        info['groupName'] = group.group_name;
+                        info['groupIsPrivate'] = group.is_private;
+
+                        console.log(info['projectId']);
+
+                        Group.addProject(info, (err, group) => {
+                           if(err) throw err;
+                        });
+
+                        Project.addGroup(info, (err, project) => {
+                           if(err) throw err;
+                        });
+
+                        // Send notification to the user mentioned
+                        group.users.forEach(function(user, key) {
+                           User.findOne({ 'username': { $in: user} }, (err, reciever) => {
+                              if (err) throw err;
+
+                              var newNotification = new Notification({
+                                 sender: req.user._id,
+                                 reciever: reciever._id,
+                                 type: '@' + req.user.username + ' added a post in the group ' + group.group_name,
+                                 link: '/groups/' + group._id
+                              });
+
+                              // Create notification in database
+                              Notification.saveNotification(newNotification, (err, notification) => {
+                                 if(err) throw err;
+
+                                 // Add Notification for User
+                                 User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+                                    if (err) throw err;
+                                 });
+                              });
+                           });
+                        });
+
+                        req.flash('success_msg', "Micropost was created.");
+                        res.redirect('/groups/' + group._id);
+
+                     });
+
+                  } else {
+                     req.flash('success_msg', "Micropost was created.");
+                     res.redirect(path);
+                  }
+               });
+            }
+
+         }
+      });
+
+   } else {
+      res.redirect('/welcome');
+   }
 });
 
 // Verify JS Web Token
 function verifyToken(req, res, next) {
 
-   // var bearerHeader = req.headers.authorization;
-   //
-   // console.log(bearerHeader);
+   var bearerReq = req.body._c_;
 
-   // if (typeof bearerHeader !== 'undefined') {
-   //
-   //    var bearerToken = bearerHeader.split(' ')[1];
-   //    req.token = bearerToken;
-   //
-   //    next();
-   //
-   // } else {
-   //    res.sendStatus(403);
-   // }
+   console.log(bearerReq);
+
+   if (typeof bearerReq !== 'undefined') {
+
+      var bearerToken = bearerReq.split(' ')[1];
+      req.token = bearerToken;
+
+   } else {
+      res.sendStatus(403);
+   }
 
    next()
 }

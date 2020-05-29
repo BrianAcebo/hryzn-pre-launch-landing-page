@@ -1110,53 +1110,62 @@ router.get('/messages/chat/delete/:messageId', (req, res, next) => {
 
 
 // Post Old Message Chat
-router.post('/messages/chat/:messageId', (req, res, next) => {
+router.post('/messages/chat/:messageId', verifyToken, (req, res, next) => {
    if(req.isAuthenticated()) {
 
-      info = [];
-      info['userUsername'] = req.body.username;
-      info['messageId'] = req.params.messageId;
-      if (req.body.profileimage) {
-         info['profileimage'] = req.body.profileimage;
-      } else {
-         info['profileimage'] = 'hryzn-placeholder-01.jpg';
-      }
-      info['message'] = req.body.message.replace(/\r\n/g,'');
+      jwt.verify(req.token, 'SuperSecretKey', (err, authData) => {
+         if (err) {
+            res.sendStatus(403);
+         } else if (req.body.orange_blossom != '') {
+            res.sendStatus(403);
+         } else {
 
-      // Add message
-      Message.addMessage(info, (err, message) => {
-         if(err) throw err
+            info = [];
+            info['userUsername'] = req.body.username;
+            info['messageId'] = req.params.messageId;
+            if (req.body.profileimage) {
+               info['profileimage'] = req.body.profileimage;
+            } else {
+               info['profileimage'] = 'hryzn-placeholder-01.jpg';
+            }
+            info['message'] = req.body.message.replace(/\r\n/g,'');
 
-         Message.findOne({ '_id': { $in: req.params.messageId} }, (err, message) => {
-            message.users.forEach(function(user, key) {
-               if (user != req.user.username) {
-                  // Send notification to the user mentioned
-                  User.findOne({ 'username': { $in: user} }, (err, reciever) => {
-                     if (err) throw err;
+            // Add message
+            Message.addMessage(info, (err, message) => {
+               if(err) throw err
 
-                     var newNotification = new Notification({
-                        sender: req.user._id,
-                        reciever: reciever._id,
-                        type: '@' + req.body.username + ' messaged you.',
-                        link: '/messages/chat/' + req.params.messageId
-                     });
-
-                     // Create notification in database
-                     Notification.saveNotification(newNotification, (err, notification) => {
-                        if(err) throw err;
-
-                        // Add Notification for User
-                        User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+               Message.findOne({ '_id': { $in: req.params.messageId} }, (err, message) => {
+                  message.users.forEach(function(user, key) {
+                     if (user != req.user.username) {
+                        // Send notification to the user mentioned
+                        User.findOne({ 'username': { $in: user} }, (err, reciever) => {
                            if (err) throw err;
-                        });
-                     });
-                  });
-               }
-            });
-         });
 
-         req.flash('success_msg', "Message Sent");
-         res.redirect('/messages/chat/' + req.params.messageId);
+                           var newNotification = new Notification({
+                              sender: req.user._id,
+                              reciever: reciever._id,
+                              type: '@' + req.body.username + ' messaged you.',
+                              link: '/messages/chat/' + req.params.messageId
+                           });
+
+                           // Create notification in database
+                           Notification.saveNotification(newNotification, (err, notification) => {
+                              if(err) throw err;
+
+                              // Add Notification for User
+                              User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+                                 if (err) throw err;
+                              });
+                           });
+                        });
+                     }
+                  });
+               });
+
+               req.flash('success_msg', "Message Sent");
+               res.redirect('/messages/chat/' + req.params.messageId);
+            });
+         }
       });
 
    } else {
@@ -1189,68 +1198,77 @@ router.get('/messages/new/:username', (req, res, next) => {
 
 
 // Post New Message Chat
-router.post('/messages/new/:username', (req, res, next) => {
+router.post('/messages/new/:username', verifyToken, (req, res, next) => {
    if(req.isAuthenticated()) {
 
-      var info = [];
+      jwt.verify(req.token, 'SuperSecretKey', (err, authData) => {
+         if (err) {
+            res.sendStatus(403);
+         } else if (req.body.orange_blossom != '') {
+            res.sendStatus(403);
+         } else {
 
-      var users = req.body.users;
-      var sent_by = req.user.username;
-      if (req.body.profileimage) {
-         info['profileimage'] = req.body.profileimage;
-      } else {
-         info['profileimage'] = 'hryzn-placeholder-01.jpg';
-      }
-      var message = req.body.message.replace(/\r\n/g,'');
+            var info = [];
 
-      var newMessage = new Message({
-         users: users,
-         messages: {
-            username: sent_by,
-            profileimage: info['profileimage'],
-            message: message
-         }
-      });
+            var users = req.body.users;
+            var sent_by = req.user.username;
+            if (req.body.profileimage) {
+               info['profileimage'] = req.body.profileimage;
+            } else {
+               info['profileimage'] = 'hryzn-placeholder-01.jpg';
+            }
+            var message = req.body.message.replace(/\r\n/g,'');
 
-      // Create message in database
-      Message.saveMessage(newMessage, (err, message) => {
-         if(err) throw err;
-
-         // Add chat for User
-         users.forEach(function(user, key) {
-            info = [];
-            info['profileUsername'] = user;
-            info['messageId'] = message._id.toString();
-
-            User.addChat(info, (err, user) => {
-               if(err) throw err;
-            });
-         });
-
-         // Send notification to the user mentioned
-         User.findOne({ 'username': { $in: req.params.username} }, (err, reciever) => {
-            if (err) throw err;
-
-            var newNotification = new Notification({
-               sender: req.user._id,
-               reciever: reciever._id,
-               type: '@' + req.user.username + ' messaged you.',
-               link: '/messages/chat/' + message._id
+            var newMessage = new Message({
+               users: users,
+               messages: {
+                  username: sent_by,
+                  profileimage: info['profileimage'],
+                  message: message
+               }
             });
 
-            // Create notification in database
-            Notification.saveNotification(newNotification, (err, notification) => {
+            // Create message in database
+            Message.saveMessage(newMessage, (err, message) => {
                if(err) throw err;
 
-               // Add Notification for User
-               User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
-                  if (err) throw err;
+               // Add chat for User
+               users.forEach(function(user, key) {
+                  info = [];
+                  info['profileUsername'] = user;
+                  info['messageId'] = message._id.toString();
+
+                  User.addChat(info, (err, user) => {
+                     if(err) throw err;
+                  });
                });
-            });
-         });
 
-         req.flash('success_msg', "Message was sent.");
-         res.redirect('/messages');
+               // Send notification to the user mentioned
+               User.findOne({ 'username': { $in: req.params.username} }, (err, reciever) => {
+                  if (err) throw err;
+
+                  var newNotification = new Notification({
+                     sender: req.user._id,
+                     reciever: reciever._id,
+                     type: '@' + req.user.username + ' messaged you.',
+                     link: '/messages/chat/' + message._id
+                  });
+
+                  // Create notification in database
+                  Notification.saveNotification(newNotification, (err, notification) => {
+                     if(err) throw err;
+
+                     // Add Notification for User
+                     User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+                        if (err) throw err;
+                     });
+                  });
+               });
+
+               req.flash('success_msg', "Message was sent.");
+               res.redirect('/messages');
+            });
+         }
       });
 
    } else {
@@ -2072,5 +2090,24 @@ router.get('/sitemap', (req, res, next) => {
       sitemap: true
    });
 });
+
+// Verify JS Web Token
+function verifyToken(req, res, next) {
+
+   var bearerReq = req.body._c_;
+
+   console.log(bearerReq);
+
+   if (typeof bearerReq !== 'undefined') {
+
+      var bearerToken = bearerReq.split(' ')[1];
+      req.token = bearerToken;
+
+   } else {
+      res.sendStatus(403);
+   }
+
+   next()
+}
 
 module.exports = router;

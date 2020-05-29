@@ -4,7 +4,7 @@
    </div>
 </div>
 
-<form id="createProjectForm" method="post" class="edit-project-form" action="/p/create-project" enctype="multipart/form-data">
+<form id="createProjectForm" method="post" class="edit-project-form" action="/p/create-project/blog" enctype="multipart/form-data">
    <div class="form__container">
 
       <div class="modalBtnMeta project_meta_btn">
@@ -27,7 +27,9 @@
       <input id="checkbox" type="hidden" name="is_private" value="false">
       <input type="hidden" name="admin" value="{{user.username}}">
       <input type="hidden" name="id" value="{{user._id}}">
-      <input type="hidden" name="_c_" value="{{req.csrfToken()}}" />
+      <input type="hidden" name="_x_" value="$2a$10$BJn0b4OzBarDigcTUl0kejbffkejbfvxSI.JrlLKeSsOi8oKqBAK" />
+      <input type="hidden" name="_c_" value="{{csrf_web_token}}" />
+      <input type="hidden" name="orange_blossom" value="" />
       <div class="create_btns">
          <button class="form__sign-up-button project_submit edit-project__form-btn" name="submit" type="submit">Create</button>
          <button class="form__sign-up-button save_as_draft_btn draft_btn project_submit edit-project__form-btn" name="submit" type="submit">Save as Draft</button>

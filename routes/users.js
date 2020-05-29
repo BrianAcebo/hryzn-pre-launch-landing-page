@@ -9,7 +9,9 @@ const keys = require('../config/keys');
 const aws = require('aws-sdk');
 const multerS3 = require('multer-s3');
 const dateNow = Date.now().toString();
-const jwt = require('jsonwebtoken');
+
+
+// Twilio Account Info
 const accountSid = 'AC270b0d054e0fc564733342d934441402';
 const authToken = '8b8b777629c294c6379a848a8dec1430';
 const client = require('twilio')(accountSid, authToken);
@@ -550,48 +552,58 @@ passport.deserializeUser( (id, done) => {
 // POST Login
 router.post('/login', passport.authenticate('local-login', { failureRedirect:'/users/login', failureFlash: true }), (req, res, next) => {
    // Logged In successfully
-   // jwt.sign({user: req.user}, 'SuperSecretKey', { expiresIn: "1h" }, (err, token) => {
-   //    //res.header('Authorization', 'Bearer '+ token);
-   //    console.log(res.header('Authorization', 'Bearer '+ token));
-   //    res.header('Authorization', 'Bearer '+ token)
-   //    res.send();
-   //    console.log(req.headers['Authorization']);
-   //    //res.redirect('/');
-   // });
-
    res.redirect('/');
 });
 
 passport.use('local-login', new LocalStrategy( (username, password, done) => {
+
    // Check for username
    User.getUserByUsername(username, (err, user) => {
+
       if(err) throw err;
+
+      // Can't find existing user through the username given
       if(!user) {
+
          // Check for email
          User.getUserByEmail(username, (err, user) => {
             if(err) throw err;
+
             if(!user) {
+               // Can't find existing user through the email given
                return done(null, false, { message: 'Incorrect Password Or Username. Please Try Again' });
             }
 
+            // Check password with email combination
             User.comparePassword(password, user.password, (err, isMatch) => {
                if(err) throw err;
+
                if(isMatch) {
+                  // Logged in succesfully
                   return done(null, user);
                } else {
+                  // Password didn't match DB password
                   return done(null, false, { message: 'Incorrect Password Or Username. Please Try Again' });
                }
             });
          });
+
       } else {
+
+         // Check password with username combination
          User.comparePassword(password, user.password, (err, isMatch) => {
             if(err) throw err;
             if(isMatch) {
+
+               // Logged in succesfully
                return done(null, user);
             } else {
+
+               // Password didn't match DB password
                return done(null, false, { message: 'Incorrect Password Or Username. Please Try Again' });
             }
          });
+
       }
    });
 }));
