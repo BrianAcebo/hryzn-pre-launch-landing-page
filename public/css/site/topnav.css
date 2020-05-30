@@ -203,11 +203,10 @@ nav.item-list {
 }
 
 .drop_nav {
+   box-shadow: rgba(0, 0, 0, 0.10) 0px 2px 10px 1px;
    position: absolute;
+   border-radius: 15px;
    min-width: 160px;
-   border-bottom: 1px solid #f1f1f1;
-   border-right: 1px solid #f1f1f1;
-   border-left: 1px solid #f1f1f1;
    border-top: none;
    background: #fff;
    z-index: 999998;
