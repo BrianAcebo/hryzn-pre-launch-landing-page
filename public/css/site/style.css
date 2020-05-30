@@ -437,6 +437,10 @@ input {
    padding: 50px 0;
 }
 
+#mainDash {
+   padding: 0;
+}
+
 /********************/
 /* Pre Loaders */
 /********************/

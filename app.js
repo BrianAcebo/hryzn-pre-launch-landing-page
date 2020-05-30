@@ -20,6 +20,7 @@ const usersRouter = require('./routes/users');
 const projectsRouter = require('./routes/projects');
 const aboutRouter = require('./routes/about');
 const blogRouter = require('./routes/blog');
+const dashboardRouter = require('./routes/dashboard');
 
 const app = express();
 
@@ -157,6 +158,7 @@ app.use('/users', usersRouter);
 app.use('/p', projectsRouter);
 app.use('/about', aboutRouter);
 app.use('/blog', blogRouter);
+app.use('/dashboard', dashboardRouter);
 
 // Catch 404
 app.use( function(req, res, next) {

@@ -1,0 +1,130 @@
+.dash_sidebar {
+  margin: 0;
+  padding: 0;
+  width: 250px;
+  position: fixed;
+  height: 100%;
+  border-right: 1px solid #ccc;
+  overflow: auto;
+  transition: 0.5s;
+  background: #fff;
+  z-index: 999998;
+}
+
+.dash_menu_btn {
+   justify-content: center;
+   align-items: center;
+   flex-direction: column;
+   display: none;
+   position: absolute;
+   right: 25px;
+   top: 25px;
+   z-index: 999999;
+}
+
+#dashClose {
+   right: 25px;
+   top: 25px;
+   display: none;
+   font-size: 35px;
+}
+
+.dash_menu_btn .dash_dashes {
+   width: 22px;
+   height: 2px;
+   margin: 5px 0;
+   background: #333;
+}
+
+.dash_logo {
+   font-size: 14px;
+   font-family: 'proxima-nova', sans-serif;
+   position: absolute;
+   left: 25px;
+   top: 25px;
+   display: flex;
+   flex-direction: row;
+   justify-content: center;
+   align-items: center;
+}
+
+.dash_logo span {
+   font-size: 35px;
+   font-weight: bold;
+   font-family: 'Montserrat', sans-serif;
+   color: #31375A;
+   margin-right: 10px;
+}
+
+.dash_nav {
+   margin-top: 150px;
+}
+
+.dash_nav a {
+   display: block;
+   padding: 10px 15px;
+   margin: 10px 0;
+   font-size: 18px;
+   line-height: 35px;
+   font-family: 'Poppins', sans-serif;
+   margin-left: 35px;
+   transition: 0.3s;
+   font-weight: 600;
+   border-top-left-radius: 35px;
+   border-bottom-left-radius: 35px;
+}
+
+.dash_nav a.dash_active {
+   background-color: #f1f1f1;
+   padding: 10px 25px;
+   font-weight: 600;
+}
+
+.dash_nav a:hover:not(.dash_active) {
+   background-color: #f1f1f1;
+   padding: 10px 25px;
+}
+
+.dash_settings {
+   font-size: 16px;
+   font-family: 'Poppins', sans-serif;
+   position: absolute;
+   left: 35px;
+   padding: 0 15px;
+   bottom: 100px;
+   display: flex;
+   flex-direction: row;
+   justify-content: center;
+   align-items: center;
+}
+
+.dash_settings img {
+   margin-right: 15px;
+}
+
+div.dash_content {
+   margin-left: 250px;
+   padding: 100px;
+}
+
+@media screen and (max-width: 768px) {
+   .dash_menu_btn {
+      display: flex;
+   }
+
+   .dash_sidebar {
+      width: 0;
+   }
+
+   div.dash_content {
+      margin-left: 0;
+      padding: 100px 50px;
+   }
+}
+
+@media screen and (max-width: 400px) {
+  .dash_sidebar a {
+    text-align: center;
+    float: none;
+  }
+}

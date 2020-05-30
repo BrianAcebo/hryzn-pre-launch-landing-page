@@ -683,10 +683,37 @@ $(document).ready(function() {
    });
    /**********/
 
+
    // Original Path
    var $ogPath = window.location.pathname;
    $('.og_path').each(function() {
       $(this).val($ogPath);
+   });
+   /**********/
+
+
+   // Open dashboard nav on click
+   var $dashOpen = $('#dashBtn');
+   var $dashesContainer = $('.dashOpen_container');
+   var $dashClose = $('#dashClose');
+   var $dashNav = $('#dashSideNav');
+   var $window = $(window);
+
+   $dashesContainer.click(function() {
+      if($window.width() <= 595) {
+         $dashNav.css({ "width": "100%", "box-shadow": "0 2px 4px 0 rgba(0,0,0,0.2)" });
+      } else {
+         $dashNav.css({ "width": "250" });
+      }
+
+      $dashesContainer.css({ "display": "none" });
+      $dashClose.css({ "display": "block" });
+   });
+
+   $dashClose.click(function() {
+      $dashNav.css({ "width": "0" });
+      $dashesContainer.css({ "display": "block" });
+      $dashClose.css({ "display": "none" });
    });
    /**********/
 

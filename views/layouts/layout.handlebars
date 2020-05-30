@@ -54,7 +54,7 @@
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
       <link href="https://cdn.rawgit.com/harvesthq/chosen/gh-pages/chosen.min.css" rel="stylesheet"/>
 
-      {{! For DEV
+      {{! For DEV 
       <link rel="stylesheet" type="text/css" href="/css/site/style.css" />
       <link rel="stylesheet" type="text/css" href="/css/site/topnav.css" />
       <link rel="stylesheet" type="text/css" href="/css/site/forms.css" />
@@ -68,8 +68,9 @@
       <link rel="stylesheet" type="text/css" href="/css/site/vendor.css" />
       <link rel="stylesheet" type="text/css" href="/css/site/notifications.css" />
       <link rel="stylesheet" type="text/css" href="/css/site/groups.css" />
+      <link rel="stylesheet" type="text/css" href="/css/site/dashboard.css" />
       <link rel="stylesheet" type="text/css" href="/css/site/trumbowyg.min.css" />
-
+      }}
 
       {{! For PROD }}
       <link rel="stylesheet" type="text/css" href="/dist/css/style.min.css" />
@@ -88,127 +89,132 @@
       {{! Check if user is logged in }}
 
       {{#if user}}
-      <!-- Main Nav -->
-      <header class="topnav">
-         <div class="topnav-left">
-            <a href="/" class="topnav__logo user_beta">
-               Hryzn
-               <em class="logo_beta">BETA</em>
-            </a>
-            <div class="search-container">
-               <form action="/search">
-                  <input type="text" placeholder="Explore our universe..." name="p">
-                  <button type="submit"><img src="/icons/search.png" class="mobile-nav__icon"/></button>
-               </form>
-            </div>
-         </div>
-         <nav class="item-list">
-            <div class="drop_menu">
-               <a class="dropBtn" class="main-topnav__profile">
-                  <div class="topnav__user">
-                     <div class="topnav__profile-img-container">
-                        <img class="profile__img" {{#if user.profileimage}}src="https://s3.amazonaws.com/hryzn-app-static-assets/{{user.profileimage}}"{{else}}src="/img/site/hryzn-placeholder-01.jpg"{{/if}} />
+
+         {{#if dashboard}}
+         {{else}}
+            <!-- Main Nav -->
+            <header class="topnav">
+               <div class="topnav-left">
+                  <a href="/" class="topnav__logo user_beta">
+                     Hryzn
+                     <em class="logo_beta">BETA</em>
+                  </a>
+                  <div class="search-container">
+                     <form action="/search">
+                        <input type="text" placeholder="Explore our universe..." name="p">
+                        <button type="submit"><img src="/icons/search.png" class="mobile-nav__icon"/></button>
+                     </form>
+                  </div>
+               </div>
+               <nav class="item-list">
+                  <div class="drop_menu">
+                     <a class="dropBtn" class="main-topnav__profile">
+                        <div class="topnav__user">
+                           <div class="topnav__profile-img-container">
+                              <img class="profile__img" {{#if user.profileimage}}src="https://s3.amazonaws.com/hryzn-app-static-assets/{{user.profileimage}}"{{else}}src="/img/site/hryzn-placeholder-01.jpg"{{/if}} />
+                           </div>
+                           @{{user.username}}
+                        </div>
+                     </a>
+                     <div class="drop_nav dropNav">
+                        <a href="/profile/{{user.username}}">Profile</a>
+                        <a href="/messages">Messages</a>
+                        <a href="/groups">Groups</a>
+                        <a href="/blog/hryzn-tutorial---site-walk-through">Help</a>
+                        <a href="/logout">Logout</a>
                      </div>
-                     @{{user.username}}
                   </div>
-               </a>
-               <div class="drop_nav dropNav">
-                  <a href="/profile/{{user.username}}">Profile</a>
-                  <a href="/messages">Messages</a>
-                  <a href="/groups">Groups</a>
-                  <a href="/blog/hryzn-tutorial---site-walk-through">Help</a>
-                  <a href="/logout">Logout</a>
-               </div>
-            </div>
-            <a href="/">
-               <div class="tooltip">
-                  <img src="/icons/home.png" class="main-topnav__icon" />
-                  <span class="tooltiptext">Feed</span>
-               </div>
-            </a>
-            <a href="/explore">
-               <div class="tooltip">
-                  <img src="/icons/explore-black.png" class="main-topnav__icon" />
-                  <span class="tooltiptext">Explore</span>
-               </div>
-            </a>
-            {{#if user.has_notification}}
-            <a href="/notifications">
-               <div class="tooltip">
-                  <img src="/icons/notification-unread.png" class="main-topnav__icon" />
-                  <span class="tooltiptext">Notifications</span>
-               </div>
-            </a>
-            {{else}}
-            <a href="/notifications">
-               <div class="tooltip">
-                  <img src="/icons/notification.png" class="main-topnav__icon" />
-                  <span class="tooltiptext">Notifications</span>
-               </div>
-            </a>
-            {{/if}}
-            <a class="create-icon">
-               <div class="tooltip">
-                  <img src="/icons/create-icon.png" class="main-topnav__icon" />
-                  <span class="tooltiptext">Create Post</span>
-               </div>
-            </a>
-            <div class="post_container">
-               <div href="/p/create-project" class="blog_post_btn">
-                  <a href="/p/create-project">Blog Post</a>
-               </div>
-               <div class="micro_post_btn">Micro Post</div>
-            </div>
-         </nav>
-      </header>
-      <!-- /Main Nav -->
-
-      <!-- Mobile Nav -->
-      <nav class="mobile-nav">
-         <ul class="mobile-nav__item-list">
-            <li class="mobile-nav__item">
-               <a href="/"><img src="/icons/home.png" class="mobile-nav__icon" /></a>
-            </li>
-
-            <li class="mobile-nav__item">
-               <a href="/explore"><img src="/icons/explore-black.png" class="mobile-nav__icon" /></a>
-            </li>
-
-            <li class="mobile-nav__item">
-               <a class="create-icon"><img src="/icons/create-icon.png" class="mobile-nav__icon" /></a>
-               <div class="post_container">
-                  <div href="/p/create-project" class="blog_post_btn">
-                     <a href="/p/create-project">Blog Post</a>
+                  <a href="/">
+                     <div class="tooltip">
+                        <img src="/icons/home.png" class="main-topnav__icon" />
+                        <span class="tooltiptext">Feed</span>
+                     </div>
+                  </a>
+                  <a href="/explore">
+                     <div class="tooltip">
+                        <img src="/icons/explore-black.png" class="main-topnav__icon" />
+                        <span class="tooltiptext">Explore</span>
+                     </div>
+                  </a>
+                  {{#if user.has_notification}}
+                  <a href="/notifications">
+                     <div class="tooltip">
+                        <img src="/icons/notification-unread.png" class="main-topnav__icon" />
+                        <span class="tooltiptext">Notifications</span>
+                     </div>
+                  </a>
+                  {{else}}
+                  <a href="/notifications">
+                     <div class="tooltip">
+                        <img src="/icons/notification.png" class="main-topnav__icon" />
+                        <span class="tooltiptext">Notifications</span>
+                     </div>
+                  </a>
+                  {{/if}}
+                  <a class="create-icon">
+                     <div class="tooltip">
+                        <img src="/icons/create-icon.png" class="main-topnav__icon" />
+                        <span class="tooltiptext">Create Post</span>
+                     </div>
+                  </a>
+                  <div class="post_container">
+                     <div href="/p/create-project" class="blog_post_btn">
+                        <a href="/p/create-project">Blog Post</a>
+                     </div>
+                     <div class="micro_post_btn">Micro Post</div>
                   </div>
-                  <div class="micro_post_btn">Micro Post</div>
-               </div>
-            </li>
+               </nav>
+            </header>
+            <!-- /Main Nav -->
 
-            {{#if user.has_notification}}
-            <li class="mobile-nav__item">
-               <a href="/notifications"><img src="/icons/notification-unread.png" class="mobile-nav__icon" /></a>
-            </li>
-            {{else}}
-            <li class="mobile-nav__item">
-               <a href="/notifications"><img src="/icons/notification.png" class="mobile-nav__icon" /></a>
-            </li>
-            {{/if}}
+            <!-- Mobile Nav -->
+            <nav class="mobile-nav">
+               <ul class="mobile-nav__item-list">
+                  <li class="mobile-nav__item">
+                     <a href="/"><img src="/icons/home.png" class="mobile-nav__icon" /></a>
+                  </li>
 
-            <li class="mobile-nav__item">
-               <div class="drop_menu">
-                  <a class="dropBtn"><img src="/icons/user-black.png" class="mobile-nav__icon" /></a>
-                  <div class="drop_nav dropNav">
-                     <a href="/profile/{{user.username}}">Profile</a>
-                     <a href="/messages">Messages</a>
-                     <a href="/groups">Groups</a>
-                     <a href="/blog/hryzn-tutorial---site-walk-through">Help</a>
-                     <a href="/logout">Logout</a>
-                  </div>
-               </div>
-            </li>
-         </ul>
-      </nav>
-      <!-- /Mobile Nav -->
+                  <li class="mobile-nav__item">
+                     <a href="/explore"><img src="/icons/explore-black.png" class="mobile-nav__icon" /></a>
+                  </li>
+
+                  <li class="mobile-nav__item">
+                     <a class="create-icon"><img src="/icons/create-icon.png" class="mobile-nav__icon" /></a>
+                     <div class="post_container">
+                        <div href="/p/create-project" class="blog_post_btn">
+                           <a href="/p/create-project">Blog Post</a>
+                        </div>
+                        <div class="micro_post_btn">Micro Post</div>
+                     </div>
+                  </li>
+
+                  {{#if user.has_notification}}
+                  <li class="mobile-nav__item">
+                     <a href="/notifications"><img src="/icons/notification-unread.png" class="mobile-nav__icon" /></a>
+                  </li>
+                  {{else}}
+                  <li class="mobile-nav__item">
+                     <a href="/notifications"><img src="/icons/notification.png" class="mobile-nav__icon" /></a>
+                  </li>
+                  {{/if}}
+
+                  <li class="mobile-nav__item">
+                     <div class="drop_menu">
+                        <a class="dropBtn"><img src="/icons/user-black.png" class="mobile-nav__icon" /></a>
+                        <div class="drop_nav dropNav">
+                           <a href="/profile/{{user.username}}">Profile</a>
+                           <a href="/messages">Messages</a>
+                           <a href="/groups">Groups</a>
+                           <a href="/blog/hryzn-tutorial---site-walk-through">Help</a>
+                           <a href="/logout">Logout</a>
+                        </div>
+                     </div>
+                  </li>
+               </ul>
+            </nav>
+            <!-- /Mobile Nav -->
+
+         {{/if}}
 
       {{else}}
 
@@ -269,7 +275,7 @@
       {{/if}}
 
       {{! Errors styling }}
-      <main {{#if user}}id="mainBody"{{else}}{{#if project}}id="mainProject"{{else}}{{#if welcomePage}}{{else}}id="mainWelcome"{{/if}}{{/if}}{{/if}}>
+      <main {{#if user}}{{#if dashboard}}id="mainDash"{{else}}id="mainBody"{{/if}}{{else}}{{#if project}}id="mainProject"{{else}}{{#if welcomePage}}{{else}}id="mainWelcome"{{/if}}{{/if}}{{/if}}>
          {{#if user}}
             {{#if error_msg}}
             <div class="error__msg-3">
