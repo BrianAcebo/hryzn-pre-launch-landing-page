@@ -1,5 +1,20 @@
 <div class="explore_main">
 
+{{#if existing_chats}}
+
+   <p class="top_results">Existing Chats</p>
+   <hr class="top_results_underline" />
+
+   <section class="follower__profiles-section">
+      {{#each existing_chats}}
+      <a href="/messages/{{this}}" class="follower__profile">
+         @{{this}}
+      </a>
+      {{/each}}
+   </section>
+
+{{/if}}
+
 {{#if following}}
 
    <p class="top_results">Chat With Someone</p>

@@ -982,10 +982,16 @@ router.get('/messages', (req, res, next) => {
 
          if (err) throw err;
 
+         var existing_chats = [];
+
          if (messages.length > 0) {
-            var has_messages = true;
-         } else {
-            var has_messages = false;
+            messages.forEach(function(chat, key) {
+               chat.users.forEach(function(user, key) {
+                  if( user !== req.user.username) {
+                     existing_chats.push(user);
+                  }
+               });
+            });
          }
 
          User.find({ 'username': { $in: req.user.following} }, (err, following) => {
@@ -994,9 +1000,9 @@ router.get('/messages', (req, res, next) => {
 
             res.render('messages', {
                page_title: 'Messages',
-               has_messages: has_messages,
                messages: messages,
-               following: following
+               following: following,
+               existing_chats: existing_chats
             });
 
          });
