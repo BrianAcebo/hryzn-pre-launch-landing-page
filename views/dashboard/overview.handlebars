@@ -1,12 +1,16 @@
 <div id="dashSideNav" class="dash_sidebar">
-   <a href="/profile/{{user.username}}" class="dash_logo"><span>H</span> back</a>
+   <a href="/profile/{{user.username}}" class="dash_logo">
+      <div class="dash_back"><img src="/icons/left-arrow-black.png" class="mobile-nav__icon"/></div>
+      <span>H</span>
+   </a>
 
    <div class="dash_nav">
-      <a class="dash_active" href="#dashboard/build">Build</a>
-      <a href="#dashboard/manage">Manage</a>
-      <a href="#dashboard/marketing">Marketing</a>
-      <a href="#dashboard/monetize">Monetize</a>
-      <a href="#dashboard/analytics">Analytics</a>
+      <a class="dash_active" href="/dashboard">Overview</a>
+      <a href="/dashboard/build">Build</a>
+      <a href="/dashboard/manage">Manage</a>
+      <a href="/dashboard/marketing">Marketing</a>
+      <a href="/dashboard/monetize">Monetize</a>
+      <a href="/dashboard/analytics">Analytics</a>
    </div>
 
    <a href="#settings" class="dash_settings"><img src="/icons/settings-black.png" class="mobile-nav__icon"/>Settings</a>

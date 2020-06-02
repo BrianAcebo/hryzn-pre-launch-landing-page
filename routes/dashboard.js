@@ -33,11 +33,12 @@ const Message = require('../models/messages');
 const Notification = require('../models/notifications');
 const Group = require('../models/groups');
 
-// Get Welcome Landing Page
+
+// Get Dashboard
 router.get('/', (req, res, next) => {
    if(req.isAuthenticated()) {
-      res.render('dashboard/dashboard', {
-        page_title: 'Dashboard',
+      res.render('dashboard/overview', {
+        page_title: 'Dashboard Overview',
         notLoginPage: false,
         welcomePage: false,
         dashboard: true
@@ -46,6 +47,82 @@ router.get('/', (req, res, next) => {
       res.redirect('/');
    }
 });
+
+
+// Get Dashboard Build
+router.get('/build', (req, res, next) => {
+   if(req.isAuthenticated()) {
+      res.render('dashboard/build', {
+        page_title: 'Dashboard Build',
+        notLoginPage: false,
+        welcomePage: false,
+        dashboard: true
+      });
+   } else {
+      res.redirect('/');
+   }
+});
+
+
+// Get Dashboard Manage
+router.get('/manage', (req, res, next) => {
+   if(req.isAuthenticated()) {
+      res.render('dashboard/manage', {
+        page_title: 'Dashboard Manage',
+        notLoginPage: false,
+        welcomePage: false,
+        dashboard: true
+      });
+   } else {
+      res.redirect('/');
+   }
+});
+
+
+// Get Dashboard Marketing
+router.get('/marketing', (req, res, next) => {
+   if(req.isAuthenticated()) {
+      res.render('dashboard/marketing', {
+        page_title: 'Dashboard Marketing',
+        notLoginPage: false,
+        welcomePage: false,
+        dashboard: true
+      });
+   } else {
+      res.redirect('/');
+   }
+});
+
+
+// Get Dashboard Monetize
+router.get('/monetize', (req, res, next) => {
+   if(req.isAuthenticated()) {
+      res.render('dashboard/monetize', {
+        page_title: 'Dashboard Monetize',
+        notLoginPage: false,
+        welcomePage: false,
+        dashboard: true
+      });
+   } else {
+      res.redirect('/');
+   }
+});
+
+
+// Get Dashboard Analytics
+router.get('/analytics', (req, res, next) => {
+   if(req.isAuthenticated()) {
+      res.render('dashboard/analytics', {
+        page_title: 'Dashboard Analytics',
+        notLoginPage: false,
+        welcomePage: false,
+        dashboard: true
+      });
+   } else {
+      res.redirect('/');
+   }
+});
+
 
 // Verify JS Web Token
 function verifyToken(req, res, next) {

@@ -11,6 +11,17 @@
   z-index: 999998;
 }
 
+.dash_back {
+   border-radius: 50%;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   height: 35px;
+   width: 35px;
+   background: #f1f1f1;
+   margin-right: 15px;
+}
+
 .dash_menu_btn {
    justify-content: center;
    align-items: center;
@@ -57,7 +68,7 @@
 }
 
 .dash_nav {
-   margin-top: 150px;
+   margin-top: 200px;
 }
 
 .dash_nav a {
@@ -67,7 +78,7 @@
    font-size: 18px;
    line-height: 35px;
    font-family: 'Poppins', sans-serif;
-   margin-left: 35px;
+   margin-left: 50px;
    transition: 0.3s;
    font-weight: 600;
    border-top-left-radius: 35px;
@@ -89,7 +100,7 @@
    font-size: 16px;
    font-family: 'Poppins', sans-serif;
    position: absolute;
-   left: 35px;
+   left: 50px;
    padding: 0 15px;
    bottom: 100px;
    display: flex;
