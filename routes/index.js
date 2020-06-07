@@ -54,12 +54,27 @@ router.get('/welcome', (req, res, next) => {
          if (err) throw err;
 
          res.render('welcome', {
-           page_title: 'Create, explore, and share your ideas on a powerful social writing platform',
+            page_title: "Everybody has something to say. We make it easy to say it. Find your voice.",
            notLoginPage: false,
            projects: projects,
            welcomePage: true
          });
       }).limit(8);
+
+   }
+});
+
+// Get Creatives
+router.get('/creatives', (req, res, next) => {
+   if(req.isAuthenticated()) {
+      res.redirect('/');
+   } else {
+
+      res.render('creatives', {
+        page_title: 'Creatives',
+        notLoginPage: false,
+        welcomePage: false
+      });
 
    }
 });

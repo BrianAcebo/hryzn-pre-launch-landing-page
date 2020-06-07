@@ -116,11 +116,11 @@
                      {{/each}}
                      {{/if}}
                      <div class="micropost_card">
+                        {{#if micro_image}}<img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{micro_image}}" class="img-responsive" alt="{{micro_body}}" />{{/if}}
                         <p>
                            {{{micro_body}}}
                            {{#if project_url}}<br /><br /><a target="_blank" href="https://{{project_url}}">View Link</a>{{/if}}
                         </p>
-                        {{#if micro_image}}<img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{micro_image}}" class="img-responsive" alt="{{micro_body}}" />{{/if}}
                      </div>
                      <a class="micro_tag" href="/profile/{{project_owner}}">@{{project_owner}}</a>
                      <a class="micro_delete" href="/p/details/delete/{{id}}">Delete</a>
@@ -180,11 +180,11 @@
                                     <input class="micro_owner" type="hidden" name="project_owner" value="{{../project_owner}}">
                                     <a class="posted_to_group" href="/groups/{{this.group_id}}">Posted to "{{this.group_name}}"</a>
                                     <div class="micropost_card">
+                                       {{#if ../micro_image}}<img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{../micro_image}}" class="img-responsive" alt="{{../micro_body}}" />{{/if}}
                                        <p>
                                           {{{../micro_body}}}
                                           {{#if ../project_url}}<br /><br /><a target="_blank" href="https://{{../project_url}}">View Link</a>{{/if}}
                                        </p>
-                                       {{#if ../micro_image}}<img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{../micro_image}}" class="img-responsive" alt="{{../micro_body}}" />{{/if}}
                                     </div>
                                     <a class="micro_tag" href="/profile/{{../project_owner}}">@{{../project_owner}}</a>
                                     {{#if ../../hryznAdmin}}
@@ -203,11 +203,11 @@
                               <input class="micro_project" type="hidden" name="project_id" value="{{_id}}">
                               <input class="micro_owner" type="hidden" name="project_owner" value="{{project_owner}}">
                               <div class="micropost_card">
+                                 {{#if micro_image}}<img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{micro_image}}" class="img-responsive" alt="{{micro_body}}" />{{/if}}
                                  <p>
                                     {{{micro_body}}}
                                     {{#if project_url}}<br /><br /><a target="_blank" href="https://{{project_url}}">View Link</a>{{/if}}
                                  </p>
-                                 {{#if micro_image}}<img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{micro_image}}" class="img-responsive" alt="{{micro_body}}" />{{/if}}
                               </div>
                               <a class="micro_tag" href="/profile/{{project_owner}}">@{{project_owner}}</a>
                               {{#if ../hryznAdmin}}
@@ -309,11 +309,11 @@
                               <input class="micro_owner" type="hidden" name="project_owner" value="{{../project_owner}}">
                               <a class="posted_to_group" href="/groups/{{this.group_id}}">Posted to "{{this.group_name}}"</a>
                               <div class="micropost_card">
+                                 {{#if ../micro_image}}<img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{../micro_image}}" class="img-responsive" alt="{{../micro_body}}" />{{/if}}
                                  <p>
                                     {{{../micro_body}}}
                                     {{#if ../project_url}}<br /><br /><a target="_blank" href="https://{{../project_url}}">View Link</a>{{/if}}
                                  </p>
-                                 {{#if ../micro_image}}<img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{../micro_image}}" class="img-responsive" alt="{{../micro_body}}" />{{/if}}
                               </div>
                               <a class="micro_tag" href="/profile/{{../project_owner}}">@{{../project_owner}}</a>
                            </div>
@@ -329,11 +329,11 @@
                         <input class="micro_project" type="hidden" name="project_id" value="{{_id}}">
                         <input class="micro_owner" type="hidden" name="project_owner" value="{{project_owner}}">
                         <div class="micropost_card">
+                           {{#if micro_image}}<img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{micro_image}}" class="img-responsive" alt="{{micro_body}}" />{{/if}}
                            <p>
                               {{{micro_body}}}
                               {{#if project_url}}<br /><br /><a target="_blank" href="https://{{project_url}}">View Link</a>{{/if}}
                            </p>
-                           {{#if micro_image}}<img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{micro_image}}" class="img-responsive" alt="{{micro_body}}" />{{/if}}
                         </div>
                         <a class="micro_tag" href="/profile/{{project_owner}}">@{{project_owner}}</a>
                      </div>
@@ -427,11 +427,11 @@
                               <input class="micro_owner" type="hidden" name="project_owner" value="{{../project_owner}}">
                               <a class="posted_to_group" href="/groups/{{this.group_id}}">Posted to "{{this.group_name}}"</a>
                               <div class="micropost_card">
+                                 {{#if ../micro_image}}<img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{../micro_image}}" class="img-responsive" alt="{{../micro_body}}" />{{/if}}
                                  <p>
                                     {{{../micro_body}}}
                                     {{#if ../project_url}}<br /><br /><a target="_blank" href="https://{{../project_url}}">View Link</a>{{/if}}
                                  </p>
-                                 {{#if ../micro_image}}<img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{../micro_image}}" class="img-responsive" alt="{{../micro_body}}" />{{/if}}
                               </div>
                               <a class="micro_tag" href="/profile/{{../project_owner}}">@{{../project_owner}}</a>
                            </div>
@@ -447,11 +447,11 @@
                         <input class="micro_project" type="hidden" name="project_id" value="{{_id}}">
                         <input class="micro_owner" type="hidden" name="project_owner" value="{{project_owner}}">
                         <div class="micropost_card">
+                           {{#if micro_image}}<img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{micro_image}}" class="img-responsive" alt="{{micro_body}}" />{{/if}}
                            <p>
                               {{{micro_body}}}
                               {{#if project_url}}<br /><br /><a target="_blank" href="https://{{project_url}}">View Link</a>{{/if}}
                            </p>
-                           {{#if micro_image}}<img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{micro_image}}" class="img-responsive" alt="{{micro_body}}" />{{/if}}
                         </div>
                         <a class="micro_tag" href="/profile/{{project_owner}}">@{{project_owner}}</a>
                      </div>

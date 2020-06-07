@@ -717,4 +717,13 @@ $(document).ready(function() {
    });
    /**********/
 
+   var $microP = $('.micropost_card p');
+
+   $microP.each(function() {
+      var $p_text = $(this).text().trim();
+      if ($p_text.length == 0) {
+         $(this).css({ "padding": "0" });
+      }
+   });
+
 });

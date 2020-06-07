@@ -338,13 +338,13 @@
    color: #fff;
 }
 
-@media screen and (max-width: 1400px) {
+@media screen and (max-width: 1450px) {
    .section_home_content__main {
       padding: 0 50px;
    }
 
    .section_home_title {
-      max-width: 1000px;
+      max-width: 1200px;
    }
 
    .section_home_content h3 {
@@ -352,7 +352,7 @@
    }
 
    .section_home_content h1 {
-      font-size: 75px;
+      font-size: 65px;
       line-height: 80px;
    }
 }

@@ -1450,9 +1450,9 @@ router.post('/details/micro/unrepost/:id', (req, res, next) => {
       var og_path = req.body.og_path;
 
       if (og_path != '') {
-         var path = og_path;
+         var location_path = og_path;
       } else {
-         var path = '/p/details/' + req.body.project_id;
+         var location_path = '/p/details/' + req.body.project_id;
       }
 
       User.unrepostProject(info, (err, user) => {
@@ -1463,7 +1463,7 @@ router.post('/details/micro/unrepost/:id', (req, res, next) => {
       Project.removeReposts(info, (err, user) => {
          if(err) throw err;
          req.flash('success_msg', "Unreposted Project");
-         res.redirect(path);
+         res.redirect(location_path);
       });
    } else {
       res.redirect('/welcome');
@@ -2043,9 +2043,9 @@ router.post('/create-micro/micro', upload.single('micro_image'), verifyToken, (r
             var og_path = req.body.og_path;
 
             if (og_path != '') {
-               var path = og_path;
+               var location_path = og_path;
             } else {
-               var path = '/profile/' + req.user.username;
+               var location_path = '/profile/' + req.user.username;
             }
 
             // See if project_url has https://
@@ -2128,7 +2128,7 @@ router.post('/create-micro/micro', upload.single('micro_image'), verifyToken, (r
 
             if(req.file) {
 
-               // If user uploaded an image for project
+               // // If user uploaded an image for project
                var ext = path.extname(req.file.originalname);
 
                // Check if file is an image
@@ -2224,7 +2224,7 @@ router.post('/create-micro/micro', upload.single('micro_image'), verifyToken, (r
 
                      } else {
                         req.flash('success_msg', "Micropost was created.");
-                        res.redirect('/p/details/' + project._id);
+                        res.redirect(location_path);
                      }
                   });
 
@@ -2300,7 +2300,7 @@ router.post('/create-micro/micro', upload.single('micro_image'), verifyToken, (r
 
                   } else {
                      req.flash('success_msg', "Micropost was created.");
-                     res.redirect(path);
+                     res.redirect(location_path);
                   }
                });
             }

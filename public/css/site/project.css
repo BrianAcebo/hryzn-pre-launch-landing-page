@@ -704,6 +704,12 @@ section.project {
    -webkit-box-orient: vertical;
 }
 
+.micropost_card p a {
+   font-weight: 300;
+   font-size: 14px;
+   font-style: italic;
+}
+
 @media screen and (max-width: 768px) {
    .micropost_card p {
       font-size: 14px;
