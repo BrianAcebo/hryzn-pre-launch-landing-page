@@ -46,10 +46,17 @@
       <input type="hidden" name="orange_blossom" value="" />
       <input type="hidden" name="username" value="{{user.username}}" />
       <input type="hidden" name="profileimage" value="{{user.profileimage}}" />
-      <input class="form__input" type="text" placeholder="Send a message" name="message" value="" required  autocapitalize="none" />
+      <textarea oninput="auto_grow(this)" class="form__input" type="text" placeholder="Send a message" name="message" value="" required  autocapitalize="none"></textarea>
       <button class="msg_send" name="submit" type="submit">Send</button>
    </div>
 </form>
+
+<script>
+function auto_grow(element) {
+    element.style.height = "5px";
+    element.style.height = (element.scrollHeight)+"px";
+}
+</script>
 
 <div class="modalBtn delete_chat">I would like to delete this chat</div>
 
