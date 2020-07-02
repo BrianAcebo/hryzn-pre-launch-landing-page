@@ -9,10 +9,11 @@ section.creatives_hero_container {
    display: flex;
    flex-direction: row;
    justify-content: space-between;
+   padding: 0 25px;
 }
 
 .creatives_hero_left {
-   width: 50%;
+   width: 55%;
    position: relative;
 }
 
@@ -21,10 +22,10 @@ section.creatives_hero_container {
    display: flex;
    flex-direction: column;
    background: #fff;
-   padding: 100px;
+   padding: 35px;
    top: 100px;
    position: absolute;
-   right: -200px;
+   right: -10%;
 }
 
 .creatives_hero_left_inner h1 {
@@ -44,7 +45,8 @@ section.creatives_hero_container {
 }
 
 .creatives_hero_right {
-   width: 50%;
+   width: 45%;
+   padding: 0 50px 0 0;
 }
 
 .creatives_hero_right img {
@@ -84,4 +86,36 @@ section.creatives_hero_container {
 
 .creatives_pg_btns a:hover {
    width: 275px;
+}
+
+@media screen and (max-width: 992px) {
+   .creatives_hero_wrapper {
+      flex-direction: column;
+   }
+
+   .creatives_hero_right,
+   .creatives_hero_left {
+      width: 100%;
+      padding: 0;
+   }
+
+   .creatives_hero_left {
+      margin-bottom: 50px;
+   }
+
+   .creatives_hero_left_inner {
+      position: static;
+      padding: 0;
+   }
+
+   .creatives_hero_left_inner h1 {
+      font-size: 45px;
+      line-height: 55px;
+   }
+
+   .creatives_hero_left_inner p {
+      font-weight: 500;
+      font-size: 18px;
+      line-height: 35px;
+   }
 }
