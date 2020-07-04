@@ -453,7 +453,8 @@ router.post('/register-next/text', (req, res, next) => {
    res.render('users/register-next', {
       username: username,
       email: email,
-      password: password,
+      password: password,,
+      phone: phone,
       profileimage: profileimage,
       inviteAllowed: true,
       verify_code: req.body.verify_code,
@@ -468,6 +469,7 @@ router.post('/register-next/text/1', (req, res, next) => {
 
    var username = req.body.username.replace(/\r\n/g,'').trim();
    var email = req.body.email.replace(/\r\n/g,'').trim();
+   var phone = req.body.phone.replace(/\r\n/g,'').trim();
    var password = req.body.password.replace(/\r\n/g,'').trim();
    var profileimage = req.body.profileimage;
 
@@ -497,7 +499,7 @@ router.post('/register-next/text/1', (req, res, next) => {
            .create({
               body: 'Hi, we want to say thank you for signing up and welcome to our community! Hryzn is a social network so you can connect and collaborate with your friends, show off your content to followers, or simply just write privately. Hryzn can also help you rank higher in search engines, showcase expertise in your field, and promote your brand\'s awareness.',
               from: '+12078025238',
-              to: '+17862740326'
+              to: phone
             })
            .then(message => console.log(message.sid));
 
@@ -520,7 +522,7 @@ router.post('/register-next/text/1', (req, res, next) => {
            .create({
               body: 'Hi, we want to say thank you for signing up and welcome to our community! Hryzn is a social network so you can connect and collaborate with your friends, show off your content to followers, or simply just write privately. Hryzn can also help you rank higher in search engines, showcase expertise in your field, and promote your brand\'s awareness.',
               from: '+12078025238',
-              to: '+17862740326'
+              to: phone
             })
            .then(message => console.log(message.sid));
 
