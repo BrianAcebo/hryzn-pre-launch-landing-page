@@ -446,7 +446,7 @@ router.post('/register-next/text', (req, res, next) => {
      .create({
         body: 'Hryzn | Hi there, your verification code: ' + verify_code,
         from: '+12078025238',
-        to: '+17862740326'
+        to: phone
       })
      .then(message => console.log(message.sid));
 
