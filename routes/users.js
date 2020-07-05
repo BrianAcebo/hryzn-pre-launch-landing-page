@@ -453,7 +453,7 @@ router.post('/register-next/text', (req, res, next) => {
    res.render('users/register-next', {
       username: username,
       email: email,
-      password: password,,
+      password: password,
       phone: phone,
       profileimage: profileimage,
       inviteAllowed: true,
