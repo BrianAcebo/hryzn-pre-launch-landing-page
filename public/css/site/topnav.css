@@ -170,7 +170,7 @@
 }
 
 @media screen and (max-width: 595px) {
-   .landing-nav .search-container  {
+   .landing-nav .search-container.desktop_search  {
       display: none;
    }
 
