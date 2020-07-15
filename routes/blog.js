@@ -202,7 +202,7 @@ router.post('/create-post', upload.single('post_image'), (req, res, next) => {
       }
 
    } else {
-      res.redirect('/welcome');
+      res.redirect('/users/register');
    }
 });
 

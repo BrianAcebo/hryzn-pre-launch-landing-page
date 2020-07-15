@@ -15,9 +15,21 @@
 <div id="mouse">
 
 <!-- Hero Home Section -->
-<section id="home" class="section_home target-section" style="background-image: url('/img/welcome/hero-img-colors.jpg');">
+{{#if projects}}
+<section id="home" class="section_home target-section slideshow-container">
 
-   <div class="shadow-overlay"></div>
+   {{#each projects}}
+      {{#if is_private}}
+      {{! Check if the project is a private project, we do not want to show private projects }}
+      {{else}}
+      <div class="section_home_projects fade section_home_hero" style="background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.3)), url('https://s3.amazonaws.com/hryzn-app-static-assets/{{this.project_image}}');">
+         <div class="section_home_content__scroll">
+            <a href="/p/details/{{this._id}}" class="home_hero_project_name"><span>@{{this.project_owner}}</span>{{this.project_title}}</a>
+         </div>
+      </div>
+      <span class="dot"></span>
+      {{/if}}
+   {{/each}}
 
    <div class="section_home_content">
 
@@ -33,54 +45,20 @@
                </h1>
             </div>
 
-            <!-- {{#if projects}}
-            <div class="section_home_project">
-               <div class="slider slider-for">
-                  {{#each projects}}
-                     {{#if is_private}}
-                     {{! Check if the project is a private project, we do not want to show private projects }}
-                     {{else}}
-                     <div class="">
-                        <a href="/p/details/{{id}}/guest" class="project_link">
-                           <div class="project_card">
-                              <img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{project_image}}" class="img-responsive" alt="{{project_title}}" />
-                           </div>
-                        </a>
-                     </div>
-                     {{/if}}
-                  {{/each}}
-               </div>
-
-               <div class="slider slider-nav">
-                  <div></div>
-                  <div></div>
-                  <div></div>
-                  <div></div>
-                  <div></div>
-                  <div></div>
-                  <div></div>
-                  <div></div>
-               </div>
-            </div>
-            {{/if}} -->
-
          </div>
 
          <div class="section_home_content__buttons">
             <a href="/users/register" class="welcome_primary btn btn--stroke">Sign Up</a>
-            <a href="https://youtu.be/4JUrRNPol7w" data-lity class="btn btn--stroke">Watch Video</a>
+            <a href="/explore" class="btn btn--stroke">Go Explore</a>
+            <!-- <a href="https://youtu.be/4JUrRNPol7w" data-lity class="btn btn--stroke">Watch Video</a> -->
          </div>
 
       </div>
 
    </div>
 
-   <div class="section_home_content__scroll">
-      <a href="#about" class="scroll-link smoothscroll"><span>Scroll Down</span></a>
-   </div>
-   <div class="section_home_content__line"></div>
-
 </section>
+{{/if}}
 <!-- /Hero Home -->
 
 

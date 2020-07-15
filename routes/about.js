@@ -194,7 +194,7 @@ router.get('/reset/:id', (req, res, next) => {
          });
 
       } else {
-         res.redirect('/welcome');
+         res.redirect('/users/register');
       }
 
    });

@@ -50,7 +50,7 @@ router.get('/create-project', (req, res, next) => {
          });
       });
    } else {
-      res.redirect('/welcome');
+      res.redirect('/users/register');
    }
 });
 
@@ -415,7 +415,7 @@ router.post('/create-project/blog', upload.single('project_image'), verifyToken,
       });
 
    } else {
-      res.redirect('/welcome');
+      res.redirect('/users/register');
    }
 });
 
@@ -469,7 +469,7 @@ router.get('/details/edit/:id', (req, res, next) => {
          }
       });
    } else {
-      res.redirect('/welcome');
+      res.redirect('/users/register');
    }
 });
 
@@ -805,7 +805,7 @@ router.post('/details/edit/:id', upload.single('project_image'), (req, res, next
          }
       }
    } else {
-      res.redirect('/welcome');
+      res.redirect('/users/register');
    }
 });
 
@@ -981,7 +981,7 @@ router.get('/details/:id', (req, res, next) => {
          if (project) {
             res.redirect('/p/details/' + req.params.id + '/guest');
          } else {
-            res.redirect('/welcome');
+            res.redirect('/users/register');
          }
       });
    }
@@ -1132,7 +1132,7 @@ router.post('/details/save/:id', (req, res, next) => {
          res.redirect('/p/details/' + req.body.project_id);
       });
    } else {
-      res.redirect('/welcome');
+      res.redirect('/users/register');
    }
 });
 
@@ -1154,7 +1154,7 @@ router.post('/details/unsave/:id', (req, res, next) => {
          res.redirect('/p/details/' + req.body.project_id);
       });
    } else {
-      res.redirect('/welcome');
+      res.redirect('/users/register');
    }
 });
 
@@ -1276,7 +1276,7 @@ router.post('/details/micro/save/:id', (req, res, next) => {
       });
 
    } else {
-      res.redirect('/welcome');
+      res.redirect('/users/register');
    }
 });
 
@@ -1414,7 +1414,7 @@ router.post('/details/repost/:id', (req, res, next) => {
 
       });
    } else {
-      res.redirect('/welcome');
+      res.redirect('/users/register');
    }
 });
 
@@ -1436,7 +1436,7 @@ router.post('/details/unrepost/:id', (req, res, next) => {
          res.redirect('/p/details/' + req.body.project_id);
       });
    } else {
-      res.redirect('/welcome');
+      res.redirect('/users/register');
    }
 });
 
@@ -1466,7 +1466,7 @@ router.post('/details/micro/unrepost/:id', (req, res, next) => {
          res.redirect(location_path);
       });
    } else {
-      res.redirect('/welcome');
+      res.redirect('/users/register');
    }
 });
 
@@ -1604,7 +1604,7 @@ router.post('/details/micro/repost/:id', (req, res, next) => {
 
       });
    } else {
-      res.redirect('/welcome');
+      res.redirect('/users/register');
    }
 });
 
@@ -1652,7 +1652,7 @@ router.post('/details/like/:id', (req, res, next) => {
          res.redirect('/p/details/' + req.body.project_id);
       });
    } else {
-      res.redirect('/welcome');
+      res.redirect('/users/register');
    }
 });
 
@@ -1670,7 +1670,7 @@ router.post('/details/unlike/:id', (req, res, next) => {
          res.redirect('/p/details/' + req.body.project_id);
       });
    } else {
-      res.redirect('/welcome');
+      res.redirect('/users/register');
    }
 });
 
@@ -1780,7 +1780,7 @@ router.post('/details/micro/like/:id', (req, res, next) => {
 
       });
    } else {
-      res.redirect('/welcome');
+      res.redirect('/users/register');
    }
 });
 
@@ -1885,7 +1885,7 @@ router.post('/details/comment/:id', (req, res, next) => {
          res.redirect('/p/details/' + req.body.project_id);
       });
    } else {
-      res.redirect('/welcome');
+      res.redirect('/users/register');
    }
 });
 
@@ -1905,7 +1905,7 @@ router.post('/details/uncomment/:id', (req, res, next) => {
          res.redirect('/p/details/' + req.params.id);
       });
    } else {
-      res.redirect('/welcome');
+      res.redirect('/users/register');
    }
 });
 
@@ -1992,7 +1992,7 @@ router.get('/details/delete/:id', (req, res, next) => {
 
       });
    } else {
-      res.redirect('/welcome');
+      res.redirect('/users/register');
    }
 });
 
@@ -2001,7 +2001,7 @@ router.post('/upload', upload.single('editor_image'), (req, res, next) => {
       // var fileExt = req.file.originalname.split('.').pop();
       res.status(200).send({"file": "https://s3.amazonaws.com/hryzn-app-static-assets/" + dateNow + req.file.originalname, "success":true});
    } else {
-      res.redirect('/welcome');
+      res.redirect('/users/register');
    }
 });
 
@@ -2309,7 +2309,7 @@ router.post('/create-micro/micro', upload.single('micro_image'), verifyToken, (r
       });
 
    } else {
-      res.redirect('/welcome');
+      res.redirect('/users/register');
    }
 });
 

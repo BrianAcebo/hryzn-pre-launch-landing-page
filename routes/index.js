@@ -163,7 +163,7 @@ router.get('/groups', (req, res, next) => {
       });
 
    } else {
-      res.redirect('/welcome');
+      res.redirect('/users/register');
    }
 });
 
@@ -284,29 +284,35 @@ router.post('/create-group', upload.single('group_image'), (req, res, next) => {
       }
 
    } else {
-      res.redirect('/welcome');
+      res.redirect('/users/register');
    }
 });
 
 
 // Get Group Detail
 router.get('/groups/:id', (req, res, next) => {
-   if(req.isAuthenticated()) {
-      Group.findOne({ '_id': { $in: req.params.id} }, (err, group) => {
 
-         if (err) throw err;
+   Group.findOne({ '_id': { $in: req.params.id} }, (err, group) => {
 
-         if (group) {
+      if (err) throw err;
 
-            if (group.users.indexOf(req.user.username) > -1) {
+      if (group) {
+
+
+         if(req.isAuthenticated()) {
+            if (group.users.indexOf(req.user.username) > -1 || userNotLoggedIn) {
                var userNotJoined = false;
             } else {
                var userNotJoined = true;
             }
+         } else {
+            var userNotJoined = true;
+         }
 
-            var allowed;
+         var allowed;
 
-            if (group.is_private) {
+         if (group.is_private) {
+            if(req.isAuthenticated()) {
                group.users.forEach(function(user, key) {
                   if (user === req.user.username) {
                      allowed = true;
@@ -320,11 +326,15 @@ router.get('/groups/:id', (req, res, next) => {
                   }
                });
             } else {
-               allowed = true;
+               allowed = false;
             }
+         } else {
+            allowed = true;
+         }
 
-            if (allowed) {
+         if (allowed) {
 
+            if(req.isAuthenticated()) {
                if (group.group_admin === req.user.username) {
                   var groupAdmin = true;
                } else {
@@ -335,35 +345,34 @@ router.get('/groups/:id', (req, res, next) => {
                      var groupAdmin = false;
                   }
                }
+            } else {
+               var groupAdmin = false;
+            }
 
-               Project.find({ '_id': { $in: group.projects} }, (err, projects) => {
+            Project.find({ '_id': { $in: group.projects} }, (err, projects) => {
+               if (err) throw err;
+
+               User.find({ 'username': { $in: group.users} }, (err, users) => {
                   if (err) throw err;
 
-                  User.find({ 'username': { $in: group.users} }, (err, users) => {
-                     if (err) throw err;
-
-                     res.render('groups/group-detail', {
-                        page_title: group.group_name,
-                        group: group,
-                        projects: projects,
-                        groupAdmin: groupAdmin,
-                        users: users,
-                        userNotJoined: userNotJoined
-                     });
+                  res.render('groups/group-detail', {
+                     page_title: group.group_name,
+                     group: group,
+                     projects: projects,
+                     groupAdmin: groupAdmin,
+                     users: users,
+                     userNotJoined: userNotJoined
                   });
                });
-            } else {
-               res.redirect('/groups');
-            }
+            });
          } else {
             res.redirect('/groups');
          }
+      } else {
+         res.redirect('/groups');
+      }
 
-      });
-
-   } else {
-      res.redirect('/welcome');
-   }
+   });
 });
 
 
@@ -388,7 +397,7 @@ router.get('/groups/edit/:id', (req, res, next) => {
       });
 
    } else {
-      res.redirect('/welcome');
+      res.redirect('/users/register');
    }
 });
 
@@ -551,7 +560,7 @@ router.post('/groups/edit/:id', upload.single('group_image'), (req, res, next) =
       }
 
    } else {
-      res.redirect('/welcome');
+      res.redirect('/users/register');
    }
 });
 
@@ -614,7 +623,7 @@ router.get('/groups/:groupId/join', (req, res, next) => {
       });
 
    } else {
-      res.redirect('/welcome');
+      res.redirect('/users/register');
    }
 });
 
@@ -677,7 +686,7 @@ router.post('/groups/join/private/code', (req, res, next) => {
       });
 
    } else {
-      res.redirect('/welcome');
+      res.redirect('/users/register');
    }
 });
 
@@ -755,7 +764,7 @@ router.get('/groups/:groupId/kick/profile/:username', (req, res, next) => {
       });
 
    } else {
-      res.redirect('/welcome');
+      res.redirect('/users/register');
    }
 });
 
@@ -817,7 +826,7 @@ router.get('/groups/:groupId/remove/:projectId', (req, res, next) => {
       });
 
    } else {
-      res.redirect('/welcome');
+      res.redirect('/users/register');
    }
 });
 
@@ -985,7 +994,7 @@ router.get('/groups/delete/:id/:deleteAll', (req, res, next) => {
          }
       });
    } else {
-      res.redirect('/welcome');
+      res.redirect('/users/register');
    }
 });
 
@@ -1025,7 +1034,7 @@ router.get('/messages', (req, res, next) => {
       });
 
    } else {
-      res.redirect('/welcome');
+      res.redirect('/users/register');
    }
 });
 
@@ -1064,7 +1073,7 @@ router.get('/messages/:username', (req, res, next) => {
       });
 
    } else {
-      res.redirect('/welcome');
+      res.redirect('/users/register');
    }
 });
 
@@ -1087,7 +1096,7 @@ router.get('/messages/chat/:messageId', (req, res, next) => {
       });
 
    } else {
-      res.redirect('/welcome');
+      res.redirect('/users/register');
    }
 });
 
@@ -1125,7 +1134,7 @@ router.get('/messages/chat/delete/:messageId', (req, res, next) => {
       });
 
    } else {
-      res.redirect('/welcome');
+      res.redirect('/users/register');
    }
 });
 
@@ -1190,7 +1199,7 @@ router.post('/messages/chat/:messageId', verifyToken, (req, res, next) => {
       });
 
    } else {
-      res.redirect('/welcome');
+      res.redirect('/users/register');
    }
 });
 
@@ -1213,7 +1222,7 @@ router.get('/messages/new/:username', (req, res, next) => {
       });
 
    } else {
-      res.redirect('/welcome');
+      res.redirect('/users/register');
    }
 });
 
@@ -1293,7 +1302,7 @@ router.post('/messages/new/:username', verifyToken, (req, res, next) => {
       });
 
    } else {
-      res.redirect('/welcome');
+      res.redirect('/users/register');
    }
 });
 
@@ -1304,10 +1313,10 @@ router.get('/logout', (req, res, next) => {
       req.logout();
       req.session.destroy( (err) => {
          res.clearCookie('connect.sid');
-         res.redirect('/welcome');
+         res.redirect('/users/register');
       });
    } else {
-      res.redirect('/welcome');
+      res.redirect('/users/register');
    }
 });
 
@@ -1333,7 +1342,7 @@ router.get('/notifications', (req, res, next) => {
       });
 
    } else {
-      res.redirect('/welcome');
+      res.redirect('/users/register');
    }
 });
 
@@ -1350,7 +1359,7 @@ router.post('/notifications/remove/:id', (req, res, next) => {
       });
 
    } else {
-      res.redirect('/welcome');
+      res.redirect('/users/register');
    }
 });
 
@@ -1520,7 +1529,7 @@ router.post('/profile/follow/:id', (req, res, next) => {
          res.redirect('/profile/' + info['profileUsername']);
       });
    } else {
-      res.redirect('/welcome');
+      res.redirect('/users/register');
    }
 });
 
@@ -1545,7 +1554,7 @@ router.post('/profile/unfollow/:id', (req, res, next) => {
          res.redirect('/profile/' + info['profileUsername']);
       });
    } else {
-      res.redirect('/welcome');
+      res.redirect('/users/register');
    }
 });
 
@@ -1564,7 +1573,7 @@ router.get('/profile/:username/followers', (req, res, next) => {
          });
       });
    } else {
-      res.redirect('/welcome');
+      res.redirect('/users/register');
    }
 });
 
@@ -1585,7 +1594,7 @@ router.get('/profile/:username/following', (req, res, next) => {
          });
       });
    } else {
-      res.redirect('/welcome');
+      res.redirect('/users/register');
    }
 });
 
@@ -1594,7 +1603,7 @@ router.get('/settings', (req, res, next) => {
    if(req.isAuthenticated()) {
       res.render('settings', { page_title: 'Settings' });
    } else {
-      res.redirect('/welcome');
+      res.redirect('/users/register');
    }
 });
 
@@ -1921,7 +1930,7 @@ router.post('/settings', upload.array('images[]', 2), (req, res, next) => {
          });
       }
    } else {
-      res.redirect('/welcome');
+      res.redirect('/users/register');
    }
 });
 
@@ -2022,30 +2031,25 @@ router.post('/delete/:id', (req, res, next) => {
       }
 
    } else {
-      res.redirect('/welcome');
+      res.redirect('/users/register');
    }
 });
 
 // Get Explore
 router.get('/explore', (req, res, next) => {
-   if(req.isAuthenticated()) {
-      Project.find({}, (err, projects) => {
-         if (err) throw err;
+   Project.find({}, (err, projects) => {
+      if (err) throw err;
 
-         Group.find({}, (err, groups) => {
-            res.render('explore', {
-               page_title: 'Explore Projects',
-               projects: projects.reverse(),
-               groups: groups.reverse(),
-               explore_default: true
-            });
+      Group.find({}, (err, groups) => {
+         res.render('explore', {
+            page_title: 'Explore Projects',
+            projects: projects.reverse(),
+            groups: groups.reverse(),
+            explore_default: true
          });
-
       });
 
-   } else {
-      res.redirect('/welcome');
-   }
+   });
 });
 
 // Get Category
@@ -2069,39 +2073,34 @@ router.get('/explore/:category', (req, res, next) => {
       });
 
    } else {
-      res.redirect('/welcome');
+      res.redirect('/users/register');
    }
 });
 
 // Get Search
 router.get('/search', (req, res, next) => {
-   if(req.isAuthenticated()) {
-      var searchTerm = req.query.p;
+   var searchTerm = req.query.p;
 
-      User.find({$text: { $search: searchTerm }}, {score: { $meta: "textScore" }}, (err, user) => {
+   User.find({$text: { $search: searchTerm }}, {score: { $meta: "textScore" }}, (err, user) => {
+      if (err) throw err;
+
+      Project.find({$text: { $search: searchTerm }}, {score: { $meta: "textScore" }}, (err, projects) => {
          if (err) throw err;
 
-         Project.find({$text: { $search: searchTerm }}, {score: { $meta: "textScore" }}, (err, projects) => {
+         Group.find({$text: { $search: searchTerm }}, {score: { $meta: "textScore" }}, (err, groups) => {
             if (err) throw err;
 
-            Group.find({$text: { $search: searchTerm }}, {score: { $meta: "textScore" }}, (err, groups) => {
-               if (err) throw err;
-
-               res.render('explore', {
-                  page_title: 'Explore Projects',
-                  projects: projects,
-                  group_search: groups,
-                  user_search: user,
-                  project_search: projects,
-                  explore_default: false
-               });
-            }).sort({score: { $meta: "textScore" }});
+            res.render('explore', {
+               page_title: 'Explore Projects',
+               projects: projects,
+               group_search: groups,
+               user_search: user,
+               project_search: projects,
+               explore_default: false
+            });
          }).sort({score: { $meta: "textScore" }});
       }).sort({score: { $meta: "textScore" }});
-
-   } else {
-      res.redirect('/welcome');
-   }
+   }).sort({score: { $meta: "textScore" }});
 });
 
 // Get Sitemap
