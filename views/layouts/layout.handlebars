@@ -231,7 +231,7 @@
             </div>
 
             {{#if welcomePage}}
-            <div class="search-container">
+            <div class="search-container desktop_search">
                <form action="/search">
                   <input class="landing-nav_search" type="text" placeholder="Explore our universe..." name="p">
                   <button type="submit"><img src="/icons/search-white.png" class="mobile-nav__icon"/></button>
@@ -256,6 +256,13 @@
 
                <div class="side_nav__content">
                   <h3>Find your voice</h3>
+
+                  <div class="search-container mobile_search">
+                     <form action="/search">
+                        <input class="landing-nav_search" type="text" placeholder="Explore" name="p">
+                        <button type="submit"><img src="/icons/search-white.png" class="mobile-nav__icon"/></button>
+                     </form>
+                  </div>
 
                   <ul class="side_nav__list">
                      <li class="current"><a {{#if welcomePage}}class="smoothscroll"  href="#home"{{else}}href="https://www.myhryzn.com#home"{{/if}} title="home">Home</a></li>

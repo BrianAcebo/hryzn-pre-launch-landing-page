@@ -74,6 +74,11 @@
    margin: 0;
 }
 
+.landing-nav .search-container.mobile_search  {
+   width: 100%;
+   margin: 0 0 25px 0;
+}
+
 .topnav .search-container form,
 .landing-nav .search-container form {
    display: flex;
@@ -98,34 +103,29 @@
 
 .landing-nav input[type=text] {
    width: 100%;
-}
-
-.welcome_header.landing-nav input[type=text] {
-   height: 40px;
-   font-size: 14px;
-   width: 100%;
-   border: 2px solid #fff;
-   border-top-left-radius: 35px;
-   border-bottom-left-radius: 35px;
-   text-indent: 25px;
+   min-width: 0;
    background: transparent;
+   border: 2px solid #fff;
    color: #fff;
-   letter-spacing: 1px;
-   min-width: 250px;
-   outline: none !important;
-   transition: 0.5s;
 }
 
-.welcome_header .landing-nav_search::placeholder {
+.landing-nav .mobile_search input[type=text] {
+   border: none;
+   border-bottom: 2px solid #fff;
+   border-radius: 0;
+   text-indent: 0;
+}
+
+.landing-nav_search::placeholder {
   color: #fff;
   opacity: 1;
 }
 
-.welcome_header .landing-nav_search:-ms-input-placeholder {
+.landing-nav_search:-ms-input-placeholder {
   color: #fff;
 }
 
-.welcome_header .landing-nav_search::-ms-input-placeholder {
+.landing-nav_search::-ms-input-placeholder {
   color: #fff;
 }
 
@@ -146,7 +146,22 @@
    transition: 0.3s;
 }
 
-.topnav .search-container button img {
+.landing-nav .search-container button {
+   background: transparent;
+   border: 2px solid #fff;
+   border-left: none;
+}
+
+.landing-nav .search-container.mobile_search button {
+   padding: 0;
+   border: none;
+   border-bottom: 2px solid #fff;
+   cursor: pointer;
+   border-radius: 0;
+}
+
+.topnav .search-container button img,
+.landing-nav .search-container button img {
    max-width: 12px;
 }
 
@@ -154,24 +169,11 @@
    background: #ccc;
 }
 
-.welcome_header.landing-nav .search-container button {
-   float: right;
-   padding: 0 20px;
-   height: 40px;
-   background: transparent;
-   border: 2px solid #fff;
-   border-left: none;
-   cursor: pointer;
-   border-top-right-radius: 35px;
-   border-bottom-right-radius: 35px;
-   transition: 0.3s;
-}
-
-.landing-nav .search-container button img {
-   max-width: 12px;
-}
-
 @media screen and (max-width: 595px) {
+   .landing-nav .search-container  {
+      display: none;
+   }
+
    .topnav input[type=text] {
       font-size: 10px;
       text-align: center;
@@ -809,7 +811,7 @@ nav.item-list {
    text-transform: uppercase;
    letter-spacing: 2.5px;
    line-height: 35px;
-   margin: 0 0 35px 0;
+   margin: 0 0 25px 0;
    color: #fff;
    font-weight: 800;
 }
