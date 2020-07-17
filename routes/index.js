@@ -50,15 +50,29 @@ router.get('/welcome', (req, res, next) => {
          '5e8e799102b32d001725d5bb'
       ];
 
+      var featured_groups = [
+         '5f11bdd40e1d0b001758aa3b',
+         '5ebccaba0cb91f72b7c3c8c5',
+         '5f11c5c60e1d0b001758aa56'
+      ];
+
       Project.find({ '_id': { $in: featured_projects } }, (err, projects) => {
          if (err) throw err;
 
-         res.render('welcome', {
-            page_title: "Everybody has something to say. We make it easy to say it. Find your voice.",
-           notLoginPage: false,
-           projects: projects,
-           welcomePage: true
+         Group.find({ '_id': { $in: featured_groups} }, (err, groups) => {
+
+            if (err) throw err;
+
+            res.render('welcome', {
+               page_title: "Everybody has something to say. We make it easy to say it. Find your voice.",
+              notLoginPage: false,
+              projects: projects,
+              groups: groups,
+              welcomePage: true
+            });
+
          });
+
       }).limit(8);
 
    }

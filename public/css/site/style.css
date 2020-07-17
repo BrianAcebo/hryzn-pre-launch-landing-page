@@ -129,7 +129,7 @@ h5 {
    }
 
    a, p, div {
-      line-height: 20px;
+      line-height: 25px;
    }
 }
 
@@ -221,6 +221,12 @@ blockquote {
 
 .spacer {
    padding: 50px 0;
+}
+
+@media screen and (max-width: 768px) {
+   .desktop_spacer {
+      display: none;
+   }
 }
 
 .padding__container {

@@ -66,8 +66,8 @@
 <section id='about' class="section_container section_about">
 
    <div class="section_header has-bottom-sep light_sep" data-aos="fade-up">
-      <h3 class="section_sub light_sub">Explore Your Interests</h3>
-      <h1 class="section_title light_title">Discover A New World</h1>
+      <h3 class="section_sub light_sub">Explore Your Interests, Join A Community</h3>
+      <h2 class="section_title light_title">Where Voices Matter</h2>
    </div>
 
    <div class="section_about_desc" data-aos="fade-up">
@@ -78,9 +78,32 @@
          Our goal is to help those that are curious find their voice and express themselves, without all the hassle and commitment of a regular blog.
          -->
 
-         Hryzn is a social network that allows you to explore, find your interests, and become a part of a community no matter whether its cooking, working out, cryptocurrency, art, business, etc. By doing this, we eliminate the aggravatingly time consuming hassle of creating a business through content,
+         <!-- Hryzn is a social network that allows you to explore, find your interests, and become a part of a community no matter whether its cooking, working out, cryptocurrency, art, business, etc. By doing this, we eliminate the aggravatingly time consuming hassle of creating a business through content,
          giving creatives a platform to grow with a dedicated audience to showcase their content to.
-      </p>
+      </p> -->
+   </div>
+
+   <div class="section_about_row">
+      <div class="section_about_columns" data-aos="fade-up">
+         <img src="/icons/content.png" class="section_about_icon"/>
+         <p>
+            Share your choice of blogs, pictures, videos, text, or links for whatever you find interesting. The beauty is in your hands.
+         </p>
+      </div>
+
+      <div class="section_about_columns" data-aos="fade-up">
+         <img src="/icons/group.png" class="section_about_icon"/>
+         <p>
+            Join groups of like-minded people that care about the things your passionate about whether it's cooking, working out, cryptocurrency, art, etc.
+         </p>
+      </div>
+
+      <div class="section_about_columns" data-aos="fade-up">
+         <img src="/icons/algorithm.png" class="section_about_icon"/>
+         <p>
+            Unlike traditional social media, our ingrained methodology makes sure everyone has an equal chance to thrive and excel with good, quality content.
+         </p>
+      </div>
    </div>
 
    <div class="section_about__line"></div>
@@ -90,16 +113,25 @@
 
 
 <!-- Top Picks-->
-<section id='works' class="section_container section_works">
+<section id='works' class="section_works">
 
-   <div class="intro-wrap">
+   <div class="section_works_container">
+      <div class="section_works_left" style="background-image: url('/img/welcome/hero-img-colors.jpg');" data-aos="fade-right"></div>
 
-   <div class="section_header" data-aos="fade-up">
-      <h3 class="section_sub">Top Picks</h3>
-      <h1 class="section_title">Our Featured Works</h1>
+      <div class="section_works_right" data-aos="fade-left">
+         <div class="section_works_right_wrapper">
+            <h3 class="section_title">Your Creative Freedom</h3>
+            <p>
+               On Hryzn, people are free to explore, create, and share their interests.
+               Our goal is to be a creative outlet to find your voice and express yourself, giving you the freedom to explore what you're passionate about.
+               You can find topics on just about anything, whether it's cooking, anime, DIY, makeup, psychology, etc.
+               Follow amazing people, repost outstanding content, and connect with your friends and family.
+            </p>
+            <a href="/explore"><div class="hero_sign_up" style="margin: 35px 0 0 0; border-radius: 0; padding: 12px 15px; max-width: 150px; border: 1px solid #31375A; background: transparent; color: #31375A;">Discover</div></a>
+         </div>
+      </div>
    </div>
 
-   </div>
 
     <div class="top_picks_container" data-aos="fade-up">
 
@@ -143,16 +175,44 @@
 <!-- /Top Picks -->
 
 
+<!-- Background Image -->
+<section class="section_bg_img">
+   <h2 class="section_title">Become a part of something you believe in.</h2>
+   <p>
+      Join groups of like-minded people that share your interests.
+   </p>
+
+   {{#if groups}}
+      <section class="explore_groups_container">
+         <div class="group_wrapper">
+            {{#each groups}}
+            {{#if this.is_private}}
+            {{else}}
+               <a href="/groups/{{this._id}}" class="follower__profile">
+                  <div class="follower__profile-img-container">
+                     <img class="profile__img" src="https://s3.amazonaws.com/hryzn-app-static-assets/{{this.group_image}}" />
+                  </div>
+                  {{this.group_name}}
+               </a>
+            {{/if}}
+            {{/each}}
+         </div>
+      </section>
+   {{/if}}
+</section>
+<!-- /Background Image -->
+
+
 <!-- Features -->
 <section id="features" class="landing_content_container">
    <div class="bg-square-01" data-aos="fade-up">
       <div class="bg-square__wrapper">
          <div class="bg-square_text bg-text-01" data-aos="fade-up">
-            <h3>Find What Captivates You</h3>
+            <h3>Tradition Favors The Wrong Content</h3>
             <p>
-               Feel free to express yourself and post what you please, without the commitment and intimidation of setting up a blog.
-               Create content for an audience in a multitude of topics, or create private content just for your friends and family to see.
-               We love the creative type and we live to inspire creativity.
+               It seems that in today's day of age, traditional social media favors "questionable" content. Countless artists and other creative types,
+               who spend countless hours on their work, go unnoticed and unappreciated. These many powerful voices are left unheard in a place where they
+               shouldn't be silenced.
             </p>
          </div>
       </div>
@@ -167,23 +227,49 @@
       </div>
       <div class="bg-square__wrapper">
          <div class="bg-square_text bg-text-02" data-aos="fade-up">
-            <h3>Grow Into Something More</h3>
+            <h3>Quality Content Prospers Here</h3>
             <p>
-               For those looking to further their business or monetize from scratch, we aim to provide the tools
-               for each stage of the process. We look to encompass all of the aspects you need to start, run, and grow your business through your content.
+               On Hryzn, we give the power back to those people. We aspire to give everybody the chance to be heard, and promote quality content. Feel free to express yourself and post what you please, no matter whether you're a visual artist, musician, blogger, business etc.
+               We love the creative type and we live to inspire creativity.
             </p>
+            <a href="/creatives"><div class="hero_sign_up" style="margin: 35px 0 0 0; border-radius: 0; padding: 12px 15px;">Creators</div></a>
          </div>
       </div>
    </div>
 </section>
 
-<div class="spacer"></div>
+<div class="spacer desktop_spacer"></div>
+<div class="spacer desktop_spacer"></div>
+
+<div class="section_works_container container_reversed">
+   <div class="section_works_left" style="background-image: url('/img/about/hero-img-laptop.jpg');" data-aos="fade-right"></div>
+
+   <div class="section_works_right" data-aos="fade-left">
+      <div class="section_works_right_wrapper">
+         <ul>
+            <li>
+               <h3>Discovery Engine</h3>
+               Discover what you love and find your interests with our built in search engine. Posts can be optimized to rank higher for what people are searching for.
+            </li>
+            <li>
+               <h3>Sharing Communities</h3>
+               Join and become a part of groups for the things you enjoy. Follow and share with other users ideas and content for whatever resonates with you.
+            </li>
+            <li>
+               <h3>Free-Range Posting</h3>
+               Enjoy the multitude of options to post whatever you please. Post videos, pictures, text, links, or even blog posts. Repost to the groups you're a part of or for your followers to enjoy.
+            </li>
+         </ul>
+         <a href="/how-it-works"><div class="hero_sign_up" style="margin: 35px 0 0 0; border-radius: 0; padding: 12px 15px; max-width: 150px; border: 1px solid #31375A; background: transparent; color: #31375A;">Learn More</div></a>
+      </div>
+   </div>
+</div>
 
 <section class="section_container section_features">
 
    <div class="section_header has-bottom-sep dark_sep" data-aos="fade-up">
       <h3 class="section_sub">For Creatives</h3>
-      <h1 class="section_title">Your Box Of Resources</h1>
+      <h2 class="section_title">Your Box Of Resources</h2>
    </div>
 
    <div class="services_container">
@@ -219,7 +305,7 @@
 
 <div class="section_header" data-aos="fade-up">
 <h3 class="section_sub">Join Today</h3>
-<h1 class="section_title">Join a creative world of content, topics, and ideas.</h1>
+<h2 class="section_title">Join a creative world of content, topics, and ideas.</h2>
 <a href="/users/register"><div class="hero_sign_up">Sign Up</div></a>
 </div>
 
@@ -235,7 +321,7 @@
 
    <div class="section_header" data-aos="fade-up">
       <h3 class="section_sub">Contact Us</h3>
-      <h1 class="section_title">We Like Conversation</h1>
+      <h2 class="section_title">We Like Conversation</h2>
    </div>
 
    <div class="section_contact_content" data-aos="fade-up">
