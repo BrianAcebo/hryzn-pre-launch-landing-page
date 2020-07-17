@@ -314,7 +314,7 @@ router.get('/groups/:id', (req, res, next) => {
 
 
          if(req.isAuthenticated()) {
-            if (group.users.indexOf(req.user.username) > -1 || userNotLoggedIn) {
+            if (group.users.indexOf(req.user.username) > -1) {
                var userNotJoined = false;
             } else {
                var userNotJoined = true;
