@@ -601,40 +601,52 @@ $(document).ready(function() {
    var $repostModalBtn = $('.repostModalBtn');
    var $ogPath = window.location.pathname;
 
+   siteBody.on('click', function(e){
+       if( !$(e.target).is('.side_nav, .side_nav__content, .side_nav__list, .side_nav__list li, .hamburger_menu, .hamburger_menu span, .mobile_search .landing-nav_search') ) {
+          siteBody.removeClass('menu-is-open');
+       }
+   });
+
    $micropost.each(function() {
-      $(this).click(function() {
-         var $micro_project = $(this).children('.micro_project').val();
-         var $micro_owner = $(this).children('.micro_owner').val();
-         var $reposts_length = $(this).children('.reposts_length').val();
-         var $likes_length = $(this).children('.likes_length').val();
-         var $saves_length = $(this).children('.saves_length').val();
+      $(this).click(function(e) {
 
-         $microRepost.attr('action', '/p/details/micro/repost/' + $micro_project);
-         $microUnrepost.attr('action', '/p/details/micro/unrepost/' + $micro_project);
-         $microSave.attr('action', '/p/details/micro/save/' + $micro_project);
-         $microLike.attr('action', '/p/details/micro/like/' + $micro_project);
+         if ( !$(e.target).is('.micro_delete') ) {
 
-         $microRepost.children('.micro_project').val($micro_project);
-         $microRepost.children('.micro_owner').val($micro_owner);
-         $microRepost.children('.og_path').val($ogPath);
-         $repostModalBtn.children('.reposts_length').text($reposts_length);
+            var $micro_project = $(this).children('.micro_project').val();
+            var $micro_owner = $(this).children('.micro_owner').val();
+            var $reposts_length = $(this).children('.reposts_length').val();
+            var $likes_length = $(this).children('.likes_length').val();
+            var $saves_length = $(this).children('.saves_length').val();
 
-         $microUnrepost.children('.micro_project').val($micro_project);
-         $microUnrepost.children('.og_path').val($ogPath);
+            $microRepost.attr('action', '/p/details/micro/repost/' + $micro_project);
+            $microUnrepost.attr('action', '/p/details/micro/unrepost/' + $micro_project);
+            $microSave.attr('action', '/p/details/micro/save/' + $micro_project);
+            $microLike.attr('action', '/p/details/micro/like/' + $micro_project);
 
-         $microSave.children('.micro_project').val($micro_project);
-         $microSave.children('.micro_owner').val($micro_owner);
-         $microSave.children('.og_path').val($ogPath);
-         $microSave.children().children('.saves_length').text($saves_length);
+            $microRepost.children('.micro_project').val($micro_project);
+            $microRepost.children('.micro_owner').val($micro_owner);
+            $microRepost.children('.og_path').val($ogPath);
+            $repostModalBtn.children('.reposts_length').text($reposts_length);
 
-         $microLike.children('.micro_project').val($micro_project);
-         $microLike.children('.micro_owner').val($micro_owner);
-         $microLike.children('.og_path').val($ogPath);
-         $microLike.children().children('.likes_length').text($likes_length);
+            $microUnrepost.children('.micro_project').val($micro_project);
+            $microUnrepost.children('.og_path').val($ogPath);
 
-         $microPopContainer.append($(this).clone());
-         $microPop.addClass('microPop');
-         $mainBody.addClass('mainBodyPop');
+            $microSave.children('.micro_project').val($micro_project);
+            $microSave.children('.micro_owner').val($micro_owner);
+            $microSave.children('.og_path').val($ogPath);
+            $microSave.children().children('.saves_length').text($saves_length);
+
+            $microLike.children('.micro_project').val($micro_project);
+            $microLike.children('.micro_owner').val($micro_owner);
+            $microLike.children('.og_path').val($ogPath);
+            $microLike.children().children('.likes_length').text($likes_length);
+
+            $microPopContainer.append($(this).clone());
+            $microPop.addClass('microPop');
+            $mainBody.addClass('mainBodyPop');
+
+         }
+
       });
    });
 
