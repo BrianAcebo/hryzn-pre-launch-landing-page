@@ -10,12 +10,6 @@
 </div>
 
 {{#if projects}}
-<div class="feed__container">
-   <div class="feed__container-text">
-      <h1 class="main__title">{{greeting}} {{user.username}},</h1>
-      <p class="main__info feed__text">I hope you're having a nice day, <a href="/explore"><strong>let's go explore.</strong></a></p>
-   </div>
-</div>
 {{else}}
 <div class="feed__container">
    <div class="feed__container-text">
@@ -29,7 +23,7 @@
 
    {{#if projects}}
 
-   <p class="top_results">Recent Posts &amp; Reposts</p>
+   <p class="top_results">{{greeting}} {{user.username}}</p>
    <hr class="top_results_underline" />
 
    <div class="masonryContainer">

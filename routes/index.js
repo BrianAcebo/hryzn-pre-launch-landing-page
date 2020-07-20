@@ -142,7 +142,8 @@ router.get('/', (req, res, next) => {
                   greeting: greeting,
                   projects: projects.reverse(),
                   profiles: profiles,
-                  explore_default: true
+                  explore_default: true,
+                  index_active: true
                });
             });
          });
@@ -1350,7 +1351,8 @@ router.get('/notifications', (req, res, next) => {
          res.render('notifications', {
             page_title: 'Notifications',
             notifications: notifications.reverse(),
-            notification_page: true
+            notification_page: true,
+            notification_active: true
          });
 
       });
@@ -1485,7 +1487,8 @@ router.get('/profile/:username', (req, res, next) => {
                      amount_of_projects: amount_of_projects,
                      viewing_own_profile: viewing_own_profile,
                      guestUser: guestUser,
-                     hryznAdmin: hryznAdmin
+                     hryznAdmin: hryznAdmin,
+                     profile_active: true
                   });
                });
             });
@@ -2059,7 +2062,8 @@ router.get('/explore', (req, res, next) => {
             page_title: 'Explore Projects',
             projects: projects.reverse(),
             groups: groups.reverse(),
-            explore_default: true
+            explore_default: true,
+            explore_active: true
          });
       });
 
@@ -2110,7 +2114,8 @@ router.get('/search', (req, res, next) => {
                group_search: groups,
                user_search: user,
                project_search: projects,
-               explore_default: false
+               explore_default: false,
+               explore_active: true
             });
          }).sort({score: { $meta: "textScore" }});
       }).sort({score: { $meta: "textScore" }});

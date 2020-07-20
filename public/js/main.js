@@ -93,6 +93,35 @@ $(document).ready(function() {
    /**********/
 
 
+   // Open / Close Mobile Topnav
+   var $mobileTopNav = $('.topnav.mobile_topnav');
+   var $mobileTopNavBtn = $('.topnav.mobile_topnav .search-container button');
+   var $mobileTopNavClose = $('.topnav.mobile_topnav .close_icon');
+   var $windowWidth = $window.width();
+
+   if ($windowWidth <= 768) {
+      $mobileTopNavBtn.attr("type", "button");
+   }
+
+   $mobileTopNavBtn.click(function() {
+
+      if($(this).hasClass('open_btn')) {
+         $(this).attr("type", "submit");
+      } else {
+         $(this).addClass('open_btn');
+         $mobileTopNav.addClass('open_search');
+      }
+
+   });
+
+   $mobileTopNavClose.click(function() {
+      $mobileTopNavBtn.attr("type", "button");
+      $mobileTopNavBtn.removeClass('open_btn');
+      $mobileTopNav.removeClass('open_search');
+   });
+   /***********/
+
+
    // Stats on project dropdown
    var $statsNav = $('.statsNav');
    var $statsBtn = $('.statsBtn');

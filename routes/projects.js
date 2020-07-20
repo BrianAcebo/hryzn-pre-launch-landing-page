@@ -2134,22 +2134,27 @@ router.post('/create-micro/micro', upload.single('micro_image'), verifyToken, (r
                // Check if file is an image
                if(ext !== '.png' && ext !== '.PNG' && ext !== '.jpg' && ext !== '.JPG' && ext !== '.gif' && ext !== '.GIF' && ext !== '.jpeg' && ext !== '.JPEG') {
 
-                  User.findById(id, (err, user) => {
-                     if(err) throw err;
+                  // Check if file is audio
+                  if(ext !== '.mpeg' && ext !== '.MPEG' && ext !== '.wav' && ext !== '.WAV' && ext !== '.wave' && ext !== '.WAVE' && ext !== '.mp3' && ext !== '.MP3') {
 
-                     User.find({ 'username': { $in: user.following} }, (err, profiles) => {
-                        if (err) throw err;
-                        res.render('p/create-project', {
-                           error_msg: 'Micropost File Must End With .jpg .jpeg .png .gif',
-                           page_title: 'Create Project',
-                           notes_is_empty_string: true,
-                           editProject: true,
-                           project_error: true,
-                           mention: profiles,
-                           user: user
+                     User.findById(id, (err, user) => {
+                        if(err) throw err;
+
+                        User.find({ 'username': { $in: user.following} }, (err, profiles) => {
+                           if (err) throw err;
+                           res.render('p/create-project', {
+                              error_msg: 'Media file extension is not supported',
+                              page_title: 'Create Project',
+                              notes_is_empty_string: true,
+                              editProject: true,
+                              project_error: true,
+                              mention: profiles,
+                              user: user
+                           });
                         });
                      });
-                  });
+
+                  }
 
                } else {
                   // No errors have been made

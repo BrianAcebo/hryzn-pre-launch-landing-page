@@ -258,6 +258,14 @@ blockquote {
    text-align: center;
 }
 
+@media screen and (max-width: 992px) {
+   .error-message {
+      font-size: 16px;
+      text-align: center;
+      margin: 150px 0;
+   }
+}
+
 .error__msg {
    width: 90%;
    max-width: 700px;
@@ -447,6 +455,13 @@ input {
    padding: 0;
 }
 
+@media screen and (max-width: 992px) {
+   #mainBody {
+      padding: 0;
+      transition: 0.3s;
+   }
+}
+
 /********************/
 /* Pre Loaders */
 /********************/
@@ -536,7 +551,7 @@ input {
 .masonry-with-columns {
   columns: 4 200px;
   column-gap: 35px;
-  padding: 150px 35px 35px 35px;
+  padding: 15px;
 }
 
 .masonry-with-columns .loader_card {
