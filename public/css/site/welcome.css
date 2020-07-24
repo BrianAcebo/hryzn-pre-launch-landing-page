@@ -468,7 +468,7 @@
 
 .section_home_content__buttons .btn:hover,
 .section_home_content__buttons .btn:focus {
-   width: 300px;
+   width: 275px;
 }
 
 @media screen and (max-width: 768px) {
@@ -481,8 +481,8 @@
       font-size: 12px;
    }
 
-   .section_home_content__buttons .welcome_primary:hover {
-      width: 200px;
+   .section_home_content__buttons .btn:hover {
+      width: 175px;
    }
 }
 

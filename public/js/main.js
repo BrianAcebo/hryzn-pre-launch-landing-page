@@ -251,8 +251,8 @@ $(document).ready(function() {
       } else {
          $icon_bar.css({ "display": "block" });
 
-         if ($starting_top != $scroll) {
-            $icon_bar_a.css({ "background": "#fff", "color": "#333", "box-shadow": "rgba(0,0,0,.1) 0 2px 10px 1px", "justify-content": "center" });
+         if ($(window).scrollTop() >= 50) {
+            $icon_bar_a.css({ "background": "#fff", "color": "#333", "box-shadow": "rgba(0,0,0,.1) 0 2px 10px 1px", "justify-content": "center", "margin": "25px 0"});
             $i_amounts.css({ "display": "none"});
             $icon_bar_a_i.css({ "margin-left": "0"});
          } else {
