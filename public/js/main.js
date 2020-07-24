@@ -246,29 +246,44 @@ $(document).ready(function() {
    $(window).scroll(function() {
       var $scroll = $(window).scrollTop();
 
-      if($scroll > $current_position) {
-         $icon_bar.css({ "display": "none" });
-      } else {
-         $icon_bar.css({ "display": "block" });
+      if ($(window).scrollTop() >= 50) {
 
-         if ($(window).scrollTop() >= 50) {
+         if($scroll > $current_position) {
+
+            // User is scrolling downwards
+            $icon_bar.css({ "display": "none" });
+
+         } else {
+
+            // User is scrolling upwards
+            $icon_bar.css({ "display": "block" });
             $icon_bar_a.css({ "background": "#fff", "color": "#333", "box-shadow": "rgba(0,0,0,.1) 0 2px 10px 1px", "justify-content": "center", "margin": "25px 0"});
             $i_amounts.css({ "display": "none"});
             $icon_bar_a_i.css({ "margin-left": "0"});
-         } else {
-            if($window.width() <= 992) {
-               $icon_bar_a_i.css({ "margin-left": "0"});
-               $icon_bar_a.css({ "background": "transparent", "color": "#fff", "box-shadow": "none", "margin": "10px 0", "justify-content": "flex-end" });
-            } else {
-               $icon_bar_a_i.css({ "margin-left": "15px"});
-               $icon_bar_a.css({ "background": "transparent", "color": "#333", "box-shadow": "none", "margin": "35px 0", "justify-content": "center" });
-            }
 
-            $i_amounts.css({ "display": "block"});
-            $icon_bar_a_i.css({ "margin-left": "15px"});
          }
+
+         $current_position = $scroll;
+
+      } else {
+
+         // Icon bar moved is at top
+         if($window.width() <= 992) {
+
+            // Icon bar for mobile
+            $icon_bar_a_i.css({ "margin-left": "0"});
+            $icon_bar_a.css({ "background": "transparent", "color": "#fff", "box-shadow": "none", "margin": "10px 0", "justify-content": "flex-end" });
+         } else {
+
+            // Icon bar for desktop
+            $icon_bar_a_i.css({ "margin-left": "15px"});
+            $icon_bar_a.css({ "background": "transparent", "color": "#333", "box-shadow": "none", "margin": "35px 0", "justify-content": "center" });
+         }
+
+         // Only show amounts when icon-bar at top
+         $i_amounts.css({ "display": "block"});
+         $icon_bar_a_i.css({ "margin-left": "15px"});
       }
-      $current_position = $scroll;
    });
    /**********/
 
@@ -579,7 +594,7 @@ $(document).ready(function() {
    $relatedClose.click(function() {
       $relatedClose.css({ "position": "absolute" });
       if($window.width() <= 768) {
-         $relatedNav.css({ "height": "0" });
+         $relatedNav.css({ "height": "0", "padding-top": "0" });
       } else {
          $relatedNav.css({ "width": "0" });
       }
