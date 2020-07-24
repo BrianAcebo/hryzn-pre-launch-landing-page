@@ -103,7 +103,7 @@
             <div class="masonryItem" title="{{project_title}}">
                <div class="project_card">
                   <a href="/p/details/{{id}}" class="project_link group_project" value="{{_id}}">
-                     <img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{project_image}}" class="img-responsive" alt="{{project_title}}" />
+                     <img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{#if thumbnail_image}}{{thumbnail_image}}{{else}}{{project_image}}{{/if}}" class="img-responsive" alt="{{project_title}}" />
                   </a>
                   <div class="project_card_bottom">
                      <div class="project_bottom_wrapper">

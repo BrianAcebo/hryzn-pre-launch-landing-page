@@ -30,6 +30,7 @@
       <input type="hidden" name="_x_" value="$2a$10$BJn0b4OzBarDigcTUl0kejbffkejbfvxSI.JrlLKeSsOi8oKqBAK" />
       <input type="hidden" name="_c_" value="{{csrf_web_token}}" />
       <input type="hidden" name="orange_blossom" value="" />
+      <input type="hidden" id="img_count" name="img_indices" value="" />
       <div class="create_btns">
          <button class="form__sign-up-button project_submit edit-project__form-btn" name="submit" type="submit">Create</button>
          <button class="form__sign-up-button save_as_draft_btn draft_btn project_submit edit-project__form-btn" name="submit" type="submit">Save as Draft</button>
@@ -72,8 +73,12 @@
 
 
         {{! Project Image }}
-        <label for="project_image" class="form__label">Add Project Image <span style="color: #999; font-size: 10px; margin-left: 8px;">* Required *</span></label>
-        <input class="form__input" type="file" name="project_image" value="{{project.project_image}}" />
+        <label for="project_image" class="form__label">Add Project Image 1000px by 550px <span style="color: #999; font-size: 10px; margin-left: 8px;">* Required *</span></label>
+        <input id="projectImage" class="form__input" type="file" name="project_image" value="{{project.project_image}}" required />
+
+        {{! Thumbnail Image }}
+        <label for="thumbnail_image" class="form__label">Add Thumbnail Image 300px by 450px<span style="color: #999; font-size: 10px; margin-left: 8px;">* Required *</span></label>
+        <input id="thumbnailImage" class="form__input" type="file" name="thumbnail_image" value="{{project.thumbnail_image}}" required/>
 
         {{! Post To }}
         <label for="post_to" class="form__label" style="margin-top: 25px;">Post To <span style="color: #999; font-size: 10px; margin-left: 8px;">( Optional )</span></label>

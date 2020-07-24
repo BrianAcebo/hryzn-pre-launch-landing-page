@@ -110,7 +110,7 @@ h5 {
 
 @media screen and (max-width: 992px) {
    h1, h2 {
-      font-size: 28px;
+      font-size: 25px;
       line-height: 35px;
    }
 
@@ -155,7 +155,7 @@ a {
 
 iframe {
    width: 100%!important;
-   min-height: 500px!important;
+   min-height: 550px!important;
 }
 
 blockquote {
@@ -168,10 +168,6 @@ blockquote {
 }
 
 @media screen and (max-width: 768px) {
-   iframe {
-      min-height: 300px!important;
-   }
-
    blockquote {
       padding: 12px 0 12px 50px;
       text-align: left;
@@ -328,7 +324,7 @@ blockquote {
    justify-content: center;
    position: fixed;
    align-items: center;
-   top: 100px;
+   top: 0;
    z-index: 88888;
 }
 
@@ -352,7 +348,7 @@ blockquote {
    position: fixed;
    align-items: center;
    border-top: 3px solid #5eb484;
-   top: 100px;
+   top: 0;
    z-index: 88888;
 }
 
@@ -448,7 +444,7 @@ input {
 }
 
 #mainProject {
-   padding: 50px 0;
+   padding: 50px 0 0 0;
 }
 
 #mainDash {
@@ -459,6 +455,10 @@ input {
    #mainBody {
       padding: 0;
       transition: 0.3s;
+   }
+
+   #mainProject {
+      padding: 0;
    }
 }
 
@@ -1232,7 +1232,7 @@ input {
 .icon-bar {
   position: fixed;
   top: 50%;
-  left: 1%;
+  left: 30px;
   -webkit-transform: translateY(-50%);
   -ms-transform: translateY(-50%);
   transform: translateY(-50%);
@@ -1245,18 +1245,43 @@ input {
    align-items: center;
    -webkit-justify-content: center;
    -ms-flex-pack: center;
+   flex-direction: row;
    justify-content: center;
-   width: 40px;
+   width: 35px;
    height: 35px;
    transition: all .3s ease;
+   border-radius: 50%;
    color: #333;
    font-size: 15px;
-   margin: 10px 0;
+   margin: 35px 0;
+   cursor: pointer;
 }
 
-.icon-bar a:hover {
-  color: #747eb4;
-  cursor: pointer;
+.i_amounts {
+   margin: 0;
+}
+
+.icon-bar a i {
+   margin-left: 15px;
+}
+
+@media screen and (max-width: 992px) {
+   .icon-bar a {
+      color: #fff;
+      cursor: pointer;
+      flex-direction: row;
+      justify-content: flex-end;
+      margin: 10px 0;
+   }
+
+   .i_amounts {
+      margin: 0 15px 0 0;
+      order: 1;
+   }
+
+   .icon-bar a i {
+      order: 2;
+   }
 }
 
 .icon-bar iframe#twitter-widget-0 {
@@ -1285,7 +1310,10 @@ input {
 
 @media screen and (max-width: 992px) {
    .icon-bar {
-     left: 0;
+      top: 45%;
+      right: 25px;
+      left: auto;
+      z-index: 6666;
    }
 }
 

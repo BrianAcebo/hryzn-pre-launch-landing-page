@@ -7,7 +7,7 @@ if (window.innerWidth > 768) {
 
 var masonry = new Macy({
    container: ".masonryContainer",
-   trueOrder: false,
+   trueOrder: true,
    waitForImages: true,
    useOwnImageLoader: false,
    debug: true,

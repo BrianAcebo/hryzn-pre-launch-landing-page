@@ -14,6 +14,9 @@ const ProjectSchema = mongoose.Schema({
    project_image: {
       type: String
    },
+   thumbnail_image: {
+      type: String
+   },
    project_video: {
       type: String
    },

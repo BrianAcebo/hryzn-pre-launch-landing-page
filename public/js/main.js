@@ -204,34 +204,71 @@ $(document).ready(function() {
 
    // Add effects to nav on scroll
    var $topNav = $('.topnav');
-   var $flash_1 = $('.success__msg');
-   var $flash_2 = $('.error__msg-4');
    var $drop_nav = $('.drop_nav');
    var $menuTrigger = $('.hamburger_menu');
    var $nav_social = $('.nav_social');
    var $landing_search = $('.search-container.desktop_search');
    var $postBtns = $('.post_container');
+   var $hryzn_logo_project = $('.guest_project .topnav__logo');
 
    $window.scroll(function() {
       if($window.scrollTop() >= 50){
          $menuTrigger.addClass('opaque');
+         $hryzn_logo_project.css({ "color": "#31375A" });
          $topNav.addClass('shadow');
-         $flash_1.addClass('changeTop');
-         $flash_2.addClass('changeTop');
          $drop_nav.addClass('dropNavTop');
          $nav_social.addClass('dis-none');
          $landing_search.addClass('dis-none');
          $postBtns.addClass('postBtnsTop');
 		} else {
          $menuTrigger.removeClass('opaque');
+         if ($window.width() < 992) {
+            $hryzn_logo_project.css({ "color": "#fff" });
+         }
          $topNav.removeClass('shadow');
-         $flash_1.removeClass('changeTop');
-         $flash_2.removeClass('changeTop');
          $drop_nav.removeClass('dropNavTop');
          $nav_social.removeClass('dis-none');
          $landing_search.removeClass('dis-none');
          $postBtns.removeClass('postBtnsTop');
 		}
+   });
+   /**********/
+
+
+   // Show / Hide Icon Bar On Scroll Up Or Down
+   var $current_position = $(window).scrollTop();
+   var $starting_top = $(window).scrollTop();
+   var $icon_bar = $('.icon-bar');
+   var $icon_bar_a = $('.icon-bar a');
+   var $icon_bar_a_i = $('.icon-bar a i');
+   var $i_amounts = $('.i_amounts');
+
+   $(window).scroll(function() {
+      var $scroll = $(window).scrollTop();
+
+      if($scroll > $current_position) {
+         $icon_bar.css({ "display": "none" });
+      } else {
+         $icon_bar.css({ "display": "block" });
+
+         if ($starting_top != $scroll) {
+            $icon_bar_a.css({ "background": "#fff", "color": "#333", "box-shadow": "rgba(0,0,0,.1) 0 2px 10px 1px", "justify-content": "center" });
+            $i_amounts.css({ "display": "none"});
+            $icon_bar_a_i.css({ "margin-left": "0"});
+         } else {
+            if($window.width() <= 992) {
+               $icon_bar_a_i.css({ "margin-left": "0"});
+               $icon_bar_a.css({ "background": "transparent", "color": "#fff", "box-shadow": "none", "margin": "10px 0", "justify-content": "flex-end" });
+            } else {
+               $icon_bar_a_i.css({ "margin-left": "15px"});
+               $icon_bar_a.css({ "background": "transparent", "color": "#333", "box-shadow": "none", "margin": "35px 0", "justify-content": "center" });
+            }
+
+            $i_amounts.css({ "display": "block"});
+            $icon_bar_a_i.css({ "margin-left": "15px"});
+         }
+      }
+      $current_position = $scroll;
    });
    /**********/
 
@@ -461,25 +498,6 @@ $(document).ready(function() {
    });
    /**********/
 
-   // Add images to array in settings
-   var $settingsSubmit = $("#settingsSubmit");
-   var $settingsForm = $("#settingsForm");
-   var $input = $('#img_indices');
-
-   $settingsForm.submit(function(e){
-      var $profImg = $('#profileImage').val();
-      var $bgImg = $('#backgroundImage').val();
-
-      if($profImg && $bgImg) {
-         $input.attr("value", "3");
-      } else if ($profImg) {
-         $input.attr("value", "2");
-      } else {
-         $input.attr("value", "1");
-      }
-   });
-   /**********/
-
 
    // Show / Hide own and saved projects
    var $ownProfile = $(".masonryContainer").hasClass('ownProfile');
@@ -528,9 +546,14 @@ $(document).ready(function() {
       var $username = $(this).text();
 
       if ($currentUser === $projAdmins) {
-         $(this).parent().append('<form method="post" class="" action="/p/details/uncomment/' + $projectId + '"><input type="hidden" name="comment_id" value="' + $commentId + '"><input type="hidden" name="project_id" value="' + $projectId + '"><button class="project_action_btn" name="submit" type="submit"><img src="/icons/delete-ticket-item.png" class="main-topnav__icon" /></button></form>');
+         if ($(this).next().hasClass('del_box')) {
+            $(this).next().append('<form method="post" class="" action="/p/details/uncomment/' + $projectId + '"><input type="hidden" name="comment_id" value="' + $commentId + '"><input type="hidden" name="project_id" value="' + $projectId + '"><button class="project_action_btn" name="submit" type="submit"><img src="/icons/delete-ticket-item.png" class="main-topnav__icon" /></button></form>')
+         }
       } else if ($username === $currentUser) {
-         $(this).parent().append('<form method="post" class="" action="/p/details/uncomment/' + $projectId + '"><input type="hidden" name="comment_id" value="' + $commentId + '"><input type="hidden" name="project_id" value="' + $projectId + '"><button class="project_action_btn" name="submit" type="submit"><img src="/icons/delete-ticket-item.png" class="main-topnav__icon" /></button></form>');
+         console.log($(this).next().hasClass('del_box'));
+         if ($(this).next().hasClass('del_box')) {
+            $(this).next().append('<form method="post" class="" action="/p/details/uncomment/' + $projectId + '"><input type="hidden" name="comment_id" value="' + $commentId + '"><input type="hidden" name="project_id" value="' + $projectId + '"><button class="project_action_btn" name="submit" type="submit"><img src="/icons/delete-ticket-item.png" class="main-topnav__icon" /></button></form>')
+         }
       }
 
    });
@@ -545,7 +568,7 @@ $(document).ready(function() {
    $relatedOpen.each(function() {
       $(this).click(function() {
          if($window.width() <= 768) {
-            $relatedNav.css({ "width": "100%", "box-shadow": "0 2px 4px 0 rgba(0,0,0,0.2)" });
+            $relatedNav.css({ "height": "400", "box-shadow": "rgba(0,0,0,.1) 0 2px 10px 1px", "padding-top": "25px" });
             $relatedClose.css({ "position": "fixed" });
          } else {
             $relatedNav.css({ "width": "350" });
@@ -555,15 +578,43 @@ $(document).ready(function() {
 
    $relatedClose.click(function() {
       $relatedClose.css({ "position": "absolute" });
-      $relatedNav.css({ "width": "0" });
+      if($window.width() <= 768) {
+         $relatedNav.css({ "height": "0" });
+      } else {
+         $relatedNav.css({ "width": "0" });
+      }
    });
    /**********/
 
-   // Add loader for create project / micropost
+
+   // Open project settings nav on click
+   var $projectSettingsOpen = $('#projectSettingsBtn_ell');
+   var $projectSettingsClose = $('#projectSettingsClose');
+   var $projectSettingsNav = $('#projectSettingsNav');
+
+   $projectSettingsOpen.each(function() {
+      $(this).click(function() {
+         $projectSettingsNav.css({ "height": "400", "box-shadow": "rgba(0,0,0,.1) 0 2px 10px 1px" });
+      });
+   });
+
+   $projectSettingsClose.click(function() {
+      $projectSettingsNav.css({ "height": "0" });
+   });
+   /**********/
+
+
+   // Add loader for create project / micropost / edit profile
    var $projectLoader = $('.loader_project');
    var $projectSub = $('.project_submit');
+   var $projectForm = $("#createProjectForm");
+   var $settingsForm = $("#settingsForm");
 
-   $projectSub.click(function() {
+   $projectForm.submit(function(e){
+      $projectLoader.css({ "display": "flex" });
+   });
+
+   $settingsForm.submit(function(e){
       $projectLoader.css({ "display": "flex" });
    });
 
@@ -698,6 +749,11 @@ $(document).ready(function() {
          $($flashMsg).remove();
       }, 3000);
    });
+
+   setTimeout(function() {
+      $('.success__msg').remove();
+      $('.error__msg-4').remove();
+   }, 3000);
    /**********/
 
 

@@ -63,6 +63,12 @@
    }
 }
 
+@media screen and (max-width: 992px) {
+   .guest_project .topnav__logo {
+      color: #fff;
+   }
+}
+
 .topnav .search-container {
    float: left;
    width: 100%;
@@ -387,7 +393,7 @@ nav.item-list {
       border-bottom: none;
       background: #fff;
       z-index: 9999999;
-      bottom: -300px;
+      bottom: -400px;
       top: auto;
       right: 0!important;
       transition: .3s;
@@ -793,6 +799,14 @@ nav.item-list {
    transition: all 0.5s ease-in-out;
 }
 
+
+@media screen and (max-width: 992px) {
+   .guest_project .nav_social i {
+      color: #fff;
+      border: 2px solid #fff;
+   }
+}
+
 .welcome_header .nav_social i {
    border: 2px solid #fff;
    color: #fff;
@@ -1023,6 +1037,12 @@ nav.item-list {
    background-color: #31375A;
    -webkit-transition: all 0.5s ease-in-out;
    transition: all 0.5s ease-in-out;
+}
+
+@media screen and (max-width: 992px) {
+   .guest_project .hamburger_menu .ingredients {
+      background-color: #fff;
+   }
 }
 
 .hamburger_menu.opaque .ingredients {

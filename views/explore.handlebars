@@ -86,7 +86,6 @@
                                     <input class="saves_length" type="hidden" name="saves_length" value="{{../saves.length}}">
                                     <input class="micro_project" type="hidden" name="project_id" value="{{../_id}}">
                                     <input class="micro_owner" type="hidden" name="project_owner" value="{{../project_owner}}">
-                                    <a class="posted_to_group" href="/groups/{{this.group_id}}">Posted to "{{this.group_name}}"</a>
                                     <div class="micropost_card">
                                        {{#if ../micro_image}}<img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{../micro_image}}" class="img-responsive" alt="{{../micro_body}}" />{{/if}}
                                        <p>
@@ -127,10 +126,9 @@
                               {{! Don't show projects in private groups }}
                            {{else}}
                               <div class="masonryItem ownProject" title="{{../project_title}}">
-                                 <a class="posted_to_group" href="/groups/{{this.group_id}}">Posted to "{{this.group_name}}"</a>
                                  <div class="project_card">
                                     <a href="/p/details/{{../id}}" class="project_link">
-                                       <img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{../project_image}}" class="img-responsive" alt="{{../project_title}}" />
+                                       <img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{#if ../thumbnail_image}}{{../thumbnail_image}}{{else}}{{../project_image}}{{/if}}" class="img-responsive" alt="{{../project_title}}" />
                                     </a>
                                     <div class="project_card_bottom">
                                        <div class="project_bottom_wrapper">
@@ -151,7 +149,7 @@
                         <div class="masonryItem ownProject" title="{{project_title}}">
                            <div class="project_card">
                               <a href="/p/details/{{id}}" class="project_link">
-                                 <img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{project_image}}" class="img-responsive" alt="{{project_title}}" />
+                                 <img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{#if thumbnail_image}}{{thumbnail_image}}{{else}}{{project_image}}{{/if}}" class="img-responsive" alt="{{project_title}}" />
                               </a>
                               <div class="project_card_bottom">
                                  <div class="project_bottom_wrapper">
@@ -231,7 +229,6 @@
                                     <input class="saves_length" type="hidden" name="saves_length" value="{{../saves.length}}">
                                     <input class="micro_project" type="hidden" name="project_id" value="{{../_id}}">
                                     <input class="micro_owner" type="hidden" name="project_owner" value="{{../project_owner}}">
-                                    <a class="posted_to_group" href="/groups/{{this.group_id}}">Posted to "{{this.group_name}}"</a>
                                     <div class="micropost_card">
                                        {{#if ../micro_image}}<img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{../micro_image}}" class="img-responsive" alt="{{../micro_body}}" />{{/if}}
                                        <p>
@@ -272,10 +269,9 @@
                               {{! Don't show projects in private groups }}
                            {{else}}
                               <div class="masonryItem ownProject" title="{{../project_title}}">
-                                 <a class="posted_to_group" href="/groups/{{this.group_id}}">Posted to "{{this.group_name}}"</a>
                                  <div class="project_card">
                                     <a href="/p/details/{{../id}}" class="project_link">
-                                       <img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{../project_image}}" class="img-responsive" alt="{{../project_title}}" />
+                                       <img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{#if ../thumbnail_image}}{{../thumbnail_image}}{{else}}{{../project_image}}{{/if}}" class="img-responsive" alt="{{../project_title}}" />
                                     </a>
                                     <div class="project_card_bottom">
                                        <div class="project_bottom_wrapper">
@@ -296,7 +292,7 @@
                         <div class="masonryItem ownProject" title="{{project_title}}">
                            <div class="project_card">
                               <a href="/p/details/{{id}}" class="project_link">
-                                 <img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{project_image}}" class="img-responsive" alt="{{project_title}}" />
+                                 <img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{#if thumbnail_image}}{{thumbnail_image}}{{else}}{{project_image}}{{/if}}" class="img-responsive" alt="{{project_title}}" />
                               </a>
                               <div class="project_card_bottom">
                                  <div class="project_bottom_wrapper">

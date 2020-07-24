@@ -1625,7 +1625,7 @@ router.get('/settings', (req, res, next) => {
 });
 
 // POST Settings
-router.post('/settings', upload.array('images[]', 2), (req, res, next) => {
+router.post('/settings', upload.fields([{name: 'profileimage', maxCount: 1}, {name: 'backgroundimage', maxCount: 1}]), (req, res, next) => {
    if(req.isAuthenticated()) {
 
       function capitalize(string) {
@@ -1789,42 +1789,17 @@ router.post('/settings', upload.array('images[]', 2), (req, res, next) => {
             if(err) throw err;
             if(!user || user.email === oldEmail) {
 
-               if(req.body.images) {
+               if(req.files) {
 
-                  console.log('files');
+                  if (req.files.profileimage) {
+                     var ext = path.extname(req.files.profileimage[0].originalname);
 
-                  var img_indices = req.body.img_indices;
-
-                  good_files = [];
-
-                  req.files.forEach(function(file, key) {
-                     var ext = file.originalname.split('.').pop();
                      if(ext !== '.png' && ext !== '.PNG' && ext !== '.jpg' && ext !== '.JPG' && ext !== '.gif' && ext !== '.GIF' && ext !== '.jpeg' && ext !== '.JPEG') {
-                        good_files.push(file.originalname);
-                     }
-                  })
-
-                  if(good_files.length < 2 && img_indices == 3) {
-                     User.findById(id, (err, user) => {
-                        if(err) throw err;
-
-                        res.render('settings', {
-                           error_msg: 'Uploaded File Must End With .jpg .jpeg .png .gif',
-                           firstname: firstname,
-                           lastname: lastname,
-                           email: email,
-                           page_title: 'Settings',
-                           user: user
-                        });
-                     });
-                  } else {
-
-                     if(good_files.length < 1 && img_indices <= 2) {
                         User.findById(id, (err, user) => {
                            if(err) throw err;
 
                            res.render('settings', {
-                              error_msg: 'Uploaded File Must End With .jpg .jpeg .png .gif',
+                              error_msg: 'Profile Image Must End With .jpg .jpeg .png .gif',
                               firstname: firstname,
                               lastname: lastname,
                               email: email,
@@ -1833,78 +1808,96 @@ router.post('/settings', upload.array('images[]', 2), (req, res, next) => {
                            });
                         });
                      } else {
-
-                        good_files = [];
-
-                        req.files.forEach(function(file, key) {
-                           // var fileExt = file.originalname.split('.').pop();
-                           var img = dateNow + file.originalname;
-                           good_files.push(img);
-                        })
-
-                        if (img_indices == 3) {
-
-                           User.findByIdAndUpdate(id, {
-                              firstname: firstname,
-                              lastname: lastname,
-                              email: email,
-                              bio: bio,
-                              website: website_link,
-                              youtube: youtube_link,
-                              twitter: twitter_link,
-                              instagram: instagram_link,
-                              facebook: facebook_link,
-                              profileimage: good_files[0],
-                              backgroundimage: good_files[1]
-                           }, (err, user) => {
-                              if (err) throw err;
-                           });
-
-                           res.redirect('/profile/' + req.user.username);
-
-                        } else if (img_indices == 2) {
-
-                           User.findByIdAndUpdate(id, {
-                              firstname: firstname,
-                              lastname: lastname,
-                              email: email,
-                              bio: bio,
-                              website: website_link,
-                              youtube: youtube_link,
-                              twitter: twitter_link,
-                              instagram: instagram_link,
-                              facebook: facebook_link,
-                              profileimage: good_files[0]
-                           }, (err, user) => {
-                              if (err) throw err;
-                           });
-
-                           res.redirect('/profile/' + req.user.username);
-
-                        } else {
-
-                           User.findByIdAndUpdate(id, {
-                              firstname: firstname,
-                              lastname: lastname,
-                              email: email,
-                              bio: bio,
-                              website: website_link,
-                              youtube: youtube_link,
-                              twitter: twitter_link,
-                              instagram: instagram_link,
-                              facebook: facebook_link,
-                              backgroundimage: good_files[0]
-                           }, (err, user) => {
-                              if (err) throw err;
-                           });
-
-                           res.redirect('/profile/' + req.user.username);
-
-                        }
-
+                        var profileimage = dateNow + req.files.profileimage[0].originalname;
                      }
                   }
+
+                  if (req.files.backgroundimage) {
+                     var ext = path.extname(req.files.backgroundimage[0].originalname);
+
+                     if(ext !== '.png' && ext !== '.PNG' && ext !== '.jpg' && ext !== '.JPG' && ext !== '.gif' && ext !== '.GIF' && ext !== '.jpeg' && ext !== '.JPEG') {
+                        User.findById(id, (err, user) => {
+                           if(err) throw err;
+
+                           res.render('settings', {
+                              error_msg: 'Profile Image Must End With .jpg .jpeg .png .gif',
+                              firstname: firstname,
+                              lastname: lastname,
+                              email: email,
+                              page_title: 'Settings',
+                              user: user
+                           });
+                        });
+                     } else {
+                        var backgroundimage = dateNow + req.files.backgroundimage[0].originalname;
+                     }
+                  }
+
+                  if (profileimage && backgroundimage) {
+
+                     // User uploaded both profile image and background image
+
+                     User.findByIdAndUpdate(id, {
+                        firstname: firstname,
+                        lastname: lastname,
+                        email: email,
+                        bio: bio,
+                        website: website_link,
+                        youtube: youtube_link,
+                        twitter: twitter_link,
+                        instagram: instagram_link,
+                        facebook: facebook_link,
+                        profileimage: profileimage,
+                        backgroundimage: backgroundimage
+                     }, (err, user) => {
+                        if (err) throw err;
+                     });
+
+                  } else if (profileimage) {
+
+                     // User uploaded just profile image
+
+                     User.findByIdAndUpdate(id, {
+                        firstname: firstname,
+                        lastname: lastname,
+                        email: email,
+                        bio: bio,
+                        website: website_link,
+                        youtube: youtube_link,
+                        twitter: twitter_link,
+                        instagram: instagram_link,
+                        facebook: facebook_link,
+                        profileimage: profileimage
+                     }, (err, user) => {
+                        if (err) throw err;
+                     });
+
+                  } else {
+
+                     // User uploaded just background image
+
+                     User.findByIdAndUpdate(id, {
+                        firstname: firstname,
+                        lastname: lastname,
+                        email: email,
+                        bio: bio,
+                        website: website_link,
+                        youtube: youtube_link,
+                        twitter: twitter_link,
+                        instagram: instagram_link,
+                        facebook: facebook_link,
+                        backgroundimage: backgroundimage
+                     }, (err, user) => {
+                        if (err) throw err;
+                     });
+
+                  }
+
+                  res.redirect('/profile/' + req.user.username);
+
                } else {
+
+                  // User didn't upload images
 
                   User.findByIdAndUpdate(id, {
                      firstname: firstname,

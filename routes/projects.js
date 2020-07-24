@@ -56,7 +56,7 @@ router.get('/create-project', (req, res, next) => {
 
 
 // POST Create Project
-router.post('/create-project/blog', upload.single('project_image'), verifyToken, (req, res, next) => {
+router.post('/create-project/blog', upload.fields([{name: 'project_image', maxCount: 1}, {name: 'thumbnail_image', maxCount: 1}]), verifyToken, (req, res, next) => {
 
    if(req.isAuthenticated()) {
 
@@ -268,10 +268,11 @@ router.post('/create-project/blog', upload.single('project_image'), verifyToken,
                });
 
             } else {
-               if(req.file) {
+
+               if(req.files) {
 
                   // If user uploaded an image for project
-                  var ext = path.extname(req.file.originalname);
+                  var ext = path.extname(req.files.project_image[0].originalname);
 
                   // Check if file is an image
                   if(ext !== '.png' && ext !== '.PNG' && ext !== '.jpg' && ext !== '.JPG' && ext !== '.gif' && ext !== '.GIF' && ext !== '.jpeg' && ext !== '.JPEG') {
@@ -282,7 +283,7 @@ router.post('/create-project/blog', upload.single('project_image'), verifyToken,
                         User.find({ 'username': { $in: user.following} }, (err, profiles) => {
                            if (err) throw err;
                            res.render('p/create-project', {
-                              error_msg: 'Uploaded File Must End With .jpg .jpeg .png .gif',
+                              error_msg: 'Project Image File Must End With .jpg .jpeg .png .gif',
                               page_title: 'Create Project',
                               project_title: project_title,
                               project_description: project_description,
@@ -301,87 +302,124 @@ router.post('/create-project/blog', upload.single('project_image'), verifyToken,
                      });
 
                   } else {
-                     // No errors have been made
-                     // var fileExt = req.file.originalname.split('.').pop();
-                     var project_image = dateNow + req.file.originalname;
 
-                     var newProject = new Project({
-                        project_title: project_title,
-                        project_description: project_description,
-                        is_private: is_private,
-                        project_image: project_image,
-                        project_video: project_video,
-                        project_url: project_url,
-                        admins: admin,
-                        categories: project_categories,
-                        project_owner: admin,
-                        project_notes: project_notes
-                     });
+                     // If user uploaded an image for thumbnail
+                     var ext = path.extname(req.files.thumbnail_image[0].originalname);
 
-                     // Create project in database
-                     Project.saveProject(newProject, (err, project) => {
-                        if(err) throw err;
+                     // Check if file is an image
+                     if(ext !== '.png' && ext !== '.PNG' && ext !== '.jpg' && ext !== '.JPG' && ext !== '.gif' && ext !== '.GIF' && ext !== '.jpeg' && ext !== '.JPEG') {
 
-                        // Add project to User document
-                        info = [];
-                        info['profileUsername'] = req.user.username;
-                        info['projectId'] = project._id.toString();
-
-                        User.createToProfile(info, (err, user) => {
+                        User.findById(id, (err, user) => {
                            if(err) throw err;
+
+                           User.find({ 'username': { $in: user.following} }, (err, profiles) => {
+                              if (err) throw err;
+                              res.render('p/create-project', {
+                                 error_msg: 'Thumbnail Image File Must End With .jpg .jpeg .png .gif',
+                                 page_title: 'Create Project',
+                                 project_title: project_title,
+                                 project_description: project_description,
+                                 project_notes: project_notes,
+                                 is_private: is_private,
+                                 project_video: project_video,
+                                 project_url: project_url,
+                                 categories: project_categories,
+                                 project_notes: project_notes,
+                                 editProject: true,
+                                 project_error: true,
+                                 mention: profiles,
+                                 user: user
+                              });
+                           });
                         });
 
-                        if (posted_to_group) {
-                           Group.findOne({ '_id': { $in: req.body.post_to } }, (err, group) => {
+                     } else {
 
-                              info['groupId'] = group._id;
-                              info['groupName'] = group.group_name;
-                              info['groupIsPrivate'] = group.is_private;
+                        // No errors have been made
+                        // var fileExt = req.file.originalname.split('.').pop();
+                        var project_image = dateNow + req.files.project_image[0].originalname;
+                        var thumbnail_image = dateNow + req.files.thumbnail_image[0].originalname;
 
-                              console.log(info['projectId']);
+                        var newProject = new Project({
+                           project_title: project_title,
+                           project_description: project_description,
+                           is_private: is_private,
+                           project_image: project_image,
+                           thumbnail_image: thumbnail_image,
+                           project_video: project_video,
+                           project_url: project_url,
+                           admins: admin,
+                           categories: project_categories,
+                           project_owner: admin,
+                           project_notes: project_notes
+                        });
 
-                              Group.addProject(info, (err, group) => {
-                                 if(err) throw err;
-                              });
+                        // Create project in database
+                        Project.saveProject(newProject, (err, project) => {
+                           if(err) throw err;
 
-                              Project.addGroup(info, (err, project) => {
-                                 if(err) throw err;
-                              });
+                           // Add project to User document
+                           info = [];
+                           info['profileUsername'] = req.user.username;
+                           info['projectId'] = project._id.toString();
 
-                              // Send notification to the user mentioned
-                              group.users.forEach(function(user, key) {
-                                 User.findOne({ 'username': { $in: user} }, (err, reciever) => {
-                                    if (err) throw err;
+                           User.createToProfile(info, (err, user) => {
+                              if(err) throw err;
+                           });
 
-                                    var newNotification = new Notification({
-                                       sender: req.user._id,
-                                       reciever: reciever._id,
-                                       type: '@' + req.user.username + ' added a post in the group ' + group.group_name,
-                                       link: '/groups/' + group._id
-                                    });
+                           if (posted_to_group) {
+                              Group.findOne({ '_id': { $in: req.body.post_to } }, (err, group) => {
 
-                                    // Create notification in database
-                                    Notification.saveNotification(newNotification, (err, notification) => {
-                                       if(err) throw err;
+                                 info['groupId'] = group._id;
+                                 info['groupName'] = group.group_name;
+                                 info['groupIsPrivate'] = group.is_private;
 
-                                       // Add Notification for User
-                                       User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
-                                          if (err) throw err;
+                                 console.log(info['projectId']);
+
+                                 Group.addProject(info, (err, group) => {
+                                    if(err) throw err;
+                                 });
+
+                                 Project.addGroup(info, (err, project) => {
+                                    if(err) throw err;
+                                 });
+
+                                 // Send notification to the user mentioned
+                                 group.users.forEach(function(user, key) {
+                                    User.findOne({ 'username': { $in: user} }, (err, reciever) => {
+                                       if (err) throw err;
+
+                                       var newNotification = new Notification({
+                                          sender: req.user._id,
+                                          reciever: reciever._id,
+                                          type: '@' + req.user.username + ' added a post in the group ' + group.group_name,
+                                          link: '/groups/' + group._id
+                                       });
+
+                                       // Create notification in database
+                                       Notification.saveNotification(newNotification, (err, notification) => {
+                                          if(err) throw err;
+
+                                          // Add Notification for User
+                                          User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+                                             if (err) throw err;
+                                          });
                                        });
                                     });
                                  });
+
+                                 req.flash('success_msg', "Project was created.");
+                                 res.redirect('/groups/' + group._id);
+
                               });
 
+                           } else {
                               req.flash('success_msg', "Project was created.");
-                              res.redirect('/groups/' + group._id);
+                              res.redirect('/p/details/' + project._id);
+                           }
+                        });
 
-                           });
-
-                        } else {
-                           req.flash('success_msg', "Project was created.");
-                           res.redirect('/p/details/' + project._id);
-                        }
-                     });
+                     }
 
                   }
                } else {
@@ -474,7 +512,7 @@ router.get('/details/edit/:id', (req, res, next) => {
 });
 
 // Post Edit Project
-router.post('/details/edit/:id', upload.single('project_image'), (req, res, next) => {
+router.post('/details/edit/:id', upload.fields([{name: 'project_image', maxCount: 1}, {name: 'thumbnail_image', maxCount: 1}]), (req, res, next) => {
    if(req.isAuthenticated()) {
 
       var project_id = req.params.id;
@@ -587,32 +625,90 @@ router.post('/details/edit/:id', upload.single('project_image'), (req, res, next
 
       } else {
 
-         if(req.file) {
-            var ext = path.extname(req.file.originalname);
 
-            // Check if image has proper extension
-            if(ext !== '.png' && ext !== '.PNG' && ext !== '.jpg' && ext !== '.JPG' && ext !== '.gif' && ext !== '.GIF' && ext !== '.jpeg' && ext !== '.JPEG') {
-               Project.findById(project_id, (err, project) => {
-                  if(err) throw err;
+         if (req.files.project_image || req.files.thumbnail_image) {
 
-                  User.find({ 'username': { $in: req.user.following} }, (err, profiles) => {
-                     if (err) throw err;
-                     res.render('p/details/edit-project', {
-                        errors_2: 'Uploaded File Must End With .jpg .jpeg .png .gif',
-                        user: req.user,
-                        project: project,
-                        page_title: project.project_title,
-                        is_admin_of_project: true,
-                        editProject: true,
-                        project_error: true,
-                        mention: profiles,
-                        user: user
+            console.log('files');
+
+
+            if (req.files.project_image) {
+
+               // If user uploaded an image for project
+               var ext = path.extname(req.files.project_image[0].originalname);
+
+               // Check if image has proper extension
+               if(ext !== '.png' && ext !== '.PNG' && ext !== '.jpg' && ext !== '.JPG' && ext !== '.gif' && ext !== '.GIF' && ext !== '.jpeg' && ext !== '.JPEG') {
+                  Project.findById(project_id, (err, project) => {
+                     if(err) throw err;
+
+                     User.find({ 'username': { $in: req.user.following} }, (err, profiles) => {
+                        if (err) throw err;
+                        res.render('p/details/edit-project', {
+                           errors_2: 'Project Image Must End With .jpg .jpeg .png .gif',
+                           user: req.user,
+                           project: project,
+                           page_title: project.project_title,
+                           is_admin_of_project: true,
+                           editProject: true,
+                           project_error: true,
+                           mention: profiles
+                        });
                      });
                   });
-               });
+               } else {
+                  var project_image = dateNow + req.files.project_image[0].originalname;
+               }
+            }
+
+
+            if (req.files.thumbnail_image) {
+
+               // If user uploaded an image for project
+               var ext = path.extname(req.files.thumbnail_image[0].originalname);
+
+               // Check if image has proper extension
+               if(ext !== '.png' && ext !== '.PNG' && ext !== '.jpg' && ext !== '.JPG' && ext !== '.gif' && ext !== '.GIF' && ext !== '.jpeg' && ext !== '.JPEG') {
+                  Project.findById(project_id, (err, project) => {
+                     if(err) throw err;
+
+                     User.find({ 'username': { $in: req.user.following} }, (err, profiles) => {
+                        if (err) throw err;
+                        res.render('p/details/edit-project', {
+                           errors_2: 'Thumbnail Image Must End With .jpg .jpeg .png .gif',
+                           user: req.user,
+                           project: project,
+                           page_title: project.project_title,
+                           is_admin_of_project: true,
+                           editProject: true,
+                           project_error: true,
+                           mention: profiles
+                        });
+                     });
+                  });
+               } else {
+                  var thumbnail_image = dateNow + req.files.thumbnail_image[0].originalname;
+               }
+            }
+
+
+            var allGood = false;
+
+            if (req.files.project_image && req.files.thumbnail_image) {
+               if (project_image && thumbnail_image) {
+                  allGood = true;
+               }
+            } else if (req.files.project_image) {
+               if (project_image) {
+                  allGood = true;
+               }
             } else {
-               // var fileExt = req.file.originalname.split('.').pop();
-               var project_image = dateNow + req.file.originalname;
+               if (thumbnail_image) {
+                  allGood = true;
+               }
+            }
+
+
+            if (allGood) {
 
                Project.findById(project_id, (err, project) => {
                   if(err) throw err;
@@ -691,22 +787,61 @@ router.post('/details/edit/:id', upload.single('project_image'), (req, res, next
                      }
                   }
 
-                  Project.findByIdAndUpdate(project_id, {
-                     project_title: project_title,
-                     project_description: project_description,
-                     project_image: project_image,
-                     project_video: project_video,
-                     project_url: project_url,
-                     categories: project_categories,
-                     is_private: is_private,
-                     project_notes: project_notes
-                  }, (err, user) => {
-                     if (err) throw err;
-                  });
+                  if (req.files.project_image &&  req.files.thumbnail_image) {
+
+                     // User uploaded both images
+
+                     Project.findByIdAndUpdate(project_id, {
+                        project_title: project_title,
+                        project_description: project_description,
+                        project_image: project_image,
+                        thumbnail_image: thumbnail_image,
+                        project_video: project_video,
+                        project_url: project_url,
+                        categories: project_categories,
+                        is_private: is_private,
+                        project_notes: project_notes
+                     }, (err, user) => {
+                        if (err) throw err;
+                     });
+                  } else if (req.files.project_image) {
+
+                     // User uploaded just project image
+
+                     Project.findByIdAndUpdate(project_id, {
+                        project_title: project_title,
+                        project_description: project_description,
+                        project_image: project_image,
+                        project_video: project_video,
+                        project_url: project_url,
+                        categories: project_categories,
+                        is_private: is_private,
+                        project_notes: project_notes
+                     }, (err, user) => {
+                        if (err) throw err;
+                     });
+                  } else {
+
+                     // User uploaded just thumbnail image
+
+                     Project.findByIdAndUpdate(project_id, {
+                        project_title: project_title,
+                        project_description: project_description,
+                        thumbnail_image: thumbnail_image,
+                        project_video: project_video,
+                        project_url: project_url,
+                        categories: project_categories,
+                        is_private: is_private,
+                        project_notes: project_notes
+                     }, (err, user) => {
+                        if (err) throw err;
+                     });
+                  }
 
                   req.flash('success_msg', "Project was updated.");
                   res.redirect('/p/details/' + project_id);
                });
+
             }
          } else {
 
@@ -832,7 +967,7 @@ router.get('/details/:id', (req, res, next) => {
             } else {
 
                // If the project has any saves
-               if (project.saves) {
+               if (project.saves.length  > 0) {
                   var saves_amount = project.saves.length;
                   var enough_saves = true;
                   // If the person viewing saved the project
@@ -847,7 +982,7 @@ router.get('/details/:id', (req, res, next) => {
                }
 
                // If the project has any likes
-               if (project.likes) {
+               if (project.likes.length > 0) {
                   var likes_amount = project.likes.length;
                   var enough_likes = true;
                   // If the person viewing liked the project
@@ -862,7 +997,7 @@ router.get('/details/:id', (req, res, next) => {
                }
 
                // If the project has any comments
-               if (project.comments) {
+               if (project.comments.length > 0) {
                   var comment_amount = project.comments.length
                   var enough_comments = true;
                } else {
@@ -873,7 +1008,7 @@ router.get('/details/:id', (req, res, next) => {
 
 
                // If the project has any reposts
-               if (project.reposts) {
+               if (project.reposts.length > 0) {
                   var repost_amount = project.reposts.length;
                   var enough_reposts = true;
                   // If the person viewing reposted the project
@@ -894,12 +1029,15 @@ router.get('/details/:id', (req, res, next) => {
                Project.find({$text: { $search: search_notes }}, {score: { $meta: "textScore" }}, (err, related_projects) => {
                   if (err) throw err;
 
-                  var reverse_related_projects = related_projects.reverse();
+                  var reverse_related_projects = related_projects.reverse().slice(0,8);
+                  var reverse_projects = related_projects.reverse().slice(0,14);
 
                   if (related_projects.length > 4) {
+
                      res.render('p/details/details', {
                         project: project,
                         related_projects: reverse_related_projects,
+                        projects: reverse_projects, // masonry related projects
                         page_title: project.project_title,
                         is_admin_of_project: is_admin_of_project,
                         comment_amount: comment_amount,
@@ -920,11 +1058,15 @@ router.get('/details/:id', (req, res, next) => {
                         Project.find({ 'categories': { $in: project.categories} }, (err, related_projects) => {
                            if (err) throw err;
 
-                           var reverse_related_projects = related_projects.reverse();
+                           console.log('yeah');
+
+                           var reverse_related_projects = related_projects.reverse().slice(0,8);
+                           var reverse_projects = related_projects.reverse().slice(0,14);
 
                            res.render('p/details/details', {
                               project: project,
                               related_projects: reverse_related_projects,
+                              projects: reverse_projects, // masonry related projects
                               page_title: project.project_title,
                               is_admin_of_project: is_admin_of_project,
                               comment_amount: comment_amount,
@@ -940,19 +1082,22 @@ router.get('/details/:id', (req, res, next) => {
                               user_reposted: user_reposted,
                               admin_amount: admin_amount
                            });
-                        }).limit(8);
+                        });
                      } else {
                         Project.find({}, (err, related_projects) => {
                            if (err) throw err;
 
-                           var reverse_related_projects = related_projects.reverse();
+                           var reverse_related_projects = related_projects.reverse().slice(0,8);
+                           var reverse_projects = related_projects.reverse().slice(0,14);
 
                            res.render('p/details/details', {
                               project: project,
                               related_projects: reverse_related_projects,
+                              projects: reverse_projects, // masonry related projects
                               page_title: project.project_title,
                               is_admin_of_project: is_admin_of_project,
                               comment_amount: comment_amount,
+                              enough_comments: enough_comments,
                               enough_saves: enough_saves,
                               saves_amount: saves_amount,
                               enough_likes: enough_likes,
@@ -964,11 +1109,11 @@ router.get('/details/:id', (req, res, next) => {
                               user_reposted: user_reposted,
                               admin_amount: admin_amount
                            });
-                        }).limit(5);
+                        });
                      }
                   }
 
-               }).sort({score: { $meta: "textScore" }}).limit(5);
+               }).sort({score: { $meta: "textScore" }});
             }
          } else {
             res.redirect('/');
@@ -998,36 +1143,50 @@ router.get('/details/:id/guest', (req, res, next) => {
 
          if (project) {
 
-            if (project.saves) {
+            // If the project has any saves
+            if (project.saves.length  > 0) {
                var saves_amount = project.saves.length;
-               var likes_amount = project.likes.length;
-               var comment_amount = project.comments.length;
-
-               if (saves_amount >= 1) {
-                  var enough_saves = true;
-               } else {
-                  var enough_saves = false;
-               }
-
-               if (likes_amount >= 1) {
-                  var enough_likes = true;
-               } else {
-                  var enough_likes = false;
-               }
-
-               if (comment_amount >= 1) {
-                  var enough_comments = true;
-               } else {
-                  var enough_comments = false;
-               }
-
+               var enough_saves = true;
+               var user_saved = false;
             } else {
-               // Project has no saves or likes
+               // Project has no saves
                var user_saved = false;
                var saves_amount = 0;
+               var enough_saves = false;
+            }
 
+            // If the project has any likes
+            if (project.likes.length > 0) {
+               var likes_amount = project.likes.length;
+               var enough_likes = true;
+               var user_liked = false;
+            } else {
+               // Project has no likes
                var user_liked = false;
                var likes_amount = 0;
+               var enough_likes = false;
+            }
+
+            // If the project has any comments
+            if (project.comments.length > 0) {
+               var comment_amount = project.comments.length
+               var enough_comments = true;
+            } else {
+               // Project has no comments
+               var comment_amount = 0;
+               var enough_comments = false;
+            }
+
+
+            // If the project has any reposts
+            if (project.reposts.length > 0) {
+               var repost_amount = project.reposts.length;
+               var enough_reposts = true;
+               var user_reposted = false;
+            } else {
+               // Project has no reposts
+               var repost_amount = 0;
+               var enough_reposts = false;
             }
 
             var admin_amount = project.admins.length;
@@ -1036,11 +1195,13 @@ router.get('/details/:id/guest', (req, res, next) => {
                Project.find({ 'categories': { $in: project.categories} }, (err, related_projects) => {
                   if (err) throw err;
 
-                  var reverse_related_projects = related_projects.reverse();
+                  var reverse_related_projects = related_projects.reverse().slice(0,8);
+                  var reverse_projects = related_projects.reverse().slice(0,14);
 
                   res.render('p/details/details', {
                      project: project,
                      related_projects: reverse_related_projects,
+                     projects: reverse_projects,
                      page_title: project.project_title,
                      is_admin_of_project: false,
                      comment_amount: comment_amount,
@@ -1049,6 +1210,8 @@ router.get('/details/:id/guest', (req, res, next) => {
                      saves_amount: saves_amount,
                      enough_likes: enough_likes,
                      likes_amount: likes_amount,
+                     enough_reposts: enough_reposts,
+                     repost_amount: repost_amount,
                      user_saved: false,
                      user_liked: false,
                      admin_amount: admin_amount,
@@ -1059,11 +1222,13 @@ router.get('/details/:id/guest', (req, res, next) => {
                Project.find({}, (err, related_projects) => {
                   if (err) throw err;
 
-                  var reverse_related_projects = related_projects.reverse();
+                  var reverse_related_projects = related_projects.reverse().slice(0,8);
+                  var reverse_projects = related_projects.reverse().slice(0,14);
 
                   res.render('p/details/details', {
                      project: project,
                      related_projects: reverse_related_projects,
+                     projects: reverse_projects,
                      page_title: project.project_title,
                      is_admin_of_project: false,
                      comment_amount: comment_amount,
@@ -1071,6 +1236,8 @@ router.get('/details/:id/guest', (req, res, next) => {
                      saves_amount: saves_amount,
                      enough_likes: enough_likes,
                      likes_amount: likes_amount,
+                     enough_reposts: enough_reposts,
+                     repost_amount: repost_amount,
                      user_saved: false,
                      user_liked: false,
                      admin_amount: admin_amount,

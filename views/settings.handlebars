@@ -15,10 +15,10 @@
          <input class="form__input" type="email" placeholder="Enter email address" name="email" value="{{user.email}}" required autocapitalize="none" />
 
          <label for="profileimage" class="form__label">Select your profile image</label>
-         <input id="profileImage" class="form__input" type="file" name="images[]" value="{{user.profileimage}}" />
+         <input id="profileImage" class="form__input" type="file" name="profileimage" value="{{user.profileimage}}" />
 
          <label for="backgroundimage" class="form__label">Change your profile background</label>
-         <input id="backgroundImage" class="form__input" type="file" name="images[]" value="{{user.backgroundimage}}" />
+         <input id="backgroundImage" class="form__input" type="file" name="backgroundimage" value="{{user.backgroundimage}}" />
 
 
          <label for="bio" class="form__label">Enter a bio</label>
@@ -31,7 +31,6 @@
          <input class="form__input" type="text" placeholder="Enter your Instagram username" name="instagram_link" value="{{user.instagram}}" autocapitalize="none" />
          <input class="form__input" type="text" placeholder="Enter your Facebook username" name="facebook_link" value="{{user.facebook}}" autocapitalize="none" />
 
-         <input type="hidden" id="img_indices" name="img_indices" value="" />
          <input type="hidden" name="id" value="{{user.id}}">
 
          <button id="settingsSubmit" class="form_submit_btn" name="submit" type="submit">Submit Changes</button>
@@ -58,5 +57,32 @@
            <span class="closeModal btn__primary">Cancel</span>
          </div>
       </form>
+   </div>
+</div>
+
+<!-- Loader Balls -->
+<div id="autoLoader" class="loader_project">
+   <div class='loader-container'>
+      <div class='ball-wrapper'>
+         <div class='ball-holder'>
+            <div class='ball'></div>
+         </div>
+         <div class='shadow'></div>
+      </div>
+
+      <div class='ball-wrapper'>
+         <div class='ball-holder'>
+            <div class='ball'></div>
+         </div>
+         <div class='shadow'></div>
+      </div>
+
+      <div class='ball-wrapper'>
+         <div class='ball-holder'>
+            <div class='ball'></div>
+         </div>
+         <div class='shadow'></div>
+      </div>
+      <p id="autoText" class="loader_text">Thank you, please wait the computer is doing its thing.</p>
    </div>
 </div>
