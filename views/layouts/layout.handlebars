@@ -326,6 +326,69 @@
       <div class="microPostModal microModalBackground">
          <div class="modal-content">
 
+            <!-- <form method="post" class="edit-project-form" action="/p/create-micro/micro" enctype="multipart/form-data">
+               <input type="hidden" name="_x_" value="$2a$10$BJn0b4OzBarDigcTUl0kejbffkejbfvxSI.JrlLKeSsOi8oKqBAK" />
+               <input type="hidden" name="_c_" value="{{csrf_web_token}}" />
+               <input type="hidden" name="orange_blossom" value="" />
+               <input type="hidden" name="og_path" value="" class="og_path"/>
+
+               {{! Micro Body }}
+               <label for="micro_body" class="form__label" style="margin-top: 25px;">Speak Your Mind</label>
+               <textarea class="project-description__input" type="text" name="micro_body" value="{{project.micro_body}}"></textarea>
+
+               {{! Post To }}
+               <label for="post_to" class="form__label" style="margin-top: 25px;">Post To <span style="color: #999; font-size: 10px; margin-left: 8px;">( Optional )</span></label>
+               <select data-placeholder="Post to..." class="chosen-select form__input" name="post_to">
+                  <option value=""></option>
+                  <option value="followers">Followers</option>
+                  {{#each user.groups}}
+                  <option value="{{this.group_id}}">Your Group "{{this.group_name}}"</option>
+                  {{/each}}
+               </select>
+
+               {{! Micro URL }}
+               <label for="project_url" class="form__label" style="margin-top: 25px;">Add a link</label>
+               <input class="form__input" type="text" placeholder="Enter a link" name="project_url" value="{{project.project_url}}" />
+
+               <div class="micro_tab_wrapper">
+                  <div class="micro_tab">
+                    <button type="button" id="micro_text" class="micro_tab_links micro_tab_active">Image</button>
+                    <button type="button" id="micro_audio" class="micro_tab_links">Audio</button>
+                    <button type="button" id="micro_video" class="micro_tab_links">Video</button>
+                  </div>
+
+                  {{! Micro Image }}
+                  <div class="micro_tab_content micro_text micro_active">
+                     <label for="micro_image" class="form__label">Add Image</label>
+                     <input class="form__input" type="file" name="micro_image" value="{{project.micro_image}}" />
+                  </div>
+
+                  <div class="micro_tab_content micro_audio">
+                     <label for="micro_audio" class="form__label">Add Audio</label>
+                     <input class="form__input" type="file" name="micro_audio" value="{{project.micro_audio}}" />
+
+                     <label for="micro_thumbnail_image" class="form__label">Add Thumbnail Image</label>
+                     <input class="form__input" type="file" name="micro_thumbnail_image" value="{{project.micro_thumbnail_image}}" />
+                  </div>
+
+                  <div class="micro_tab_content micro_video">
+                     <label for="micro_video" class="form__label">Add Video</label>
+                     <input class="form__input" type="file" name="micro_video" value="{{project.micro_video}}" />
+
+                     <label for="micro_thumbnail_image" class="form__label">Add Thumbnail Image</label>
+                     <input class="form__input" type="file" name="micro_thumbnail_image" value="{{project.micro_thumbnail_image}}" />
+                  </div>
+               </div>
+
+               <input type="hidden" name="admin" value="{{user.username}}">
+               <input type="hidden" name="id" value="{{user._id}}">
+
+               <div class="modal-footer">
+                  <input id="microSubmit" type="submit" class="btn__secondary micro_submit" value="Submit" />
+                  <span class="closeModal btn__primary">Cancel</span>
+               </div>
+            </form> -->
+
          <form method="post" class="edit-project-form" action="/p/create-micro/micro" enctype="multipart/form-data">
             <input type="hidden" name="_x_" value="$2a$10$BJn0b4OzBarDigcTUl0kejbffkejbfvxSI.JrlLKeSsOi8oKqBAK" />
             <input type="hidden" name="_c_" value="{{csrf_web_token}}" />

@@ -651,6 +651,9 @@ section.project {
 
 .icon-bar .project_action_btn {
    padding: 0;
+   margin: 0;
+   height: 35px;
+   max-height: none;
 }
 
 @media screen and (max-width: 992px) {
@@ -1118,5 +1121,43 @@ section.project {
       margin-right: 15px;
       display: block;
    }
+}
+
+.micro_tab_wrapper {
+   border: 1px solid #ccc;
+   padding: 25px;
+}
+
+.micro_tab {
+   display: flex;
+   justify-content: flex-start;
+   align-items: center;
+   flex-direction: row;
+}
+
+.micro_tab .micro_tab_links {
+   float: left;
+   border: none;
+   outline: none;
+   cursor: pointer;
+   padding: 12px 15px;
+   transition: 0.3s;
+   background: #f1f1f1;
+   color: #333;
+   border-radius: 15px;
+   margin: 25px 35px 15px 0;
+}
+
+.micro_tab_active {
+   box-shadow: 0 2px 4px 0 rgba(0,0,0,0.2);
+}
+
+.micro_tab_content {
+   display: none;
+   padding: 0;
+}
+
+.micro_active {
+   display: block;
 }
 /**********/

@@ -1029,14 +1029,13 @@ router.get('/details/:id', (req, res, next) => {
                Project.find({$text: { $search: search_notes }}, {score: { $meta: "textScore" }}, (err, related_projects) => {
                   if (err) throw err;
 
-                  var reverse_related_projects = related_projects.reverse().slice(0,8);
-                  var reverse_projects = related_projects.reverse().slice(0,14);
+                  var reverse_projects = related_projects.slice(0,14).reverse();
 
                   if (related_projects.length > 4) {
 
                      res.render('p/details/details', {
                         project: project,
-                        related_projects: reverse_related_projects,
+                        related_projects: reverse_projects,
                         projects: reverse_projects, // masonry related projects
                         page_title: project.project_title,
                         is_admin_of_project: is_admin_of_project,
@@ -1060,12 +1059,11 @@ router.get('/details/:id', (req, res, next) => {
 
                            console.log('yeah');
 
-                           var reverse_related_projects = related_projects.reverse().slice(0,8);
-                           var reverse_projects = related_projects.reverse().slice(0,14);
+                           var reverse_projects = related_projects.slice(0,14).reverse();
 
                            res.render('p/details/details', {
                               project: project,
-                              related_projects: reverse_related_projects,
+                              related_projects: reverse_projects,
                               projects: reverse_projects, // masonry related projects
                               page_title: project.project_title,
                               is_admin_of_project: is_admin_of_project,
@@ -1087,12 +1085,11 @@ router.get('/details/:id', (req, res, next) => {
                         Project.find({}, (err, related_projects) => {
                            if (err) throw err;
 
-                           var reverse_related_projects = related_projects.reverse().slice(0,8);
-                           var reverse_projects = related_projects.reverse().slice(0,14);
+                           var reverse_projects = related_projects.slice(0,14).reverse();
 
                            res.render('p/details/details', {
                               project: project,
-                              related_projects: reverse_related_projects,
+                              related_projects: reverse_projects,
                               projects: reverse_projects, // masonry related projects
                               page_title: project.project_title,
                               is_admin_of_project: is_admin_of_project,
@@ -1195,12 +1192,11 @@ router.get('/details/:id/guest', (req, res, next) => {
                Project.find({ 'categories': { $in: project.categories} }, (err, related_projects) => {
                   if (err) throw err;
 
-                  var reverse_related_projects = related_projects.reverse().slice(0,8);
-                  var reverse_projects = related_projects.reverse().slice(0,14);
+                  var reverse_projects = related_projects.slice(0,14).reverse();
 
                   res.render('p/details/details', {
                      project: project,
-                     related_projects: reverse_related_projects,
+                     related_projects: reverse_projects,
                      projects: reverse_projects,
                      page_title: project.project_title,
                      is_admin_of_project: false,
@@ -1217,17 +1213,16 @@ router.get('/details/:id/guest', (req, res, next) => {
                      admin_amount: admin_amount,
                      user_is_guest: true
                   });
-               }).limit(5);
+               });
             } else {
                Project.find({}, (err, related_projects) => {
                   if (err) throw err;
 
-                  var reverse_related_projects = related_projects.reverse().slice(0,8);
-                  var reverse_projects = related_projects.reverse().slice(0,14);
+                  var reverse_projects = related_projects.slice(0,14).reverse();
 
                   res.render('p/details/details', {
                      project: project,
-                     related_projects: reverse_related_projects,
+                     related_projects: reverse_projects,
                      projects: reverse_projects,
                      page_title: project.project_title,
                      is_admin_of_project: false,
@@ -1243,7 +1238,7 @@ router.get('/details/:id/guest', (req, res, next) => {
                      admin_amount: admin_amount,
                      user_is_guest: true
                   });
-               }).limit(5);
+               });
             }
          } else {
             res.redirect('/');

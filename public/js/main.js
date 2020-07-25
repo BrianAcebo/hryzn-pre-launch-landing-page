@@ -414,6 +414,31 @@ $(document).ready(function() {
    }
 
 
+   // Tabs for micropost
+   var $microTabLinks = $(".micro_tab_links");
+   var $microTabs = $(".micro_tab_content");
+
+   $microTabLinks.each(function() {
+      $(this).click(function() {
+
+         $microTabLinks.each(function() {
+            $(this).removeClass('micro_tab_active');
+         });
+
+         $(this).addClass('micro_tab_active');
+
+         $microTabs.each(function() {
+            $(this).removeClass('micro_active');
+         });
+
+         var $microTabId = $(this).attr("id");
+         $('.' + $microTabId).addClass('micro_active');
+         console.log($microTabId);
+      });
+   });
+   /**********/
+
+
    // Modal pop up for repost
    var $modalRepost = $(".repostModal");
    var $modalBtnRepost = $(".repostModalBtn");
