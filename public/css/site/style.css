@@ -1228,12 +1228,16 @@ input {
 }
 
 .icon-bar {
-  position: fixed;
-  top: 50%;
-  left: 30px;
-  -webkit-transform: translateY(-50%);
-  -ms-transform: translateY(-50%);
-  transform: translateY(-50%);
+   position: fixed;
+   top: 50%;
+   left: 30px;
+   -webkit-transform: translateY(-50%);
+   -ms-transform: translateY(-50%);
+   transform: translateY(-50%);
+   display: flex;
+   flex-direction: column;
+   justify-content: flex-end;
+   align-items: flex-end;
 }
 
 .icon-bar a {
@@ -1245,7 +1249,6 @@ input {
    -ms-flex-pack: center;
    flex-direction: row;
    justify-content: center;
-   width: 35px;
    height: 35px;
    transition: all .3s ease;
    border-radius: 50%;

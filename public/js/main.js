@@ -257,8 +257,8 @@ $(document).ready(function() {
          } else {
 
             // User is scrolling upwards
-            $icon_bar.css({ "display": "block" });
-            $icon_bar_a.css({ "background": "#fff", "color": "#333", "justify-content": "center"});
+            $icon_bar.css({ "display": "flex" });
+            $icon_bar_a.css({ "background": "#fff", "color": "#333", "justify-content": "center", "width": "35px"});
             $icon_bar_btn.css({ "margin": "25px 0", "box-shadow": "rgba(0,0,0,.1) 0 2px 10px 1px" });
             $i_amounts.css({ "display": "none"});
             $icon_bar_a_i.css({ "margin-left": "0"});
@@ -274,13 +274,13 @@ $(document).ready(function() {
 
             // Icon bar for mobile
             $icon_bar_a_i.css({ "margin-left": "0"});
-            $icon_bar_a.css({ "background": "transparent", "color": "#fff", "justify-content": "flex-end" });
+            $icon_bar_a.css({ "background": "transparent", "color": "#fff", "justify-content": "flex-end", "width": "auto" });
             $icon_bar_btn.css({ "margin": "10px 0", "box-shadow": "none" });
          } else {
 
             // Icon bar for desktop
             $icon_bar_a_i.css({ "margin-left": "15px"});
-            $icon_bar_a.css({ "background": "transparent", "color": "#333", "justify-content": "center" });
+            $icon_bar_a.css({ "background": "transparent", "color": "#333", "justify-content": "center", "width": "auto" });
             $icon_bar_btn.css({ "margin": "35px 0", "box-shadow": "none" });
          }
 
