@@ -1259,6 +1259,7 @@ input {
    margin: 35px 0;
    height: 35px;
    max-height: none;
+   border-radius: 50%;
 }
 
 .i_amounts {
