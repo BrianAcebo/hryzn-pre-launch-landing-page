@@ -649,13 +649,6 @@ section.project {
    max-width: 20px;
 }
 
-.icon-bar .project_action_btn {
-   padding: 0;
-   margin: 0;
-   height: 35px;
-   max-height: none;
-}
-
 @media screen and (max-width: 992px) {
    .project_title {
       font-size: 30px;

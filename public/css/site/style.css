@@ -1251,8 +1251,14 @@ input {
    border-radius: 50%;
    color: #333;
    font-size: 15px;
-   margin: 35px 0;
    cursor: pointer;
+}
+
+.icon-bar .project_action_btn {
+   padding: 0;
+   margin: 35px 0;
+   height: 35px;
+   max-height: none;
 }
 
 .i_amounts {
@@ -1269,6 +1275,9 @@ input {
       cursor: pointer;
       flex-direction: row;
       justify-content: flex-end;
+   }
+
+   .icon-bar .project_action_btn {
       margin: 10px 0;
    }
 

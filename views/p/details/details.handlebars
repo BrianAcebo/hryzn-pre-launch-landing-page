@@ -52,12 +52,19 @@
 
          {{else}}
 
-         <a>{{#if enough_likes}}<span class="i_amounts">{{likes_amount}}</span>{{/if}}<i style="font-weight: bold" class="fa fa-heart-o"></i></a>
+         <button class="project_action_btn" name="submit" type="submit">
+            <a>{{#if enough_likes}}<span class="i_amounts">{{likes_amount}}</span>{{/if}}<i style="font-weight: bold" class="fa fa-heart-o"></i></a>
+         </button>
 
          {{/if}}
 
-         <a class="relatedBtn">{{#if enough_comments}}<span class="i_amounts">{{comment_amount}}</span>{{/if}}<i style="font-weight: bold" class="{{#if user_commented}}fa fa-comment{{else}}fa fa-comment-o{{/if}}"></i></a>
-         <a {{#if user}}class="detailsRepostModalBtn"{{/if}}>{{#if enough_reposts}}<span class="i_amounts">{{repost_amount}}</span>{{/if}}<i class="fa fa-retweet"></i></a>
+         <button class="project_action_btn" name="submit" type="submit">
+            <a class="relatedBtn">{{#if enough_comments}}<span class="i_amounts">{{comment_amount}}</span>{{/if}}<i style="font-weight: bold" class="{{#if user_commented}}fa fa-comment{{else}}fa fa-comment-o{{/if}}"></i></a>
+         </button>
+
+         <button class="project_action_btn" name="submit" type="submit">
+            <a {{#if user}}class="detailsRepostModalBtn"{{/if}}>{{#if enough_reposts}}<span class="i_amounts">{{repost_amount}}</span>{{/if}}<i class="fa fa-retweet"></i></a>
+         </button>
 
 
          {{#if user}}
@@ -88,7 +95,9 @@
 
          {{else}}
 
-         <a>{{#if enough_saves}}<span class="i_amounts">{{saves_amount}}</span>{{/if}}<i style="font-weight: bold" class="fa fa-bookmark-o"></i></a>
+         <button class="project_action_btn" name="submit" type="submit">
+            <a>{{#if enough_saves}}<span class="i_amounts">{{saves_amount}}</span>{{/if}}<i style="font-weight: bold" class="fa fa-bookmark-o"></i></a>
+         </button>
 
          {{/if}}
       </div>
