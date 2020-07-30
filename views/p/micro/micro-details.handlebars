@@ -125,10 +125,10 @@
 
 
                <div class="action_btns_social">
-                  <a target="_blank" href="http://www.facebook.com/sharer.php?u={{site_url}}/p/details/{{project._id}}/guest&amp;t={{project.project_title}}" title="Share on Facebook" class="facebook"><i class="fa fa-facebook"></i></a>
-                  <a target="_blank" href="https://twitter.com/intent/tweet?original_referer=https%3A%2F%2Fmyhryzn%3A5000%2Fp%2Fdetails%2F{{project._id}}&ref_src=twsrc%5Etfw&text={{project.project_title}}&tw_p=tweetbutton&url=https%3A%2F%2Fwww.myhryzn.com%2Fp%2Fdetails%2F{{project._id}}%2Fguest&via=myHryzn" title="Share on Twitter" class="twitter"><i class="fa fa-twitter"></i></a>
+                  <a target="_blank" href="http://www.facebook.com/sharer.php?u={{site_url}}/p/details/{{project._id}}/guest&amp;t={{#if project.project_title}}{{project.project_title}}{{else}}Explore On Hryzn{{/if}}" title="Share on Facebook" class="facebook"><i class="fa fa-facebook"></i></a>
+                  <a target="_blank" href="https://twitter.com/intent/tweet?original_referer=https%3A%2F%2Fmyhryzn%3A5000%2Fp%2Fdetails%2F{{project._id}}&ref_src=twsrc%5Etfw&text={{#if project.project_title}}{{project.project_title}}{{else}}Explore On Hryzn{{/if}}&tw_p=tweetbutton&url=https%3A%2F%2Fwww.myhryzn.com%2Fp%2Fdetails%2F{{project._id}}%2Fguest&via=myHryzn" title="Share on Twitter" class="twitter"><i class="fa fa-twitter"></i></a>
                   <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-                  <a class="check" class="copy-link" onclick="copyLink('{{site_url}}/p/details/{{project._id}}/guest')"><i class="fa fa-link"></i></a>
+                  <a class="check" class="copy-link" onclick="copyLink('{{site_url}}/p/micro/{{project._id}}/guest')"><i class="fa fa-link"></i></a>
                </div>
 
                {{#if is_admin_of_project}}
