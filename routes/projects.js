@@ -67,7 +67,7 @@ router.post('/create-project/blog', upload.fields([{name: 'project_image', maxCo
             res.sendStatus(403);
          } else {
 
-            var project_title = req.body.project_title;
+            var project_title = req.body.project_title.replace(/\r\n/g,'');
             var project_description = req.body.project_description.replace(/\r\n/g,'');
             var admin = req.body.admin; // Owner of project
             var is_private = req.body.is_private;
@@ -1247,6 +1247,324 @@ router.get('/details/:id/guest', (req, res, next) => {
    }
 });
 
+
+// Get Project Detail
+router.get('/micro/:id', (req, res, next) => {
+   if(req.isAuthenticated()) {
+      Project.findById(req.params.id, (err, project) => {
+         if (err) throw err;
+
+         if (project) {
+
+            if (project.project_owner == req.user.username || req.user.username === 'hryzn') {
+               var is_admin_of_project = true;
+            } else {
+               var is_admin_of_project = false;
+               var not_admin = true;
+            }
+
+            if (project.is_private && not_admin) {
+
+               // User came to a private project and is not an owner
+               res.redirect('/');
+
+            } else {
+
+               // If the project has any saves
+               if (project.saves.length  > 0) {
+                  var saves_amount = project.saves.length;
+                  var enough_saves = true;
+                  // If the person viewing saved the project
+                  if (project.saves.indexOf(req.user.username) > -1) {
+                     var user_saved = true;
+                  }
+               } else {
+                  // Project has no saves
+                  var user_saved = false;
+                  var saves_amount = 0;
+                  var enough_saves = false;
+               }
+
+               // If the project has any likes
+               if (project.likes.length > 0) {
+                  var likes_amount = project.likes.length;
+                  var enough_likes = true;
+                  // If the person viewing liked the project
+                  if (project.likes.indexOf(req.user.username) > -1) {
+                     var user_liked = true;
+                  }
+               } else {
+                  // Project has no likes
+                  var user_liked = false;
+                  var likes_amount = 0;
+                  var enough_likes = false;
+               }
+
+               // If the project has any comments
+               if (project.comments.length > 0) {
+                  var comment_amount = project.comments.length
+                  var enough_comments = true;
+               } else {
+                  // Project has no comments
+                  var comment_amount = 0;
+                  var enough_comments = false;
+               }
+
+
+               // If the project has any reposts
+               if (project.reposts.length > 0) {
+                  var repost_amount = project.reposts.length;
+                  var enough_reposts = true;
+                  // If the person viewing reposted the project
+                  if (project.reposts.indexOf(req.user.username) > -1) {
+                     var user_reposted = true;
+                  }
+               } else {
+                  // Project has no reposts
+                  var repost_amount = 0;
+                  var enough_reposts = false;
+               }
+
+
+               var admin_amount = project.admins.length;
+
+               if (typeof project.project_title != 'undefined') {
+                  var project_title = project.project_title;
+               } else {
+                  var project_title = 'Explore';
+               }
+
+               Project.find({$text: { $search: project.micro_body }}, {score: { $meta: "textScore" }}, (err, related_projects) => {
+                  if (err) throw err;
+
+                  var reverse_projects = related_projects.slice(0,14).reverse();
+
+                  if (related_projects.length > 4) {
+
+                     res.render('p/micro/micro-details', {
+                        project: project,
+                        related_projects: reverse_projects,
+                        projects: reverse_projects, // masonry related projects
+                        page_title: project_title,
+                        is_admin_of_project: is_admin_of_project,
+                        comment_amount: comment_amount,
+                        enough_comments: enough_comments,
+                        enough_saves: enough_saves,
+                        saves_amount: saves_amount,
+                        enough_likes: enough_likes,
+                        likes_amount: likes_amount,
+                        user_saved: user_saved,
+                        user_liked: user_liked,
+                        enough_reposts: enough_reposts,
+                        repost_amount: repost_amount,
+                        user_reposted: user_reposted,
+                        admin_amount: admin_amount
+                     });
+                  } else {
+                     if (project.categories.length > 4) {
+                        Project.find({ 'categories': { $in: project.categories} }, (err, related_projects) => {
+                           if (err) throw err;
+
+                           console.log('yeah');
+
+                           var reverse_projects = related_projects.slice(0,14).reverse();
+
+                           res.render('p/micro/micro-details', {
+                              project: project,
+                              related_projects: reverse_projects,
+                              projects: reverse_projects, // masonry related projects
+                              page_title: project_title,
+                              is_admin_of_project: is_admin_of_project,
+                              comment_amount: comment_amount,
+                              enough_comments: enough_comments,
+                              enough_saves: enough_saves,
+                              saves_amount: saves_amount,
+                              enough_likes: enough_likes,
+                              likes_amount: likes_amount,
+                              user_saved: user_saved,
+                              user_liked: user_liked,
+                              enough_reposts: enough_reposts,
+                              repost_amount: repost_amount,
+                              user_reposted: user_reposted,
+                              admin_amount: admin_amount
+                           });
+                        });
+                     } else {
+                        Project.find({}, (err, related_projects) => {
+                           if (err) throw err;
+
+                           var reverse_projects = related_projects.slice(0,14).reverse();
+
+                           res.render('p/micro/micro-details', {
+                              project: project,
+                              related_projects: reverse_projects,
+                              projects: reverse_projects, // masonry related projects
+                              page_title: project_title,
+                              is_admin_of_project: is_admin_of_project,
+                              comment_amount: comment_amount,
+                              enough_comments: enough_comments,
+                              enough_saves: enough_saves,
+                              saves_amount: saves_amount,
+                              enough_likes: enough_likes,
+                              likes_amount: likes_amount,
+                              user_saved: user_saved,
+                              user_liked: user_liked,
+                              enough_reposts: enough_reposts,
+                              repost_amount: repost_amount,
+                              user_reposted: user_reposted,
+                              admin_amount: admin_amount
+                           });
+                        });
+                     }
+                  }
+
+               }).sort({score: { $meta: "textScore" }});
+            }
+         } else {
+            res.redirect('/');
+         }
+      });
+   } else {
+      Project.findById(req.params.id, (err, project) => {
+         if (err) throw err;
+
+         if (project) {
+            res.redirect('/p/micro/' + req.params.id + '/guest');
+         } else {
+            res.redirect('/users/register');
+         }
+      });
+   }
+});
+
+
+// Get Project Detail From Outside Link
+router.get('/micro/:id/guest', (req, res, next) => {
+   if(req.isAuthenticated()) {
+      res.redirect('/p/details/' + req.params.id);
+   } else {
+
+      Project.findById(req.params.id, (err, project) => {
+         if (err) throw err;
+
+         if (project) {
+
+            // If the project has any saves
+            if (project.saves.length  > 0) {
+               var saves_amount = project.saves.length;
+               var enough_saves = true;
+               var user_saved = false;
+            } else {
+               // Project has no saves
+               var user_saved = false;
+               var saves_amount = 0;
+               var enough_saves = false;
+            }
+
+            // If the project has any likes
+            if (project.likes.length > 0) {
+               var likes_amount = project.likes.length;
+               var enough_likes = true;
+               var user_liked = false;
+            } else {
+               // Project has no likes
+               var user_liked = false;
+               var likes_amount = 0;
+               var enough_likes = false;
+            }
+
+            // If the project has any comments
+            if (project.comments.length > 0) {
+               var comment_amount = project.comments.length
+               var enough_comments = true;
+            } else {
+               // Project has no comments
+               var comment_amount = 0;
+               var enough_comments = false;
+            }
+
+
+            // If the project has any reposts
+            if (project.reposts.length > 0) {
+               var repost_amount = project.reposts.length;
+               var enough_reposts = true;
+               var user_reposted = false;
+            } else {
+               // Project has no reposts
+               var repost_amount = 0;
+               var enough_reposts = false;
+            }
+
+            var admin_amount = project.admins.length;
+
+            if (typeof project.project_title != 'undefined') {
+               var project_title = project.project_title;
+            } else {
+               var project_title = 'Explore';
+            }
+
+            console.log(project.project_title);
+
+            if (project.categories.length > 0) {
+               Project.find({ 'categories': { $in: project.categories} }, (err, related_projects) => {
+                  if (err) throw err;
+
+                  var reverse_projects = related_projects.slice(0,14).reverse();
+
+                  res.render('p/micro/micro-details', {
+                     project: project,
+                     related_projects: reverse_projects,
+                     projects: reverse_projects,
+                     page_title: project_title,
+                     is_admin_of_project: false,
+                     comment_amount: comment_amount,
+                     enough_comments: enough_comments,
+                     enough_saves: enough_saves,
+                     saves_amount: saves_amount,
+                     enough_likes: enough_likes,
+                     likes_amount: likes_amount,
+                     enough_reposts: enough_reposts,
+                     repost_amount: repost_amount,
+                     user_saved: false,
+                     user_liked: false,
+                     admin_amount: admin_amount,
+                     user_is_guest: true
+                  });
+               });
+            } else {
+               Project.find({}, (err, related_projects) => {
+                  if (err) throw err;
+
+                  var reverse_projects = related_projects.slice(0,14).reverse();
+
+                  res.render('p/micro/micro-details', {
+                     project: project,
+                     related_projects: reverse_projects,
+                     projects: reverse_projects,
+                     page_title: project_title,
+                     is_admin_of_project: false,
+                     comment_amount: comment_amount,
+                     enough_saves: enough_saves,
+                     saves_amount: saves_amount,
+                     enough_likes: enough_likes,
+                     likes_amount: likes_amount,
+                     enough_reposts: enough_reposts,
+                     repost_amount: repost_amount,
+                     user_saved: false,
+                     user_liked: false,
+                     admin_amount: admin_amount,
+                     user_is_guest: true
+                  });
+               });
+            }
+         } else {
+            res.redirect('/');
+         }
+      });
+   }
+});
+
+
 // Post Project Detail - Save
 router.post('/details/save/:id', (req, res, next) => {
    if(req.isAuthenticated()) {
@@ -1346,7 +1664,7 @@ router.post('/details/micro/save/:id', (req, res, next) => {
                   Project.removeSaves(info, (err, user) => {
                      if(err) throw err;
                      req.flash('success_msg', "Project Unsaved");
-                     res.redirect(og_path);
+                     res.redirect('/p/micro/' + req.params.id);
                   });
                } else {
                   info = [];
@@ -1372,7 +1690,7 @@ router.post('/details/micro/save/:id', (req, res, next) => {
                            sender: req.user._id,
                            reciever: reciever._id,
                            type: '@' + req.user.username + ' saved your post.',
-                           link: 'profile/' + project_owner
+                           link: '/p/micro/' + req.params.id
                         });
 
                         // Create notification in database
@@ -1387,7 +1705,7 @@ router.post('/details/micro/save/:id', (req, res, next) => {
                      });
 
                      req.flash('success_msg', "Project Saved");
-                     res.redirect(og_path);
+                     res.redirect('/p/micro/' + req.params.id);
                   });
                }
 
@@ -1416,7 +1734,7 @@ router.post('/details/micro/save/:id', (req, res, next) => {
                      sender: req.user._id,
                      reciever: reciever._id,
                      type: '@' + req.user.username + ' saved your post.',
-                     link: 'profile/' + project_owner
+                     link: '/p/micro/' + req.params.id
                   });
 
                   // Create notification in database
@@ -1431,7 +1749,7 @@ router.post('/details/micro/save/:id', (req, res, next) => {
                });
 
                req.flash('success_msg', "Project Saved");
-               res.redirect(og_path);
+               res.redirect('/p/micro/' + req.params.id);
             });
          }
 
@@ -1625,7 +1943,7 @@ router.post('/details/micro/unrepost/:id', (req, res, next) => {
       Project.removeReposts(info, (err, user) => {
          if(err) throw err;
          req.flash('success_msg', "Unreposted Project");
-         res.redirect(location_path);
+         res.redirect('/p/micro/' + req.params.id);
       });
    } else {
       res.redirect('/users/register');
@@ -1693,7 +2011,7 @@ router.post('/details/micro/repost/:id', (req, res, next) => {
             var link = '/groups/' + groupId;
          } else {
             var notif = '@' + req.user.username + ' reposted your post.';
-            var link = '/p/details/' + req.params.id;
+            var link = '/p/micro/' + req.params.id;
          }
 
          // Send notification to the user mentioned
@@ -1739,7 +2057,7 @@ router.post('/details/micro/repost/:id', (req, res, next) => {
                         sender: req.user._id,
                         reciever: reciever._id,
                         type: '@' + req.user.username + ' added a repost in the group ' + group.group_name,
-                        link: '/groups/' + group._id
+                        link: '/p/micro/' + req.params.id
                      });
 
                      // Create notification in database
@@ -1755,13 +2073,13 @@ router.post('/details/micro/repost/:id', (req, res, next) => {
                });
 
                req.flash('success_msg', "Reposted Project");
-               res.redirect(og_path);
+               res.redirect('/p/micro/' + req.params.id);
 
             });
 
          } else {
             req.flash('success_msg', "Reposted Project");
-            res.redirect(og_path);
+            res.redirect('/p/micro/' + req.params.id);
          }
 
       });
@@ -1859,7 +2177,7 @@ router.post('/details/micro/like/:id', (req, res, next) => {
                   Project.removeLikes(info, (err, user) => {
                      if(err) throw err;
                      req.flash('success_msg', "Project Unliked");
-                     res.redirect(og_path);
+                     res.redirect('/p/micro/' + req.params.id);
                   });
                } else {
                   info = [];
@@ -1881,7 +2199,7 @@ router.post('/details/micro/like/:id', (req, res, next) => {
                            sender: req.user._id,
                            reciever: reciever._id,
                            type: '@' + req.user.username + ' liked your post.',
-                           link: '/profile/' + project_owner
+                           link: '/p/micro/' + req.params.id
                         });
 
                         // Create notification in database
@@ -1896,7 +2214,7 @@ router.post('/details/micro/like/:id', (req, res, next) => {
                      });
 
                      req.flash('success_msg', "Project Liked");
-                     res.redirect(og_path);
+                     res.redirect('/p/micro/' + req.params.id);
                   });
                }
 
@@ -1921,7 +2239,7 @@ router.post('/details/micro/like/:id', (req, res, next) => {
                      sender: req.user._id,
                      reciever: reciever._id,
                      type: '@' + req.user.username + ' liked your post.',
-                     link: '/profile/' + project_owner
+                     link: '/p/micro/' + req.params.id
                   });
 
                   // Create notification in database
@@ -1936,7 +2254,7 @@ router.post('/details/micro/like/:id', (req, res, next) => {
                });
 
                req.flash('success_msg', "Project Liked");
-               res.redirect(og_path);
+               res.redirect('/p/micro/' + req.params.id);
             });
          }
 
@@ -1952,6 +2270,16 @@ router.post('/details/comment/:id', (req, res, next) => {
    if(req.isAuthenticated()) {
 
       var project_owner = req.body.project_owner;
+
+
+      if (req.body.og_path != '') {
+         var path = req.body.og_path;
+         var notifPath = '/p/micro/' + req.params.id;
+      } else {
+         var path = '/p/details/' + req.params.id
+         var notifPath = '/p/details/' + req.params.id
+      }
+
 
       info = [];
       info['profileUsername'] = req.user.username;
@@ -1996,7 +2324,7 @@ router.post('/details/comment/:id', (req, res, next) => {
                   sender: req.user._id,
                   reciever: reciever._id,
                   type: '@' + req.user.username + ' mentioned you in a comment.',
-                  link: '/p/details/' + req.params.id
+                  link: notifPath
                });
 
                // Create notification in database
@@ -2029,7 +2357,7 @@ router.post('/details/comment/:id', (req, res, next) => {
                sender: req.user._id,
                reciever: reciever._id,
                type: '@' + req.user.username + ' commented on your post.',
-               link: '/p/details/' + req.params.id
+               link: notifPath
             });
 
             // Create notification in database
@@ -2044,7 +2372,7 @@ router.post('/details/comment/:id', (req, res, next) => {
          });
 
          req.flash('success_msg', "Added Comment");
-         res.redirect('/p/details/' + req.body.project_id);
+         res.redirect(path);
       });
    } else {
       res.redirect('/users/register');
@@ -2055,6 +2383,13 @@ router.post('/details/comment/:id', (req, res, next) => {
 // Post Project Detail - Uncomment
 router.post('/details/uncomment/:id', (req, res, next) => {
    if(req.isAuthenticated()) {
+
+      if (req.body.og_path != '') {
+         var path = req.body.og_path;
+      } else {
+         var path = '/p/details/' + req.params.id
+      }
+
       info = [];
       info['profileUsername'] = req.user.username;
       info['projectId'] = req.params.id;
@@ -2064,7 +2399,7 @@ router.post('/details/uncomment/:id', (req, res, next) => {
       Project.removeComment(info, (err, user) => {
          if(err) throw err;
          req.flash('success_msg', "Removed Comment");
-         res.redirect('/p/details/' + req.params.id);
+         res.redirect(path);
       });
    } else {
       res.redirect('/users/register');
@@ -2168,7 +2503,7 @@ router.post('/upload', upload.single('editor_image'), (req, res, next) => {
 });
 
 // POST Create Micropost
-router.post('/create-micro/micro', upload.single('micro_image'), verifyToken, (req, res, next) => {
+router.post('/create-micro/micro', upload.fields([{name: 'micro_image', maxCount: 1}, {name: 'micro_thumbnail_image__audio', maxCount: 1}, {name: 'micro_thumbnail_image__video', maxCount: 1}, {name: 'micro_audio', maxCount: 1}, {name: 'micro_video', maxCount: 1}]), verifyToken, (req, res, next) => {
 
    if(req.isAuthenticated()) {
 
@@ -2182,8 +2517,35 @@ router.post('/create-micro/micro', upload.single('micro_image'), verifyToken, (r
             var admin = req.body.admin; // Owner of project
             var id = req.body.id;
             var user = req.body.user;
+
+            if (typeof req.body.micro_title_image != 'undefined') {
+
+               var micro_title = req.body.micro_title_image.replace(/\r\n/g,'');
+
+            } else if (typeof req.body.micro_title_audio != 'undefined') {
+
+               var micro_title = req.body.micro_title_audio.replace(/\r\n/g,'');
+
+            } else if (typeof req.body.micro_title_video != 'undefined') {
+
+               var micro_title = req.body.micro_title_video.replace(/\r\n/g,'');
+
+            } else {
+               var micro_title;
+            }
+
+
             var req_micro_body = req.body.micro_body.replace(/\r\n/g,'');
-            var project_categories = [];
+
+            if (req.body.project_categories) {
+               if (req.body.project_categories.length > 0) {
+                  var project_categories = req.body.project_categories;
+               } else {
+                  var project_categories = [];
+               }
+            } else {
+               var project_categories = [];
+            }
             var project_url = req.body.project_url;
             var posted_to_group;
             if (req.body.post_to != '') {
@@ -2288,115 +2650,7 @@ router.post('/create-micro/micro', upload.single('micro_image'), verifyToken, (r
                }
             });
 
-            if(req.file) {
-
-               // // If user uploaded an image for project
-               var ext = path.extname(req.file.originalname);
-
-               // Check if file is an image
-               if(ext !== '.png' && ext !== '.PNG' && ext !== '.jpg' && ext !== '.JPG' && ext !== '.gif' && ext !== '.GIF' && ext !== '.jpeg' && ext !== '.JPEG') {
-
-                  // Check if file is audio
-                  if(ext !== '.mpeg' && ext !== '.MPEG' && ext !== '.wav' && ext !== '.WAV' && ext !== '.wave' && ext !== '.WAVE' && ext !== '.mp3' && ext !== '.MP3') {
-
-                     User.findById(id, (err, user) => {
-                        if(err) throw err;
-
-                        User.find({ 'username': { $in: user.following} }, (err, profiles) => {
-                           if (err) throw err;
-                           res.render('p/create-project', {
-                              error_msg: 'Media file extension is not supported',
-                              page_title: 'Create Project',
-                              notes_is_empty_string: true,
-                              editProject: true,
-                              project_error: true,
-                              mention: profiles,
-                              user: user
-                           });
-                        });
-                     });
-
-                  }
-
-               } else {
-                  // No errors have been made
-                  // var fileExt = req.file.originalname.split('.').pop();
-                  var micro_image = dateNow + req.file.originalname;
-
-                  var newProject = new Project({
-                     micro_image: micro_image,
-                     categories: project_categories,
-                     project_owner: req.user.username,
-                     micro_body: micro_body,
-                     project_url: project_url,
-                     is_micro_post: true
-                  });
-
-                  // Create project in database
-                  Project.saveProject(newProject, (err, project) => {
-                     if(err) throw err;
-
-                     // Add project to User document
-                     info = [];
-                     info['profileUsername'] = req.user.username;
-                     info['projectId'] = project._id.toString();
-
-                     User.createToProfile(info, (err, user) => {
-                        if(err) throw err;
-                     });
-
-                     if (posted_to_group) {
-                        Group.findOne({ '_id': { $in: req.body.post_to } }, (err, group) => {
-
-                           info['groupId'] = group._id;
-                           info['groupName'] = group.group_name;
-                           info['groupIsPrivate'] = group.is_private;
-
-                           Group.addProject(info, (err, group) => {
-                              if(err) throw err;
-                           });
-
-                           Project.addGroup(info, (err, project) => {
-                              if(err) throw err;
-                           });
-
-                           // Send notification to the user mentioned
-                           group.users.forEach(function(user, key) {
-                              User.findOne({ 'username': { $in: user} }, (err, reciever) => {
-                                 if (err) throw err;
-
-                                 var newNotification = new Notification({
-                                    sender: req.user._id,
-                                    reciever: reciever._id,
-                                    type: '@' + req.user.username + ' added a post in the group ' + group.group_name,
-                                    link: '/groups/' + group._id
-                                 });
-
-                                 // Create notification in database
-                                 Notification.saveNotification(newNotification, (err, notification) => {
-                                    if(err) throw err;
-
-                                    // Add Notification for User
-                                    User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
-                                       if (err) throw err;
-                                    });
-                                 });
-                              });
-                           });
-
-                           req.flash('success_msg', "Micropost was created.");
-                           res.redirect('/groups/' + group._id);
-
-                        });
-
-                     } else {
-                        req.flash('success_msg', "Micropost was created.");
-                        res.redirect(location_path);
-                     }
-                  });
-
-               }
-            } else {
+            if (req.body.is_micro_text == 'true') {
 
                var newProject = new Project({
                   categories: project_categories,
@@ -2470,6 +2724,448 @@ router.post('/create-micro/micro', upload.single('micro_image'), verifyToken, (r
                      res.redirect(location_path);
                   }
                });
+
+            } else if (req.body.is_micro_image == 'true') {
+               if(req.files.micro_image) {
+
+                  // If user uploaded an image for project
+                  var ext = path.extname(req.files.micro_image[0].originalname);
+
+                  // Check if file is an image
+                  if(ext !== '.png' && ext !== '.PNG' && ext !== '.jpg' && ext !== '.JPG' && ext !== '.gif' && ext !== '.GIF' && ext !== '.jpeg' && ext !== '.JPEG') {
+
+                     User.findById(id, (err, user) => {
+                        if(err) throw err;
+
+                        User.find({ 'username': { $in: user.following} }, (err, profiles) => {
+                           if (err) throw err;
+                           res.render('p/create-project', {
+                              error_msg: 'Image File Must End With .jpg .jpeg .png .gif',
+                              page_title: 'Create Project',
+                              notes_is_empty_string: true,
+                              editProject: true,
+                              project_error: true,
+                              mention: profiles,
+                              user: user
+                           });
+                        });
+                     });
+
+                  } else {
+                     // No errors have been made
+                     // var fileExt = req.file.originalname.split('.').pop();
+                     var micro_image = dateNow + req.files.micro_image[0].originalname;
+
+                     var newProject = new Project({
+                        micro_image: micro_image,
+                        categories: project_categories,
+                        project_owner: req.user.username,
+                        project_title: micro_title,
+                        micro_body: micro_body,
+                        project_url: project_url,
+                        is_micro_post: true
+                     });
+
+                     // Create project in database
+                     Project.saveProject(newProject, (err, project) => {
+                        if(err) throw err;
+
+                        // Add project to User document
+                        info = [];
+                        info['profileUsername'] = req.user.username;
+                        info['projectId'] = project._id.toString();
+
+                        User.createToProfile(info, (err, user) => {
+                           if(err) throw err;
+                        });
+
+                        if (posted_to_group) {
+                           Group.findOne({ '_id': { $in: req.body.post_to } }, (err, group) => {
+
+                              info['groupId'] = group._id;
+                              info['groupName'] = group.group_name;
+                              info['groupIsPrivate'] = group.is_private;
+
+                              Group.addProject(info, (err, group) => {
+                                 if(err) throw err;
+                              });
+
+                              Project.addGroup(info, (err, project) => {
+                                 if(err) throw err;
+                              });
+
+                              // Send notification to the user mentioned
+                              group.users.forEach(function(user, key) {
+                                 User.findOne({ 'username': { $in: user} }, (err, reciever) => {
+                                    if (err) throw err;
+
+                                    var newNotification = new Notification({
+                                       sender: req.user._id,
+                                       reciever: reciever._id,
+                                       type: '@' + req.user.username + ' added a post in the group ' + group.group_name,
+                                       link: '/groups/' + group._id
+                                    });
+
+                                    // Create notification in database
+                                    Notification.saveNotification(newNotification, (err, notification) => {
+                                       if(err) throw err;
+
+                                       // Add Notification for User
+                                       User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+                                          if (err) throw err;
+                                       });
+                                    });
+                                 });
+                              });
+
+                              req.flash('success_msg', "Micropost was created.");
+                              res.redirect('/groups/' + group._id);
+
+                           });
+
+                        } else {
+                           req.flash('success_msg', "Micropost was created.");
+                           res.redirect(location_path);
+                        }
+                     });
+
+                  }
+               } else {
+
+                  User.findById(id, (err, user) => {
+                     if(err) throw err;
+
+                     User.find({ 'username': { $in: user.following} }, (err, profiles) => {
+                        if (err) throw err;
+                        res.render('p/create-project', {
+                           error_msg: 'Please Upload An Image',
+                           page_title: 'Create Project',
+                           notes_is_empty_string: true,
+                           editProject: true,
+                           project_error: true,
+                           mention: profiles,
+                           user: user
+                        });
+                     });
+                  });
+
+               }
+            } else if (req.body.is_micro_audio == 'true') {
+
+               if(req.files.micro_audio && req.files.micro_thumbnail_image__audio) {
+
+                  // If user uploaded an image for project
+                  var ext = path.extname(req.files.micro_audio[0].originalname);
+
+                  // Check if file is audio
+                  if(ext !== '.mpeg' && ext !== '.MPEG' && ext !== '.wav' && ext !== '.WAV' && ext !== '.wave' && ext !== '.WAVE' && ext !== '.mp3' && ext !== '.MP3' && ext !== '.ogg' && ext !== '.OGG') {
+
+                     User.findById(id, (err, user) => {
+                        if(err) throw err;
+
+                        User.find({ 'username': { $in: user.following} }, (err, profiles) => {
+                           if (err) throw err;
+                           res.render('p/create-project', {
+                              error_msg: 'Audio File Must End With .mpeg .wav .wave .mp3 .ogg',
+                              page_title: 'Create Project',
+                              notes_is_empty_string: true,
+                              editProject: true,
+                              project_error: true,
+                              mention: profiles,
+                              user: user
+                           });
+                        });
+                     });
+
+
+                  } else {
+
+                     // If user uploaded an image for project
+                     var ext = path.extname(req.files.micro_thumbnail_image__audio[0].originalname);
+
+                     // Check if file is an image
+                     if(ext !== '.png' && ext !== '.PNG' && ext !== '.jpg' && ext !== '.JPG' && ext !== '.gif' && ext !== '.GIF' && ext !== '.jpeg' && ext !== '.JPEG') {
+
+                        User.findById(id, (err, user) => {
+                           if(err) throw err;
+
+                           User.find({ 'username': { $in: user.following} }, (err, profiles) => {
+                              if (err) throw err;
+                              res.render('p/create-project', {
+                                 error_msg: 'Thumbnail Image File Must End With .jpg .jpeg .png .gif',
+                                 page_title: 'Create Project',
+                                 notes_is_empty_string: true,
+                                 editProject: true,
+                                 project_error: true,
+                                 mention: profiles,
+                                 user: user
+                              });
+                           });
+                        });
+
+                     } else {
+
+                        // No errors have been made
+                        // var fileExt = req.file.originalname.split('.').pop();
+                        var micro_audio = dateNow + req.files.micro_audio[0].originalname;
+                        var thumbnail_image = dateNow + req.files.micro_thumbnail_image__audio[0].originalname;
+
+                        var newProject = new Project({
+                           micro_audio: micro_audio,
+                           thumbnail_image: thumbnail_image,
+                           categories: project_categories,
+                           project_owner: req.user.username,
+                           project_title: micro_title,
+                           micro_body: micro_body,
+                           project_url: project_url,
+                           is_micro_post: true
+                        });
+
+                        // Create project in database
+                        Project.saveProject(newProject, (err, project) => {
+                           if(err) throw err;
+
+                           // Add project to User document
+                           info = [];
+                           info['profileUsername'] = req.user.username;
+                           info['projectId'] = project._id.toString();
+
+                           User.createToProfile(info, (err, user) => {
+                              if(err) throw err;
+                           });
+
+                           if (posted_to_group) {
+                              Group.findOne({ '_id': { $in: req.body.post_to } }, (err, group) => {
+
+                                 info['groupId'] = group._id;
+                                 info['groupName'] = group.group_name;
+                                 info['groupIsPrivate'] = group.is_private;
+
+                                 Group.addProject(info, (err, group) => {
+                                    if(err) throw err;
+                                 });
+
+                                 Project.addGroup(info, (err, project) => {
+                                    if(err) throw err;
+                                 });
+
+                                 // Send notification to the user mentioned
+                                 group.users.forEach(function(user, key) {
+                                    User.findOne({ 'username': { $in: user} }, (err, reciever) => {
+                                       if (err) throw err;
+
+                                       var newNotification = new Notification({
+                                          sender: req.user._id,
+                                          reciever: reciever._id,
+                                          type: '@' + req.user.username + ' added a post in the group ' + group.group_name,
+                                          link: '/groups/' + group._id
+                                       });
+
+                                       // Create notification in database
+                                       Notification.saveNotification(newNotification, (err, notification) => {
+                                          if(err) throw err;
+
+                                          // Add Notification for User
+                                          User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+                                             if (err) throw err;
+                                          });
+                                       });
+                                    });
+                                 });
+
+                                 req.flash('success_msg', "Micropost was created.");
+                                 res.redirect('/groups/' + group._id);
+
+                              });
+
+                           } else {
+                              req.flash('success_msg', "Micropost was created.");
+                              res.redirect(location_path);
+                           }
+                        });
+
+                     }
+
+                  }
+               } else {
+
+                  User.findById(id, (err, user) => {
+                     if(err) throw err;
+
+                     User.find({ 'username': { $in: user.following} }, (err, profiles) => {
+                        if (err) throw err;
+                        res.render('p/create-project', {
+                           error_msg: 'Please Upload An Audio File and Thumbnail Image',
+                           page_title: 'Create Project',
+                           notes_is_empty_string: true,
+                           editProject: true,
+                           project_error: true,
+                           mention: profiles,
+                           user: user
+                        });
+                     });
+                  });
+
+               }
+
+            } else if (req.body.is_micro_video == 'true') {
+
+               if(req.files.micro_video && req.files.micro_thumbnail_image__video) {
+
+                  // If user uploaded an image for project
+                  var ext = path.extname(req.files.micro_video[0].originalname);
+
+                  // Check if file is audio
+                  if(ext !== '.mp4' && ext !== '.MP4' && ext !== '.webm' && ext !== '.WEBM' && ext !== '.ogg' && ext !== '.OGG') {
+
+                     User.findById(id, (err, user) => {
+                        if(err) throw err;
+
+                        User.find({ 'username': { $in: user.following} }, (err, profiles) => {
+                           if (err) throw err;
+                           res.render('p/create-project', {
+                              error_msg: 'Video File Must End With .webm .mp4 .ogg',
+                              page_title: 'Create Project',
+                              notes_is_empty_string: true,
+                              editProject: true,
+                              project_error: true,
+                              mention: profiles,
+                              user: user
+                           });
+                        });
+                     });
+
+
+                  } else {
+
+                     // If user uploaded an image for project
+                     var ext = path.extname(req.files.micro_thumbnail_image__video[0].originalname);
+
+                     // Check if file is an image
+                     if(ext !== '.png' && ext !== '.PNG' && ext !== '.jpg' && ext !== '.JPG' && ext !== '.gif' && ext !== '.GIF' && ext !== '.jpeg' && ext !== '.JPEG') {
+
+                        User.findById(id, (err, user) => {
+                           if(err) throw err;
+
+                           User.find({ 'username': { $in: user.following} }, (err, profiles) => {
+                              if (err) throw err;
+                              res.render('p/create-project', {
+                                 error_msg: 'Thumbnail Image File Must End With .jpg .jpeg .png .gif',
+                                 page_title: 'Create Project',
+                                 notes_is_empty_string: true,
+                                 editProject: true,
+                                 project_error: true,
+                                 mention: profiles,
+                                 user: user
+                              });
+                           });
+                        });
+
+                     } else {
+
+                        // No errors have been made
+                        // var fileExt = req.file.originalname.split('.').pop();
+                        var micro_video = dateNow + req.files.micro_video[0].originalname;
+                        var thumbnail_image = dateNow + req.files.micro_thumbnail_image__video[0].originalname;
+
+                        var newProject = new Project({
+                           micro_video: micro_video,
+                           thumbnail_image: thumbnail_image,
+                           categories: project_categories,
+                           project_owner: req.user.username,
+                           project_title: micro_title,
+                           micro_body: micro_body,
+                           project_url: project_url,
+                           is_micro_post: true
+                        });
+
+                        // Create project in database
+                        Project.saveProject(newProject, (err, project) => {
+                           if(err) throw err;
+
+                           // Add project to User document
+                           info = [];
+                           info['profileUsername'] = req.user.username;
+                           info['projectId'] = project._id.toString();
+
+                           User.createToProfile(info, (err, user) => {
+                              if(err) throw err;
+                           });
+
+                           if (posted_to_group) {
+                              Group.findOne({ '_id': { $in: req.body.post_to } }, (err, group) => {
+
+                                 info['groupId'] = group._id;
+                                 info['groupName'] = group.group_name;
+                                 info['groupIsPrivate'] = group.is_private;
+
+                                 Group.addProject(info, (err, group) => {
+                                    if(err) throw err;
+                                 });
+
+                                 Project.addGroup(info, (err, project) => {
+                                    if(err) throw err;
+                                 });
+
+                                 // Send notification to the user mentioned
+                                 group.users.forEach(function(user, key) {
+                                    User.findOne({ 'username': { $in: user} }, (err, reciever) => {
+                                       if (err) throw err;
+
+                                       var newNotification = new Notification({
+                                          sender: req.user._id,
+                                          reciever: reciever._id,
+                                          type: '@' + req.user.username + ' added a post in the group ' + group.group_name,
+                                          link: '/groups/' + group._id
+                                       });
+
+                                       // Create notification in database
+                                       Notification.saveNotification(newNotification, (err, notification) => {
+                                          if(err) throw err;
+
+                                          // Add Notification for User
+                                          User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+                                             if (err) throw err;
+                                          });
+                                       });
+                                    });
+                                 });
+
+                                 req.flash('success_msg', "Micropost was created.");
+                                 res.redirect('/groups/' + group._id);
+
+                              });
+
+                           } else {
+                              req.flash('success_msg', "Micropost was created.");
+                              res.redirect(location_path);
+                           }
+                        });
+
+                     }
+
+                  }
+               } else {
+
+                  User.findById(id, (err, user) => {
+                     if(err) throw err;
+
+                     User.find({ 'username': { $in: user.following} }, (err, profiles) => {
+                        if (err) throw err;
+                        res.render('p/create-project', {
+                           error_msg: 'Please Upload An Video File and Thumbnail Image',
+                           page_title: 'Create Project',
+                           notes_is_empty_string: true,
+                           editProject: true,
+                           project_error: true,
+                           mention: profiles,
+                           user: user
+                        });
+                     });
+                  });
+
+               }
+
             }
 
          }
@@ -2480,12 +3176,41 @@ router.post('/create-micro/micro', upload.single('micro_image'), verifyToken, (r
    }
 });
 
+
+// Get Edit Project
+router.get('/micro/edit/:id', (req, res, next) => {
+   if(req.isAuthenticated()) {
+      Project.findById(req.params.id, (err, project) => {
+         if(err) throw err;
+
+         if(project.project_owner == req.user.username || req.user.username === 'hryzn') {
+
+            var is_admin_of_project = true;
+
+            res.render('p/micro/edit-micro', {
+               project: project,
+               hide_scripts: true,
+               page_title: project.project_title,
+               is_admin_of_project: is_admin_of_project
+            });
+
+         } else {
+
+            var is_admin_of_project = false;
+            res.redirect('/');
+
+         }
+      });
+   } else {
+      res.redirect('/users/register');
+   }
+});
+
+
 // Verify JS Web Token
 function verifyToken(req, res, next) {
 
    var bearerReq = req.body._c_;
-
-   console.log(bearerReq);
 
    if (typeof bearerReq !== 'undefined') {
 

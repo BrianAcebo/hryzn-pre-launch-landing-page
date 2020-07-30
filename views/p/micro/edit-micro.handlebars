@@ -1,0 +1,137 @@
+<form method="post" class="edit-project-form" action="/p/create-micro/micro" enctype="multipart/form-data">
+   <input type="hidden" name="_x_" value="$2a$10$BJn0b4OzBarDigcTUl0kejbffkejbfvxSI.JrlLKeSsOi8oKqBAK" />
+   <input type="hidden" name="_c_" value="{{csrf_web_token}}" />
+   <input type="hidden" name="orange_blossom" value="" />
+   <input type="hidden" name="og_path" value="" class="og_path" />
+
+
+   {{#if project.micro_video}}{{else}}{{#if project.micro_audio}}{{else}}{{#if project.micro_image}}{{else}}
+   {{! Micro Text }}
+   <div class="micro_tab_content micro_text micro_active">
+      <input id="input_is_micro_text" class="input_is_micro" type="hidden" name="is_micro_text" value="true"/>
+   </div>
+   {{/if}}{{/if}}{{/if}}
+
+
+   {{#if project.micro_image}}
+   {{! Micro Image }}
+   <div class="micro_image">
+      <input id="input_is_micro_image" class="input_is_micro" type="hidden" name="is_micro_image" value="false"/>
+
+      <label for="micro_image" class="form__label">Change Image <span class="form_span_descriptor">( Optional )</span></label>
+      <input class="form__input" type="file" name="micro_image" value="{{project.micro_image}}" />
+
+      {{! Micro Title }}
+      <label for="micro_title" class="form__label" style="margin-top: 25px;">Change title <span class="form_span_descriptor">( Optional )</span></label>
+      <input class="form__input" type="text" placeholder="Enter a title" name="micro_title_image" value="{{project.project_title}}" />
+   </div>
+   {{/if}}
+
+
+   {{#if project.micro_audio}}
+   {{! Micro Audio }}
+   <div class="micro_audio">
+      <input id="input_is_micro_audio" class="input_is_micro" type="hidden" name="is_micro_audio" value="false"/>
+
+      <label for="micro_audio" class="form__label">Change Audio <span class="form_span_descriptor">( Optional )</span></label>
+      <input class="form__input" type="file" name="micro_audio" value="{{project.micro_audio}}" />
+
+      <label for="micro_thumbnail_image" class="form__label">Change Thumbnail Image <span class="form_span_descriptor">( Optional )</span></label>
+      <input class="form__input" type="file" name="micro_thumbnail_image__audio" value="{{project.micro_thumbnail_image}}" />
+
+      {{! Micro Title }}
+      <label for="micro_title" class="form__label" style="margin-top: 25px;">Change title <span class="form_span_descriptor">( Optional )</span></label>
+      <input class="form__input" type="text" placeholder="Enter a title" name="micro_title_audio" value="{{project.project_title}}" />
+   </div>
+   {{/if}}
+
+
+   {{#if project.micro_video}}
+   {{! Micro Video }}
+   <div class="micro_video">
+      <input id="input_is_micro_video" class="input_is_micro" type="hidden" name="is_micro_video" value="false"/>
+
+      <label for="micro_video" class="form__label">Change Video <span class="form_span_descriptor">( Optional )</span></label>
+      <input class="form__input" type="file" name="micro_video" value="{{project.micro_video}}" />
+
+      <label for="micro_thumbnail_image" class="form__label">Change Thumbnail Image <span class="form_span_descriptor">( Optional )</span></label>
+      <input class="form__input" type="file" name="micro_thumbnail_image__video" value="{{project.micro_thumbnail_image}}" />
+
+      {{! Micro Title }}
+      <label for="micro_title" class="form__label" style="margin-top: 25px;">Change title <span class="form_span_descriptor">( Optional )</span></label>
+      <input class="form__input" type="text" placeholder="Enter a title" name="micro_title_video" value="{{project.project_title}}" />
+   </div>
+   {{/if}}
+
+
+   {{! Micro Body }}
+   <label for="micro_body" class="form__label" style="margin-top: 25px;">Speak Your Mind <span class="form_span_descriptor">( Helps to be discovered by user's search )</span></label>
+   <textarea class="project-description__input" type="text" name="micro_body" value="{{project.micro_body}}">{{{project.micro_body}}}</textarea>
+
+
+   {{! Micro Categories }}
+   <label for="project_categories" class="form__label" style="margin-top: 25px;">Change Categories <span class="form_span_descriptor">( Optional )</span></label>
+   <select data-placeholder="Add categories..." multiple class="chosen-select form__input" name="project_categories[]">
+      <option value=""></option>
+      <option>Animals</option>
+      <option>Architecture</option>
+      <option>Art</option>
+      <option>Cars & Motorcycles</option>
+      <option>Celebrities</option>
+      <option>DIY & Crafts</option>
+      <option>Design</option>
+      <option>Education</option>
+      <option>Film, Music & Books</option>
+      <option>Finance</option>
+      <option>Food & Drink</option>
+      <option>Gardening</option>
+      <option>Geek</option>
+      <option>Hair & Beauty</option>
+      <option>Health & Fitness</option>
+      <option>History</option>
+      <option>Holidays & Events</option>
+      <option>Home Decor</option>
+      <option>Humor</option>
+      <option>Illustrations & Posters</option>
+      <option>Kids</option>
+      <option>Men’s Fashion</option>
+      <option>Outdoors</option>
+      <option>Photography</option>
+      <option>Products</option>
+      <option>Quotes</option>
+      <option>Science & Nature</option>
+      <option>Sports</option>
+      <option>Tattoos</option>
+      <option>Technology</option>
+      <option>Travel</option>
+      <option>Weddings</option>
+      <option>Women’s Fashion</option>
+      <option>Other</option>
+   </select>
+
+
+   {{! Post To }}
+   <label for="post_to" class="form__label" style="margin-top: 25px;">Post To <span class="form_span_descriptor">( Optional )</span></label>
+   <select data-placeholder="Post to..." class="chosen-select form__input" name="post_to">
+      <option value=""></option>
+      <option value="followers">Followers</option>
+      {{#each user.groups}}
+      <option value="{{this.group_id}}">Your Group "{{this.group_name}}"</option>
+      {{/each}}
+   </select>
+
+
+   {{! Micro URL }}
+   <label for="project_url" class="form__label" style="margin-top: 25px;">Change website link <span class="form_span_descriptor">( Optional )</span></label>
+   <input class="form__input" type="text" placeholder="Enter a link" name="project_url" value="{{project.project_url}}" />
+
+
+   <input type="hidden" name="admin" value="{{user.username}}">
+   <input type="hidden" name="id" value="{{user._id}}">
+
+
+   {{! Submit }}
+   <button class="form_submit_btn draft_btn project_submit edit-project__form-btn" name="submit" type="submit">Save</button>
+
+   <p class="go-back back-btn" style="margin-top: 50px;">Cancel</p>
+</form>

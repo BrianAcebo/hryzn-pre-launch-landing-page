@@ -242,7 +242,7 @@ $(document).ready(function() {
    var $icon_bar_a = $('.icon-bar a');
    var $icon_bar_btn = $('.icon-bar button');
    var $icon_bar_a_i = $('.icon-bar a i');
-   var $i_amounts = $('.i_amounts');
+   var $i_amounts = $('.icon-bar .i_amounts');
 
    $(window).scroll(function() {
       var $scroll = $(window).scrollTop();
@@ -421,6 +421,11 @@ $(document).ready(function() {
    // Tabs for micropost
    var $microTabLinks = $(".micro_tab_links");
    var $microTabs = $(".micro_tab_content");
+   var $inputMicroAll = $(".input_is_micro");
+   var $inputMicroText = $("#input_is_micro_text");
+   var $inputMicroImage = $("#input_is_micro_image");
+   var $inputMicroAudio = $("#input_is_micro_audio");
+   var $inputMicroVideo = $("#input_is_micro_video");
 
    $microTabLinks.each(function() {
       $(this).click(function() {
@@ -437,7 +442,36 @@ $(document).ready(function() {
 
          var $microTabId = $(this).attr("id");
          $('.' + $microTabId).addClass('micro_active');
-         console.log($microTabId);
+
+         if ($microTabId == 'micro_text') {
+
+            $inputMicroAll.each(function() {
+               $(this).attr('value', 'false');
+            });
+            $inputMicroText.attr('value', 'true');
+
+         } else if ($microTabId == 'micro_image') {
+
+            $inputMicroAll.each(function() {
+               $(this).attr('value', 'false');
+            });
+            $inputMicroImage.attr('value', 'true');
+
+         } else if ($microTabId == 'micro_audio') {
+
+            $inputMicroAll.each(function() {
+               $(this).attr('value', 'false');
+            });
+            $inputMicroAudio.attr('value', 'true');
+
+         } else {
+
+            $inputMicroAll.each(function() {
+               $(this).attr('value', 'false');
+            });
+            $inputMicroVideo.attr('value', 'true');
+
+         }
       });
    });
    /**********/
@@ -586,17 +620,16 @@ $(document).ready(function() {
 
    $commentUsername.each(function() {
 
-      var $commentId = $(this).next().text();
+      var $commentId = $(this).next().next().text();
       var $username = $(this).text();
 
       if ($currentUser === $projAdmins) {
          if ($(this).next().hasClass('del_box')) {
-            $(this).next().append('<form method="post" class="" action="/p/details/uncomment/' + $projectId + '"><input type="hidden" name="comment_id" value="' + $commentId + '"><input type="hidden" name="project_id" value="' + $projectId + '"><button class="project_action_btn" name="submit" type="submit"><img src="/icons/delete-ticket-item.png" class="main-topnav__icon" /></button></form>')
+            $(this).next().append('<form method="post" class="uncomment_form_btn" action="/p/details/uncomment/' + $projectId + '"><input type="hidden" name="comment_id" value="' + $commentId + '"><input type="hidden" name="project_id" value="' + $projectId + '"><button class="project_action_btn" name="submit" type="submit"><img src="/icons/delete-ticket-item.png" class="main-topnav__icon" /></button></form>')
          }
       } else if ($username === $currentUser) {
-         console.log($(this).next().hasClass('del_box'));
          if ($(this).next().hasClass('del_box')) {
-            $(this).next().append('<form method="post" class="" action="/p/details/uncomment/' + $projectId + '"><input type="hidden" name="comment_id" value="' + $commentId + '"><input type="hidden" name="project_id" value="' + $projectId + '"><button class="project_action_btn" name="submit" type="submit"><img src="/icons/delete-ticket-item.png" class="main-topnav__icon" /></button></form>')
+            $(this).next().append('<form method="post" class="uncomment_form_btn" action="/p/details/uncomment/' + $projectId + '"><input type="hidden" name="comment_id" value="' + $commentId + '"><input type="hidden" name="project_id" value="' + $projectId + '"><button class="project_action_btn" name="submit" type="submit"><img src="/icons/delete-ticket-item.png" class="main-topnav__icon" /></button></form>')
          }
       }
 
@@ -709,75 +742,6 @@ $(document).ready(function() {
          $(this).attr('href', '/groups/' + $tagId + '/remove/' + $projLink);
       });
 
-   });
-   /**********/
-
-
-   // Micropost popup
-   var $microPop = $('#micropostPop');
-   var $microPopContainer = $('.micropostPop_container');
-   var $micropost = $('.micropost');
-   var $mainBody = $('#mainBody');
-   var $microRepost = $('#micro_repost');
-   var $microUnrepost = $('#micro_unrepost');
-   var $microSave = $('#micro_save');
-   var $microLike = $('#micro_like');
-   var $repostModalBtn = $('.repostModalBtn');
-   var $ogPath = window.location.pathname;
-
-   siteBody.on('click', function(e){
-       if( !$(e.target).is('.side_nav, .side_nav__content, .side_nav__list, .side_nav__list li, .hamburger_menu, .hamburger_menu span, .mobile_search .landing-nav_search') ) {
-          siteBody.removeClass('menu-is-open');
-       }
-   });
-
-   $micropost.each(function() {
-      $(this).click(function(e) {
-
-         if ( !$(e.target).is('.micro_delete') ) {
-
-            var $micro_project = $(this).children('.micro_project').val();
-            var $micro_owner = $(this).children('.micro_owner').val();
-            var $reposts_length = $(this).children('.reposts_length').val();
-            var $likes_length = $(this).children('.likes_length').val();
-            var $saves_length = $(this).children('.saves_length').val();
-
-            $microRepost.attr('action', '/p/details/micro/repost/' + $micro_project);
-            $microUnrepost.attr('action', '/p/details/micro/unrepost/' + $micro_project);
-            $microSave.attr('action', '/p/details/micro/save/' + $micro_project);
-            $microLike.attr('action', '/p/details/micro/like/' + $micro_project);
-
-            $microRepost.children('.micro_project').val($micro_project);
-            $microRepost.children('.micro_owner').val($micro_owner);
-            $microRepost.children('.og_path').val($ogPath);
-            $repostModalBtn.children('.reposts_length').text($reposts_length);
-
-            $microUnrepost.children('.micro_project').val($micro_project);
-            $microUnrepost.children('.og_path').val($ogPath);
-
-            $microSave.children('.micro_project').val($micro_project);
-            $microSave.children('.micro_owner').val($micro_owner);
-            $microSave.children('.og_path').val($ogPath);
-            $microSave.children().children('.saves_length').text($saves_length);
-
-            $microLike.children('.micro_project').val($micro_project);
-            $microLike.children('.micro_owner').val($micro_owner);
-            $microLike.children('.og_path').val($ogPath);
-            $microLike.children().children('.likes_length').text($likes_length);
-
-            $microPopContainer.append($(this).clone());
-            $microPop.addClass('microPop');
-            $mainBody.addClass('mainBodyPop');
-
-         }
-
-      });
-   });
-
-   $('.microPopClose').click(function() {
-      $microPop.removeClass('microPop');
-      $mainBody.removeClass('mainBodyPop');
-      $microPopContainer.children().remove();
    });
    /**********/
 

@@ -47,7 +47,7 @@ router.get('/welcome', (req, res, next) => {
          '5e9379216387290017b85ebb',
          '5cda25cc5f66f6001759268a',
          '5e7d700888041a0017351dc4',
-         '5e8e799102b32d001725d5bb'
+         '5f234106570ea01a26cd426e'
       ];
 
       var featured_groups = [

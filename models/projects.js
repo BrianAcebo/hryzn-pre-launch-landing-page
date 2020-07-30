@@ -60,6 +60,12 @@ const ProjectSchema = mongoose.Schema({
    micro_image: {
       type: String
    },
+   micro_audio: {
+      type: String
+   },
+   micro_video: {
+      type: String
+   },
    posted_to_group: [{
       group_id: {
          type: String

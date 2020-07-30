@@ -452,12 +452,12 @@ input {
 
 @media screen and (max-width: 992px) {
    #mainBody {
-      padding: 0;
+      padding: 0 0 100px 0;
       transition: 0.3s;
    }
 
    #mainProject {
-      padding: 0;
+      padding: 0 0 100px 0;
    }
 }
 
@@ -831,8 +831,7 @@ input {
   100% { transform: rotate(360deg); }
 }
 
-.modalBackground,
-#micropostPop {
+.modalBackground {
    display: none;
    position: fixed;
    z-index: 999999;
@@ -1230,7 +1229,7 @@ input {
 .icon-bar {
    position: fixed;
    top: 50%;
-   left: 30px;
+   left: 18px;
    -webkit-transform: translateY(-50%);
    -ms-transform: translateY(-50%);
    transform: translateY(-50%);
