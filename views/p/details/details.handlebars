@@ -108,7 +108,12 @@
 
       {{! Project Video / Image }}
       {{#if project.project_video}}
-      <iframe id="projectFrame" src="{{project.project_video}}" frameborder="0" allowfullscreen></iframe>
+      <video autoplay preload="auto" controls controlsList="nodownload" id="projectFrame" class="project_video" style="width: 100%;">
+         <source src="https://s3.amazonaws.com/hryzn-app-static-assets/{{project.project_video}}" type="video/mp4">
+         <source src="https://s3.amazonaws.com/hryzn-app-static-assets/{{project.project_video}}" type="video/ogg">
+         <source src="https://s3.amazonaws.com/hryzn-app-static-assets/{{project.project_video}}" type="video/webm">
+         Your browser does not support the video tag.
+      </video>
       {{! Project Title }}
       {{#if project.is_private}}
       <br /><span style="font-size: 15px; font-weight: 600;">Set to private, so only you can see this.</span>
@@ -116,7 +121,10 @@
       {{#each project.admins}}
       <a class="project_admins project_has_video" href="/profile/{{this}}">@{{this}}</a>
       {{/each}}
-      <h1 class="project_title project_has_video">{{project.project_title}}</h1>
+      <h1 class="project_title project_has_video" style="position: relative">
+         {{project.project_title}}
+         <a class="projectSettingsBtn_ell" style="position: absolute; right: 50px;"><i class="fa fa-ellipsis-h"></i></a>
+      </h1>
       {{else}}
       <div class="project_img_container" style="background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.3)), url('https://s3.amazonaws.com/hryzn-app-static-assets/{{project.project_image}}')">
          <div class="project_title_wrapper">
@@ -129,13 +137,13 @@
                <br /><span style="font-size: 15px; font-weight: 600; color: #fff;">Set to private, so only you can see this.</span>
                {{/if}}
             </div>
-            <a id="projectSettingsBtn_ell"><i class="fa fa-ellipsis-h"></i></a>
+            <a class="projectSettingsBtn_ell"><i class="fa fa-ellipsis-h"></i></a>
          </div>
       </div>
       {{/if}}
 
 
-      <div class="project_lower_wrapper">
+      <div class="project_lower_wrapper" {{#if project.project_video}}style="margin: 0;"{{/if}}>
 
          {{! Project Notes }}
          {{#if project.project_notes}}

@@ -72,13 +72,20 @@
         <p class="form__input-small" id="changeText">A public project can be viewed by anyone</p>
 
 
-        {{! Project Image }}
-        <label for="project_image" class="form__label">Add Project Image 1000px by 550px <span class="form_span_descriptor">* Required *</span></label>
-        <input id="projectImage" class="form__input" type="file" name="project_image" value="{{project.project_image}}" required />
-
         {{! Thumbnail Image }}
-        <label for="thumbnail_image" class="form__label">Add Thumbnail Image 300px by 450px<span class="form_span_descriptor">* Required *</span></label>
+        <label for="thumbnail_image" class="form__label">Add Thumbnail Image 300px by 450px min. <span class="form_span_descriptor">* Required *</span></label>
         <input id="thumbnailImage" class="form__input" type="file" name="thumbnail_image" value="{{project.thumbnail_image}}" required/>
+
+
+        {{! Project Image }}
+        <label for="project_image" class="form__label">Add Project Image 1000px by 550px min. <span class="form_span_descriptor">( Optional )</span></label>
+        <input id="projectImage" class="form__input" type="file" name="project_image" value="{{project.project_image}}" />
+
+
+         {{! Project Video }}
+         <label for="project_video" class="form__label">Add Video <span class="form_span_descriptor">( Optional )</span></label>
+         <input class="form__input" type="file" name="project_video" value="{{project.project_video}}" />
+
 
         {{! Post To }}
         <label for="post_to" class="form__label" style="margin-top: 25px;">Post To <span class="form_span_descriptor">( Optional )</span></label>
@@ -89,11 +96,6 @@
            <option value="{{this.group_id}}">Your Group "{{this.group_name}}"</option>
            {{/each}}
         </select>
-
-
-        {{! Project Video }}
-        <label for="project_video" class="form__label">Add Video <span class="form_span_descriptor">( Optional )</span></label>
-        <input class="form__input" type="file" name="project_video" value="{{project.project_video}}" />
 
 
         {{! Project Categories }}

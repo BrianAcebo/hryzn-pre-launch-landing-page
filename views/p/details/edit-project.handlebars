@@ -7,7 +7,7 @@
 {{#if is_admin_of_project}}
 
 <div class="hero__img-container">
-   <img class="hero__img" src="https://s3.amazonaws.com/hryzn-app-static-assets/{{project.project_image}}" />
+   <img class="hero__img" src="https://s3.amazonaws.com/hryzn-app-static-assets/{{#if project.project_image}}{{project.project_image}}{{else}}{{project.thumbnail_image}}{{/if}}" />
    <div class="hero__overlay"></div>
 </div>
 
@@ -60,7 +60,7 @@
 
    {{! Project Video }}
    <label for="project_video" class="form__label" style="margin-top: 25px;">Change Project Video</label>
-   <input class="form__input" type="text" placeholder="Enter a Youtube or Vimeo link" name="project_video" value="{{project.project_video}}" />
+   <input class="form__input" type="file" name="project_video" value="{{project.project_video}}" />
 
 
    {{! Project Categories }}

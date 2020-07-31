@@ -56,7 +56,7 @@ router.get('/create-project', (req, res, next) => {
 
 
 // POST Create Project
-router.post('/create-project/blog', upload.fields([{name: 'project_image', maxCount: 1}, {name: 'thumbnail_image', maxCount: 1}]), verifyToken, (req, res, next) => {
+router.post('/create-project/blog', upload.fields([{name: 'project_image', maxCount: 1}, {name: 'thumbnail_image', maxCount: 1}, {name: 'project_video', maxCount: 1}]), verifyToken, (req, res, next) => {
 
    if(req.isAuthenticated()) {
 
@@ -177,63 +177,6 @@ router.post('/create-project/blog', upload.fields([{name: 'project_image', maxCo
 
             }
 
-            // Embed video
-            var project_video = '';
-            var url = req.body.project_video;
-            var is_youtube_video = url.search("https://www.youtube.com");
-            var is_vimeo_video = url.search("https://vimeo.com");
-
-            // Check if it is Youtube video ->
-            // Check if there's an unwanted playlist ->
-            // Check if it's already an embedded video ->
-            // Grab the video id and attach it to new link
-
-            if(is_youtube_video === -1) {
-               // It is not a Youtube video
-            } else {
-
-               // See if link has unwanted playlist
-               var has_unwanted_playlist = url.search("&list=");
-               if(has_unwanted_playlist === -1) {
-
-                  // See if video is already embedded
-                  var is_already_embed = url.search("https://www.youtube.com/embed");
-                  if(is_already_embed === -1) {
-                     // It is not a an embedded video
-                     var video_id = url.split("?v=")[1];
-                     project_video = "https://www.youtube.com/embed/" + video_id;
-                  } else {
-                     project_video = req.body.project_video;
-                  }
-
-               } else {
-                  // It has an unwanted playlist attached to the url
-                  var url_end = url.split("?v=")[1];
-                  var video_id = url_end.split("&list=")[0];
-                  project_video = "https://www.youtube.com/embed/" + video_id;
-               }
-
-            }
-
-            // Check if it is Vimeo video ->
-            // Check if it's already an embedded video ->
-            // Grab the video id and attach it to new link
-
-            if(is_vimeo_video === -1) {
-               // It is not a Vimeo video
-            } else {
-
-               // See if video is already embedded
-               var is_already_embed = url.search("https://player.vimeo.com/video/");
-               if(is_already_embed === -1) {
-                  // It is not a an embedded video
-                  var video_id = url.split("https://vimeo.com/")[1];
-                  project_video = "https://player.vimeo.com/video/" + video_id;
-               } else {
-                  project_video = req.body.project_video;
-               }
-
-            }
 
             // Form Validation
             req.checkBody('project_title', 'Project Title Is Too Long').isLength({ min: 0, max:200 });
@@ -269,40 +212,85 @@ router.post('/create-project/blog', upload.fields([{name: 'project_image', maxCo
 
             } else {
 
-               if(req.files) {
+               if(req.files.thumbnail_image[0]) {
 
-                  // If user uploaded an image for project
-                  var ext = path.extname(req.files.project_image[0].originalname);
+                  var allGood = false;
 
-                  // Check if file is an image
-                  if(ext !== '.png' && ext !== '.PNG' && ext !== '.jpg' && ext !== '.JPG' && ext !== '.gif' && ext !== '.GIF' && ext !== '.jpeg' && ext !== '.JPEG') {
+                  if (req.files.project_video[0]) {
 
-                     User.findById(id, (err, user) => {
-                        if(err) throw err;
+                     // If user uploaded an image for project
+                     var ext = path.extname(req.files.project_video[0].originalname);
 
-                        User.find({ 'username': { $in: user.following} }, (err, profiles) => {
-                           if (err) throw err;
-                           res.render('p/create-project', {
-                              error_msg: 'Project Image File Must End With .jpg .jpeg .png .gif',
-                              page_title: 'Create Project',
-                              project_title: project_title,
-                              project_description: project_description,
-                              project_notes: project_notes,
-                              is_private: is_private,
-                              project_video: project_video,
-                              project_url: project_url,
-                              categories: project_categories,
-                              project_notes: project_notes,
-                              editProject: true,
-                              project_error: true,
-                              mention: profiles,
-                              user: user
+                     // Check if file is audio
+                     if(ext !== '.mp4' && ext !== '.MP4' && ext !== '.webm' && ext !== '.WEBM' && ext !== '.ogg' && ext !== '.OGG') {
+
+                        User.findById(id, (err, user) => {
+                           if(err) throw err;
+
+                           User.find({ 'username': { $in: user.following} }, (err, profiles) => {
+                              if (err) throw err;
+                              res.render('p/create-project', {
+                                 error_msg: 'Video File Must End With .webm .mp4 .ogg',
+                                 page_title: 'Create Project',
+                                 project_title: project_title,
+                                 project_description: project_description,
+                                 project_notes: project_notes,
+                                 is_private: is_private,
+                                 project_url: project_url,
+                                 categories: project_categories,
+                                 project_notes: project_notes,
+                                 editProject: true,
+                                 project_error: true,
+                                 mention: profiles,
+                                 user: user
+                              });
                            });
                         });
-                     });
+
+                     } else {
+                        var allGood = true;
+                     }
 
                   } else {
 
+                     if (req.files.project_image[0]) {
+
+                        // If user uploaded an image for project
+                        var ext = path.extname(req.files.project_image[0].originalname);
+
+                        // Check if file is an image
+                        if(ext !== '.png' && ext !== '.PNG' && ext !== '.jpg' && ext !== '.JPG' && ext !== '.gif' && ext !== '.GIF' && ext !== '.jpeg' && ext !== '.JPEG') {
+
+                           User.findById(id, (err, user) => {
+                              if(err) throw err;
+
+                              User.find({ 'username': { $in: user.following} }, (err, profiles) => {
+                                 if (err) throw err;
+                                 res.render('p/create-project', {
+                                    error_msg: 'Project Image File Must End With .jpg .jpeg .png .gif',
+                                    page_title: 'Create Project',
+                                    project_title: project_title,
+                                    project_description: project_description,
+                                    project_notes: project_notes,
+                                    is_private: is_private,
+                                    project_url: project_url,
+                                    categories: project_categories,
+                                    project_notes: project_notes,
+                                    editProject: true,
+                                    project_error: true,
+                                    mention: profiles,
+                                    user: user
+                                 });
+                              });
+                           });
+                        } else {
+                           var allGood = true;
+                        }
+
+                     }
+                  }
+
+                  if (allGood) {
                      // If user uploaded an image for thumbnail
                      var ext = path.extname(req.files.thumbnail_image[0].originalname);
 
@@ -321,7 +309,6 @@ router.post('/create-project/blog', upload.fields([{name: 'project_image', maxCo
                                  project_description: project_description,
                                  project_notes: project_notes,
                                  is_private: is_private,
-                                 project_video: project_video,
                                  project_url: project_url,
                                  categories: project_categories,
                                  project_notes: project_notes,
@@ -337,7 +324,13 @@ router.post('/create-project/blog', upload.fields([{name: 'project_image', maxCo
 
                         // No errors have been made
                         // var fileExt = req.file.originalname.split('.').pop();
-                        var project_image = dateNow + req.files.project_image[0].originalname;
+                        if (req.files.project_video[0]) {
+                           var project_image;
+                           var project_video = dateNow + req.files.project_video[0].originalname;
+                        } else {
+                           var project_video;
+                           var project_image = dateNow + req.files.project_image[0].originalname;
+                        }
                         var thumbnail_image = dateNow + req.files.thumbnail_image[0].originalname;
 
                         var newProject = new Project({
@@ -420,8 +413,8 @@ router.post('/create-project/blog', upload.fields([{name: 'project_image', maxCo
                         });
 
                      }
-
                   }
+
                } else {
                   // If user did not upload an image for project
                   User.findById(id, (err, user) => {
@@ -430,7 +423,7 @@ router.post('/create-project/blog', upload.fields([{name: 'project_image', maxCo
                      User.find({ 'username': { $in: user.following} }, (err, profiles) => {
                         if (err) throw err;
                         res.render('p/create-project', {
-                           error_msg: 'Please upload an image for blog post',
+                           error_msg: 'Please upload a thumbnail image for blog post',
                            page_title: 'Create Project',
                            project_title: project_title,
                            project_description: project_description,
@@ -512,7 +505,7 @@ router.get('/details/edit/:id', (req, res, next) => {
 });
 
 // Post Edit Project
-router.post('/details/edit/:id', upload.fields([{name: 'project_image', maxCount: 1}, {name: 'thumbnail_image', maxCount: 1}]), (req, res, next) => {
+router.post('/details/edit/:id', upload.fields([{name: 'project_image', maxCount: 1}, {name: 'thumbnail_image', maxCount: 1}, {name: 'project_video', maxCount: 1}]), (req, res, next) => {
    if(req.isAuthenticated()) {
 
       var project_id = req.params.id;
@@ -535,64 +528,6 @@ router.post('/details/edit/:id', upload.fields([{name: 'project_image', maxCount
 
          var url_without_https = project_url.split("https://")[1];
          project_url = url_without_https;
-
-      }
-
-      // Embed video
-      var project_video = '';
-      var url = req.body.project_video;
-      var is_youtube_video = url.search("https://www.youtube.com");
-      var is_vimeo_video = url.search("https://vimeo.com");
-
-      // Check if it is Youtube video ->
-      // Check if there's an unwanted playlist ->
-      // Check if it's already an embedded video ->
-      // Grab the video id and attach it to new link
-
-      if(is_youtube_video === -1) {
-         // It is not a Youtube video
-      } else {
-
-         // See if link has unwanted playlist
-         var has_unwanted_playlist = url.search("&list=");
-         if(has_unwanted_playlist === -1) {
-
-            // See if video is already embedded
-            var is_already_embed = url.search("https://www.youtube.com/embed");
-            if(is_already_embed === -1) {
-               // It is not a an embedded video
-               var video_id = url.split("?v=")[1];
-               project_video = "https://www.youtube.com/embed/" + video_id;
-            } else {
-               project_video = req.body.project_video;
-            }
-
-         } else {
-            // It has an unwanted playlist attached to the url
-            var url_end = url.split("?v=")[1];
-            var video_id = url_end.split("&list=")[0];
-            project_video = "https://www.youtube.com/embed/" + video_id;
-         }
-
-      }
-
-      // Check if it is Vimeo video ->
-      // Check if it's already an embedded video ->
-      // Grab the video id and attach it to new link
-
-      if(is_vimeo_video === -1) {
-         // It is not a Vimeo video
-      } else {
-
-         // See if video is already embedded
-         var is_already_embed = url.search("https://player.vimeo.com/video/");
-         if(is_already_embed === -1) {
-            // It is not a an embedded video
-            var video_id = url.split("https://vimeo.com/")[1];
-            project_video = "https://player.vimeo.com/video/" + video_id;
-         } else {
-            project_video = req.body.project_video;
-         }
 
       }
 
@@ -626,37 +561,72 @@ router.post('/details/edit/:id', upload.fields([{name: 'project_image', maxCount
       } else {
 
 
-         if (req.files.project_image || req.files.thumbnail_image) {
+         if (req.files.project_video || req.files.project_image || req.files.thumbnail_image) {
 
-            console.log('files');
-
-
-            if (req.files.project_image) {
+            if (req.files.project_video) {
 
                // If user uploaded an image for project
-               var ext = path.extname(req.files.project_image[0].originalname);
+               var ext = path.extname(req.files.project_video[0].originalname);
 
-               // Check if image has proper extension
-               if(ext !== '.png' && ext !== '.PNG' && ext !== '.jpg' && ext !== '.JPG' && ext !== '.gif' && ext !== '.GIF' && ext !== '.jpeg' && ext !== '.JPEG') {
-                  Project.findById(project_id, (err, project) => {
+               // Check if file is audio
+               if(ext !== '.mp4' && ext !== '.MP4' && ext !== '.webm' && ext !== '.WEBM' && ext !== '.ogg' && ext !== '.OGG') {
+
+                  User.findById(id, (err, user) => {
                      if(err) throw err;
 
-                     User.find({ 'username': { $in: req.user.following} }, (err, profiles) => {
+                     User.find({ 'username': { $in: user.following} }, (err, profiles) => {
                         if (err) throw err;
-                        res.render('p/details/edit-project', {
-                           errors_2: 'Project Image Must End With .jpg .jpeg .png .gif',
-                           user: req.user,
-                           project: project,
-                           page_title: project.project_title,
-                           is_admin_of_project: true,
+                        res.render('p/create-project', {
+                           error_msg: 'Video File Must End With .webm .mp4 .ogg',
+                           page_title: 'Create Project',
+                           project_title: project_title,
+                           project_description: project_description,
+                           project_notes: project_notes,
+                           is_private: is_private,
+                           project_url: project_url,
+                           categories: project_categories,
+                           project_notes: project_notes,
                            editProject: true,
                            project_error: true,
-                           mention: profiles
+                           mention: profiles,
+                           user: user
                         });
                      });
                   });
+
                } else {
-                  var project_image = dateNow + req.files.project_image[0].originalname;
+                  var project_video = dateNow + req.files.project_video[0].originalname;
+               }
+
+            } else {
+               if (req.files.project_image) {
+
+                  // If user uploaded an image for project
+                  var ext = path.extname(req.files.project_image[0].originalname);
+
+                  // Check if image has proper extension
+                  if(ext !== '.png' && ext !== '.PNG' && ext !== '.jpg' && ext !== '.JPG' && ext !== '.gif' && ext !== '.GIF' && ext !== '.jpeg' && ext !== '.JPEG') {
+                     Project.findById(project_id, (err, project) => {
+                        if(err) throw err;
+
+                        User.find({ 'username': { $in: req.user.following} }, (err, profiles) => {
+                           if (err) throw err;
+                           res.render('p/details/edit-project', {
+                              errors_2: 'Project Image Must End With .jpg .jpeg .png .gif',
+                              user: req.user,
+                              project: project,
+                              page_title: project.project_title,
+                              is_admin_of_project: true,
+                              editProject: true,
+                              project_error: true,
+                              mention: profiles
+                           });
+                        });
+                     });
+                  } else {
+                     var project_image = dateNow + req.files.project_image[0].originalname;
+                     var project_video;
+                  }
                }
             }
 
@@ -693,7 +663,15 @@ router.post('/details/edit/:id', upload.fields([{name: 'project_image', maxCount
 
             var allGood = false;
 
-            if (req.files.project_image && req.files.thumbnail_image) {
+            if (req.files.project_video && req.files.thumbnail_image) {
+               if (project_video && thumbnail_image) {
+                  allGood = true;
+               }
+            } else if (req.files.project_video) {
+               if (project_video) {
+                  allGood = true;
+               }
+            } else if (req.files.project_image && req.files.thumbnail_image) {
                if (project_image && thumbnail_image) {
                   allGood = true;
                }
@@ -812,6 +790,37 @@ router.post('/details/edit/:id', upload.fields([{name: 'project_image', maxCount
                         project_title: project_title,
                         project_description: project_description,
                         project_image: project_image,
+                        project_url: project_url,
+                        project_video: project_video,
+                        categories: project_categories,
+                        is_private: is_private,
+                        project_notes: project_notes
+                     }, (err, user) => {
+                        if (err) throw err;
+                     });
+                  } else if (req.files.project_video &&  req.files.thumbnail_image) {
+
+                     // User uploaded video and thumb
+
+                     Project.findByIdAndUpdate(project_id, {
+                        project_title: project_title,
+                        project_description: project_description,
+                        thumbnail_image: thumbnail_image,
+                        project_video: project_video,
+                        project_url: project_url,
+                        categories: project_categories,
+                        is_private: is_private,
+                        project_notes: project_notes
+                     }, (err, user) => {
+                        if (err) throw err;
+                     });
+                  } else if (req.files.project_video) {
+
+                     // User uploaded just project video
+
+                     Project.findByIdAndUpdate(project_id, {
+                        project_title: project_title,
+                        project_description: project_description,
                         project_video: project_video,
                         project_url: project_url,
                         categories: project_categories,

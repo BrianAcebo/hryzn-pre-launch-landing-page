@@ -665,7 +665,7 @@ $(document).ready(function() {
 
 
    // Open project settings nav on click
-   var $projectSettingsOpen = $('#projectSettingsBtn_ell');
+   var $projectSettingsOpen = $('.projectSettingsBtn_ell');
    var $projectSettingsClose = $('#projectSettingsClose');
    var $projectSettingsNav = $('#projectSettingsNav');
 
