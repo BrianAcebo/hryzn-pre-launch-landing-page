@@ -997,6 +997,18 @@ section.project {
    line-height: 30px;
 }
 
+.card_is_micro_image .micro_body,
+.card_is_micro_audio .micro_body,
+.card_is_micro_video .micro_body {
+   display: none;
+}
+
+#micropostPop .card_is_micro_image .micro_body,
+#micropostPop .card_is_micro_audio .micro_body,
+#micropostPop .card_is_micro_video .micro_body {
+   display: block;
+}
+
 .micropost_card .micro_title {
    font-weight: 700;
    color: #333;
