@@ -212,11 +212,11 @@ router.post('/create-project/blog', upload.fields([{name: 'project_image', maxCo
 
             } else {
 
-               if(req.files.thumbnail_image[0]) {
+               if(req.files.thumbnail_image) {
 
                   var allGood = false;
 
-                  if (req.files.project_video[0]) {
+                  if (req.files.project_video) {
 
                      // If user uploaded an image for project
                      var ext = path.extname(req.files.project_video[0].originalname);
@@ -253,7 +253,7 @@ router.post('/create-project/blog', upload.fields([{name: 'project_image', maxCo
 
                   } else {
 
-                     if (req.files.project_image[0]) {
+                     if (req.files.project_image) {
 
                         // If user uploaded an image for project
                         var ext = path.extname(req.files.project_image[0].originalname);
@@ -324,7 +324,7 @@ router.post('/create-project/blog', upload.fields([{name: 'project_image', maxCo
 
                         // No errors have been made
                         // var fileExt = req.file.originalname.split('.').pop();
-                        if (req.files.project_video[0]) {
+                        if (req.files.project_video) {
                            var project_image;
                            var project_video = dateNow + req.files.project_video[0].originalname;
                         } else {
