@@ -125,6 +125,15 @@ router.get('/', (req, res, next) => {
 
             var profile_project = [];
 
+            req.user.own_projects.forEach(function(proj, key) {
+               profile_project.push(proj);
+            });
+
+            req.user.reposted_projects.forEach(function(proj, key) {
+               profile_project.push(proj);
+            });
+
+
             profiles.forEach(function(profile, key) {
                profile.own_projects.forEach(function(proj, key) {
                   profile_project.push(proj);
