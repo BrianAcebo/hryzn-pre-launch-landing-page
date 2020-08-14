@@ -63,12 +63,25 @@ router.get('/welcome', (req, res, next) => {
 
             if (err) throw err;
 
-            res.render('welcome', {
-               page_title: "Everybody has something to say. We make it easy to say it. Find your voice.",
-              notLoginPage: false,
-              projects: projects,
-              groups: groups,
-              welcomePage: true
+            User.find({}, (err, users) => {
+
+               if (err) throw err;
+
+               var usernames = [];
+
+               users.forEach(function(user, key) {
+                  usernames.push(user.username);
+               });
+
+               console.log(usernames);
+
+               res.render('welcome', {
+                  page_title: "Everybody has something to say. We make it easy to say it. Find your voice.",
+                 notLoginPage: false,
+                 projects: projects,
+                 groups: groups,
+                 welcomePage: true
+               });
             });
 
          });

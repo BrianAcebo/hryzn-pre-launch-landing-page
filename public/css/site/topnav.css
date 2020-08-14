@@ -113,6 +113,39 @@
    }
 }
 
+.autocomplete {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.autocomplete-items {
+  position: absolute;
+  border: 1px solid #ccc;
+  border-bottom: none;
+  border-top: none;
+  z-index: 99;
+  top: 100%;
+  left: 0;
+  right: 0;
+}
+
+.autocomplete-items div {
+  padding: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  background: #fff;
+  border-bottom: 1px solid #ccc;
+}
+
+.autocomplete-items div:hover {
+  background: #f1f1f1;
+}
+
+.autocomplete-active {
+  background: #f1f1f1;
+}
+
 .landing-nav input[type=text] {
    width: 100%;
    min-width: 0;
