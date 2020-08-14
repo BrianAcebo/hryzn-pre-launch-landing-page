@@ -95,7 +95,7 @@
 .landing-nav input[type=text] {
    height: 40px;
    font-size: 12px;
-   width: 50%;
+   width: 100%;
    border: none;
    border-top-left-radius: 35px;
    border-bottom-left-radius: 35px;
