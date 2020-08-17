@@ -129,6 +129,7 @@ var project_titles_and_profile_usernames = [
    '"I Thought the Place was Mysterious but Actually Magical." :) ',
    'Seeking Answers',
    '#nugofknowledge',
+   'Siteground Account Suspension',
    // End of projects
    'JustoR56',
    'alesandis',
@@ -201,5 +202,7 @@ var project_titles_and_profile_usernames = [
    'aitanadelrio',
    'ddadaadasdasd',
    'Toothfl',
-   'yoBrye'
+   'yoBrye',
+   'lissacoffeey',
+   'malcolm wilkie'
 ]

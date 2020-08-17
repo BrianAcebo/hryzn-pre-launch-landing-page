@@ -93,8 +93,7 @@ app.use(session({
       secure: cookieSecure,
       httpOnly: cookieHttp,
       domain: cookieDomain,
-      expires: 365 * 24 * 60 * 60 * 1000,
-      sameSite: 'none'
+      expires: 365 * 24 * 60 * 60 * 1000
    }
 }));
 

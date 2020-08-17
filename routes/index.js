@@ -57,31 +57,19 @@ router.get('/welcome', (req, res, next) => {
       ];
 
       Project.find({ '_id': { $in: featured_projects } }, (err, projects) => {
+
          if (err) throw err;
 
          Group.find({ '_id': { $in: featured_groups} }, (err, groups) => {
 
             if (err) throw err;
 
-            User.find({}, (err, users) => {
-
-               if (err) throw err;
-
-               var usernames = [];
-
-               users.forEach(function(user, key) {
-                  usernames.push(user.username);
-               });
-
-               console.log(usernames);
-
-               res.render('welcome', {
-                  page_title: "Everybody has something to say. We make it easy to say it. Find your voice.",
-                 notLoginPage: false,
-                 projects: projects,
-                 groups: groups,
-                 welcomePage: true
-               });
+            res.render('welcome', {
+               page_title: "Everybody has something to say. We make it easy to say it. Find your voice.",
+              notLoginPage: false,
+              projects: projects,
+              groups: groups,
+              welcomePage: true
             });
 
          });
@@ -109,10 +97,6 @@ router.get('/creatives', (req, res, next) => {
 // Get Index (User is logged in)
 router.get('/', (req, res, next) => {
    if(req.isAuthenticated()) {
-
-      // var bearerHeader = req.headers['Authorization'];
-      //
-      // console.log(bearerHeader);
 
       // Greeting was not working on iphone
 
