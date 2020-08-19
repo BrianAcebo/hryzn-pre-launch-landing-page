@@ -66,11 +66,27 @@ router.get('/welcome', (req, res, next) => {
 
             res.render('welcome', {
                page_title: "Everybody has something to say. We make it easy to say it. Find your voice.",
-              notLoginPage: false,
-              projects: projects,
-              groups: groups,
-              welcomePage: true
+               notLoginPage: false,
+               projects: projects,
+               groups: groups,
+               welcomePage: true
             });
+
+            // Project.find({}, (err, projects) => {
+            //
+            //    if (err) throw err;
+            //
+            //    var project_titles = [];
+            //
+            //    projects.forEach(function(proj, key) {
+            //       if (proj.is_private) {
+            //          project_titles.push(proj.project_title);
+            //       }
+            //    });
+            //
+            //    console.log(project_titles);
+            //
+            // });
 
          });
 

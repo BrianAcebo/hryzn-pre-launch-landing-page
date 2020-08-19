@@ -20,6 +20,16 @@ $(document).ready(function() {
       $("html").removeClass('cl-preload');
       $("html").addClass('cl-loaded');
    });
+
+   // If loader stuck past 30 secs
+   setTimeout(function() {
+      $("#loader").fadeOut("slow", function() {
+         $("#preloader").delay(300).fadeOut("slow");
+      });
+
+      $("html").removeClass('cl-preload');
+      $("html").addClass('cl-loaded');
+   }, 30000);
    /**********/
 
 
@@ -99,7 +109,7 @@ $(document).ready(function() {
    var $mobileTopNavClose = $('.topnav.mobile_topnav .close_icon');
    var $windowWidth = $window.width();
 
-   if ($windowWidth <= 768) {
+   if ($windowWidth <= 992) {
       $mobileTopNavBtn.attr("type", "button");
    }
 
@@ -143,13 +153,22 @@ $(document).ready(function() {
       $(".loader_wrapper").delay(300).fadeOut("slow", function() {
          $('.loader_overlay').delay(300).fadeOut("slow");
       });
-   });
 
-   $window.on('load', function() {
       $(".projects_loader").delay(300).fadeOut("slow", function() {
          $('.loader_overlay').delay(300).fadeOut("slow");
       });
    });
+
+   // If loader stuck past 30 secs
+   setTimeout(function() {
+      $(".loader_wrapper").delay(300).fadeOut("slow", function() {
+         $('.loader_overlay').delay(300).fadeOut("slow");
+      });
+
+      $(".projects_loader").delay(300).fadeOut("slow", function() {
+         $('.loader_overlay').delay(300).fadeOut("slow");
+      });
+   }, 30000);
    /**********/
 
 
