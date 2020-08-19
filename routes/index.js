@@ -165,7 +165,8 @@ router.get('/', (req, res, next) => {
                   projects: projects.reverse(),
                   profiles: profiles,
                   explore_default: true,
-                  index_active: true
+                  index_active: true,
+                  linear_feed: true
                });
             });
          });

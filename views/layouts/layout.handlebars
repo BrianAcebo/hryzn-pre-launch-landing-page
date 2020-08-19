@@ -520,12 +520,12 @@
    <script src="/js/welcome/modernizr.js"></script>
    <script src="/js/welcome/pace.min.js"></script>
    <script src="/js/welcome/plugins.js" type="text/javascript"></script>
-   {{#if welcomePage}}
-   <script src="/js/welcome-slider.init.js"></script>
    <script src="/js/search-autocomplete.js" type="text/javascript"></script>
    <script>
    autocomplete(document.getElementById("searchAuto"), project_titles_and_profile_usernames);
    </script>
+   {{#if welcomePage}}
+   <script src="/js/welcome-slider.init.js"></script>
    {{/if}}
 
    {{#if editProject}}
@@ -705,8 +705,12 @@
    {{! End IF EditProject }}
 
    {{#if projects}}
+   {{#if linear_feed}}
+   {{else}}
+   {{! Only necessary for masonry feed }}
    <script src="/js/macy.js" type="text/javascript"></script>
    <script src="/js/macy.init.js" type="text/javascript"></script>
+   {{/if}}
    {{/if}}
 
    <script src="https://cdn.rawgit.com/harvesthq/chosen/gh-pages/chosen.jquery.min.js"></script>
