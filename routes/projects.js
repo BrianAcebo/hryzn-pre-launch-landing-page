@@ -344,6 +344,7 @@ router.post('/create-project/blog', upload.fields([{name: 'project_image', maxCo
                            admins: admin,
                            categories: project_categories,
                            project_owner: admin,
+                           project_owner_profile_image: req.user.profileimage,
                            project_notes: project_notes
                         });
 
@@ -2678,6 +2679,7 @@ router.post('/create-micro/micro', upload.fields([{name: 'micro_image', maxCount
                var newProject = new Project({
                   categories: project_categories,
                   project_owner: req.user.username,
+                  project_owner_profile_image: req.user.profileimage,
                   micro_body: micro_body,
                   project_url: project_url,
                   is_micro_post: true
@@ -2783,6 +2785,7 @@ router.post('/create-micro/micro', upload.fields([{name: 'micro_image', maxCount
                         micro_image: micro_image,
                         categories: project_categories,
                         project_owner: req.user.username,
+                        project_owner_profile_image: req.user.profileimage,
                         project_title: micro_title,
                         micro_body: micro_body,
                         project_url: project_url,
@@ -2938,6 +2941,7 @@ router.post('/create-micro/micro', upload.fields([{name: 'micro_image', maxCount
                            thumbnail_image: thumbnail_image,
                            categories: project_categories,
                            project_owner: req.user.username,
+                           project_owner_profile_image: req.user.profileimage,
                            project_title: micro_title,
                            micro_body: micro_body,
                            project_url: project_url,
@@ -3096,6 +3100,7 @@ router.post('/create-micro/micro', upload.fields([{name: 'micro_image', maxCount
                            thumbnail_image: thumbnail_image,
                            categories: project_categories,
                            project_owner: req.user.username,
+                           project_owner_profile_image: req.user.profileimage,
                            project_title: micro_title,
                            micro_body: micro_body,
                            project_url: project_url,

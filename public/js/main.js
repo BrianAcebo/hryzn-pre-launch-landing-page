@@ -21,7 +21,7 @@ $(document).ready(function() {
       $("html").addClass('cl-loaded');
    });
 
-   // If loader stuck past 30 secs
+   // If loader stuck past 20 secs
    setTimeout(function() {
       $("#loader").fadeOut("slow", function() {
          $("#preloader").delay(300).fadeOut("slow");
@@ -29,7 +29,7 @@ $(document).ready(function() {
 
       $("html").removeClass('cl-preload');
       $("html").addClass('cl-loaded');
-   }, 30000);
+   }, 20000);
    /**********/
 
 
@@ -159,7 +159,7 @@ $(document).ready(function() {
       });
    });
 
-   // If loader stuck past 30 secs
+   // If loader stuck past 20 secs
    setTimeout(function() {
       $(".loader_wrapper").delay(300).fadeOut("slow", function() {
          $('.loader_overlay').delay(300).fadeOut("slow");
@@ -168,7 +168,7 @@ $(document).ready(function() {
       $(".projects_loader").delay(300).fadeOut("slow", function() {
          $('.loader_overlay').delay(300).fadeOut("slow");
       });
-   }, 30000);
+   }, 20000);
    /**********/
 
 
@@ -581,6 +581,7 @@ $(document).ready(function() {
    var $settingsOpen = $('#settingsBtn');
    var $settingsClose = $('#settingsClose');
    var $sideNav = $('#profileSideNav');
+   var siteBody = $('body');
 
    $settingsOpen.click(function() {
       if($window.width() <= 768) {
@@ -592,6 +593,12 @@ $(document).ready(function() {
 
    $settingsClose.click(function() {
       $sideNav.css({ "width": "0" });
+   });
+
+   siteBody.on('click', function(e){
+      if( !$(e.target).is('.settings_content, .settings__header, .settings__underline, .profile__sidenav a, #settingsBtn') ) {
+         $sideNav.css({ "width": "0" });
+      }
    });
    /**********/
 
@@ -844,6 +851,8 @@ $(document).ready(function() {
    });
    /**********/
 
+
+   // Micro post card text
    var $microP = $('.micropost_card p');
 
    $microP.each(function() {
@@ -852,5 +861,34 @@ $(document).ready(function() {
          $(this).css({ "padding": "0" });
       }
    });
+   /**********/
+
+   // Change font for example in profile settings
+   var $fontMainOptions =  $('.profile_font_main_option');
+   var $fontSecondaryOptions =  $('.profile_font_secondary_option');
+   var $fontMainExample = $('#profileMainFontExample');
+   var $fontMainSelect = $('#profileMainFontSelect');
+   var $fontSecondaryExample = $('#profileSecondaryFontExample');
+   var $fontSecondarySelect = $('#profileSecondaryFontSelect');
+
+   $fontMainSelect.click(function() {
+      $fontMainOptions.each(function() {
+         if ($(this).is(':selected')) {
+            var $fontName = $(this).val();
+            $fontMainExample.css({ "font-family": $fontName });
+         }
+      });
+   });
+
+   $fontSecondarySelect.click(function() {
+      $fontSecondaryOptions.each(function() {
+         if ($(this).is(':selected')) {
+            var $fontName = $(this).val();
+            $fontSecondaryExample.css({ "font-family": $fontName });
+         }
+      });
+   });
+   /**********/
+
 
 });

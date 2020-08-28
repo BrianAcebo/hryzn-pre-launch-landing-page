@@ -62,7 +62,37 @@ const UserSchema = mongoose.Schema({
       group_id: {
          type: String
       }
-   }]
+   }],
+   profile_theme: {
+      type: String
+   },
+   profile_cursor: {
+      type: String
+   },
+   profile_main_accent_color: {
+      type: String
+   },
+   profile_main_font_accent_color: {
+      type: String
+   },
+   profile_secondary_accent_color: {
+      type: String
+   },
+   profile_secondary_font_accent_color: {
+      type: String
+   },
+   profile_btns_rounding: {
+      type: String
+   },
+   profile_main_font: {
+      type: String
+   },
+   profile_secondary_font: {
+      type: String
+   },
+   profile_project_backgroundimage: {
+      type: String
+   }
 });
 
 const User = module.exports = mongoose.model('User', UserSchema);

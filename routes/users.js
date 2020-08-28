@@ -285,7 +285,8 @@ router.post('/register-next', (req, res, next) => {
             username: username,
             email: email,
             password: password,
-            profileimage: req.body.profileimage
+            profileimage: req.body.profileimage,
+            profile_theme: 'default'
          });
 
          // Create user in database
@@ -351,7 +352,8 @@ router.post('/register-next', (req, res, next) => {
          var newUser = new User({
             username: username,
             email: email,
-            password: password
+            password: password,
+            profile_theme: 'default'
          });
 
          // Create user in database
@@ -487,7 +489,8 @@ router.post('/register-next/text/1', (req, res, next) => {
             username: username,
             email: email,
             password: password,
-            profileimage: req.body.profileimage
+            profileimage: req.body.profileimage,
+            profile_theme: 'default'
          });
 
          // Create user in database
@@ -509,7 +512,8 @@ router.post('/register-next/text/1', (req, res, next) => {
          var newUser = new User({
             username: username,
             email: email,
-            password: password
+            password: password,
+            profile_theme: 'default'
          });
 
          // Create user in database

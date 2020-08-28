@@ -1498,7 +1498,13 @@ router.get('/profile/:username', (req, res, next) => {
 
                   var reversed_reposted_projects = reposted_projects.reverse();
 
-                  res.render('profile', {
+                  if (typeof profile.profile_theme == 'undefined') {
+                     var pageRender = 'profile-themes/default';
+                  } else {
+                     var pageRender = 'profile-themes/' + profile.profile_theme;
+                  }
+
+                  res.render(pageRender, {
                      page_title: profile.username,
                      profile: profile,
                      projects: reversed_projects,
@@ -1511,7 +1517,8 @@ router.get('/profile/:username', (req, res, next) => {
                      viewing_own_profile: viewing_own_profile,
                      guestUser: guestUser,
                      hryznAdmin: hryznAdmin,
-                     profile_active: true
+                     profile_active: true,
+                     profilePage: true
                   });
                });
             });
@@ -1641,14 +1648,17 @@ router.get('/profile/:username/following', (req, res, next) => {
 // GET Settings
 router.get('/settings', (req, res, next) => {
    if(req.isAuthenticated()) {
-      res.render('settings', { page_title: 'Settings' });
+      res.render('settings', {
+         page_title: 'Settings',
+         profilePage: true
+      });
    } else {
       res.redirect('/users/register');
    }
 });
 
 // POST Settings
-router.post('/settings', upload.fields([{name: 'profileimage', maxCount: 1}, {name: 'backgroundimage', maxCount: 1}]), (req, res, next) => {
+router.post('/settings', upload.fields([{name: 'profile_project_backgroundimage', maxCount: 1}, {name: 'profileimage', maxCount: 1}, {name: 'backgroundimage', maxCount: 1}]), (req, res, next) => {
    if(req.isAuthenticated()) {
 
       function capitalize(string) {
@@ -1693,6 +1703,62 @@ router.post('/settings', upload.fields([{name: 'profileimage', maxCount: 1}, {na
 
       }
 
+
+      // Profile Customization
+      if (typeof req.body.profile_theme == 'undefined') {
+         var profile_theme = req.user.profile_theme;
+      } else {
+         var profile_theme = req.body.profile_theme;
+      }
+
+      if (typeof req.body.profile_cursor == 'undefined') {
+         var profile_cursor = req.user.profile_cursor;
+      } else {
+         var profile_cursor = req.body.profile_cursor;
+      }
+
+      if (typeof req.body.profile_main_accent_color == 'undefined') {
+         var profile_main_accent_color = req.user.profile_main_accent_color;
+      } else {
+         var profile_main_accent_color = req.body.profile_main_accent_color;
+      }
+
+      if (typeof req.body.profile_main_font_accent_color == 'undefined') {
+         var profile_main_font_accent_color = req.user.profile_main_font_accent_color;
+      } else {
+         var profile_main_font_accent_color = req.body.profile_main_font_accent_color;
+      }
+
+      if (typeof req.body.profile_secondary_accent_color == 'undefined') {
+         var profile_secondary_accent_color = req.user.profile_secondary_accent_color;
+      } else {
+         var profile_secondary_accent_color = req.body.profile_secondary_accent_color;
+      }
+
+      if (typeof req.body.profile_secondary_font_accent_color == 'undefined') {
+         var profile_secondary_font_accent_color = req.user.profile_secondary_font_accent_color;
+      } else {
+         var profile_secondary_font_accent_color = req.body.profile_secondary_font_accent_color;
+      }
+
+      if (typeof req.body.profile_btns_rounding == 'undefined') {
+         var profile_btns_rounding = req.user.profile_btns_rounding;
+      } else {
+         var profile_btns_rounding = req.body.profile_btns_rounding;
+      }
+
+      if (typeof req.body.profile_main_font == 'undefined') {
+         var profile_main_font = req.user.profile_main_font;
+      } else {
+         var profile_main_font = req.body.profile_main_font;
+      }
+
+      if (typeof req.body.profile_secondary_font == 'undefined') {
+         var profile_secondary_font = req.user.profile_secondary_font;
+      } else {
+         var profile_secondary_font = req.body.profile_secondary_font;
+      }
+
       // Form Validation
       // req.checkBody('username', 'Please Enter A Username').notEmpty();
       // req.checkBody('username', 'Username Must Be Between 5-50 Characters').isLength({ min: 5, max:50 });
@@ -1709,7 +1775,8 @@ router.post('/settings', upload.fields([{name: 'profileimage', maxCount: 1}, {na
             res.render('settings', {
                errors: errors,
                page_title: 'Settings',
-               user: user
+               user: user,
+               profilePage: true
             });
          });
       } else {
@@ -1812,7 +1879,7 @@ router.post('/settings', upload.fields([{name: 'profileimage', maxCount: 1}, {na
             if(err) throw err;
             if(!user || user.email === oldEmail) {
 
-               if(req.files) {
+               if(req.files.profileimage || req.files.backgroundimage || req.files.profile_project_backgroundimage) {
 
                   if (req.files.profileimage) {
                      var ext = path.extname(req.files.profileimage[0].originalname);
@@ -1827,12 +1894,25 @@ router.post('/settings', upload.fields([{name: 'profileimage', maxCount: 1}, {na
                               lastname: lastname,
                               email: email,
                               page_title: 'Settings',
-                              user: user
+                              user: user,
+                              profilePage: true
                            });
                         });
                      } else {
                         var profileimage = dateNow + req.files.profileimage[0].originalname;
+
+                        Project.find({'_id': { $in: req.user.own_projects}}, (err, user_projects) => {
+                           user_projects.forEach(function(proj_id, key) {
+                              Project.findByIdAndUpdate(proj_id, {
+                                 project_owner_profile_image: profileimage
+                              }, (err, user) => {
+                                 if (err) throw err;
+                              });
+                           });
+                        });
                      }
+                  } else {
+                     var profileimage = req.user.profileimage;
                   }
 
                   if (req.files.backgroundimage) {
@@ -1843,78 +1923,75 @@ router.post('/settings', upload.fields([{name: 'profileimage', maxCount: 1}, {na
                            if(err) throw err;
 
                            res.render('settings', {
-                              error_msg: 'Profile Image Must End With .jpg .jpeg .png .gif',
+                              error_msg: 'Header Image Must End With .jpg .jpeg .png .gif',
                               firstname: firstname,
                               lastname: lastname,
                               email: email,
                               page_title: 'Settings',
-                              user: user
+                              user: user,
+                              profilePage: true
                            });
                         });
                      } else {
                         var backgroundimage = dateNow + req.files.backgroundimage[0].originalname;
                      }
-                  }
-
-                  if (profileimage && backgroundimage) {
-
-                     // User uploaded both profile image and background image
-
-                     User.findByIdAndUpdate(id, {
-                        firstname: firstname,
-                        lastname: lastname,
-                        email: email,
-                        bio: bio,
-                        website: website_link,
-                        youtube: youtube_link,
-                        twitter: twitter_link,
-                        instagram: instagram_link,
-                        facebook: facebook_link,
-                        profileimage: profileimage,
-                        backgroundimage: backgroundimage
-                     }, (err, user) => {
-                        if (err) throw err;
-                     });
-
-                  } else if (profileimage) {
-
-                     // User uploaded just profile image
-
-                     User.findByIdAndUpdate(id, {
-                        firstname: firstname,
-                        lastname: lastname,
-                        email: email,
-                        bio: bio,
-                        website: website_link,
-                        youtube: youtube_link,
-                        twitter: twitter_link,
-                        instagram: instagram_link,
-                        facebook: facebook_link,
-                        profileimage: profileimage
-                     }, (err, user) => {
-                        if (err) throw err;
-                     });
-
                   } else {
-
-                     // User uploaded just background image
-
-                     User.findByIdAndUpdate(id, {
-                        firstname: firstname,
-                        lastname: lastname,
-                        email: email,
-                        bio: bio,
-                        website: website_link,
-                        youtube: youtube_link,
-                        twitter: twitter_link,
-                        instagram: instagram_link,
-                        facebook: facebook_link,
-                        backgroundimage: backgroundimage
-                     }, (err, user) => {
-                        if (err) throw err;
-                     });
-
+                     var backgroundimage = req.user.backgroundimage;
                   }
+
+                  if (req.files.profile_project_backgroundimage) {
+                     var ext = path.extname(req.files.profile_project_backgroundimage[0].originalname);
+
+                     if(ext !== '.png' && ext !== '.PNG' && ext !== '.jpg' && ext !== '.JPG' && ext !== '.gif' && ext !== '.GIF' && ext !== '.jpeg' && ext !== '.JPEG') {
+                        User.findById(id, (err, user) => {
+                           if(err) throw err;
+
+                           res.render('settings', {
+                              error_msg: 'Project Background Image Must End With .jpg .jpeg .png .gif',
+                              firstname: firstname,
+                              lastname: lastname,
+                              email: email,
+                              page_title: 'Settings',
+                              user: user,
+                              profilePage: true
+                           });
+                        });
+                     } else {
+                        var profile_project_backgroundimage = dateNow + req.files.profile_project_backgroundimage[0].originalname;
+                     }
+                  } else {
+                     if (req.body.remove_profile_project_bg) {
+                        var profile_project_backgroundimage;
+                     } else {
+                        var profile_project_backgroundimage = req.user.profile_project_backgroundimage;
+                     }
+                  }
+
+                  User.findByIdAndUpdate(id, {
+                     firstname: firstname,
+                     lastname: lastname,
+                     email: email,
+                     bio: bio,
+                     website: website_link,
+                     youtube: youtube_link,
+                     twitter: twitter_link,
+                     instagram: instagram_link,
+                     facebook: facebook_link,
+                     profileimage: profileimage,
+                     backgroundimage: backgroundimage,
+                     profile_theme: profile_theme,
+                     profile_project_backgroundimage: profile_project_backgroundimage,
+                     profile_cursor: profile_cursor,
+                     profile_secondary_accent_color: profile_secondary_accent_color,
+                     profile_main_accent_color: profile_main_accent_color,
+                     profile_secondary_font_accent_color: profile_secondary_font_accent_color,
+                     profile_main_font_accent_color: profile_main_font_accent_color,
+                     profile_btns_rounding: profile_btns_rounding,
+                     profile_main_font: profile_main_font,
+                     profile_secondary_font: profile_secondary_font
+                  }, (err, user) => {
+                     if (err) throw err;
+                  });
 
                   res.redirect('/profile/' + req.user.username);
 
@@ -1931,7 +2008,16 @@ router.post('/settings', upload.fields([{name: 'profileimage', maxCount: 1}, {na
                      youtube: youtube_link,
                      twitter: twitter_link,
                      instagram: instagram_link,
-                     facebook: facebook_link
+                     facebook: facebook_link,
+                     profile_cursor: profile_cursor,
+                     profile_theme: profile_theme,
+                     profile_secondary_accent_color: profile_secondary_accent_color,
+                     profile_main_accent_color: profile_main_accent_color,
+                     profile_secondary_font_accent_color: profile_secondary_font_accent_color,
+                     profile_main_font_accent_color: profile_main_font_accent_color,
+                     profile_btns_rounding: profile_btns_rounding,
+                     profile_main_font: profile_main_font,
+                     profile_secondary_font: profile_secondary_font
                   }, (err, user) => {
                      if (err) throw err;
                   });
@@ -1956,7 +2042,8 @@ router.post('/settings', upload.fields([{name: 'profileimage', maxCount: 1}, {na
                      facebook: facebook_link,
                      email: email,
                      page_title: 'Settings',
-                     user: user
+                     user: user,
+                     profilePage: true
                   });
                });
             }

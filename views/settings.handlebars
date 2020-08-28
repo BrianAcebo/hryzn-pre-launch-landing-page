@@ -1,5 +1,7 @@
+<img src="/icons/back-black.png" class="project_bck_btn go-back"/>
+
 <div class="form-container form__settings">
-   <h3 class="form__h3">Edit Profile</h3>
+   <h3>Profile Settings</h3>
    <form id="settingsForm" method="post" action="/settings" enctype="multipart/form-data">
       <div class="form-container-2">
          <div class="form_row">
@@ -14,16 +16,15 @@
          {{! For future use <input class="form__input" type="text" placeholder="Enter username" name="username" value="{{user.username}}{{!" required autocapitalize="none" /> }}
          <input class="form__input" type="email" placeholder="Enter email address" name="email" value="{{user.email}}" required autocapitalize="none" />
 
-         <label for="profileimage" class="form__label">Select your profile image</label>
+         <label for="profileimage" class="form__label">Change your profile image</label>
          <input id="profileImage" class="form__input" type="file" name="profileimage" value="{{user.profileimage}}" />
 
-         <label for="backgroundimage" class="form__label">Change your profile background</label>
+         <label for="backgroundimage" class="form__label">Change your profile header</label>
          <input id="backgroundImage" class="form__input" type="file" name="backgroundimage" value="{{user.backgroundimage}}" />
 
 
          <label for="bio" class="form__label">Enter a bio</label>
          <textarea name="bio" value="{{user.bio}}" class="form__input profile_bio">{{user.bio}}</textarea>
-
 
          <input class="form__input" type="text" placeholder="Enter your website link" name="website_link" value="{{user.website}}" autocapitalize="none" />
          <input class="form__input" type="text" placeholder="Enter your Youtube username" name="youtube_link" value="{{user.youtube}}" autocapitalize="none" />
@@ -33,6 +34,172 @@
 
          <input type="hidden" name="id" value="{{user.id}}">
 
+         <h3 style="margin-top: 50px;">Profile Customization</h3>
+
+         <p>Select a profile theme:</p>
+         <input type="radio" name="profile_theme" value="default">
+         <label for="profile_theme">Default</label>
+         <div class="profile_themes_img_container">
+            <img src="/img/profile-themes/default/default-04.png" />
+            <img src="/img/profile-themes/default/default-03.png" />
+            <img src="/img/profile-themes/default/default-02.png" />
+            <img src="/img/profile-themes/default/default-01.png" />
+         </div>
+         <br>
+         <input type="radio" name="profile_theme" value="one">
+         <label for="profile_theme">One</label>
+         <div class="profile_themes_img_container">
+            <img src="/img/profile-themes/one/one-04.png" />
+            <img src="/img/profile-themes/one/one-03.png" />
+            <img src="/img/profile-themes/one/one-02.png" />
+            <img src="/img/profile-themes/one/one-01.png" />
+         </div>
+         <br>
+
+         <div class="semi-spacer"></div>
+         <p>Select a cursor for your profile:</p>
+         <input style="cursor: url(/cursors/lips.cur),auto;" type="radio" name="profile_cursor" value="lips">
+         <label style="cursor: url(/cursors/lips.cur),auto;" for="profile_cursor">Red Lips</label><br>
+         <input style="cursor: url(/cursors/cat.cur),auto;" type="radio" name="profile_cursor" value="cat">
+         <label style="cursor: url(/cursors/cat.cur),auto;" for="profile_cursor">Happy Cat</label><br>
+         <input style="cursor: url(/cursors/pistol.cur),auto;" type="radio" name="profile_cursor" value="pistol">
+         <label style="cursor: url(/cursors/pistol.cur),auto;" for="profile_cursor">Pistol</label><br>
+         <input style="cursor: url(/cursors/middle-finger.cur),auto;" type="radio" name="profile_cursor" value="middle-finger">
+         <label style="cursor: url(/cursors/middle-finger.cur),auto;" for="profile_cursor">Middle Finger</label><br>
+         <input style="cursor: url(/cursors/mustache.cur),auto;" type="radio" name="profile_cursor" value="mustache">
+         <label style="cursor: url(/cursors/mustache.cur),auto;" for="profile_cursor">Mustache</label><br>
+         <input style="cursor: url(/cursors/rainbow.cur),auto;" type="radio" name="profile_cursor" value="rainbow">
+         <label style="cursor: url(/cursors/rainbow.cur),auto;" for="profile_cursor">Rainbow</label><br>
+         <input style="cursor: url(/cursors/sword.cur),auto;" type="radio" name="profile_cursor" value="sword">
+         <label style="cursor: url(/cursors/sword.cur),auto;" for="profile_cursor">Sword</label><br>
+         <input style="cursor: url(/cursors/queen.cur),auto;" type="radio" name="profile_cursor" value="queen">
+         <label style="cursor: url(/cursors/queen.cur),auto;" for="profile_cursor">Queen's Crown</label><br>
+         <input style="cursor: url(/cursors/knife.cur),auto;" type="radio" name="profile_cursor" value="knife">
+         <label style="cursor: url(/cursors/knife.cur),auto;" for="profile_cursor">Rambo Knife</label><br>
+         <input style="cursor: url(/cursors/fire.cur),auto;" type="radio" name="profile_cursor" value="fire">
+         <label style="cursor: url(/cursors/fire.cur),auto;" for="profile_cursor">Fire</label><br />
+
+
+         <!-- <label for="scrollimage" class="form__label">Upload a scroll background image</label>
+         <input id="scrollImage" class="form__input" type="file" name="profile_scrollimage" value="{{user.profile_scrollimage}}" /> -->
+
+         <div class="semi-spacer"></div>
+         <p>Select a main accent colors:</p>
+         <small style="font-style: italic">Buttons:</small> <input name="profile_main_accent_color" type="color" value="{{#if user.profile_main_accent_color}}{{user.profile_main_accent_color}}{{else}}#31375A{{/if}}"/>
+         <small style="font-style: italic;margin-left: 15px;">Fonts:</small> <input name="profile_main_font_accent_color" type="color" value="{{#if user.profile_main_font_accent_color}}{{user.profile_main_font_accent_color}}{{else}}#ffffff{{/if}}"/>
+
+         <div class="semi-spacer"></div>
+         <p>Select a secondary accent color:</p>
+         <small style="font-style: italic">Buttons:</small><input name="profile_secondary_accent_color" type="color" value="{{#if user.profile_secondary_accent_color}}{{user.profile_secondary_accent_color}}{{else}}#ffffff{{/if}}"/>
+         <small style="font-style: italic;margin-left: 15px;">Fonts:</small><input name="profile_secondary_font_accent_color" type="color" value="{{#if user.profile_secondary_font_accent_color}}{{user.profile_secondary_font_accent_color}}{{else}}#000000{{/if}}"/>
+
+
+         <div class="semi-spacer"></div>
+         <p>Select a style for buttons:</p>
+         <input type="radio" name="profile_btns_rounding" value="0">
+         <label for="profile_btns_rounding_none">Squared Corners</label><br>
+         <input type="radio" name="profile_btns_rounding" value="15">
+         <label for="profile_btns_rounding_small">Small Rounded Corners</label><br>
+         <input type="radio" name="profile_btns_rounding" value="35">
+         <label for="profile_btns_rounding_large">Large Rounded Corners</label><br>
+
+         <div class="semi-spacer"></div>
+         <p>Select a main font *please click twice*: <span id="profileMainFontExample">Example</span></p>
+         <select name="profile_main_font" id="profileMainFontSelect">
+            <option class="profile_font_main_option" value="{{user.profile_main_font}}"></option>
+            <option class="profile_font_main_option" value="Alegreya">Alegreya</option>
+            <option class="profile_font_main_option" value="Alegreya Sans">Alegreya Sans</option>
+            <option class="profile_font_main_option" value="Anonymous Pro">Anonymous Pro</option>
+            <option class="profile_font_main_option" value="Archivo Narrow">Archivo Narrow</option>
+            <option class="profile_font_main_option" value="Arvo">Arvo</option>
+            <option class="profile_font_main_option" value="BioRhyme">BioRhyme</option>
+            <option class="profile_font_main_option" value="Cabin">Cabin</option>
+            <option class="profile_font_main_option" value="Cardo">Cardo</option>
+            <option class="profile_font_main_option" value="Chivo">Chivo</option>
+            <option class="profile_font_main_option" value="Cormorant">Cormorant</option>
+            <option class="profile_font_main_option" value="Crimson Text">Crimson Text</option>
+            <option class="profile_font_main_option" value="Domine">Domine</option>
+            <option class="profile_font_main_option" value="Eczar">Eczar</option>
+            <option class="profile_font_main_option" value="Fira Sans">Fira Sans</option>
+            <option class="profile_font_main_option" value="IBM Plex Sans">IBM Plex Sans</option>
+            <option class="profile_font_main_option" value="Inknut Antiqua">Inknut Antiqua</option>
+            <option class="profile_font_main_option" value="Karla">Karla</option>
+            <option class="profile_font_main_option" value="Lato">Lato</option>
+            <option class="profile_font_main_option" value="Libre Baskerville">Libre Baskerville</option>
+            <option class="profile_font_main_option" value="Libre Franklin">Libre Franklin</option>
+            <option class="profile_font_main_option" value="Lora">Lora</option>
+            <option class="profile_font_main_option" value="Merriweather">Merriweather</option>
+            <option class="profile_font_main_option" value="Montserrat">Montserrat</option>
+            <option class="profile_font_main_option" value="Neuton">Neuton</option>
+            <option class="profile_font_main_option" value="Open Sans">Open Sans</option>
+            <option class="profile_font_main_option" value="Playfair Display">Playfair Display</option>
+            <option class="profile_font_main_option" value="Poppins">Poppins</option>
+            <option class="profile_font_main_option" value="Proza Libre">Proza Libre</option>
+            <option class="profile_font_main_option" value="PT Sans">PT Sans</option>
+            <option class="profile_font_main_option" value="PT Serif">PT Serif</option>
+            <option class="profile_font_main_option" value="Raleway">Raleway</option>
+            <option class="profile_font_main_option" value="Roboto">Roboto</option>
+            <option class="profile_font_main_option" value="Roboto Slab">Roboto Slab</option>
+            <option class="profile_font_main_option" value="Rubik">Rubik</option>
+            <option class="profile_font_main_option" value="Source Sans Pro">Source Sans Pro</option>
+            <option class="profile_font_main_option" value="Space Mono">Space Mono</option>
+            <option class="profile_font_main_option" value="Spectral">Spectral</option>
+         </select>
+
+         <div class="semi-spacer"></div>
+         <p>Select a secondary font *please click twice*: <span id="profileSecondaryFontExample">Example</span></p>
+         <select name="profile_secondary_font" id="profileSecondaryFontSelect">
+            <option class="profile_font_secondary_option" value="{{user.profile_secondary_font}}"></option>
+            <option class="profile_font_secondary_option" value="Alegreya">Alegreya</option>
+            <option class="profile_font_secondary_option" value="Alegreya Sans">Alegreya Sans</option>
+            <option class="profile_font_secondary_option" value="Anonymous Pro">Anonymous Pro</option>
+            <option class="profile_font_secondary_option" value="Archivo Narrow">Archivo Narrow</option>
+            <option class="profile_font_secondary_option" value="Arvo">Arvo</option>
+            <option class="profile_font_secondary_option" value="BioRhyme">BioRhyme</option>
+            <option class="profile_font_secondary_option" value="Cabin">Cabin</option>
+            <option class="profile_font_secondary_option" value="Cardo">Cardo</option>
+            <option class="profile_font_secondary_option" value="Chivo">Chivo</option>
+            <option class="profile_font_secondary_option" value="Cormorant">Cormorant</option>
+            <option class="profile_font_secondary_option" value="Crimson Text">Crimson Text</option>
+            <option class="profile_font_secondary_option" value="Domine">Domine</option>
+            <option class="profile_font_secondary_option" value="Eczar">Eczar</option>
+            <option class="profile_font_secondary_option" value="Fira Sans">Fira Sans</option>
+            <option class="profile_font_secondary_option" value="IBM Plex Sans">IBM Plex Sans</option>
+            <option class="profile_font_secondary_option" value="Inknut Antiqua">Inknut Antiqua</option>
+            <option class="profile_font_secondary_option" value="Karla">Karla</option>
+            <option class="profile_font_secondary_option" value="Lato">Lato</option>
+            <option class="profile_font_secondary_option" value="Libre Baskerville">Libre Baskerville</option>
+            <option class="profile_font_secondary_option" value="Libre Franklin">Libre Franklin</option>
+            <option class="profile_font_secondary_option" value="Lora">Lora</option>
+            <option class="profile_font_secondary_option" value="Merriweather">Merriweather</option>
+            <option class="profile_font_secondary_option" value="Montserrat">Montserrat</option>
+            <option class="profile_font_secondary_option" value="Neuton">Neuton</option>
+            <option class="profile_font_secondary_option" value="Open Sans">Open Sans</option>
+            <option class="profile_font_secondary_option" value="Playfair Display">Playfair Display</option>
+            <option class="profile_font_secondary_option" value="Poppins">Poppins</option>
+            <option class="profile_font_secondary_option" value="Proza Libre">Proza Libre</option>
+            <option class="profile_font_secondary_option" value="PT Sans">PT Sans</option>
+            <option class="profile_font_secondary_option" value="PT Serif">PT Serif</option>
+            <option class="profile_font_secondary_option" value="Raleway">Raleway</option>
+            <option class="profile_font_secondary_option" value="Roboto">Roboto</option>
+            <option class="profile_font_secondary_option" value="Roboto Slab">Roboto Slab</option>
+            <option class="profile_font_secondary_option" value="Rubik">Rubik</option>
+            <option class="profile_font_secondary_option" value="Source Sans Pro">Source Sans Pro</option>
+            <option class="profile_font_secondary_option" value="Space Mono">Space Mono</option>
+            <option class="profile_font_secondary_option" value="Spectral">Spectral</option>
+         </select>
+
+         <div class="semi-spacer"></div>
+         <label for="profile_project_backgroundImage" class="form__label">Change your project background image</label>
+         <input id="profile_project_backgroundImage" class="form__input" type="file" name="profile_project_backgroundimage" value="{{user.profile_project_backgroundImage}}" />
+
+         {{#if user.profile_project_backgroundimage}}
+         <div class="semi-spacer"></div>
+         <input type="radio" name="remove_profile_project_bg" value="true">
+         <label for="remove_profile_project_bg">I'd like to remove having a project background image</label>
+         {{/if}}
+
+         <div class="semi-spacer"></div>
          <button id="settingsSubmit" class="form_submit_btn" name="submit" type="submit">Submit Changes</button>
      </div>
    </form>

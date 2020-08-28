@@ -5,6 +5,14 @@ if (window.innerWidth > 768) {
    var margin = 15;
 }
 
+var masCon = document.getElementById("masonryContainer").offsetWidth;
+
+if (masCon > 992) {
+   var columns = 4;
+} else {
+   var columns = 3;
+}
+
 var masonry = new Macy({
    container: ".masonryContainer",
    trueOrder: true,
@@ -13,7 +21,7 @@ var masonry = new Macy({
    debug: true,
    mobileFirst: false,
    margin: margin,
-   columns: 4,
+   columns: columns,
    breakAt: {
       992: 3,
       768: 2,

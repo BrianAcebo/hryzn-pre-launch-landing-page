@@ -402,10 +402,6 @@ blockquote {
    margin: 0 15px;
 }
 
-input {
-   -webkit-appearance: none!important;
-}
-
 .btn__secondary {
    color: #333;
    border: 1px solid #333;
@@ -1209,6 +1205,10 @@ input {
    object-fit: cover;
    top: 0;
    left: 0;
+}
+
+.follower__profile {
+   font-weight: bold;
 }
 
 .hero__overlay {

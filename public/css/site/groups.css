@@ -157,6 +157,8 @@ p.group_admin {
    margin: 15px;
    min-width: 0!important;
    padding: 15px 25px;
+   border: 2px solid #ccc;
+   border-radius: 35px;
 }
 
 .explore_groups_container .follower__profile .follower__profile-img-container {

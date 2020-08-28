@@ -37,6 +37,58 @@
    }
 }
 
+.index_feed .masonryItem {
+   margin: 100px auto;
+   max-width: 600px;
+   display: flex;
+   justify-content: center;
+   align-items: flex-start;
+}
+
+@media screen and (max-width: 595px) {
+   .index_feed .masonryItem {
+      margin: 75px auto;
+      max-width: 470px;
+   }
+}
+
+.index_feed .project_avatar_left {
+   width: 45px;
+   height: 45px;
+   border-radius: 50%;
+   text-align: center;
+   margin: 0 15px 0 -50px;
+   position: relative;
+   overflow: hidden;
+   border: 1px solid #394961;
+}
+
+.index_feed .project_avatar_img {
+   position: absolute;
+   display: block;
+   width: 100%;
+   height: 100%;
+   z-index: 0;
+   object-fit: cover;
+   top: 0;
+   left: 0;
+}
+
+@media screen and (max-width: 768px) {
+   .index_feed .project_avatar_left {
+      width: 35px;
+      height: 35px;
+   }
+}
+
+.index_feed .project_content_right {
+   max-width: 600px;
+   width: 80%;
+   display: flex;
+   flex-direction: column;
+   align-items: flex-start;
+}
+
 .projects__container {
    width: 100%;
    margin: 0 auto;
@@ -83,6 +135,16 @@
    position: relative;
 }
 
+.micropost_card,
+.project_card {
+   max-width: 500px;
+   width: 100%;
+}
+
+.micropost {
+   width: 100%;
+}
+
 .project_card_bottom {
    position: absolute;
    width: 100%;
@@ -91,6 +153,11 @@
 }
 
 @media screen and (max-width: 768px) {
+   .micropost_card,
+   .project_card {
+      max-width: 375px;
+   }
+
    .project_card_bottom {
       bottom: 11px;
    }
@@ -997,10 +1064,17 @@ section.project {
    line-height: 30px;
 }
 
+.index_feed .micropost img {
+   border-radius: 15px;
+}
+
 .card_is_micro_image .micro_body,
 .card_is_micro_audio .micro_body,
 .card_is_micro_video .micro_body {
    display: none;
+   font-weight: normal;
+   padding: 0!important;
+   margin-bottom: 15px;
 }
 
 #micropostPop .card_is_micro_image .micro_body,
@@ -1012,9 +1086,18 @@ section.project {
 .micropost_card .micro_title {
    font-weight: 700;
    color: #333;
-   font-size: 14px;
+   font-size: 16px;
    padding: 0;
+   margin: 0;
    line-height: 25px;
+}
+
+.index_feed .micropost_card .micro_title {
+   font-weight: 700;
+   color: #333;
+   font-size: 16px;
+   padding: 0;
+   margin: 5px 0 15px 0;
 }
 
 .micropost_card .micro_body .micropost_url {
@@ -1031,6 +1114,10 @@ section.project {
    display: none;
 }
 
+.index_feed .micro_body {
+   display: block!important;
+}
+
 @media screen and (max-width: 768px) {
    .micropost_card .micro_body {
       font-size: 14px;
@@ -1041,13 +1128,18 @@ section.project {
 
 .micro_tag {
    font-weight: bold;
-   font-size: 12px;
+   font-size: 14px;
+   line-height: 16px;
    display: inline-block;
-   margin-top: 10px;
+   margin: 5px 0;
 }
 
-.micro_tag_w_title {
-   margin-top: 0;
+.index_feed .micro_tag {
+   font-weight: bold;
+   font-size: 16px;
+   line-height: 18px;
+   display: inline-block;
+   margin: 12px 0 15px 0;
 }
 
 .micro_delete {
@@ -1277,6 +1369,7 @@ section.project {
    font-size: 16px;
    padding: 50px 0;
    line-height: 30px;
+   margin-top: 15px;
    max-height: none;
    overflow: hidden;
    word-wrap: break-word;
