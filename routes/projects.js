@@ -8,6 +8,12 @@ const multerS3 = require('multer-s3');
 const dateNow = Date.now().toString();
 const jwt = require('jsonwebtoken');
 
+var current_date = new Date();
+var day = String(current_date.getDate()).padStart(2, '0');
+var month = String(current_date.getMonth() + 1).padStart(2, '0');
+var year = current_date.getFullYear();
+current_date = day + '/' + month + '/' + year;
+
 // AWS S3 Access
 aws.config.update({
    secretAccessKey: keys.secretAccessKey,
@@ -75,6 +81,7 @@ router.post('/create-project/blog', upload.fields([{name: 'project_image', maxCo
             var user = req.body.user;
             var req_project_notes = req.body.project_notes.replace(/\r\n/g,'');
             var project_url = req.body.project_url;
+
             var posted_to_group;
             if (req.body.post_to != '') {
                if (req.body.post_to != 'Followers') {
@@ -146,7 +153,8 @@ router.post('/create-project/blog', upload.fields([{name: 'project_image', maxCo
                           sender: req.user._id,
                           reciever: reciever._id,
                           type: '@' + req.user.username + ' mentioned you in their new post.',
-                          link: '/profile/' + req.user.username
+                          link: '/profile/' + req.user.username,
+                          date_sent: current_date
                        });
 
                        // Create notification in database
@@ -345,7 +353,8 @@ router.post('/create-project/blog', upload.fields([{name: 'project_image', maxCo
                            categories: project_categories,
                            project_owner: admin,
                            project_owner_profile_image: req.user.profileimage,
-                           project_notes: project_notes
+                           project_notes: project_notes,
+                           date_posted: current_date
                         });
 
                         // Create project in database
@@ -387,7 +396,8 @@ router.post('/create-project/blog', upload.fields([{name: 'project_image', maxCo
                                           sender: req.user._id,
                                           reciever: reciever._id,
                                           type: '@' + req.user.username + ' added a post in the group ' + group.group_name,
-                                          link: '/groups/' + group._id
+                                          link: '/groups/' + group._id,
+                                          date_sent: current_date
                                        });
 
                                        // Create notification in database
@@ -517,6 +527,7 @@ router.post('/details/edit/:id', upload.fields([{name: 'project_image', maxCount
       var user = req.body.user;
       var req_project_notes = req.body.project_notes.replace(/\r\n/g,'');
       var project_url = req.body.project_url;
+
       if (req.body.post_to != 'Followers') {
          var posted_to_group = true;
       } else {
@@ -745,7 +756,8 @@ router.post('/details/edit/:id', upload.fields([{name: 'project_image', maxCount
                              sender: req.user._id,
                              reciever: reciever._id,
                              type: '@' + req.user.username + ' mentioned you in their post.',
-                             link: '/p/details/' + project_id
+                             link: '/p/details/' + project_id,
+                             date_sent: current_date
                           });
 
                           // Create notification in database
@@ -911,7 +923,8 @@ router.post('/details/edit/:id', upload.fields([{name: 'project_image', maxCount
                           sender: req.user._id,
                           reciever: reciever._id,
                           type: '@' + req.user.username + ' mentioned you in their post.',
-                          link: '/p/details/' + project_id
+                          link: '/p/details/' + project_id,
+                          date_sent: current_date
                        });
 
                        // Create notification in database
@@ -936,7 +949,6 @@ router.post('/details/edit/:id', upload.fields([{name: 'project_image', maxCount
                   project_title: project_title,
                   project_description: project_description,
                   is_private: is_private,
-                  project_video: project_video,
                   project_url: project_url,
                   categories: project_categories,
                   project_notes: project_notes
@@ -1618,7 +1630,8 @@ router.post('/details/save/:id', (req, res, next) => {
                sender: req.user._id,
                reciever: reciever._id,
                type: '@' + req.user.username + ' saved your post.',
-               link: '/p/details/' + req.params.id
+               link: '/p/details/' + req.params.id,
+               date_sent: current_date
             });
 
             // Create notification in database
@@ -1714,7 +1727,8 @@ router.post('/details/micro/save/:id', (req, res, next) => {
                            sender: req.user._id,
                            reciever: reciever._id,
                            type: '@' + req.user.username + ' saved your post.',
-                           link: '/p/micro/' + req.params.id
+                           link: '/p/micro/' + req.params.id,
+                           date_sent: current_date
                         });
 
                         // Create notification in database
@@ -1758,7 +1772,8 @@ router.post('/details/micro/save/:id', (req, res, next) => {
                      sender: req.user._id,
                      reciever: reciever._id,
                      type: '@' + req.user.username + ' saved your post.',
-                     link: '/p/micro/' + req.params.id
+                     link: '/p/micro/' + req.params.id,
+                     date_sent: current_date
                   });
 
                   // Create notification in database
@@ -1856,7 +1871,8 @@ router.post('/details/repost/:id', (req, res, next) => {
                sender: req.user._id,
                reciever: reciever._id,
                type: notif,
-               link: link
+               link: link,
+               date_sent: current_date
             });
 
             // Create notification in database
@@ -1891,7 +1907,8 @@ router.post('/details/repost/:id', (req, res, next) => {
                         sender: req.user._id,
                         reciever: reciever._id,
                         type: '@' + req.user.username + ' added a repost in the group ' + group.group_name,
-                        link: '/groups/' + group._id
+                        link: '/groups/' + group._id,
+                        date_sent: current_date
                      });
 
                      // Create notification in database
@@ -2046,7 +2063,8 @@ router.post('/details/micro/repost/:id', (req, res, next) => {
                sender: req.user._id,
                reciever: reciever._id,
                type: notif,
-               link: link
+               link: link,
+               date_sent: current_date
             });
 
             // Create notification in database
@@ -2081,7 +2099,8 @@ router.post('/details/micro/repost/:id', (req, res, next) => {
                         sender: req.user._id,
                         reciever: reciever._id,
                         type: '@' + req.user.username + ' added a repost in the group ' + group.group_name,
-                        link: '/p/micro/' + req.params.id
+                        link: '/p/micro/' + req.params.id,
+                        date_sent: current_date
                      });
 
                      // Create notification in database
@@ -2138,7 +2157,8 @@ router.post('/details/like/:id', (req, res, next) => {
                sender: req.user._id,
                reciever: reciever._id,
                type: '@' + req.user.username + ' liked your post.',
-               link: '/p/details/' + req.params.id
+               link: '/p/details/' + req.params.id,
+               date_sent: current_date
             });
 
             // Create notification in database
@@ -2223,7 +2243,8 @@ router.post('/details/micro/like/:id', (req, res, next) => {
                            sender: req.user._id,
                            reciever: reciever._id,
                            type: '@' + req.user.username + ' liked your post.',
-                           link: '/p/micro/' + req.params.id
+                           link: '/p/micro/' + req.params.id,
+                           date_sent: current_date
                         });
 
                         // Create notification in database
@@ -2263,7 +2284,8 @@ router.post('/details/micro/like/:id', (req, res, next) => {
                      sender: req.user._id,
                      reciever: reciever._id,
                      type: '@' + req.user.username + ' liked your post.',
-                     link: '/p/micro/' + req.params.id
+                     link: '/p/micro/' + req.params.id,
+                     date_sent: current_date
                   });
 
                   // Create notification in database
@@ -2348,7 +2370,8 @@ router.post('/details/comment/:id', (req, res, next) => {
                   sender: req.user._id,
                   reciever: reciever._id,
                   type: '@' + req.user.username + ' mentioned you in a comment.',
-                  link: notifPath
+                  link: notifPath,
+                  date_sent: current_date
                });
 
                // Create notification in database
@@ -2381,7 +2404,8 @@ router.post('/details/comment/:id', (req, res, next) => {
                sender: req.user._id,
                reciever: reciever._id,
                type: '@' + req.user.username + ' commented on your post.',
-               link: notifPath
+               link: notifPath,
+               date_sent: current_date
             });
 
             // Create notification in database
@@ -2638,7 +2662,8 @@ router.post('/create-micro/micro', upload.fields([{name: 'micro_image', maxCount
                         sender: req.user._id,
                         reciever: reciever._id,
                         type: '@' + req.user.username + ' mentioned you in their new post.',
-                        link: '/profile/' + req.user.username
+                        link: '/profile/' + req.user.username,
+                        date_sent: current_date
                      });
 
                      // Create notification in database
@@ -2682,7 +2707,8 @@ router.post('/create-micro/micro', upload.fields([{name: 'micro_image', maxCount
                   project_owner_profile_image: req.user.profileimage,
                   micro_body: micro_body,
                   project_url: project_url,
-                  is_micro_post: true
+                  is_micro_post: true,
+                  date_posted: current_date
                });
 
                // Create project in database
@@ -2724,7 +2750,8 @@ router.post('/create-micro/micro', upload.fields([{name: 'micro_image', maxCount
                                  sender: req.user._id,
                                  reciever: reciever._id,
                                  type: '@' + req.user.username + ' added a post in the group ' + group.group_name,
-                                 link: '/groups/' + group._id
+                                 link: '/groups/' + group._id,
+                                 date_sent: current_date
                               });
 
                               // Create notification in database
@@ -2789,7 +2816,8 @@ router.post('/create-micro/micro', upload.fields([{name: 'micro_image', maxCount
                         project_title: micro_title,
                         micro_body: micro_body,
                         project_url: project_url,
-                        is_micro_post: true
+                        is_micro_post: true,
+                        date_posted: current_date
                      });
 
                      // Create project in database
@@ -2829,7 +2857,8 @@ router.post('/create-micro/micro', upload.fields([{name: 'micro_image', maxCount
                                        sender: req.user._id,
                                        reciever: reciever._id,
                                        type: '@' + req.user.username + ' added a post in the group ' + group.group_name,
-                                       link: '/groups/' + group._id
+                                       link: '/groups/' + group._id,
+                                       date_sent: current_date
                                     });
 
                                     // Create notification in database
@@ -2945,7 +2974,8 @@ router.post('/create-micro/micro', upload.fields([{name: 'micro_image', maxCount
                            project_title: micro_title,
                            micro_body: micro_body,
                            project_url: project_url,
-                           is_micro_post: true
+                           is_micro_post: true,
+                           date_posted: current_date
                         });
 
                         // Create project in database
@@ -2985,7 +3015,8 @@ router.post('/create-micro/micro', upload.fields([{name: 'micro_image', maxCount
                                           sender: req.user._id,
                                           reciever: reciever._id,
                                           type: '@' + req.user.username + ' added a post in the group ' + group.group_name,
-                                          link: '/groups/' + group._id
+                                          link: '/groups/' + group._id,
+                                          date_sent: current_date
                                        });
 
                                        // Create notification in database
@@ -3104,7 +3135,8 @@ router.post('/create-micro/micro', upload.fields([{name: 'micro_image', maxCount
                            project_title: micro_title,
                            micro_body: micro_body,
                            project_url: project_url,
-                           is_micro_post: true
+                           is_micro_post: true,
+                           date_posted: current_date
                         });
 
                         // Create project in database
@@ -3144,7 +3176,8 @@ router.post('/create-micro/micro', upload.fields([{name: 'micro_image', maxCount
                                           sender: req.user._id,
                                           reciever: reciever._id,
                                           type: '@' + req.user.username + ' added a post in the group ' + group.group_name,
-                                          link: '/groups/' + group._id
+                                          link: '/groups/' + group._id,
+                                          date_sent: current_date
                                        });
 
                                        // Create notification in database

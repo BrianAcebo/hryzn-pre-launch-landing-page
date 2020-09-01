@@ -29,6 +29,9 @@ const ProjectSchema = mongoose.Schema({
    project_owner_profile_image: {
       type: String
    },
+   date_posted: {
+      type: String
+   },
    admins: [],
    saves: [],
    reposts: [],

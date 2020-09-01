@@ -1225,6 +1225,16 @@ section.project {
    margin: 0 auto;
 }
 
+#micropostPop .micro_date {
+   margin: 25px 0 5px 0;
+   color: #ccc;
+   font-size: 12px;
+}
+
+#micropostPop .card_is_micro_text .micro_date {
+   margin: 0 0 10px 0;
+}
+
 #micropostPop .micro_title {
    font-weight: 700;
    color: #333;
@@ -1276,6 +1286,12 @@ section.project {
 #micropostPop .comment_box_comments {
    max-height: 300px;
    overflow: scroll;
+   -ms-overflow-style: none;
+   scrollbar-width: none;
+}
+
+#micropostPop .comment_box_comments::-webkit-scrollbar {
+  display: none;
 }
 
 #micropostPop .project_comment {
@@ -1301,7 +1317,6 @@ section.project {
    flex-direction: row;
    justify-content: space-between;
    align-items: center;
-   padding: 25px 0 0 0;
 }
 
 #micropostPop .micro_action_btns,

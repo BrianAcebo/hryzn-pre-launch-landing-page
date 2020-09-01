@@ -116,7 +116,7 @@
       </video>
       {{! Project Title }}
       {{#if project.is_private}}
-      <br /><span style="font-size: 15px; font-weight: 600;">Set to private, so only you can see this.</span>
+      <br /><span style="font-size: 15px; font-weight: 600; margin-left: 25px;">Set to private, so only you can see this.</span>
       {{/if}}
       {{#each project.admins}}
       <a class="project_admins project_has_video" href="/profile/{{this}}">@{{this}}</a>
@@ -125,6 +125,7 @@
          {{project.project_title}}
          <a class="projectSettingsBtn_ell" style="position: absolute; right: 50px;"><i class="fa fa-ellipsis-h"></i></a>
       </h1>
+      {{#if project.date_posted}}<p style="font-size: 12px; margin-left: 25px;">{{project.date_posted}}</p>{{/if}}
       {{else}}
       <div class="project_img_container" style="background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.3)), url('https://s3.amazonaws.com/hryzn-app-static-assets/{{project.project_image}}')">
          <div class="project_title_wrapper">
@@ -133,6 +134,7 @@
                <a class="project_admins" href="/profile/{{this}}">@{{this}}</a>
                {{/each}}
                <h1 class="project_title">{{project.project_title}}</h1>
+               {{#if project.date_posted}}<p style="color: #fff; font-size: 12px;">{{project.date_posted}}</p>{{/if}}
                {{#if project.is_private}}
                <br /><span style="font-size: 15px; font-weight: 600; color: #fff;">Set to private, so only you can see this.</span>
                {{/if}}

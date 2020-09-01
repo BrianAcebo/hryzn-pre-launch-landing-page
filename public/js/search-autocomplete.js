@@ -48,7 +48,6 @@ function autocomplete(inp, arr) {
          addActive(x);
       } else if (e.keyCode == 13) {
          // ENTER
-         e.preventDefault();
          if (currentFocus > -1) {
             if (x) x[currentFocus].click();
          }
@@ -89,47 +88,7 @@ function autocomplete(inp, arr) {
 
 
 // All Project Titles (August 14th, 2020)
-var project_titles_and_profile_usernames = [
-   // 'Why you haven\'t done what you want to do',
-   // 'The Benefits of Coffee',
-   // 'Travel to Bali on a Budget',
-   // '5 Easy Ways To Grow A Local Business',
-   // 'The Power Of Content Marketing',
-   // 'Homemade Cake',
-   // 'Mindset & Maturity',
-   // 'Success Is An Opinion',
-   // 'Butterflies ',
-   // 'Motivation Of Choices',
-   // 'Risk & Reward',
-   // 'Mind & Body Connection',
-   // 'The Idea Of Money',
-   // 'Freestyle Bars',
-   // 'Garlic & Herb Chicken',
-   // 'Pasta & Sicilian Sauce',
-   // 'Build Lean Strength',
-   // 'At Home Cardio',
-   // 'For A Moment by Melina',
-   // '5 Dream NBA Finals Matchups That Could of Been Great ',
-   // 'Love ',
-   // 'Find Your Voice.',
-   // 'Butterflies,butterflies, butterflies! ',
-   // 'whipped chocolate ganache ',
-   // 'Late Shift and The Complex Interactive Game Review ',
-   // 'How to take a punch to the face',
-   // 'Anime Rap Battle Ep. 1: DBZ Shernon vs. Kurama(Jinchuuriki) ',
-   // 'Thoughts on Anime Fighting Games and Why I Want to See Anime Fan Games    ',
-   // 'Anime Rap Battle Episode 2: Fifth-Hokage Tsunade VS. Elegant Android 18 #Naruto #DBZ ',
-   // 'Do You Like Ramen Freestyle Song!!',
-   // 'Superhero Quotes That I Made UP',
-   // 'Villain Quotes that I Made Up! ',
-   // 'Anime Rap Battle Episode 3: Family Fusion Fight to the FULLEST!!! Gotenks vs. Gogeta!!',
-   // 'Top 5 French Fry Styles and Shapes!! 🍟 #List #Fries ',
-   // '10th Blog Post on the @Hryzn Website!! 😃 #Platform #Content',
-   // 'Be found with microposts',
-   // '"I Thought the Place was Mysterious but Actually Magical." :) ',
-   // 'Seeking Answers',
-   // '#nugofknowledge',
-   // 'Siteground Account Suspension',
+var project_titles_and_profile_usernames_and_group_names = [
    'The Benefits of Coffee',
    'Travel to Bali on a Budget',
    '5 Easy Ways To Grow A Local Business',
@@ -168,6 +127,7 @@ var project_titles_and_profile_usernames = [
    'Seeking Answers',
    '#nugofknowledge',
    'Siteground Account Suspension',
+   'Happy Kobe Bryant Day!!💜💛 Purple and Gold! :) ',
    // End of projects
    'JustoR56',
    'alesandis',
@@ -242,5 +202,13 @@ var project_titles_and_profile_usernames = [
    'Toothfl',
    'yoBrye',
    'lissacoffeey',
-   'malcolm wilkie'
+   'malcolm wilkie',
+   'MissRaubtier',
+   'newperson',
+   // End of Users
+   'Sunday Morning',
+   "I'd Rather Be Watching Anime",
+   'Hryzn Cooking Class',
+   'WordPress Security'
+   // End of Groups
 ]

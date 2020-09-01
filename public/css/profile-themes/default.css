@@ -354,7 +354,7 @@
    font-size: 18px;
 }
 
-.profile_bio {
+.name_container .profile_bio {
    color: #fff;
    z-index: 777777;
    font-weight: bold;
@@ -365,7 +365,7 @@
 }
 
 @media screen and (max-width: 768px) {
-   .profile_bio {
+   .name_container .profile_bio {
       text-align: center;
    }
 }

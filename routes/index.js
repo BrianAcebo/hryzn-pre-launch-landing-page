@@ -8,6 +8,12 @@ const multerS3 = require('multer-s3');
 const dateNow = Date.now().toString();
 const jwt = require('jsonwebtoken');
 
+var current_date = new Date();
+var day = String(current_date.getDate()).padStart(2, '0');
+var month = String(current_date.getMonth() + 1).padStart(2, '0');
+var year = current_date.getFullYear();
+current_date = day + '/' + month + '/' + year;
+
 aws.config.update({
    secretAccessKey: keys.secretAccessKey,
    accessKeyId: keys.accessKeyId,
@@ -72,19 +78,19 @@ router.get('/welcome', (req, res, next) => {
                welcomePage: true
             });
 
-            // Project.find({}, (err, projects) => {
+            // Group.find({}, (err, groups) => {
             //
             //    if (err) throw err;
             //
-            //    var project_titles = [];
+            //    var group_names = [];
             //
-            //    projects.forEach(function(proj, key) {
-            //       if (proj.is_private) {
-            //          project_titles.push(proj.project_title);
+            //    groups.forEach(function(group, key) {
+            //       if (!group.is_private) {
+            //          group_names.push(group.group_name);
             //       }
             //    });
             //
-            //    console.log(project_titles);
+            //    console.log(group_names);
             //
             // });
 
@@ -629,7 +635,8 @@ router.get('/groups/:groupId/join', (req, res, next) => {
                      sender: req.user._id,
                      reciever: reciever._id,
                      type: '@' + req.user.username + ' joined your group.',
-                     link: '/groups/' + req.params.groupId
+                     link: '/groups/' + req.params.groupId,
+                     date_sent: current_date
                   });
 
                   // Create notification in database
@@ -692,7 +699,8 @@ router.post('/groups/join/private/code', (req, res, next) => {
                      sender: req.user._id,
                      reciever: reciever._id,
                      type: '@' + req.user.username + ' joined your group.',
-                     link: '/groups/' + group._id
+                     link: '/groups/' + group._id,
+                     date_sent: current_date
                   });
 
                   // Create notification in database
@@ -769,7 +777,8 @@ router.get('/groups/:groupId/kick/profile/:username', (req, res, next) => {
                         sender: req.user._id,
                         reciever: reciever._id,
                         type: 'Sorry, you were removed from the group ' + group.group_name,
-                        link: '/groups'
+                        link: '/groups',
+                        date_sent: current_date
                      });
 
                      // Create notification in database
@@ -832,7 +841,8 @@ router.get('/groups/:groupId/remove/:projectId', (req, res, next) => {
                      sender: req.user._id,
                      reciever: reciever._id,
                      type: 'Sorry, your project removed from the group ' + group.group_name,
-                     link: '/groups'
+                     link: '/groups',
+                     date_sent: current_date
                   });
 
                   // Create notification in database
@@ -1213,7 +1223,8 @@ router.post('/messages/chat/:messageId', verifyToken, (req, res, next) => {
                               sender: req.user._id,
                               reciever: reciever._id,
                               type: '@' + req.body.username + ' messaged you.',
-                              link: '/messages/chat/' + req.params.messageId
+                              link: '/messages/chat/' + req.params.messageId,
+                              date_sent: current_date
                            });
 
                            // Create notification in database
@@ -1319,7 +1330,8 @@ router.post('/messages/new/:username', verifyToken, (req, res, next) => {
                      sender: req.user._id,
                      reciever: reciever._id,
                      type: '@' + req.user.username + ' messaged you.',
-                     link: '/messages/chat/' + message._id
+                     link: '/messages/chat/' + message._id,
+                     date_sent: current_date
                   });
 
                   // Create notification in database
@@ -1558,7 +1570,8 @@ router.post('/profile/follow/:id', (req, res, next) => {
                sender: req.user._id,
                reciever: reciever._id,
                type: '@' + req.user.username + ' started following you.',
-               link: '/profile/' + req.user.username
+               link: '/profile/' + req.user.username,
+               date_sent: current_date
             });
 
             // Create notification in database
@@ -1667,21 +1680,21 @@ router.post('/settings', upload.fields([{name: 'profile_project_backgroundimage'
 
       // var username = req.body.username;
       var oldUsername = req.user.username;
-      var email = req.body.email;
-      var oldEmail = req.user.email;
-      var bio = req.body.bio.replace(/\r\n/g,'');;
-      var website_link = req.body.website_link;
-      var youtube_link = req.body.youtube_link;
-      var twitter_link = req.body.twitter_link;
-      var instagram_link = req.body.instagram_link;
-      var facebook_link = req.body.facebook_link;
+      var email = req.body.email.replace(/\r\n/g,'');
+      var oldEmail = req.user.email.replace(/\r\n/g,'');
+      var bio = req.body.bio.replace(/\r\n/g,'');
+      var website_link = req.body.website_link.replace(/\r\n/g,'');
+      var youtube_link = req.body.youtube_link.replace(/\r\n/g,'');
+      var twitter_link = req.body.twitter_link.replace(/\r\n/g,'');
+      var instagram_link = req.body.instagram_link.replace(/\r\n/g,'');
+      var facebook_link = req.body.facebook_link.replace(/\r\n/g,'');
       var id = req.body.id;
       var user = req.body.user;
 
       if(req.body.firstname === "") {
          var firstname = "";
       } else {
-         var firstname = req.body.firstname;
+         var firstname = req.body.firstname.replace(/\r\n/g,'');
          firstname = capitalize(firstname);
          req.checkBody('firstname', 'First Name Is Too Long').isLength({ min: 0, max:50 });
       }
@@ -1689,7 +1702,7 @@ router.post('/settings', upload.fields([{name: 'profile_project_backgroundimage'
       if(req.body.lastname === "") {
          var lastname = "";
       } else {
-         var lastname = req.body.lastname;
+         var lastname = req.body.lastname.replace(/\r\n/g,'');
          lastname = capitalize(lastname);
          req.checkBody('lastname', 'Last Name Is Too Long').isLength({ min: 0, max:50 });
       }

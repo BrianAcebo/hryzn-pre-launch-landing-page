@@ -614,7 +614,6 @@ nav.item-list {
 }
 
 .post_container div:hover {
-   opacity: 0.6;
    cursor: pointer;
 }
 
@@ -652,7 +651,7 @@ nav.item-list {
    }
 
    .post_container.showPostBtns {
-      bottom: 65px;
+      bottom: 100px;
       top: auto;
    }
 
@@ -661,19 +660,20 @@ nav.item-list {
    }
 
    .post_container div {
-      width: 150px;
+      width: 50%;
       text-align: center;
       height: 50px;
       background: #747eb4;
       display: flex;
       justify-content: center;
       align-items: center;
-      border-bottom-left-radius: 0;
-      border-bottom-right-radius: 0;
-      border-top-left-radius: 10px;
-      border-top-right-radius: 10px;
       font-size: 16px;
       cursor: pointer;
+      border-radius: 0;
+   }
+
+   .post_container div.micro_post_btn {
+      opacity: 0.4;
    }
 }
 

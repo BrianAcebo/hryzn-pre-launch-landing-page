@@ -17,6 +17,9 @@ const NotificationSchema = mongoose.Schema({
    },
    link: {
       type: String
+   },
+   date_sent: {
+      type: String
    }
 });
 

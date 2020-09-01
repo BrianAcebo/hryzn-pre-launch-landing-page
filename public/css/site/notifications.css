@@ -12,6 +12,8 @@
    align-items: center;
    justify-content: space-between;
    flex-direction: row;
+   margin: 25px 0 0 0;
+   width: 100%;
 }
 
 .notification_container .notification {
@@ -19,8 +21,7 @@
    font-weight: bold;
    height: 75px;
    display: flex;
-   margin: 25px 25px 25px 0;
-   width: 100%;
+   width: 90%;
    text-align: center;
    padding: 35px;
    justify-content: center;
@@ -28,14 +29,24 @@
    border: 1px solid #ccc;
 }
 
+.notif_date {
+   font-size: 14px;
+   font-weight: bold;
+   color: #ccc;
+}
+
 @media screen and (max-width: 595px) {
    .notification_container {
       padding: 25px;
+      margin: 15px;
    }
 
    .notification_container .notification {
       font-size: 14px;
       height: 50px;
-      margin: 10px 25px 10px 0;
+   }
+
+   .notif_date {
+      font-size: 12px;
    }
 }
