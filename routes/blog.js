@@ -44,16 +44,62 @@ router.get('/', (req, res, next) => {
       var reversed_posts = posts.reverse();
       var most_recent_posts = []
 
-      most_recent_posts.push(reversed_posts[0]);
-      most_recent_posts.push(reversed_posts[1]);
+      var break_count = 0;
 
-      console.log(most_recent_posts);
+      for (let post of reversed_posts) {
+         if (break_count < 2) {
+            if (!post.is_draft) {
+               most_recent_posts.push(post);
+               break_count += 1;
+            }
+         } else {
+            break;
+         }
+      }
+
+      if(req.isAuthenticated()) {
+         if (req.user.username === 'hryzn') {
+            var hryznAdmin = true;
+            console.log('yes')
+         } else {
+            var hryznAdmin = false;
+            console.log('noe')
+         }
+      }
 
       res.render('blog/all-posts', {
          page_title: 'Blog',
          posts: reversed_posts,
          blog: true,
-         most_recent_posts: most_recent_posts
+         most_recent_posts: most_recent_posts,
+         hryznAdmin: hryznAdmin
+      });
+   });
+});
+
+
+// GET Blog Post Category
+router.get('/category/:category', (req, res, next) => {
+   Post.find({'post_categories': { $in: req.params.category}}, (err, posts) => {
+      if (err) throw err;
+
+      var reversed_posts = posts.reverse();
+
+      console.log(posts);
+
+      if(req.isAuthenticated()) {
+         if (req.user.username === 'hryzn') {
+            var hryznAdmin = true;
+         } else {
+            var hryznAdmin = false;
+         }
+      }
+
+      res.render('blog/all-posts', {
+         page_title: 'Blog',
+         posts: reversed_posts,
+         blog: true,
+         hryznAdmin: hryznAdmin
       });
    });
 });
@@ -283,6 +329,225 @@ router.get('/edit-post/:id', (req, res, next) => {
       res.redirect('/');
    }
 
+});
+
+
+// POST Edit Post
+router.post('/edit-post/:id', upload.single('post_image'), (req, res, next) => {
+
+   if(req.isAuthenticated()) {
+
+      var post_title = req.body.post_title;
+      var post_description = req.body.post_description.replace(/\r\n/g,'');
+      var is_draft = req.body.is_private;
+      var id = req.body.id;
+      var user = req.body.user;
+      var post_notes = req.body.post_notes.replace(/\r\n/g,'');
+
+      var post_slug = post_title.replace(/\s+/g, '-').toLowerCase();
+
+
+      // Form Validation
+      req.checkBody('post_title', 'Please Enter A Post Title').notEmpty();
+      req.checkBody('post_title', 'Post Title Is Too Long').isLength({ min: 0, max:200 });
+      req.checkBody('post_description', 'Description Must Be Less Than 500 Characters').isLength({ min: 0, max: 500 });
+
+      errors = req.validationErrors();
+
+      if(errors) {
+
+         User.findById(id, (err, user) => {
+            if(err) throw err;
+
+            res.render('blog/edit-post', {
+               errors: errors,
+               page_title: 'Edit Post',
+               post_title: post_title,
+               post_description: post_description,
+               post_notes: post_notes,
+               user: user
+            });
+         });
+
+      } else {
+
+         if (req.file) {
+
+            // If user uploaded an image for project
+            var ext = path.extname(req.file.originalname);
+
+            // Check if file is an image
+            if(ext !== '.png' && ext !== '.PNG' && ext !== '.jpg' && ext !== '.JPG' && ext !== '.gif' && ext !== '.GIF' && ext !== '.jpeg' && ext !== '.JPEG') {
+
+               User.findById(id, (err, user) => {
+                  if(err) throw err;
+
+                  res.render('blog/edit-post', {
+                     error_msg: 'Uploaded File Must End With .jpg .jpeg .png .gif',
+                     page_title: 'Edit Post',
+                     post_title: post_title,
+                     post_description: post_description,
+                     post_notes: post_notes,
+                     is_draft: is_draft,
+                     categories: post_categories,
+                     user: user
+                  });
+               });
+
+            } else {
+               // No errors have been made
+               // var fileExt = req.file.originalname.split('.').pop();
+               var post_image = dateNow + req.file.originalname;
+
+               if (req.body.post_categories) {
+                  if (req.body.post_categories.length > 0) {
+                     Post.findByIdAndUpdate(req.params.id, {
+                        post_title: post_title,
+                        post_description: post_description,
+                        is_draft: is_draft,
+                        post_image: post_image,
+                        post_categories: post_categories,
+                        post_notes: post_notes,
+                        post_slug: post_slug
+                     }, (err, user) => {
+                        if (err) throw err;
+
+                        req.flash('success_msg', "Post was updated.");
+                        res.redirect('/blog/' + post_slug);
+                     });
+                  } else {
+                     Post.findByIdAndUpdate(req.params.id, {
+                        post_title: post_title,
+                        post_description: post_description,
+                        is_draft: is_draft,
+                        post_image: post_image,
+                        post_notes: post_notes,
+                        post_slug: post_slug
+                     }, (err, user) => {
+                        if (err) throw err;
+
+                        req.flash('success_msg', "Post was updated.");
+                        res.redirect('/blog/' + post_slug);
+                     });
+                  }
+               } else {
+                  Post.findByIdAndUpdate(req.params.id, {
+                     post_title: post_title,
+                     post_description: post_description,
+                     is_draft: is_draft,
+                     post_image: post_image,
+                     post_notes: post_notes,
+                     post_slug: post_slug
+                  }, (err, user) => {
+                     if (err) throw err;
+
+                     req.flash('success_msg', "Post was updated.");
+                     res.redirect('/blog/' + post_slug);
+                  });
+               }
+
+            }
+         } else {
+            if (req.body.post_categories) {
+               if (req.body.post_categories.length > 0) {
+                  Post.findByIdAndUpdate(req.params.id, {
+                     post_title: post_title,
+                     post_description: post_description,
+                     is_draft: is_draft,
+                     post_categories: post_categories,
+                     post_notes: post_notes,
+                     post_slug: post_slug
+                  }, (err, user) => {
+                     if (err) throw err;
+
+                     req.flash('success_msg', "Post was updated.");
+                     res.redirect('/blog/' + post_slug);
+                  });
+               } else {
+                  Post.findByIdAndUpdate(req.params.id, {
+                     post_title: post_title,
+                     post_description: post_description,
+                     is_draft: is_draft,
+                     post_notes: post_notes,
+                     post_slug: post_slug
+                  }, (err, user) => {
+                     if (err) throw err;
+
+                     req.flash('success_msg', "Post was updated.");
+                     res.redirect('/blog/' + post_slug);
+                  });
+               }
+            } else {
+               Post.findByIdAndUpdate(req.params.id, {
+                  post_title: post_title,
+                  post_description: post_description,
+                  is_draft: is_draft,
+                  post_notes: post_notes,
+                  post_slug: post_slug
+               }, (err, user) => {
+                  if (err) throw err;
+
+                  req.flash('success_msg', "Post was updated.");
+                  res.redirect('/blog/' + post_slug);
+               });
+            }
+         }
+      }
+
+   } else {
+      res.redirect('/users/register');
+   }
+});
+
+
+// Delete project
+router.get('/delete/:id', (req, res, next) => {
+   if(req.isAuthenticated()) {
+
+      // Find post to delete
+      Post.findById(req.params.id, (err, post) => {
+         if(err) throw err;
+
+         if(req.user.username === 'hryzn') {
+
+            // Only delete if admin
+
+            info = [];
+
+            // Delete post image
+            var s3_instance = new aws.S3();
+            var s3_params = {
+               Bucket: 'hryzn-app-static-assets',
+               Key: post.post_image
+            };
+            s3_instance.deleteObject(s3_params, (err, data) => {
+               if(data) {
+                  console.log("File deleted");
+               }
+               else {
+                  console.log("No delete : " + err);
+               }
+            });
+
+            // Delete the project
+            Post.findByIdAndRemove(req.params.id, (err) => {
+              if (err) throw err;
+              req.flash('success_msg', "Destroyed From Existence...");
+              res.redirect('/blog');
+            });
+
+         } else {
+
+            // Send them to the homepage
+            res.location('/');
+            res.redirect('/');
+
+         }
+
+      });
+   } else {
+      res.redirect('/users/register');
+   }
 });
 
 

@@ -1,12 +1,6 @@
 <div class="blog_main_container">
 
-   <h1 class="blog_welcome_title">{{post.post_title}}</h1>
-
-   <div class="post_data_container">
-      <a href="/profile/{{post.post_owner}}">@{{post.post_owner}}</a>
-      <p>{{post.post_date}}</p>
-      {{#if hryznAdmin}}<a href="/blog/edit-post/{{post._id}}">Edit</a>{{/if}}
-   </div>
+   <img src="/icons/back.png" class="project_bck_btn go-back"/>
 
    <div class="post_detail_img_container">
       <div class="post_detail_img_wrapper">
@@ -14,8 +8,42 @@
       </div>
    </div>
 
-   <div class="post_detail_notes">
-      {{{post.post_notes}}}
+   <div class="blog_text_container">
+      {{#if is_draft}}
+      <strong>DRAFT</strong>
+      {{/if}}
+      <h1 class="post_title">{{post.post_title}}</h1>
+
+      <div class="post_data_container">
+         <div class="post_data_one">
+            <a href="/profile/{{post.post_owner}}">@{{post.post_owner}}</a>
+            <p>{{post.post_date}}</p>
+         </div>
+         {{#if hryznAdmin}}
+         <div class="post_data_two">
+            <a href="/blog/edit-post/{{post._id}}">Edit</a>
+            <a class="modalBtn" href="#">Delete</a>
+         </div>
+         {{/if}}
+      </div>
+
+      <div class="post_detail_notes">
+         {{{post.post_notes}}}
+      </div>
+
+      <div class="post_social">
+         <a target="_blank" href="http://www.facebook.com/sharer.php?u={{site_url}}/p/details/{{post._id}}/guest&amp;t={{post.post_title}}" title="Share on Facebook" class="facebook"><i class="fa fa-facebook"></i></a>
+         <a target="_blank" href="https://twitter.com/intent/tweet?original_referer=https%3A%2F%2Fmyhryzn%3A5000%2Fp%2Fdetails%2F{{post._id}}&ref_src=twsrc%5Etfw&text={{post.post_title}}&tw_p=tweetbutton&url=https%3A%2F%2Fwww.myhryzn.com%2Fp%2Fdetails%2F{{post._id}}%2Fguest&via=myHryzn" title="Share on Twitter" class="twitter"><i class="fa fa-twitter"></i></a>
+         <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+         <a class="check" class="copy-link" onclick="copyLink('{{site_url}}/p/details/{{post._id}}/guest')"><i class="fa fa-link"></i></a>
+      </div>
+
+      <ul class="post_detail_cat_container">
+         <a href="/blog"><li>All Posts</li></a>
+         {{#each post.post_categories}}
+         <a href="/blog/category/{{this}}"><li>{{this}}</li></a>
+         {{/each}}
+      </ul>
    </div>
 
    <div class="most_recent_posts_container">
@@ -39,3 +67,25 @@
    </div>
 
 </div>
+
+{{#if hryznAdmin}}
+<div class="popModal modalBackground">
+  <div class="modal-content">
+
+    <div class="modal-header ">
+      <p>Are You Sure?</p>
+    </div>
+
+    <div class="modal-body">
+      <p>Deleting this is permanent and cannot be undone.</p>
+    </div>
+
+    <div class="modal-footer">
+      <a href="/blog/delete/{{post._id}}" class="btn__secondary project_submit">Yes I'm Sure</a>
+      <span class="closeModal btn__primary">Cancel</span>
+    </div>
+
+  </div>
+
+</div>
+{{/if}}

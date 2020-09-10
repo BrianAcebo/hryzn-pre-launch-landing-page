@@ -16,6 +16,22 @@
       </div>
 
 
+      {{! Public or Private checkbox }}
+      <div class="checkbox__wrapper">
+         <label class="check__container">
+            <input id="isPrivateCheck" class="form__input-checkbox {{#if project.is_draft}}checked{{/if}}" type="checkbox">
+            <span class="checkmark">Private Post</span>
+         </label>
+         <label class="check__container">
+            <input id="isPublicCheck" class="form__input-checkbox {{#if project.is_draft}}{{else}}checked{{/if}}" type="checkbox" checked>
+            <span class="checkmark">Public Post</span>
+         </label>
+      </div>
+      <br />
+      <p class="form__input-small" id="changeText">A public post can be viewed by anyone</p>
+      <input id="checkbox" type="hidden" name="is_private" value="{{post.is_draft}}" />
+
+
       {{! Post Title }}
       <input class="form__input project_title_input" type="text" placeholder="Enter a title" name="post_title" value="{{post.post_title}}" required autocapitalize="none" />
 
@@ -74,6 +90,9 @@
            <option>Starting</option>
            <option>Managing</option>
            <option>Hryzn</option>
+           <option>How-To</option>
+           <option>Stories</option>
+           <option>Entertainment</option>
         </select>
 
 
