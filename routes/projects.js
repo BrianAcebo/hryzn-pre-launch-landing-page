@@ -82,6 +82,12 @@ router.post('/create-project/blog', upload.fields([{name: 'project_image', maxCo
             var req_project_notes = req.body.project_notes.replace(/\r\n/g,'');
             var project_url = req.body.project_url;
 
+            if (is_private != 'true') {
+               is_private = false;
+            } else {
+               is_private = true;
+            }
+
             var posted_to_group;
             if (req.body.post_to != '') {
                if (req.body.post_to != 'Followers') {
@@ -145,29 +151,31 @@ router.post('/create-project/blog', upload.fields([{name: 'project_image', maxCo
                   project_notes += '<a class="mention_tag" href="/profile/' + clean_word + '">' + slice + '</a> ';
 
                   // Send notification to the user mentioned
-                  User.findOne({ 'username': { $in: clean_word} }, (err, reciever) => {
-                    if (err) throw err;
+                  if(!is_private) {
+                     User.findOne({ 'username': { $in: clean_word} }, (err, reciever) => {
+                       if (err) throw err;
 
-                    if (reciever) {
-                       var newNotification = new Notification({
-                          sender: req.user._id,
-                          reciever: reciever._id,
-                          type: '@' + req.user.username + ' mentioned you in their new post.',
-                          link: '/profile/' + req.user.username,
-                          date_sent: current_date
-                       });
-
-                       // Create notification in database
-                       Notification.saveNotification(newNotification, (err, notification) => {
-                          if(err) throw err;
-
-                          // Add Notification for User
-                          User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
-                             if (err) throw err;
+                       if (reciever) {
+                          var newNotification = new Notification({
+                             sender: req.user._id,
+                             reciever: reciever._id,
+                             type: '@' + req.user.username + ' mentioned you in their new post.',
+                             link: '/profile/' + req.user.username,
+                             date_sent: current_date
                           });
-                       });
-                    }
-                 });
+
+                          // Create notification in database
+                          Notification.saveNotification(newNotification, (err, notification) => {
+                             if(err) throw err;
+
+                             // Add Notification for User
+                             User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+                                if (err) throw err;
+                             });
+                          });
+                       }
+                    });
+                  }
 
               } else if (tag_indices.indexOf(i) > -1) {
                  // do nothing
@@ -528,6 +536,12 @@ router.post('/details/edit/:id', upload.fields([{name: 'project_image', maxCount
       var req_project_notes = req.body.project_notes.replace(/\r\n/g,'');
       var project_url = req.body.project_url;
 
+      if (is_private != 'true') {
+         is_private = false;
+      } else {
+         is_private = true;
+      }
+
       if (req.body.post_to != 'Followers') {
          var posted_to_group = true;
       } else {
@@ -749,27 +763,29 @@ router.post('/details/edit/:id', upload.fields([{name: 'project_image', maxCount
                         project_notes += '<a class="mention_tag" href="/profile/' + clean_word + '">' + slice + '</a> ';
 
                         // Send notification to the user mentioned
-                        User.findOne({ 'username': { $in: clean_word} }, (err, reciever) => {
-                          if (err) throw err;
+                        if(!is_private) {
+                           User.findOne({ 'username': { $in: clean_word} }, (err, reciever) => {
+                             if (err) throw err;
 
-                          var newNotification = new Notification({
-                             sender: req.user._id,
-                             reciever: reciever._id,
-                             type: '@' + req.user.username + ' mentioned you in their post.',
-                             link: '/p/details/' + project_id,
-                             date_sent: current_date
-                          });
+                             var newNotification = new Notification({
+                                sender: req.user._id,
+                                reciever: reciever._id,
+                                type: '@' + req.user.username + ' mentioned you in their post.',
+                                link: '/p/details/' + project_id,
+                                date_sent: current_date
+                             });
 
-                          // Create notification in database
-                          Notification.saveNotification(newNotification, (err, notification) => {
-                             if(err) throw err;
+                             // Create notification in database
+                             Notification.saveNotification(newNotification, (err, notification) => {
+                                if(err) throw err;
 
-                             // Add Notification for User
-                             User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
-                                if (err) throw err;
+                                // Add Notification for User
+                                User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+                                   if (err) throw err;
+                                });
                              });
                           });
-                       });
+                        }
 
                     } else if (tag_indices.indexOf(i) > -1) {
                        // do nothing
@@ -916,27 +932,29 @@ router.post('/details/edit/:id', upload.fields([{name: 'project_image', maxCount
                      project_notes += '<a class="mention_tag" href="/profile/' + clean_word + '">' + slice + '</a> ';
 
                      // Send notification to the user mentioned
-                     User.findOne({ 'username': { $in: clean_word} }, (err, reciever) => {
-                       if (err) throw err;
+                     if (!is_private) {
+                        User.findOne({ 'username': { $in: clean_word} }, (err, reciever) => {
+                          if (err) throw err;
 
-                       var newNotification = new Notification({
-                          sender: req.user._id,
-                          reciever: reciever._id,
-                          type: '@' + req.user.username + ' mentioned you in their post.',
-                          link: '/p/details/' + project_id,
-                          date_sent: current_date
-                       });
+                          var newNotification = new Notification({
+                             sender: req.user._id,
+                             reciever: reciever._id,
+                             type: '@' + req.user.username + ' mentioned you in their post.',
+                             link: '/p/details/' + project_id,
+                             date_sent: current_date
+                          });
 
-                       // Create notification in database
-                       Notification.saveNotification(newNotification, (err, notification) => {
-                          if(err) throw err;
+                          // Create notification in database
+                          Notification.saveNotification(newNotification, (err, notification) => {
+                             if(err) throw err;
 
-                          // Add Notification for User
-                          User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
-                             if (err) throw err;
+                             // Add Notification for User
+                             User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+                                if (err) throw err;
+                             });
                           });
                        });
-                    });
+                     }
 
                  } else if (tag_indices.indexOf(i) > -1) {
                     // do nothing
@@ -1641,12 +1659,12 @@ router.post('/details/save/:id', (req, res, next) => {
                // Add Notification for User
                User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
                   if (err) throw err;
+
+                  req.flash('success_msg', "Project Saved");
+                  res.redirect('/p/details/' + req.body.project_id);
                });
             });
          });
-
-         req.flash('success_msg', "Project Saved");
-         res.redirect('/p/details/' + req.body.project_id);
       });
    } else {
       res.redirect('/users/register');
@@ -1738,12 +1756,12 @@ router.post('/details/micro/save/:id', (req, res, next) => {
                            // Add Notification for User
                            User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
                               if (err) throw err;
+
+                              req.flash('success_msg', "Project Saved");
+                              res.redirect('/p/micro/' + req.params.id);
                            });
                         });
                      });
-
-                     req.flash('success_msg', "Project Saved");
-                     res.redirect('/p/micro/' + req.params.id);
                   });
                }
 
@@ -1783,12 +1801,12 @@ router.post('/details/micro/save/:id', (req, res, next) => {
                      // Add Notification for User
                      User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
                         if (err) throw err;
+
+                        req.flash('success_msg', "Project Saved");
+                        res.redirect('/p/micro/' + req.params.id);
                      });
                   });
                });
-
-               req.flash('success_msg', "Project Saved");
-               res.redirect('/p/micro/' + req.params.id);
             });
          }
 
@@ -1918,13 +1936,13 @@ router.post('/details/repost/:id', (req, res, next) => {
                         // Add Notification for User
                         User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
                            if (err) throw err;
+
+                           req.flash('success_msg', "Reposted Project");
+                           res.redirect('/groups/' + group._id);
                         });
                      });
                   });
                });
-
-               req.flash('success_msg', "Reposted Project");
-               res.redirect('/groups/' + group._id);
 
             });
 
@@ -1970,7 +1988,7 @@ router.post('/details/micro/unrepost/:id', (req, res, next) => {
       info['projectId'] = req.body.project_id;
       var og_path = req.body.og_path;
 
-      if (og_path != '') {
+      if (typeof og_path != 'undefined') {
          var location_path = og_path;
       } else {
          var location_path = '/p/details/' + req.body.project_id;
@@ -2110,13 +2128,13 @@ router.post('/details/micro/repost/:id', (req, res, next) => {
                         // Add Notification for User
                         User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
                            if (err) throw err;
+
+                           req.flash('success_msg', "Reposted Project");
+                           res.redirect('/p/micro/' + req.params.id);
                         });
                      });
                   });
                });
-
-               req.flash('success_msg', "Reposted Project");
-               res.redirect('/p/micro/' + req.params.id);
 
             });
 
@@ -2168,12 +2186,12 @@ router.post('/details/like/:id', (req, res, next) => {
                // Add Notification for User
                User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
                   if (err) throw err;
+
+                  req.flash('success_msg', "Project Liked");
+                  res.redirect('/p/details/' + req.body.project_id);
                });
             });
          });
-
-         req.flash('success_msg', "Project Liked");
-         res.redirect('/p/details/' + req.body.project_id);
       });
    } else {
       res.redirect('/users/register');
@@ -2254,17 +2272,19 @@ router.post('/details/micro/like/:id', (req, res, next) => {
                            // Add Notification for User
                            User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
                               if (err) throw err;
+
+                              req.flash('success_msg', "Project Liked");
+                              res.redirect('/p/micro/' + req.params.id);
                            });
                         });
                      });
 
-                     req.flash('success_msg', "Project Liked");
-                     res.redirect('/p/micro/' + req.params.id);
                   });
                }
 
             });
          } else {
+
             info = [];
             info['profileUsername'] = req.user.username;
             info['projectId'] = req.body.project_id;
@@ -2295,12 +2315,12 @@ router.post('/details/micro/like/:id', (req, res, next) => {
                      // Add Notification for User
                      User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
                         if (err) throw err;
+
+                        req.flash('success_msg', "Project Liked");
+                        res.redirect('/p/micro/' + req.params.id);
                      });
                   });
                });
-
-               req.flash('success_msg', "Project Liked");
-               res.redirect('/p/micro/' + req.params.id);
             });
          }
 
@@ -2317,8 +2337,7 @@ router.post('/details/comment/:id', (req, res, next) => {
 
       var project_owner = req.body.project_owner;
 
-
-      if (req.body.og_path != '') {
+      if (typeof req.body.og_path != 'undefined') {
          var path = req.body.og_path;
          var notifPath = '/p/micro/' + req.params.id;
       } else {
@@ -2415,12 +2434,13 @@ router.post('/details/comment/:id', (req, res, next) => {
                // Add Notification for User
                User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
                   if (err) throw err;
+
+                  req.flash('success_msg', "Added Comment");
+                  res.redirect(path);
                });
             });
          });
 
-         req.flash('success_msg', "Added Comment");
-         res.redirect(path);
       });
    } else {
       res.redirect('/users/register');
@@ -2432,7 +2452,7 @@ router.post('/details/comment/:id', (req, res, next) => {
 router.post('/details/uncomment/:id', (req, res, next) => {
    if(req.isAuthenticated()) {
 
-      if (req.body.og_path != '') {
+      if (typeof req.body.og_path != 'undefined') {
          var path = req.body.og_path;
       } else {
          var path = '/p/details/' + req.params.id
@@ -2614,7 +2634,7 @@ router.post('/create-micro/micro', upload.fields([{name: 'micro_image', maxCount
 
             var og_path = req.body.og_path;
 
-            if (og_path != '') {
+            if (typeof og_path != 'undefined') {
                var location_path = og_path;
             } else {
                var location_path = '/profile/' + req.user.username;
