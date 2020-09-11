@@ -137,117 +137,115 @@ router.post('/create-post', upload.single('post_image'), (req, res, next) => {
       var user = req.body.user;
       var post_notes = req.body.post_notes.replace(/\r\n/g,'');
 
-      console.log(is_draft);
 
+      // Form Validation
+      req.checkBody('post_title', 'Please Enter A Post Title').notEmpty();
+      req.checkBody('post_title', 'Post Title Is Too Long').isLength({ min: 0, max:200 });
+      req.checkBody('post_description', 'Description Must Be Less Than 500 Characters').isLength({ min: 0, max: 500 });
 
-      // // Form Validation
-      // req.checkBody('post_title', 'Please Enter A Post Title').notEmpty();
-      // req.checkBody('post_title', 'Post Title Is Too Long').isLength({ min: 0, max:200 });
-      // req.checkBody('post_description', 'Description Must Be Less Than 500 Characters').isLength({ min: 0, max: 500 });
-      //
-      // errors = req.validationErrors();
-      //
-      // if(errors) {
-      //
-      //    User.findById(id, (err, user) => {
-      //       if(err) throw err;
-      //
-      //       res.render('blog/create-post', {
-      //          errors: errors,
-      //          page_title: 'Create Post',
-      //          post_title: post_title,
-      //          post_description: post_description,
-      //          post_notes: post_notes,
-      //          user: user
-      //       });
-      //    });
-      //
-      // } else {
-      //
-      //    if (req.file) {
-      //
-      //       // If user uploaded an image for project
-      //       var ext = path.extname(req.file.originalname);
-      //
-      //       // Check if file is an image
-      //       if(ext !== '.png' && ext !== '.PNG' && ext !== '.jpg' && ext !== '.JPG' && ext !== '.gif' && ext !== '.GIF' && ext !== '.jpeg' && ext !== '.JPEG') {
-      //
-      //          User.findById(id, (err, user) => {
-      //             if(err) throw err;
-      //
-      //             res.render('blog/create-post', {
-      //                error_msg: 'Uploaded File Must End With .jpg .jpeg .png .gif',
-      //                page_title: 'Create Post',
-      //                post_title: post_title,
-      //                post_description: post_description,
-      //                post_notes: post_notes,
-      //                is_draft: is_draft,
-      //                categories: post_categories,
-      //                user: user
-      //             });
-      //          });
-      //
-      //       } else {
-      //          // No errors have been made
-      //          // var fileExt = req.file.originalname.split('.').pop();
-      //          var post_image = dateNow + req.file.originalname;
-      //
-      //          if (req.body.post_categories) {
-      //             if (req.body.post_categories.length > 0) {
-      //                var post_categories = req.body.post_categories;
-      //             } else {
-      //                var post_categories;
-      //             }
-      //          } else {
-      //             var post_categories;
-      //          }
-      //
-      //          var post_date = new Date();
-      //          post_date = (post_date.getMonth() + 1) + "/" + post_date.getDate() + "/" + post_date.getFullYear();
-      //
-      //          var post_slug = post_title.replace(/\s+/g, '-').toLowerCase();
-      //
-      //          var newPost = new Post({
-      //             post_title: post_title,
-      //             post_description: post_description,
-      //             is_draft: is_draft,
-      //             post_image: post_image,
-      //             post_categories: post_categories,
-      //             post_owner: admin,
-      //             post_notes: post_notes,
-      //             post_date: post_date,
-      //             post_slug: post_slug
-      //
-      //          });
-      //
-      //          // Create project in database
-      //          Post.savePost(newPost, (err, post) => {
-      //             if(err) throw err;
-      //
-      //             req.flash('success_msg', "Post was created.");
-      //             res.redirect('/blog');
-      //          });
-      //
-      //       }
-      //    } else {
-      //       // If user did not upload an image for project
-      //       User.findById(id, (err, user) => {
-      //          if(err) throw err;
-      //
-      //          res.render('blog/create-post', {
-      //             error_msg: 'Please upload an image for the post.',
-      //             page_title: 'Create Post',
-      //             post_title: post_title,
-      //             post_description: post_description,
-      //             post_notes: post_notes,
-      //             is_draft: is_draft,
-      //             categories: post_categories,
-      //             post_notes: post_notes,
-      //             user: user
-      //          });
-      //       });
-      //    }
-      // }
+      errors = req.validationErrors();
+
+      if(errors) {
+
+         User.findById(id, (err, user) => {
+            if(err) throw err;
+
+            res.render('blog/create-post', {
+               errors: errors,
+               page_title: 'Create Post',
+               post_title: post_title,
+               post_description: post_description,
+               post_notes: post_notes,
+               user: user
+            });
+         });
+
+      } else {
+
+         if (req.file) {
+
+            // If user uploaded an image for project
+            var ext = path.extname(req.file.originalname);
+
+            // Check if file is an image
+            if(ext !== '.png' && ext !== '.PNG' && ext !== '.jpg' && ext !== '.JPG' && ext !== '.gif' && ext !== '.GIF' && ext !== '.jpeg' && ext !== '.JPEG') {
+
+               User.findById(id, (err, user) => {
+                  if(err) throw err;
+
+                  res.render('blog/create-post', {
+                     error_msg: 'Uploaded File Must End With .jpg .jpeg .png .gif',
+                     page_title: 'Create Post',
+                     post_title: post_title,
+                     post_description: post_description,
+                     post_notes: post_notes,
+                     is_draft: is_draft,
+                     categories: post_categories,
+                     user: user
+                  });
+               });
+
+            } else {
+               // No errors have been made
+               // var fileExt = req.file.originalname.split('.').pop();
+               var post_image = dateNow + req.file.originalname;
+
+               if (req.body.post_categories) {
+                  if (req.body.post_categories.length > 0) {
+                     var post_categories = req.body.post_categories;
+                  } else {
+                     var post_categories;
+                  }
+               } else {
+                  var post_categories;
+               }
+
+               var post_date = new Date();
+               post_date = (post_date.getMonth() + 1) + "/" + post_date.getDate() + "/" + post_date.getFullYear();
+
+               var post_slug = post_title.replace(/\s+/g, '-').toLowerCase();
+
+               var newPost = new Post({
+                  post_title: post_title,
+                  post_description: post_description,
+                  is_draft: is_draft,
+                  post_image: post_image,
+                  post_categories: post_categories,
+                  post_owner: admin,
+                  post_notes: post_notes,
+                  post_date: post_date,
+                  post_slug: post_slug
+
+               });
+
+               // Create project in database
+               Post.savePost(newPost, (err, post) => {
+                  if(err) throw err;
+
+                  req.flash('success_msg', "Post was created.");
+                  res.redirect('/blog');
+               });
+
+            }
+         } else {
+            // If user did not upload an image for project
+            User.findById(id, (err, user) => {
+               if(err) throw err;
+
+               res.render('blog/create-post', {
+                  error_msg: 'Please upload an image for the post.',
+                  page_title: 'Create Post',
+                  post_title: post_title,
+                  post_description: post_description,
+                  post_notes: post_notes,
+                  is_draft: is_draft,
+                  categories: post_categories,
+                  post_notes: post_notes,
+                  user: user
+               });
+            });
+         }
+      }
 
    } else {
       res.redirect('/users/register');
