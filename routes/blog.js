@@ -426,7 +426,7 @@ router.post('/edit-post/:id', upload.single('post_image'), (req, res, next) => {
                         post_description: post_description,
                         is_draft: is_draft,
                         post_image: post_image,
-                        post_categories: post_categories,
+                        post_categories: req.body.post_categories,
                         post_notes: post_notes,
                         post_slug: post_slug
                      }, (err, user) => {
@@ -474,7 +474,7 @@ router.post('/edit-post/:id', upload.single('post_image'), (req, res, next) => {
                      post_title: post_title,
                      post_description: post_description,
                      is_draft: is_draft,
-                     post_categories: post_categories,
+                     post_categories: req.body.post_categories,
                      post_notes: post_notes,
                      post_slug: post_slug
                   }, (err, user) => {
