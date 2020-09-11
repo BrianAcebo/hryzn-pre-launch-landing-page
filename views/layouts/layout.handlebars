@@ -744,12 +744,22 @@
    {{/if}}
 
    {{#if post}}
-   <script>
-   // Blog Post
-   $(document).ready(function() {
-      $('#editor').trumbowyg('html', `{{{post.post_notes}}}`);
-   });
-   </script>
+      {{#if post_error}}
+      <script>
+      // Blog Post
+      $(document).ready(function() {
+         $('#editor').trumbowyg('html', `{{{post_notes}}}`);
+      });
+      </script>
+      {{post_notes}}
+      {{else}}
+      <script>
+      // Blog Post
+      $(document).ready(function() {
+         $('#editor').trumbowyg('html', `{{{post.post_notes}}}`);
+      });
+      </script>
+      {{/if}}
    {{/if}}
 
    <script src="https://cdn.rawgit.com/harvesthq/chosen/gh-pages/chosen.jquery.min.js"></script>

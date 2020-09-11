@@ -133,7 +133,7 @@ router.post('/create-post', upload.single('post_image'), (req, res, next) => {
       var post_description = req.body.post_description.replace(/\r\n/g,'');
       var admin = req.body.admin; // Owner of project
       var is_draft = req.body.is_private;
-      var id = req.body.id;
+      var id = req.body.user_id;
       var user = req.body.user;
       var post_notes = req.body.post_notes.replace(/\r\n/g,'');
 
@@ -340,7 +340,7 @@ router.post('/edit-post/:id', upload.single('post_image'), (req, res, next) => {
       var post_title = req.body.post_title;
       var post_description = req.body.post_description.replace(/\r\n/g,'');
       var is_draft = req.body.is_private;
-      var id = req.body.id;
+      var id = req.body.user_id;
       var user = req.body.user;
       var post_notes = req.body.post_notes.replace(/\r\n/g,'');
 
@@ -356,16 +356,28 @@ router.post('/edit-post/:id', upload.single('post_image'), (req, res, next) => {
 
       if(errors) {
 
+         console.log(errors);
+
          User.findById(id, (err, user) => {
             if(err) throw err;
 
-            res.render('blog/edit-post', {
-               errors: errors,
-               page_title: 'Edit Post',
-               post_title: post_title,
-               post_description: post_description,
-               post_notes: post_notes,
-               user: user
+            Post.findById(req.params.id, (err, post) => {
+               if(err) throw err;
+
+               res.render('blog/edit-post', {
+                  error_msg: 'Uploaded File Must End With .jpg .jpeg .png .gif',
+                  page_title: 'Edit Post',
+                  post_title: post_title,
+                  post_description: post_description,
+                  post_notes: post_notes,
+                  is_draft: is_draft,
+                  user: user,
+                  post: true,
+                  post_error: true,
+                  hryznAdmin: true,
+                  editProject: true,
+                  blog: true
+               });
             });
          });
 
@@ -382,15 +394,23 @@ router.post('/edit-post/:id', upload.single('post_image'), (req, res, next) => {
                User.findById(id, (err, user) => {
                   if(err) throw err;
 
-                  res.render('blog/edit-post', {
-                     error_msg: 'Uploaded File Must End With .jpg .jpeg .png .gif',
-                     page_title: 'Edit Post',
-                     post_title: post_title,
-                     post_description: post_description,
-                     post_notes: post_notes,
-                     is_draft: is_draft,
-                     categories: post_categories,
-                     user: user
+                  Post.findById(req.params.id, (err, post) => {
+                     if(err) throw err;
+
+                     res.render('blog/edit-post', {
+                        error_msg: 'Uploaded File Must End With .jpg .jpeg .png .gif',
+                        page_title: 'Edit Post',
+                        post_title: post_title,
+                        post_description: post_description,
+                        post_notes: post_notes,
+                        is_draft: is_draft,
+                        user: user,
+                        post: true,
+                        post_error: true,
+                        hryznAdmin: true,
+                        editProject: true,
+                        blog: true
+                     });
                   });
                });
 
