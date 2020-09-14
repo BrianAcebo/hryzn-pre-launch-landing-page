@@ -129,7 +129,7 @@ router.post('/create-post', upload.single('post_image'), (req, res, next) => {
 
    if(req.isAuthenticated()) {
 
-      var post_title = req.body.post_title;
+      var post_title = req.body.post_title.replace(/\r\n/g,'');
       var post_description = req.body.post_description.replace(/\r\n/g,'');
       var admin = req.body.admin; // Owner of project
       var is_draft = req.body.is_private;
@@ -204,6 +204,7 @@ router.post('/create-post', upload.single('post_image'), (req, res, next) => {
                post_date = (post_date.getMonth() + 1) + "/" + post_date.getDate() + "/" + post_date.getFullYear();
 
                var post_slug = post_title.replace(/\s+/g, '-').toLowerCase();
+               post_slug = post_slug.replace("?", "");
 
                var newPost = new Post({
                   post_title: post_title,
@@ -256,7 +257,9 @@ router.post('/create-post', upload.single('post_image'), (req, res, next) => {
 // Get Post Detail
 router.get('/:title', (req, res, next) => {
 
-   Post.findOne({ 'post_slug': { $in: req.params.title} }, (err, post) => {
+   var slug = req.params.title.replace("?", "");
+
+   Post.findOne({ 'post_slug': { $in: slug} }, (err, post) => {
       if (err) throw err;
 
       if (post) {
@@ -275,8 +278,18 @@ router.get('/:title', (req, res, next) => {
             var reversed_posts = posts.reverse();
             var most_recent_posts = []
 
-            most_recent_posts.push(reversed_posts[0]);
-            most_recent_posts.push(reversed_posts[1]);
+            var break_count = 0;
+
+            for (let post of reversed_posts) {
+               if (break_count < 2) {
+                  if (!post.is_draft) {
+                     most_recent_posts.push(post);
+                     break_count += 1;
+                  }
+               } else {
+                  break;
+               }
+            }
 
             res.render('blog/post', {
                post: post,
@@ -288,6 +301,7 @@ router.get('/:title', (req, res, next) => {
          });
 
       } else {
+         console.log(req.params.title + '\n lol');
          res.redirect('/');
       }
    });
@@ -337,7 +351,7 @@ router.post('/edit-post/:id', upload.single('post_image'), (req, res, next) => {
 
    if(req.isAuthenticated()) {
 
-      var post_title = req.body.post_title;
+      var post_title = req.body.post_title.replace(/\r\n/g,'');
       var post_description = req.body.post_description.replace(/\r\n/g,'');
       var is_draft = req.body.is_private;
       var id = req.body.user_id;
@@ -345,6 +359,7 @@ router.post('/edit-post/:id', upload.single('post_image'), (req, res, next) => {
       var post_notes = req.body.post_notes.replace(/\r\n/g,'');
 
       var post_slug = post_title.replace(/\s+/g, '-').toLowerCase();
+      post_slug = post_slug.replace("?", "");
 
 
       // Form Validation
