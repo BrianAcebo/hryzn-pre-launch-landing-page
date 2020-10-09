@@ -53,7 +53,7 @@
                            <input type="hidden" name="username" value="{{user.username}}">
                            <input type="hidden" name="project_id" value="{{project.id}}">
                            <button class="project_action_btn" name="submit" type="submit">
-                              <a>{{#if enough_likes}}<span class="i_amounts">{{likes_amount}}</span>{{/if}}<i style="font-weight: bold" class="fa fa-heart"></i></a>
+                              <a><i style="font-weight: bold" class="fa fa-heart"></i></a>
                            </button>
                         </form>
 
@@ -64,7 +64,7 @@
                            <input type="hidden" name="project_id" value="{{project.id}}">
                            <input type="hidden" name="project_owner" value="{{project.project_owner}}">
                            <button class="project_action_btn" name="submit" type="submit">
-                              <a>{{#if enough_likes}}<span class="i_amounts">{{likes_amount}}</span>{{/if}}<i style="font-weight: bold" class="fa fa-heart-o"></i></a>
+                              <a><i style="font-weight: bold" class="fa fa-heart-o"></i></a>
                            </button>
                         </form>
 
@@ -73,13 +73,13 @@
                      {{else}}
 
                      <button class="project_action_btn" name="submit" type="submit">
-                        <a>{{#if enough_likes}}<span class="i_amounts">{{likes_amount}}</span>{{/if}}<i style="font-weight: bold" class="fa fa-heart-o"></i></a>
+                        <a><i style="font-weight: bold" class="fa fa-heart-o"></i></a>
                      </button>
 
                      {{/if}}
 
                      <button class="project_action_btn" name="submit" type="submit">
-                        <a {{#if user}}class="detailsRepostModalBtn"{{/if}}>{{#if enough_reposts}}<span class="i_amounts">{{repost_amount}}</span>{{/if}}<i class="fa fa-retweet"></i></a>
+                        <a {{#if user}}class="detailsRepostModalBtn"{{/if}}><i class="fa fa-retweet"></i></a>
                      </button>
 
 
@@ -92,7 +92,7 @@
                            <input type="hidden" name="username" value="{{user.username}}">
                            <input type="hidden" name="project_id" value="{{project.id}}">
                            <button class="project_action_btn" name="submit" type="submit">
-                              <a>{{#if enough_saves}}<span class="i_amounts">{{saves_amount}}</span>{{/if}}<i style="font-weight: bold" class="fa fa-bookmark"></i></a>
+                              <a><i style="font-weight: bold" class="fa fa-bookmark"></i></a>
                            </button>
                         </form>
 
@@ -103,7 +103,7 @@
                            <input type="hidden" name="project_id" value="{{project.id}}">
                            <input type="hidden" name="project_owner" value="{{project.project_owner}}">
                            <button class="project_action_btn" name="submit" type="submit">
-                              <a>{{#if enough_saves}}<span class="i_amounts">{{saves_amount}}</span>{{/if}}<i style="font-weight: bold" class="fa fa-bookmark-o"></i></a>
+                              <a><i style="font-weight: bold" class="fa fa-bookmark-o"></i></a>
                            </button>
                         </form>
 
@@ -112,7 +112,7 @@
                      {{else}}
 
                      <button class="project_action_btn" name="submit" type="submit">
-                        <a>{{#if enough_saves}}<span class="i_amounts">{{saves_amount}}</span>{{/if}}<i style="font-weight: bold" class="fa fa-bookmark-o"></i></a>
+                        <a><i style="font-weight: bold" class="fa fa-bookmark-o"></i></a>
                      </button>
 
                      {{/if}}

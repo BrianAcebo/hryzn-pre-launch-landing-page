@@ -40,9 +40,69 @@ const Notification = require('../models/notifications');
 const Group = require('../models/groups');
 
 // Get Welcome Landing Page
-router.get('/welcome', (req, res, next) => {
+router.get('/', (req, res, next) => {
    if(req.isAuthenticated()) {
-      res.redirect('/');
+
+      // Greeting was not working on iphone
+
+      // var now = new Date();
+      // var time = now.getHours();
+      //
+      // console.log(time);
+
+      // if (time >= 12 && time < 18) {
+      //    var greeting = 'Good afternoon';
+      // } else if (time >= 18 && time < 24) {
+      //    var greeting = 'Good evening';
+      // } else {
+      //    var greeting = 'Good morning';
+      // }
+
+      var greeting = 'Hello'
+
+      // User's Subscriptions Feed
+      if (req.user.following) {
+         User.find({ 'username': { $in: req.user.following } }, (err, profiles) => {
+            if (err) throw err;
+
+            var profile_project = [];
+
+            req.user.own_projects.forEach(function(proj, key) {
+               profile_project.push(proj);
+            });
+
+            req.user.reposted_projects.forEach(function(proj, key) {
+               profile_project.push(proj);
+            });
+
+
+            profiles.forEach(function(profile, key) {
+               profile.own_projects.forEach(function(proj, key) {
+                  profile_project.push(proj);
+               });
+               profile.reposted_projects.forEach(function(proj, key) {
+                  profile_project.push(proj);
+               });
+            });
+
+            Project.find({ '_id': { $in: profile_project } }, (err, projects) => {
+               if (err) throw err;
+
+               res.render('index', {
+                  page_title: 'Explore Projects',
+                  greeting: greeting,
+                  projects: projects.reverse(),
+                  profiles: profiles,
+                  explore_default: true,
+                  index_active: true,
+                  linear_feed: true
+               });
+            });
+         });
+      } else {
+         res.redirect('/explore');
+      }
+
    } else {
 
       var featured_projects = [
@@ -113,74 +173,6 @@ router.get('/creatives', (req, res, next) => {
         welcomePage: false
       });
 
-   }
-});
-
-// Get Index (User is logged in)
-router.get('/', (req, res, next) => {
-   if(req.isAuthenticated()) {
-
-      // Greeting was not working on iphone
-
-      // var now = new Date();
-      // var time = now.getHours();
-      //
-      // console.log(time);
-
-      // if (time >= 12 && time < 18) {
-      //    var greeting = 'Good afternoon';
-      // } else if (time >= 18 && time < 24) {
-      //    var greeting = 'Good evening';
-      // } else {
-      //    var greeting = 'Good morning';
-      // }
-
-      var greeting = 'Hello'
-
-      // User's Subscriptions Feed
-      if (req.user.following) {
-         User.find({ 'username': { $in: req.user.following } }, (err, profiles) => {
-            if (err) throw err;
-
-            var profile_project = [];
-
-            req.user.own_projects.forEach(function(proj, key) {
-               profile_project.push(proj);
-            });
-
-            req.user.reposted_projects.forEach(function(proj, key) {
-               profile_project.push(proj);
-            });
-
-
-            profiles.forEach(function(profile, key) {
-               profile.own_projects.forEach(function(proj, key) {
-                  profile_project.push(proj);
-               });
-               profile.reposted_projects.forEach(function(proj, key) {
-                  profile_project.push(proj);
-               });
-            });
-
-            Project.find({ '_id': { $in: profile_project } }, (err, projects) => {
-               if (err) throw err;
-
-               res.render('index', {
-                  page_title: 'Explore Projects',
-                  greeting: greeting,
-                  projects: projects.reverse(),
-                  profiles: profiles,
-                  explore_default: true,
-                  index_active: true,
-                  linear_feed: true
-               });
-            });
-         });
-      } else {
-         res.redirect('/explore');
-      }
-   } else {
-      res.redirect('/welcome');
    }
 });
 

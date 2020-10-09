@@ -228,51 +228,44 @@ router.post('/create-project/blog', upload.fields([{name: 'project_image', maxCo
 
             } else {
 
-               if(req.files.thumbnail_image) {
+               var allGood = false;
 
-                  var allGood = false;
+               if (req.files.project_video) {
 
-                  if (req.files.project_video) {
+                  // If user uploaded an image for project
+                  var ext = path.extname(req.files.project_video[0].originalname);
 
-                     // If user uploaded an image for project
-                     var ext = path.extname(req.files.project_video[0].originalname);
+                  // Check if file is audio
+                  if(ext !== '.mp4' && ext !== '.MP4' && ext !== '.webm' && ext !== '.WEBM' && ext !== '.ogg' && ext !== '.OGG') {
 
-                     // Check if file is audio
-                     if(ext !== '.mp4' && ext !== '.MP4' && ext !== '.webm' && ext !== '.WEBM' && ext !== '.ogg' && ext !== '.OGG') {
+                     User.findById(id, (err, user) => {
+                        if(err) throw err;
 
-                        User.findById(id, (err, user) => {
-                           if(err) throw err;
-
-                           User.find({ 'username': { $in: user.following} }, (err, profiles) => {
-                              if (err) throw err;
-                              res.render('p/create-project', {
-                                 error_msg: 'Video File Must End With .webm .mp4 .ogg',
-                                 page_title: 'Create Project',
-                                 project_title: project_title,
-                                 project_description: project_description,
-                                 project_notes: project_notes,
-                                 is_private: is_private,
-                                 project_url: project_url,
-                                 categories: project_categories,
-                                 project_notes: project_notes,
-                                 editProject: true,
-                                 project_error: true,
-                                 mention: profiles,
-                                 user: user
-                              });
+                        User.find({ 'username': { $in: user.following} }, (err, profiles) => {
+                           if (err) throw err;
+                           res.render('p/create-project', {
+                              error_msg: 'Video File Must End With .webm .mp4 .ogg',
+                              page_title: 'Create Project',
+                              project_title: project_title,
+                              project_description: project_description,
+                              project_notes: project_notes,
+                              is_private: is_private,
+                              project_url: project_url,
+                              categories: project_categories,
+                              project_notes: project_notes,
+                              editProject: true,
+                              project_error: true,
+                              mention: profiles,
+                              user: user
                            });
                         });
-
-                     } else {
-                        var allGood = true;
-                     }
+                     });
 
                   } else {
-
-                     if (req.files.project_image) {
+                     if (req.files.thumbnail_image) {
 
                         // If user uploaded an image for project
-                        var ext = path.extname(req.files.project_image[0].originalname);
+                        var ext = path.extname(req.files.thumbnail_image[0].originalname);
 
                         // Check if file is an image
                         if(ext !== '.png' && ext !== '.PNG' && ext !== '.jpg' && ext !== '.JPG' && ext !== '.gif' && ext !== '.GIF' && ext !== '.jpeg' && ext !== '.JPEG') {
@@ -283,7 +276,7 @@ router.post('/create-project/blog', upload.fields([{name: 'project_image', maxCo
                               User.find({ 'username': { $in: user.following} }, (err, profiles) => {
                                  if (err) throw err;
                                  res.render('p/create-project', {
-                                    error_msg: 'Project Image File Must End With .jpg .jpeg .png .gif',
+                                    error_msg: 'Thumbnail Image File Must End With .jpg .jpeg .png .gif',
                                     page_title: 'Create Project',
                                     project_title: project_title,
                                     project_description: project_description,
@@ -300,26 +293,18 @@ router.post('/create-project/blog', upload.fields([{name: 'project_image', maxCo
                               });
                            });
                         } else {
-                           var allGood = true;
+                           var good_thumbnail = true;
+                           allGood = true;
                         }
 
-                     }
-                  }
-
-                  if (allGood) {
-                     // If user uploaded an image for thumbnail
-                     var ext = path.extname(req.files.thumbnail_image[0].originalname);
-
-                     // Check if file is an image
-                     if(ext !== '.png' && ext !== '.PNG' && ext !== '.jpg' && ext !== '.JPG' && ext !== '.gif' && ext !== '.GIF' && ext !== '.jpeg' && ext !== '.JPEG') {
-
+                     } else {
                         User.findById(id, (err, user) => {
                            if(err) throw err;
 
                            User.find({ 'username': { $in: user.following} }, (err, profiles) => {
                               if (err) throw err;
                               res.render('p/create-project', {
-                                 error_msg: 'Thumbnail Image File Must End With .jpg .jpeg .png .gif',
+                                 error_msg: 'Please upload a thumbnail image to go with video',
                                  page_title: 'Create Project',
                                  project_title: project_title,
                                  project_description: project_description,
@@ -335,130 +320,219 @@ router.post('/create-project/blog', upload.fields([{name: 'project_image', maxCo
                               });
                            });
                         });
-
-                     } else {
-
-                        // No errors have been made
-                        // var fileExt = req.file.originalname.split('.').pop();
-                        if (req.files.project_video) {
-                           var project_image;
-                           var project_video = dateNow + req.files.project_video[0].originalname;
-                        } else {
-                           var project_video;
-                           var project_image = dateNow + req.files.project_image[0].originalname;
-                        }
-                        var thumbnail_image = dateNow + req.files.thumbnail_image[0].originalname;
-
-                        var newProject = new Project({
-                           project_title: project_title,
-                           project_description: project_description,
-                           is_private: is_private,
-                           project_image: project_image,
-                           thumbnail_image: thumbnail_image,
-                           project_video: project_video,
-                           project_url: project_url,
-                           admins: admin,
-                           categories: project_categories,
-                           project_owner: admin,
-                           project_owner_profile_image: req.user.profileimage,
-                           project_notes: project_notes,
-                           date_posted: current_date
-                        });
-
-                        // Create project in database
-                        Project.saveProject(newProject, (err, project) => {
-                           if(err) throw err;
-
-                           // Add project to User document
-                           info = [];
-                           info['profileUsername'] = req.user.username;
-                           info['projectId'] = project._id.toString();
-
-                           User.createToProfile(info, (err, user) => {
-                              if(err) throw err;
-                           });
-
-                           if (posted_to_group) {
-                              Group.findOne({ '_id': { $in: req.body.post_to } }, (err, group) => {
-
-                                 info['groupId'] = group._id;
-                                 info['groupName'] = group.group_name;
-                                 info['groupIsPrivate'] = group.is_private;
-
-                                 console.log(info['projectId']);
-
-                                 Group.addProject(info, (err, group) => {
-                                    if(err) throw err;
-                                 });
-
-                                 Project.addGroup(info, (err, project) => {
-                                    if(err) throw err;
-                                 });
-
-                                 // Send notification to the user mentioned
-                                 group.users.forEach(function(user, key) {
-                                    User.findOne({ 'username': { $in: user} }, (err, reciever) => {
-                                       if (err) throw err;
-
-                                       var newNotification = new Notification({
-                                          sender: req.user._id,
-                                          reciever: reciever._id,
-                                          type: '@' + req.user.username + ' added a post in the group ' + group.group_name,
-                                          link: '/groups/' + group._id,
-                                          date_sent: current_date
-                                       });
-
-                                       // Create notification in database
-                                       Notification.saveNotification(newNotification, (err, notification) => {
-                                          if(err) throw err;
-
-                                          // Add Notification for User
-                                          User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
-                                             if (err) throw err;
-                                          });
-                                       });
-                                    });
-                                 });
-
-                                 req.flash('success_msg', "Project was created.");
-                                 res.redirect('/groups/' + group._id);
-
-                              });
-
-                           } else {
-                              req.flash('success_msg', "Project was created.");
-                              res.redirect('/p/details/' + project._id);
-                           }
-                        });
-
                      }
                   }
 
                } else {
-                  // If user did not upload an image for project
-                  User.findById(id, (err, user) => {
-                     if(err) throw err;
 
-                     User.find({ 'username': { $in: user.following} }, (err, profiles) => {
-                        if (err) throw err;
-                        res.render('p/create-project', {
-                           error_msg: 'Please upload a thumbnail image for blog post',
-                           page_title: 'Create Project',
-                           project_title: project_title,
-                           project_description: project_description,
-                           project_notes: project_notes,
-                           is_private: is_private,
-                           project_video: project_video,
-                           project_url: project_url,
-                           categories: project_categories,
-                           project_notes: project_notes,
-                           editProject: true,
-                           project_error: true,
-                           mention: profiles,
-                           user: user
+                  if (req.files.project_image) {
+
+                     // If user uploaded an image for project
+                     var ext = path.extname(req.files.project_image[0].originalname);
+
+                     // Check if file is an image
+                     if(ext !== '.png' && ext !== '.PNG' && ext !== '.jpg' && ext !== '.JPG' && ext !== '.gif' && ext !== '.GIF' && ext !== '.jpeg' && ext !== '.JPEG') {
+
+                        User.findById(id, (err, user) => {
+                           if(err) throw err;
+
+                           User.find({ 'username': { $in: user.following} }, (err, profiles) => {
+                              if (err) throw err;
+                              res.render('p/create-project', {
+                                 error_msg: 'Project Image File Must End With .jpg .jpeg .png .gif',
+                                 page_title: 'Create Project',
+                                 project_title: project_title,
+                                 project_description: project_description,
+                                 project_notes: project_notes,
+                                 is_private: is_private,
+                                 project_url: project_url,
+                                 categories: project_categories,
+                                 project_notes: project_notes,
+                                 editProject: true,
+                                 project_error: true,
+                                 mention: profiles,
+                                 user: user
+                              });
+                           });
+                        });
+                     } else {
+
+                        if (req.files.thumbnail_image) {
+
+                           // If user uploaded an image for project
+                           var ext = path.extname(req.files.thumbnail_image[0].originalname);
+
+                           // Check if file is an image
+                           if(ext !== '.png' && ext !== '.PNG' && ext !== '.jpg' && ext !== '.JPG' && ext !== '.gif' && ext !== '.GIF' && ext !== '.jpeg' && ext !== '.JPEG') {
+
+                              User.findById(id, (err, user) => {
+                                 if(err) throw err;
+
+                                 User.find({ 'username': { $in: user.following} }, (err, profiles) => {
+                                    if (err) throw err;
+                                    res.render('p/create-project', {
+                                       error_msg: 'Thumbnail Image File Must End With .jpg .jpeg .png .gif',
+                                       page_title: 'Create Project',
+                                       project_title: project_title,
+                                       project_description: project_description,
+                                       project_notes: project_notes,
+                                       is_private: is_private,
+                                       project_url: project_url,
+                                       categories: project_categories,
+                                       project_notes: project_notes,
+                                       editProject: true,
+                                       project_error: true,
+                                       mention: profiles,
+                                       user: user
+                                    });
+                                 });
+                              });
+                           } else {
+                              var good_thumbnail = true;
+                              allGood = true;
+                           }
+
+                        } else {
+
+                           var no_thumbnail = true;
+                           allGood = true;
+
+                        }
+
+                     }
+
+                  } else {
+
+                     // If user did not upload an image for project
+                     User.findById(id, (err, user) => {
+                        if(err) throw err;
+
+                        User.find({ 'username': { $in: user.following} }, (err, profiles) => {
+                           if (err) throw err;
+                           res.render('p/create-project', {
+                              error_msg: 'Please upload a project image for blog post',
+                              page_title: 'Create Project',
+                              project_title: project_title,
+                              project_description: project_description,
+                              project_notes: project_notes,
+                              is_private: is_private,
+                              project_video: project_video,
+                              project_url: project_url,
+                              categories: project_categories,
+                              project_notes: project_notes,
+                              editProject: true,
+                              project_error: true,
+                              mention: profiles,
+                              user: user
+                           });
                         });
                      });
+
+                  }
+               }
+
+               if ((allGood && good_thumbnail) || (allGood && no_thumbnail)) {
+
+                  // No errors have been made
+                  // var fileExt = req.file.originalname.split('.').pop();
+                  if (req.files.project_video) {
+                     var project_image;
+                     var project_video = dateNow + req.files.project_video[0].originalname;
+                  } else {
+                     var project_video;
+                     var project_image = dateNow + req.files.project_image[0].originalname;
+                  }
+
+                  if (no_thumbnail) {
+                     var thumbnail_image = project_image;
+                  } else {
+                     var thumbnail_image = dateNow + req.files.thumbnail_image[0].originalname;
+                  }
+
+                  var newProject = new Project({
+                     project_title: project_title,
+                     project_description: project_description,
+                     is_private: is_private,
+                     project_image: project_image,
+                     thumbnail_image: thumbnail_image,
+                     project_video: project_video,
+                     project_url: project_url,
+                     admins: admin,
+                     categories: project_categories,
+                     project_owner: admin,
+                     project_owner_profile_image: req.user.profileimage,
+                     project_notes: project_notes,
+                     date_posted: current_date
                   });
+
+                  // Create project in database
+                  Project.saveProject(newProject, (err, project) => {
+                     if(err) throw err;
+
+                     // Add project to User document
+                     info = [];
+                     info['profileUsername'] = req.user.username;
+                     info['projectId'] = project._id.toString();
+
+                     User.createToProfile(info, (err, user) => {
+                        if(err) throw err;
+                     });
+
+                     if (posted_to_group) {
+                        Group.findOne({ '_id': { $in: req.body.post_to } }, (err, group) => {
+
+                           info['groupId'] = group._id;
+                           info['groupName'] = group.group_name;
+                           info['groupIsPrivate'] = group.is_private;
+
+                           console.log(info['projectId']);
+
+                           Group.addProject(info, (err, group) => {
+                              if(err) throw err;
+                           });
+
+                           Project.addGroup(info, (err, project) => {
+                              if(err) throw err;
+                           });
+
+                           // Send notification to the user mentioned
+                           group.users.forEach(function(user, key) {
+                              User.findOne({ 'username': { $in: user} }, (err, reciever) => {
+                                 if (err) throw err;
+
+                                 var newNotification = new Notification({
+                                    sender: req.user._id,
+                                    reciever: reciever._id,
+                                    type: '@' + req.user.username + ' added a post in the group ' + group.group_name,
+                                    link: '/groups/' + group._id,
+                                    date_sent: current_date
+                                 });
+
+                                 // Create notification in database
+                                 Notification.saveNotification(newNotification, (err, notification) => {
+                                    if(err) throw err;
+
+                                    // Add Notification for User
+                                    User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+                                       if (err) throw err;
+                                    });
+                                 });
+                              });
+                           });
+
+                           req.flash('success_msg', "Project was created.");
+                           res.redirect('/groups/' + group._id);
+
+                        });
+
+                     } else {
+                        req.flash('success_msg', "Project was created.");
+                        res.redirect('/p/details/' + project._id);
+                     }
+                  });
+
+               } else {
+                  console.log(' no')
                }
             }
          }
