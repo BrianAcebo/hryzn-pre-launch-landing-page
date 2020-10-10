@@ -202,10 +202,24 @@
          <label for="profile_project_backgroundImage" class="form__label">Change your project background image</label>
          <input id="profile_project_backgroundImage" class="form__input" type="file" name="profile_project_backgroundimage" value="{{user.profile_project_backgroundImage}}" />
 
+         <p>
+            Or
+         </p>
+
+         <div class="mini-spacer"></div>
+         <p>Select a project background color:</p>
+         <small style="font-style: italic;">Project Background:</small> <input name="profile_project_background_color" type="color" value="{{#if user.profile_project_background_color}}{{user.profile_project_background_color}}{{else}}#ffffff{{/if}}"/>
+
          {{#if user.profile_project_backgroundimage}}
          <div class="semi-spacer"></div>
          <input type="radio" name="remove_profile_project_bg" value="true">
-         <label for="remove_profile_project_bg">I'd like to remove having a project background image</label>
+         <label for="remove_profile_project_bg">I'd like to remove having a project background</label>
+         {{else}}
+         {{#if user.profile_project_background_color}}
+         <div class="semi-spacer"></div>
+         <input type="radio" name="remove_profile_project_bg" value="true">
+         <label for="remove_profile_project_bg">I'd like to remove having a project background</label>
+         {{/if}}
          {{/if}}
 
          <div class="semi-spacer"></div>

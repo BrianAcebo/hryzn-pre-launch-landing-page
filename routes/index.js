@@ -345,24 +345,20 @@ router.get('/groups/:id', (req, res, next) => {
             var userNotJoined = true;
          }
 
-         var allowed;
+         var allowed = false;
 
          if (group.is_private) {
             if(req.isAuthenticated()) {
                group.users.forEach(function(user, key) {
                   if (user === req.user.username) {
                      allowed = true;
-                  } else {
-                     // Hryzn Admin
-                     if (req.user.username === 'hryzn') {
-                        allowed = true;
-                     } else {
-                        allowed = false;
-                     }
                   }
                });
-            } else {
-               allowed = false;
+
+               // Hryzn Admin
+               if (req.user.username === 'hryzn') {
+                  allowed = true;
+               }
             }
          } else {
             allowed = true;
@@ -1764,6 +1760,14 @@ router.post('/settings', upload.fields([{name: 'profile_project_backgroundimage'
          var profile_secondary_font = req.body.profile_secondary_font;
       }
 
+      var profile_project_background_color;
+
+      if (typeof req.body.profile_project_background_color == 'undefined') {
+         profile_project_background_color = req.user.profile_project_background_color;
+      } else {
+         profile_project_background_color = req.body.profile_project_background_color;
+      }
+
       // Form Validation
       // req.checkBody('username', 'Please Enter A Username').notEmpty();
       // req.checkBody('username', 'Username Must Be Between 5-50 Characters').isLength({ min: 5, max:50 });
@@ -1965,10 +1969,16 @@ router.post('/settings', upload.fields([{name: 'profile_project_backgroundimage'
                         var profile_project_backgroundimage = dateNow + req.files.profile_project_backgroundimage[0].originalname;
                      }
                   } else {
-                     if (req.body.remove_profile_project_bg) {
+                     if (typeof req.body.remove_profile_project_bg != 'undefined') {
                         var profile_project_backgroundimage;
+                        var profile_project_background_color;
                      } else {
-                        var profile_project_backgroundimage = req.user.profile_project_backgroundimage;
+                        if (typeof req.body.profile_project_background_color == 'undefined') {
+                           profile_project_background_color = req.user.profile_project_background_color;
+                        } else {
+                           profile_project_background_color = req.body.profile_project_background_color;
+                           console.log(profile_project_background_color)
+                        }
                      }
                   }
 
@@ -1993,7 +2003,8 @@ router.post('/settings', upload.fields([{name: 'profile_project_backgroundimage'
                      profile_main_font_accent_color: profile_main_font_accent_color,
                      profile_btns_rounding: profile_btns_rounding,
                      profile_main_font: profile_main_font,
-                     profile_secondary_font: profile_secondary_font
+                     profile_secondary_font: profile_secondary_font,
+                     profile_project_background_color: profile_project_background_color
                   }, (err, user) => {
                      if (err) throw err;
                   });
@@ -2001,6 +2012,19 @@ router.post('/settings', upload.fields([{name: 'profile_project_backgroundimage'
                   res.redirect('/profile/' + req.user.username);
 
                } else {
+
+                  if (typeof req.body.remove_profile_project_bg != 'undefined') {
+                     var profile_project_backgroundimage;
+                     var profile_project_background_color;
+                  } else {
+                     if (typeof req.body.profile_project_background_color == 'undefined') {
+                        profile_project_background_color = req.user.profile_project_background_color;
+                     } else {
+                        profile_project_background_color = req.body.profile_project_background_color;
+                        console.log(profile_project_background_color)
+                     }
+                  }
+
 
                   // User didn't upload images
 
@@ -2022,7 +2046,9 @@ router.post('/settings', upload.fields([{name: 'profile_project_backgroundimage'
                      profile_main_font_accent_color: profile_main_font_accent_color,
                      profile_btns_rounding: profile_btns_rounding,
                      profile_main_font: profile_main_font,
-                     profile_secondary_font: profile_secondary_font
+                     profile_secondary_font: profile_secondary_font,
+                     profile_project_backgroundimage: profile_project_backgroundimage,
+                     profile_project_background_color: profile_project_background_color
                   }, (err, user) => {
                      if (err) throw err;
                   });

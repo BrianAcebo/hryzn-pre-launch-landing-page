@@ -596,7 +596,7 @@ $(document).ready(function() {
    });
 
    siteBody.on('click', function(e){
-      if( !$(e.target).is('.settings_content, .settings__header, .settings__underline, .profile__sidenav a, #settingsBtn, #settingsBtn .mobile-nav__icon') ) {
+      if( !$(e.target).is('.settings_content, .settings__header, .settings__underline, .profile__sidenav a, #settingsBtn, #settingsBtn .mobile-nav__icon, #profileSideNav, #profileSideNav p') ) {
          $sideNav.css({ "width": "0" });
       }
    });

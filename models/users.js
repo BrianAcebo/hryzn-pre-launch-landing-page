@@ -92,6 +92,9 @@ const UserSchema = mongoose.Schema({
    },
    profile_project_backgroundimage: {
       type: String
+   },
+   profile_project_background_color: {
+      type: String
    }
 });
 
