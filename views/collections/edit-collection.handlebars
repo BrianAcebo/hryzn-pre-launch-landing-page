@@ -1,6 +1,6 @@
 {{#if collection}}
 <h3 style="text-align: center;">Edit Collection</h3>
-<form method="post" class="edit-project-form" action="/edit-collection/{{collection._id}}">
+<form method="post" class="edit-project-form collection_form_modal" action="/edit-collection/{{collection._id}}">
    {{! Public or Private }}
    <div class="checkbox__wrapper">
       <label class="check__container">
@@ -89,6 +89,7 @@
                      {{#if project_title}}<p class="micro_title">{{project_title}}</p>{{/if}}
                      <p class="micro_body">{{{micro_body}}}</p>
                   </div>
+                  <a class="micro_tag {{#if project_title}}micro_tag_w_title{{/if}}">@{{project_owner}}</a>
                </div>
             </div>
             {{else}}

@@ -895,7 +895,7 @@
       {{#if projects}}
       {{! Collection Projects }}
       <label for="collection_categories" class="form__label" style="margin-top: 25px;">Add Projects <span style="color: #999; font-size: 10px; margin-left: 8px;">( Optional )</span></label>
-      <div class="collection_form_projects_container">
+      <div class="collection_form_projects_container create_collection_projects">
       {{#each projects}}
          <div class="collection_form_projects">
             <label class="checkbox-img" >
@@ -911,6 +911,7 @@
                         {{#if project_title}}<p class="micro_title">{{project_title}}</p>{{/if}}
                         <p class="micro_body">{{{micro_body}}}</p>
                      </div>
+                     <a class="micro_tag {{#if project_title}}micro_tag_w_title{{/if}}">@{{project_owner}}</a>
                   </div>
                </div>
                {{else}}
@@ -921,6 +922,7 @@
                         <div class="project_bottom_wrapper">
                            <div class="bg_overlay"></div>
                            <div class="project_bottom_details">
+                              <a><p class="project_owner">@{{project_owner}}</p></a>
                               <p class="project_card_title">{{project_title}}</p>
                            </div>
                         </div>

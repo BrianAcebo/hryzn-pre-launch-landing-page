@@ -148,6 +148,37 @@
    }
 }
 
+@media screen and (max-width: 595px) {
+
+   .modal-content.collection_form_modal {
+      padding: 0;
+   }
+
+   .collection_form_projects_container.create_collection_projects .micropost_card.card_is_micro_text {
+      border: 1px solid #ccc;
+   }
+
+   .collection_form_modal .follower__profiles-section {
+      flex-wrap: wrap;
+   }
+
+   .collection_form_modal .follower__profiles-section .checkbox-img {
+      width: 50%;
+   }
+
+   .collection_form_modal .follower__profiles-section .follower__profile {
+      margin: 8px;
+      font-size: 12px;
+      padding: 8px 10px;
+   }
+
+   .collection_form_modal .follower__profiles-section .follower__profile-img-container {
+      width: 35px;
+      height: 35px;
+      margin-right: 15px;
+   }
+}
+
 .collections_dropdown {
    cursor: pointer;
    -webkit-transform: rotateZ(0);

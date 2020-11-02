@@ -1697,7 +1697,6 @@ router.get('/profile/:username', (req, res, next) => {
 
                         if(good_project) {
                            all_public_projects.push(project);
-                           console.log('yeah');
                         }
 
                      });
