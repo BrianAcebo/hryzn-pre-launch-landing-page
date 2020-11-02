@@ -180,7 +180,8 @@
 
 .project_card_bottom .bg_overlay {
    opacity: 0.7;
-   border-radius: 15px;
+   border-bottom-left-radius: 15px;
+   border-bottom-right-radius: 15px;
 }
 
 .project_bottom_details {

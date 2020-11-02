@@ -554,6 +554,7 @@ blockquote {
   background: #f1f1f1;
   color: white;
   margin: 0 0 35px 0;
+  border-radius: 15px;
   display: inline-block;
   width: 100%;
   background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab );

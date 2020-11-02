@@ -148,10 +148,6 @@
    }
 }
 
-.collection_form_projects .micropost_card .micro_body {
-   border: 1px solid #ccc;
-}
-
 .collections_dropdown {
    cursor: pointer;
    -webkit-transform: rotateZ(0);

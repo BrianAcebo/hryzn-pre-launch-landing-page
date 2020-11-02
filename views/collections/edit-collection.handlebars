@@ -134,6 +134,7 @@
                      {{#if project_title}}<p class="micro_title">{{project_title}}</p>{{/if}}
                      <p class="micro_body">{{{micro_body}}}</p>
                   </div>
+                  <a class="micro_tag {{#if project_title}}micro_tag_w_title{{/if}}">@{{project_owner}}</a>
                </div>
             </div>
             {{else}}
@@ -144,6 +145,7 @@
                      <div class="project_bottom_wrapper">
                         <div class="bg_overlay"></div>
                         <div class="project_bottom_details">
+                           <a><p class="project_owner">@{{project_owner}}</p></a>
                            <p class="project_card_title">{{project_title}}</p>
                         </div>
                      </div>
