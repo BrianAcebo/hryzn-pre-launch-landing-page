@@ -38,6 +38,7 @@ const Project = require('../models/projects');
 const Message = require('../models/messages');
 const Notification = require('../models/notifications');
 const Group = require('../models/groups');
+const Collection = require('../models/collections');
 
 // Get Welcome Landing Page
 router.get('/', (req, res, next) => {
@@ -75,7 +76,6 @@ router.get('/', (req, res, next) => {
                profile_project.push(proj);
             });
 
-
             profiles.forEach(function(profile, key) {
                profile.own_projects.forEach(function(proj, key) {
                   profile_project.push(proj);
@@ -86,17 +86,63 @@ router.get('/', (req, res, next) => {
             });
 
             Project.find({ '_id': { $in: profile_project } }, (err, projects) => {
+
                if (err) throw err;
+
+               var all_public_projects = [];
+
+               projects.forEach(function(project, key) {
+
+                  // Scan through every project
+
+                  if(project.posted_to_collection) {
+                     if (project.posted_to_collection.length > 0) {
+
+                        // See if project has any collections
+
+                        project.posted_to_collection.forEach(function(project_collection, key) {
+
+                           if (project_collection.collection_is_private) {
+
+                              // If collection was private check to see if they're allowed to see it
+
+                              if (project_collection.followers.length > 0) {
+                                 project_collection.followers.forEach(function(follower, key) {
+                                    if (follower === req.user.username || project_collection.collection_owner === req.user.username) {
+                                       all_public_projects.push(project);
+                                    }
+                                 });
+                              } else {
+                                 if (project_collection.collection_owner === req.user.username) {
+                                    all_public_projects.push(project);
+                                 }
+                              }
+
+                           } else {
+                              // If collection was public mark that we scanned collection
+                              all_public_projects.push(project);
+                           }
+                        });
+                     } else {
+                        // No collections so we mark that we scanned project
+                        all_public_projects.push(project);
+                     }
+                  } else {
+                     // No collections so we mark that we scanned project
+                     all_public_projects.push(project);
+                  }
+               });
 
                res.render('index', {
                   page_title: 'Explore Projects',
                   greeting: greeting,
-                  projects: projects.reverse(),
+                  projects: all_public_projects.reverse(),
                   profiles: profiles,
                   explore_default: true,
                   index_active: true,
                   linear_feed: true
                });
+
             });
          });
       } else {
@@ -382,7 +428,54 @@ router.get('/groups/:id', (req, res, next) => {
             }
 
             Project.find({ '_id': { $in: group.projects} }, (err, projects) => {
+
                if (err) throw err;
+
+               var all_public_projects = [];
+
+               projects.forEach(function(project, key) {
+
+                  // Scan through every project
+
+                  if(project.posted_to_collection) {
+                     if (project.posted_to_collection.length > 0) {
+
+                        // See if project has any collections
+
+                        project.posted_to_collection.forEach(function(project_collection, key) {
+
+                           if (project_collection.collection_is_private) {
+
+                              // If collection was private check to see if they're allowed to see it
+
+                              if(req.isAuthenticated()) {
+                                 if (project_collection.followers.length > 0) {
+                                    project_collection.followers.forEach(function(follower, key) {
+                                       if (follower === req.user.username || project_collection.collection_owner === req.user.username) {
+                                          all_public_projects.push(project);
+                                       }
+                                    });
+                                 } else {
+                                    if (project_collection.collection_owner === req.user.username) {
+                                       all_public_projects.push(project);
+                                    }
+                                 }
+                              }
+
+                           } else {
+                              // If collection was public mark that we scanned collection
+                              all_public_projects.push(project);
+                           }
+                        });
+                     } else {
+                        // No collections so we mark that we scanned project
+                        all_public_projects.push(project);
+                     }
+                  } else {
+                     // No collections so we mark that we scanned project
+                     all_public_projects.push(project);
+                  }
+               });
 
                User.find({ 'username': { $in: group.users} }, (err, users) => {
                   if (err) throw err;
@@ -390,12 +483,13 @@ router.get('/groups/:id', (req, res, next) => {
                   res.render('groups/group-detail', {
                      page_title: group.group_name,
                      group: group,
-                     projects: projects,
+                     projects: all_public_projects.reverse(),
                      groupAdmin: groupAdmin,
                      users: users,
                      userNotJoined: userNotJoined
                   });
                });
+
             });
          } else {
             res.redirect('/groups');
@@ -1435,7 +1529,6 @@ router.get('/profile/:username', (req, res, next) => {
             var viewing_own_profile = false;
          }
 
-
          if(profile.followers) {
 
             var amount_of_followers = profile.followers.length;
@@ -1474,55 +1567,248 @@ router.get('/profile/:username', (req, res, next) => {
          }
 
 
-         Project.find({ '_id': { $in: profile.own_projects} }, (err, projects) => {
-            if (err) throw err;
+         if (profile.collections) {
 
-            var reversed_projects = projects.reverse();
-
-            var private_amount = [];
-            projects.forEach(function(project, index) {
-               if (project.is_private) {
-                  private_amount.push(project);
-               }
+            var collection_ids = [];
+            profile.collections.forEach(function(collection, key) {
+               collection_ids.push(collection.collection_id);
             });
 
-            amount_of_projects = amount_of_projects - private_amount.length;
-
-            Project.find({ '_id': { $in: profile.saved_projects} }, (err, saved_projects) => {
+            Collection.find({ '_id': { $in: collection_ids} }, (err, collections) => {
                if (err) throw err;
 
-               var reversed_saved_projects = saved_projects.reverse();
+               var collection_projects = [];
 
-               Project.find({ '_id': { $in: profile.reposted_projects} }, (err, reposted_projects) => {
+               var all_collections = [];
+
+               collections.forEach(function(collection, key) {
+
+                  if(req.isAuthenticated()) {
+
+                     if (collection.collection_owner === req.user.username) {
+
+                        // Owner is viewing collection
+                        Project.find({ '_id': { $in: collection.projects} }, (err, projects) => {
+                           if (err) throw err;
+
+                           var reversed_projects = projects.reverse();
+
+                           all_collections.push({
+                              "collection_name": collection.collection_name,
+                              "projects": reversed_projects,
+                              "collection_slug": collection.collection_slug,
+                              "id": collection._id,
+                              "is_private": collection.is_private
+                           });
+                        });
+                     } else if (collection.is_private) {
+
+                        // Must follow to see private collection
+                        collection.followers.forEach(function(follower, key) {
+                           if (follower === req.user.username) {
+                              Project.find({ '_id': { $in: collection.projects} }, (err, projects) => {
+                                 if (err) throw err;
+
+                                 var reversed_projects = projects.reverse();
+
+                                 all_collections.push({
+                                    "collection_name": collection.collection_name,
+                                    "projects": reversed_projects,
+                                    "collection_slug": collection.collection_slug,
+                                    "id": collection._id,
+                                    "is_private": collection.is_private
+                                 });
+                              });
+                           }
+                        });
+                     } else {
+
+                        // Collection is public to all
+                        Project.find({ '_id': { $in: collection.projects} }, (err, projects) => {
+                           if (err) throw err;
+
+                           var reversed_projects = projects.reverse();
+
+                           all_collections.push({
+                              "collection_name": collection.collection_name,
+                              "projects": reversed_projects,
+                              "collection_slug": collection.collection_slug,
+                              "id": collection._id,
+                              "is_private": collection.is_private
+                           });
+                        });
+                     }
+                  } else {
+                     if (!collection.is_private) {
+                        // Collection is public to all
+                        Project.find({ '_id': { $in: collection.projects} }, (err, projects) => {
+                           if (err) throw err;
+
+                           var reversed_projects = projects.reverse();
+
+                           all_collections.push({
+                              "collection_name": collection.collection_name,
+                              "projects": reversed_projects,
+                              "collection_slug": collection.collection_slug,
+                              "id": collection._id,
+                              "is_private": collection.is_private
+                           });
+                        });
+                     }
+                  }
+               });
+
+               Project.find({ '_id': { $in: profile.own_projects} }, (err, projects) => {
                   if (err) throw err;
 
-                  var reversed_reposted_projects = reposted_projects.reverse();
+                  var reversed_projects = projects.reverse();
 
-                  if (typeof profile.profile_theme == 'undefined') {
-                     var pageRender = 'profile-themes/default';
+                  all_public_projects = [];
+
+                  if (viewing_own_profile) {
+                     all_collections.push({
+                        "collection_name": 'All',
+                        "projects": reversed_projects,
+                        "collection_slug": 'all',
+                        "collection_all": true,
+                        "is_private": false
+                     });
                   } else {
-                     var pageRender = 'profile-themes/' + profile.profile_theme;
+                     var good_project;
+                     reversed_projects.forEach(function(project, key) {
+                        good_project = false;
+
+                        if(project.posted_to_collection) {
+
+                           if (project.posted_to_collection.length > 0) {
+                              project.posted_to_collection.forEach(function(project_collection, key) {
+                                 if (project_collection.collection_is_private) {
+                                    // do nothing
+                                 } else {
+                                    good_project = true;
+                                 }
+                              });
+                           } else {
+                              good_project = true;
+                           }
+                        } else {
+                           good_project = true;
+                        }
+
+                        if(good_project) {
+                           all_public_projects.push(project);
+                           console.log('yeah');
+                        }
+
+                     });
+
+                     all_collections.push({
+                        "collection_name": 'All',
+                        "projects": all_public_projects,
+                        "collection_slug": 'all',
+                        "collection_all": true,
+                        "is_private": false
+                     });
                   }
 
-                  res.render(pageRender, {
-                     page_title: profile.username,
-                     profile: profile,
-                     projects: reversed_projects,
-                     saved_projects: reversed_saved_projects,
-                     reposted_projects: reversed_reposted_projects,
-                     user_follows_profile: user_follows_profile,
-                     amount_of_followers: amount_of_followers,
-                     amount_of_following: amount_of_following,
-                     amount_of_projects: amount_of_projects,
-                     viewing_own_profile: viewing_own_profile,
-                     guestUser: guestUser,
-                     hryznAdmin: hryznAdmin,
-                     profile_active: true,
-                     profilePage: true
+                  Project.find({ '_id': { $in: profile.saved_projects} }, (err, saved_projects) => {
+                     if (err) throw err;
+
+                     var reversed_saved_projects = saved_projects.reverse();
+
+                     Project.find({ '_id': { $in: profile.reposted_projects} }, (err, reposted_projects) => {
+                        if (err) throw err;
+
+                        var reversed_reposted_projects = reposted_projects.reverse();
+
+                        User.find({ 'username': { $in: profile.followers} }, (err, followers) => {
+
+                           if (typeof profile.profile_theme == 'undefined') {
+                              var pageRender = 'profile-themes/default';
+                           } else {
+                              var pageRender = 'profile-themes/' + profile.profile_theme;
+                           }
+
+                           res.render(pageRender, {
+                              page_title: profile.username,
+                              profile: profile,
+                              projects: reversed_projects,
+                              collections: all_collections.reverse(),
+                              saved_projects: reversed_saved_projects,
+                              reposted_projects: reversed_reposted_projects,
+                              user_follows_profile: user_follows_profile,
+                              amount_of_followers: amount_of_followers,
+                              amount_of_following: amount_of_following,
+                              amount_of_projects: amount_of_projects,
+                              viewing_own_profile: viewing_own_profile,
+                              guestUser: guestUser,
+                              hryznAdmin: hryznAdmin,
+                              profile_active: true,
+                              profilePage: true,
+                              followers: followers
+                           });
+                        });
+
+                     });
+                  });
+
+               });
+
+            });
+
+         } else {
+
+            Project.find({ '_id': { $in: profile.own_projects} }, (err, projects) => {
+               if (err) throw err;
+
+               var reversed_projects = projects.reverse();
+
+               var private_amount = [];
+               projects.forEach(function(project, index) {
+                  if (project.is_private) {
+                     private_amount.push(project);
+                  }
+               });
+
+               amount_of_projects = amount_of_projects - private_amount.length;
+
+               Project.find({ '_id': { $in: profile.saved_projects} }, (err, saved_projects) => {
+                  if (err) throw err;
+
+                  var reversed_saved_projects = saved_projects.reverse();
+
+                  Project.find({ '_id': { $in: profile.reposted_projects} }, (err, reposted_projects) => {
+                     if (err) throw err;
+
+                     var reversed_reposted_projects = reposted_projects.reverse();
+
+                     if (typeof profile.profile_theme == 'undefined') {
+                        var pageRender = 'profile-themes/default';
+                     } else {
+                        var pageRender = 'profile-themes/' + profile.profile_theme;
+                     }
+
+                     res.render(pageRender, {
+                        page_title: profile.username,
+                        profile: profile,
+                        projects: reversed_projects,
+                        saved_projects: reversed_saved_projects,
+                        reposted_projects: reversed_reposted_projects,
+                        user_follows_profile: user_follows_profile,
+                        amount_of_followers: amount_of_followers,
+                        amount_of_following: amount_of_following,
+                        amount_of_projects: amount_of_projects,
+                        viewing_own_profile: viewing_own_profile,
+                        guestUser: guestUser,
+                        hryznAdmin: hryznAdmin,
+                        profile_active: true,
+                        profilePage: true,
+                        noCollections: noCollections
+                     });
                   });
                });
             });
-         });
+         }
 
       } else {
          res.redirect('/');
@@ -2189,12 +2475,59 @@ router.post('/delete/:id', (req, res, next) => {
 // Get Explore
 router.get('/explore', (req, res, next) => {
    Project.find({}, (err, projects) => {
+
       if (err) throw err;
+
+      var all_public_projects = [];
+
+      projects.forEach(function(project, key) {
+
+         // Scan through every project
+
+         if(project.posted_to_collection) {
+            if (project.posted_to_collection.length > 0) {
+
+               // See if project has any collections
+
+               project.posted_to_collection.forEach(function(project_collection, key) {
+
+                  if (project_collection.collection_is_private) {
+
+                     // If collection was private check to see if they're allowed to see it
+
+                     if(req.isAuthenticated()) {
+                        if (project_collection.followers.length > 0) {
+                           project_collection.followers.forEach(function(follower, key) {
+                              if (follower === req.user.username || project_collection.collection_owner === req.user.username) {
+                                 all_public_projects.push(project);
+                              }
+                           });
+                        } else {
+                           if (project_collection.collection_owner === req.user.username) {
+                              all_public_projects.push(project);
+                           }
+                        }
+                     }
+
+                  } else {
+                     // If collection was public mark that we scanned collection
+                     all_public_projects.push(project);
+                  }
+               });
+            } else {
+               // No collections so we mark that we scanned project
+               all_public_projects.push(project);
+            }
+         } else {
+            // No collections so we mark that we scanned project
+            all_public_projects.push(project);
+         }
+      });
 
       Group.find({}, (err, groups) => {
          res.render('explore', {
             page_title: 'Explore Projects',
-            projects: projects.reverse(),
+            projects: all_public_projects.reverse(),
             groups: groups.reverse(),
             explore_default: true,
             explore_active: true
@@ -2263,6 +2596,509 @@ router.get('/sitemap', (req, res, next) => {
       sitemap: true
    });
 });
+
+// Onboarding Survey
+router.post('/onboarding_survey', (req, res, next) => {
+   if(req.isAuthenticated()) {
+
+      var interests = []
+
+      if (typeof req.body.art != 'undefined') {
+         interests.push('Art');
+      }
+
+      if (typeof req.body.beauty_fashion != 'undefined') {
+         interests.push('Beauty & Fashion');
+      }
+
+      if (typeof req.body.business != 'undefined') {
+         interests.push('Business');
+      }
+
+      if (typeof req.body.family_society != 'undefined') {
+         interests.push('Family & Society');
+      }
+
+      if (typeof req.body.food_drink != 'undefined') {
+         interests.push('Food & Drink');
+      }
+
+      if (typeof req.body.health_wellness != 'undefined') {
+         interests.push('Health & Wellness');
+      }
+
+      if (typeof req.body.home_garden != 'undefined') {
+         interests.push('Home & Garden');
+      }
+
+      if (typeof req.body.science_technology != 'undefined') {
+         interests.push('Science & Technology');
+      }
+
+      if (typeof req.body.sports_fitness != 'undefined') {
+         interests.push('Sports & Fitness');
+      }
+
+      if (typeof req.body.travel != 'undefined') {
+         interests.push('Travel');
+      }
+
+      console.log(interests);
+
+      User.findByIdAndUpdate(req.user._id, {
+         interests: interests,
+         completed_interest_onboarding: true
+      }, (err, user) => {
+         if (err) throw err;
+
+         res.redirect('/');
+      });
+
+   } else {
+      res.redirect('/users/register');
+   }
+});
+
+
+// Get Edit Collection
+router.get('/collection/edit/:id', (req, res, next) => {
+   if(req.isAuthenticated()) {
+
+      Collection.findOne({ '_id': { $in: req.params.id} }, (err, collection) => {
+
+         if (err) throw err;
+
+         if (collection.collection_owner === req.user.username) {
+
+            Project.find({ '_id': { $in: collection.projects} }, (err, projects) => {
+
+               if (err) throw err;
+
+               User.find({ '_id': { $in: collection.followers} }, (err, followers) => {
+
+                  if (err) throw err;
+
+                  User.findOne({ 'username': { $in: req.user.username} }, (err, profile) => {
+
+                     if (err) throw err;
+
+                     var projects_not_in_collection = [];
+
+                     profile.own_projects.forEach(function(profile_project, key) {
+                        if (collection.projects) {
+                           if (collection.projects.indexOf(profile_project) == -1) {
+                              projects_not_in_collection.push(profile_project);
+                           } else {
+                           }
+                        } else {
+                           projects_not_in_collection.push(profile_project);
+                        }
+                     });
+
+                     Project.find({ '_id': { $in: projects_not_in_collection} }, (err, profile_projects) => {
+
+                        if (err) throw err;
+
+                        User.find({ 'username': { $in: profile.followers} }, (err, profile_followers) => {
+
+                           if (err) throw err;
+
+                           var not_following_collection = [];
+
+                           profile_followers.forEach(function(profile_follower, key) {
+                              if (collection.followers) {
+                                 if (collection.followers.indexOf(profile_follower._id) == -1) {
+                                    not_following_collection.push(profile_follower);
+                                 }
+                              } else {
+                                 not_following_collection.push(profile_follower);
+                              }
+                           });
+
+                           res.render('collections/edit-collection', {
+                              page_title: 'Edit ' + collection.collection_name,
+                              collection: collection,
+                              collection_projects: projects.reverse(),
+                              profile_projects: profile_projects.reverse(),
+                              collection_followers: followers,
+                              profile_followers: not_following_collection
+                           });
+
+                        });
+                     });
+                  });
+
+               });
+
+            });
+
+         } else {
+            res.redirect('/');
+         }
+
+      });
+
+   } else {
+      res.redirect('/users/register');
+   }
+});
+
+// POST Edit Collection
+router.post('/edit-collection/:id', (req, res, next) => {
+
+   if(req.isAuthenticated()) {
+
+      var id = req.body.id;
+      var user = req.body.user;
+      var collection_name = req.body.collection_name.replace(/\r\n/g,'');
+      var is_private = req.body.is_private;
+      var add_followers = req.body.add_followers;
+      var add_projects = req.body.add_projects;
+      var remove_followers = req.body.remove_followers;
+      var remove_projects = req.body.remove_projects;
+
+      var collection_slug = collection_name.replace(/\s+/g, '-').toLowerCase();
+      collection_slug = collection_slug.replace(/[^a-z]/gi,''); // letters
+
+      Collection.findOne({ '_id': { $in: req.params.id} }, (err, collection) => {
+
+         if (err) throw err;
+
+         if (req.body.collection_categories) {
+            var collection_categories = req.body.collection_categories;
+         } else {
+            var collection_categories = collection.collection_categories;
+         }
+
+         if (collection.projects) {
+            var project_list = collection.projects;
+         } else {
+            var project_list = []
+         }
+
+         if (remove_projects) {
+            remove_projects.forEach(function(project_id, key) {
+               var info = [];
+               info['projectId'] = project_id;
+               info['collectionId'] = req.params.id;
+
+               Project.removeCollection(info, (err, project) => {
+                  if(err) throw err;
+               });
+
+               Collection.removeProject(info, (err, collection) => {
+                  if(err) throw err;
+               });
+            });
+
+            project_list = project_list.filter(function(x) {
+              return remove_projects.indexOf(x) < 0;
+            });
+         }
+
+         if (add_projects) {
+            add_projects.forEach(function(project_id, key) {
+               project_list.push(project_id);
+            });
+         }
+
+
+         if (collection.followers) {
+            var follower_list = collection.followers;
+         } else {
+            var follower_list = []
+         }
+
+         if (remove_followers) {
+            follower_list = follower_list.filter(function(x) {
+              return remove_followers.indexOf(x) < 0;
+            });
+         }
+
+         if (add_followers) {
+            add_followers.forEach(function(follower_id, key) {
+               follower_list.push(follower_id);
+            });
+         }
+
+
+         var info = [];
+         info['collectionId'] = req.params.id;
+         info['collectionName'] = collection_name;
+         info['collectionIsPrivate'] = is_private;
+         info['collectionFollowers'] = follower_list;
+         info['collectionOwner'] = req.user.username;
+
+         if (collection.projects) {
+            collection.projects.forEach(function(project, key) {
+               Project.findOne({ '_id': { $in: project} }, (err, project) => {
+                  if (project) {
+                     info['projectId'] = project._id.toString();
+                     Project.updateCollection(info, (err, project) => {
+                        if(err) throw err;
+                     });
+                  }
+               });
+            });
+         }
+
+         User.findOne({ 'username': { $in: req.user.username} }, (err, user) => {
+            if (user) {
+               info['userId'] = user._id.toString();
+               User.updateCollection(info, (err, user) => {
+                  if(err) throw err;
+                  console.log(user);
+               });
+            }
+         });
+
+         Collection.findByIdAndUpdate(req.params.id, {
+            collection_name: collection_name,
+            is_private: is_private,
+            followers: follower_list,
+            projects: project_list,
+            collection_slug: collection_slug,
+            collection_categories: collection_categories
+         }, (err, user) => {
+            if (err) throw err;
+         });
+
+         req.flash('success_msg', "Collection was updated.");
+         res.redirect('/profile/' + req.user.username);
+
+      });
+
+   } else {
+      res.redirect('/users/register');
+   }
+});
+
+
+// POST Create Collection
+router.post('/create-collection', (req, res, next) => {
+
+   if(req.isAuthenticated()) {
+
+      var id = req.body.id;
+      var user = req.body.user;
+      var collection_name = req.body.the_collection_name.replace(/\r\n/g,'');
+      var is_private = req.body.is_private;
+      var collection_owner = req.user.username;
+      var followers = req.body.collection_followers;
+      var collection_projects = req.body.collection_projects;
+
+      if (followers) {
+         is_private = true;
+      }
+
+      var collection_slug = collection_name.replace(/\s+/g, '-').toLowerCase();
+      collection_slug = collection_slug.replace(/[^a-z]/gi,''); // letters
+
+      if (req.body.collection_categories) {
+         var collection_categories = req.body.collection_categories;
+      } else {
+         var collection_categories = [];
+      }
+
+      var newCollection = new Collection({
+         followers: followers,
+         collection_name: collection_name,
+         is_private: is_private,
+         collection_owner: collection_owner,
+         collection_categories: collection_categories,
+         projects: collection_projects,
+         collection_slug: collection_slug
+      });
+
+      // Create collection in database
+      Collection.saveCollection(newCollection, (err, collection) => {
+         if(err) throw err;
+
+         // Add collection to User document
+         info = [];
+         info['profileUsername'] = req.user.username;
+         info['collectionId'] = collection._id.toString();
+         info['collectionName'] = collection.collection_name.toString();
+         info['collectionIsPrivate'] = collection.is_private;
+         info['collectionFollowers'] = followers;
+         info['collectionOwner'] = req.user.username;
+
+         User.addCollection(info, (err, user) => {
+            if(err) throw err;
+         });
+
+         collection.projects.forEach(function(project_id, key) {
+            info['projectId'] = project_id;
+
+            Project.addCollection(info, (err, project) => {
+               if(err) throw err;
+            });
+         });
+
+         req.flash('success_msg', "Collection was created.");
+         res.redirect('/profile/' + req.user.username);
+      });
+
+   } else {
+      res.redirect('/users/register');
+   }
+});
+
+
+// Delete Collection
+router.get('/collection/delete/:id/:deleteAll', (req, res, next) => {
+   if(req.isAuthenticated()) {
+
+      if (req.params.deleteAll === 'true') {
+         var deleteProjects = true;
+      } else  {
+         var deleteProjects = false;
+      }
+
+      var info = [];
+
+      Collection.findById(req.params.id, (err, collection) => {
+         if(err) throw err;
+
+         if (collection.collection_owner === req.user.username || req.user.username === 'hryzn') {
+
+            if (collection.is_private && deleteProjects) {
+
+               // Delete Everything
+
+               if(collection.projects.length) {
+
+                  collection.projects.forEach(function(proj, key) {
+                     // Find project to delete
+                     Project.findById(proj, (err, project) => {
+                        if(err) throw err;
+
+                        // If project has saves
+                        if(project.saves.length) {
+
+                           for (var i = 0, len = project.saves.length; i < len; i++) {
+                              info['profileUsername'] = project.saves[i];
+                              info['projectId'] = project._id;
+
+                              User.unsaveToProfile(info, (err, user) => {
+                                 if(err) throw err;
+                              });
+                           }
+
+                        }
+
+                        // If project has admins
+                        if(project.project_owner.length) {
+                           info['profileUsername'] = project.project_owner;
+                           info['projectId'] = project._id;
+
+                           console.log(info['projectId']);
+
+                           User.deleteFromProfile(info, (err, user) => {
+                              if(err) throw err;
+
+                              console.log(user);
+                           });
+                        }
+
+                        // If project has reposts
+                        if(project.reposts.length) {
+                           for (var i = 0, len = project.reposts.length; i < len; i++) {
+                              info['profileUsername'] = project.reposts[i];
+                              info['projectId'] = project._id;
+
+                              User.unrepostProject(info, (err, user) => {
+                                 if(err) throw err;
+                              });
+                           }
+                        }
+
+                        // Delete project image
+                        var s3_instance = new aws.S3();
+                        var s3_params = {
+                           Bucket: 'hryzn-app-static-assets',
+                           Key: project.project_image
+                        };
+                        s3_instance.deleteObject(s3_params, (err, data) => {
+                           if(data) {
+                              console.log("File deleted");
+                           }
+                           else {
+                              console.log("No delete : " + err);
+                           }
+                        });
+
+                        // Delete the project
+                        Project.findByIdAndRemove(project._id, (err) => {
+                          if (err) throw err;
+                        });
+
+                     });
+                  });
+
+               }
+
+               // Delete from owner
+               info['profileUsername'] = req.user.username;
+               info['collectionId'] = req.params.id;
+
+               User.removeCollection(info, (err, user) => {
+                  if(err) throw err;
+               });
+
+               // Delete the collection
+               Collection.findByIdAndRemove(req.params.id, (err) => {
+                 if (err) throw err;
+                 req.flash('success_msg', "Destroyed From Existence...");
+                 res.redirect('/profile/' + req.user.username);
+               });
+
+            } else {
+
+               // Keep Projects
+
+               if(collection.projects.length) {
+
+                  collection.projects.forEach(function(proj, key) {
+                     var info = [];
+                     info['projectId'] = proj;
+                     info['collectionId'] = req.params.id;
+
+                     Project.removeCollection(info, (err, project) => {
+                        if(err) throw err;
+                     });
+
+                  });
+
+               }
+
+               // Delete from owner
+               info['profileUsername'] = req.user.username;
+               info['collectionId'] = req.params.id;
+
+               User.removeCollection(info, (err, user) => {
+                  if(err) throw err;
+               });
+
+               // Delete the Collection
+               Collection.findByIdAndRemove(req.params.id, (err) => {
+                 if (err) throw err;
+                 req.flash('success_msg', "Destroyed From Existence...");
+                 res.redirect('/profile/' + req.user.username);
+               });
+
+            }
+
+         } else {
+            res.redirect('/profile/' + req.user.username);
+         }
+      });
+   } else {
+      res.redirect('/users/register');
+   }
+});
+
+
 
 // Verify JS Web Token
 function verifyToken(req, res, next) {

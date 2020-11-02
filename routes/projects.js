@@ -38,6 +38,7 @@ const User = require('../models/users');
 const Project = require('../models/projects');
 const Notification = require('../models/notifications');
 const Group = require('../models/groups');
+const Collection = require('../models/collections');
 
 
 // GET Create Project
@@ -86,23 +87,6 @@ router.post('/create-project/blog', upload.fields([{name: 'project_image', maxCo
                is_private = false;
             } else {
                is_private = true;
-            }
-
-            var posted_to_group;
-            if (req.body.post_to != '') {
-               if (req.body.post_to != 'Followers') {
-                  Group.findOne({ '_id': { $in: req.body.post_to } }, (err, group) => {
-                     if (group) {
-                        posted_to_group = true;
-                     } else {
-                        posted_to_group = false;
-                     }
-                  });
-               } else {
-                  posted_to_group = false;
-               }
-            } else {
-               posted_to_group = false;
             }
 
             if (req.body.project_categories) {
@@ -478,53 +462,80 @@ router.post('/create-project/blog', upload.fields([{name: 'project_image', maxCo
                         if(err) throw err;
                      });
 
-                     if (posted_to_group) {
-                        Group.findOne({ '_id': { $in: req.body.post_to } }, (err, group) => {
+                     if (req.body.post_to != '') {
+                        if (req.body.post_to != 'followers') {
 
-                           info['groupId'] = group._id;
-                           info['groupName'] = group.group_name;
-                           info['groupIsPrivate'] = group.is_private;
+                           Group.findOne({ '_id': { $in: req.body.post_to } }, (err, group) => {
 
-                           console.log(info['projectId']);
+                              if (group) {
+                                 info['groupId'] = group._id;
+                                 info['groupName'] = group.group_name;
+                                 info['groupIsPrivate'] = group.is_private;
 
-                           Group.addProject(info, (err, group) => {
-                              if(err) throw err;
-                           });
+                                 console.log(info['projectId']);
+                                 console.log(info);
 
-                           Project.addGroup(info, (err, project) => {
-                              if(err) throw err;
-                           });
-
-                           // Send notification to the user mentioned
-                           group.users.forEach(function(user, key) {
-                              User.findOne({ 'username': { $in: user} }, (err, reciever) => {
-                                 if (err) throw err;
-
-                                 var newNotification = new Notification({
-                                    sender: req.user._id,
-                                    reciever: reciever._id,
-                                    type: '@' + req.user.username + ' added a post in the group ' + group.group_name,
-                                    link: '/groups/' + group._id,
-                                    date_sent: current_date
+                                 Group.addProject(info, (err, group) => {
+                                    if(err) throw err;
                                  });
 
-                                 // Create notification in database
-                                 Notification.saveNotification(newNotification, (err, notification) => {
+                                 Project.addGroup(info, (err, project) => {
                                     if(err) throw err;
+                                 });
 
-                                    // Add Notification for User
-                                    User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+                                 // Send notification to the user mentioned
+                                 group.users.forEach(function(user, key) {
+                                    User.findOne({ 'username': { $in: user} }, (err, reciever) => {
                                        if (err) throw err;
+
+                                       var newNotification = new Notification({
+                                          sender: req.user._id,
+                                          reciever: reciever._id,
+                                          type: '@' + req.user.username + ' added a post in the group ' + group.group_name,
+                                          link: '/groups/' + group._id,
+                                          date_sent: current_date
+                                       });
+
+                                       // Create notification in database
+                                       Notification.saveNotification(newNotification, (err, notification) => {
+                                          if(err) throw err;
+
+                                          // Add Notification for User
+                                          User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+                                             if (err) throw err;
+                                          });
+                                       });
                                     });
                                  });
-                              });
+
+                                 req.flash('success_msg', "Micropost was created.");
+                                 res.redirect('/groups/' + group._id);
+                              } else {
+                                 Collection.findOne({ '_id': { $in: req.body.post_to } }, (err, collection) => {
+
+                                    info['collectionId'] = collection._id;
+                                    info['collectionName'] = collection.group_name;
+                                    info['collectionIsPrivate'] = collection.is_private;
+
+                                    Collection.addProject(info, (err, collection) => {
+                                       if(err) throw err;
+                                    });
+
+                                    Project.addCollection(info, (err, project) => {
+                                       if(err) throw err;
+                                    });
+
+                                    req.flash('success_msg', "Project was created.");
+                                    res.redirect('/p/details/' + project._id);
+
+                                 });
+                              }
+
                            });
-
+                        } else {
                            req.flash('success_msg', "Project was created.");
-                           res.redirect('/groups/' + group._id);
-
-                        });
-
+                           res.redirect('/p/details/' + project._id);
+                        }
                      } else {
                         req.flash('success_msg', "Project was created.");
                         res.redirect('/p/details/' + project._id);
@@ -616,11 +627,6 @@ router.post('/details/edit/:id', upload.fields([{name: 'project_image', maxCount
          is_private = true;
       }
 
-      if (req.body.post_to != 'Followers') {
-         var posted_to_group = true;
-      } else {
-         var posted_to_group = false;
-      }
 
       // See if project_url has https://
       var has_https = project_url.search("https://");
@@ -1149,7 +1155,53 @@ router.get('/details/:id', (req, res, next) => {
                   Project.find({$text: { $search: search_notes }}, {score: { $meta: "textScore" }}, (err, related_projects) => {
                      if (err) throw err;
 
-                     var reverse_projects = related_projects.slice(0,14).reverse();
+                     var all_public_projects = [];
+
+                     related_projects.forEach(function(project, key) {
+
+                        // Scan through every project
+
+                        if(project.posted_to_collection) {
+                           if (project.posted_to_collection.length > 0) {
+
+                              // See if project has any collections
+
+                              project.posted_to_collection.forEach(function(project_collection, key) {
+
+                                 if (project_collection.collection_is_private) {
+
+                                    // If collection was private check to see if they're allowed to see it
+
+                                    if(req.isAuthenticated()) {
+                                       if (project_collection.followers.length > 0) {
+                                          project_collection.followers.forEach(function(follower, key) {
+                                             if (follower === req.user.username || project_collection.collection_owner === req.user.username) {
+                                                all_public_projects.push(project);
+                                             }
+                                          });
+                                       } else {
+                                          if (project_collection.collection_owner === req.user.username) {
+                                             all_public_projects.push(project);
+                                          }
+                                       }
+                                    }
+
+                                 } else {
+                                    // If collection was public mark that we scanned collection
+                                    all_public_projects.push(project);
+                                 }
+                              });
+                           } else {
+                              // No collections so we mark that we scanned project
+                              all_public_projects.push(project);
+                           }
+                        } else {
+                           // No collections so we mark that we scanned project
+                           all_public_projects.push(project);
+                        }
+                     });
+
+                     var reverse_projects = all_public_projects.slice(0,14).reverse();
 
                      if (related_projects.length > 4) {
 
@@ -1177,9 +1229,53 @@ router.get('/details/:id', (req, res, next) => {
                            Project.find({ 'categories': { $in: project.categories} }, (err, related_projects) => {
                               if (err) throw err;
 
-                              console.log('yeah');
+                              var all_public_projects = [];
 
-                              var reverse_projects = related_projects.slice(0,14).reverse();
+                              related_projects.forEach(function(project, key) {
+
+                                 // Scan through every project
+
+                                 if(project.posted_to_collection) {
+                                    if (project.posted_to_collection.length > 0) {
+
+                                       // See if project has any collections
+
+                                       project.posted_to_collection.forEach(function(project_collection, key) {
+
+                                          if (project_collection.collection_is_private) {
+
+                                             // If collection was private check to see if they're allowed to see it
+
+                                             if(req.isAuthenticated()) {
+                                                if (project_collection.followers.length > 0) {
+                                                   project_collection.followers.forEach(function(follower, key) {
+                                                      if (follower === req.user.username || project_collection.collection_owner === req.user.username) {
+                                                         all_public_projects.push(project);
+                                                      }
+                                                   });
+                                                } else {
+                                                   if (project_collection.collection_owner === req.user.username) {
+                                                      all_public_projects.push(project);
+                                                   }
+                                                }
+                                             }
+
+                                          } else {
+                                             // If collection was public mark that we scanned collection
+                                             all_public_projects.push(project);
+                                          }
+                                       });
+                                    } else {
+                                       // No collections so we mark that we scanned project
+                                       all_public_projects.push(project);
+                                    }
+                                 } else {
+                                    // No collections so we mark that we scanned project
+                                    all_public_projects.push(project);
+                                 }
+                              });
+
+                              var reverse_projects = all_public_projects.slice(0,14).reverse();
 
                               res.render('p/details/details', {
                                  project: project,
@@ -1205,7 +1301,53 @@ router.get('/details/:id', (req, res, next) => {
                            Project.find({}, (err, related_projects) => {
                               if (err) throw err;
 
-                              var reverse_projects = related_projects.slice(0,14).reverse();
+                              var all_public_projects = [];
+
+                              related_projects.forEach(function(project, key) {
+
+                                 // Scan through every project
+
+                                 if(project.posted_to_collection) {
+                                    if (project.posted_to_collection.length > 0) {
+
+                                       // See if project has any collections
+
+                                       project.posted_to_collection.forEach(function(project_collection, key) {
+
+                                          if (project_collection.collection_is_private) {
+
+                                             // If collection was private check to see if they're allowed to see it
+
+                                             if(req.isAuthenticated()) {
+                                                if (project_collection.followers.length > 0) {
+                                                   project_collection.followers.forEach(function(follower, key) {
+                                                      if (follower === req.user.username || project_collection.collection_owner === req.user.username) {
+                                                         all_public_projects.push(project);
+                                                      }
+                                                   });
+                                                } else {
+                                                   if (project_collection.collection_owner === req.user.username) {
+                                                      all_public_projects.push(project);
+                                                   }
+                                                }
+                                             }
+
+                                          } else {
+                                             // If collection was public mark that we scanned collection
+                                             all_public_projects.push(project);
+                                          }
+                                       });
+                                    } else {
+                                       // No collections so we mark that we scanned project
+                                       all_public_projects.push(project);
+                                    }
+                                 } else {
+                                    // No collections so we mark that we scanned project
+                                    all_public_projects.push(project);
+                                 }
+                              });
+
+                              var reverse_projects = all_public_projects.slice(0,14).reverse();
 
                               res.render('p/details/details', {
                                  project: project,
@@ -1319,7 +1461,53 @@ router.get('/details/:id/guest', (req, res, next) => {
                   Project.find({ 'categories': { $in: project.categories} }, (err, related_projects) => {
                      if (err) throw err;
 
-                     var reverse_projects = related_projects.slice(0,14).reverse();
+                     var all_public_projects = [];
+
+                     related_projects.forEach(function(project, key) {
+
+                        // Scan through every project
+
+                        if(project.posted_to_collection) {
+                           if (project.posted_to_collection.length > 0) {
+
+                              // See if project has any collections
+
+                              project.posted_to_collection.forEach(function(project_collection, key) {
+
+                                 if (project_collection.collection_is_private) {
+
+                                    // If collection was private check to see if they're allowed to see it
+
+                                    if(req.isAuthenticated()) {
+                                       if (project_collection.followers.length > 0) {
+                                          project_collection.followers.forEach(function(follower, key) {
+                                             if (follower === req.user.username || project_collection.collection_owner === req.user.username) {
+                                                all_public_projects.push(project);
+                                             }
+                                          });
+                                       } else {
+                                          if (project_collection.collection_owner === req.user.username) {
+                                             all_public_projects.push(project);
+                                          }
+                                       }
+                                    }
+
+                                 } else {
+                                    // If collection was public mark that we scanned collection
+                                    all_public_projects.push(project);
+                                 }
+                              });
+                           } else {
+                              // No collections so we mark that we scanned project
+                              all_public_projects.push(project);
+                           }
+                        } else {
+                           // No collections so we mark that we scanned project
+                           all_public_projects.push(project);
+                        }
+                     });
+
+                     var reverse_projects = all_public_projects.slice(0,14).reverse();
 
                      res.render('p/details/details', {
                         project: project,
@@ -1345,7 +1533,53 @@ router.get('/details/:id/guest', (req, res, next) => {
                   Project.find({}, (err, related_projects) => {
                      if (err) throw err;
 
-                     var reverse_projects = related_projects.slice(0,14).reverse();
+                     var all_public_projects = [];
+
+                     related_projects.forEach(function(project, key) {
+
+                        // Scan through every project
+
+                        if(project.posted_to_collection) {
+                           if (project.posted_to_collection.length > 0) {
+
+                              // See if project has any collections
+
+                              project.posted_to_collection.forEach(function(project_collection, key) {
+
+                                 if (project_collection.collection_is_private) {
+
+                                    // If collection was private check to see if they're allowed to see it
+
+                                    if(req.isAuthenticated()) {
+                                       if (project_collection.followers.length > 0) {
+                                          project_collection.followers.forEach(function(follower, key) {
+                                             if (follower === req.user.username || project_collection.collection_owner === req.user.username) {
+                                                all_public_projects.push(project);
+                                             }
+                                          });
+                                       } else {
+                                          if (project_collection.collection_owner === req.user.username) {
+                                             all_public_projects.push(project);
+                                          }
+                                       }
+                                    }
+
+                                 } else {
+                                    // If collection was public mark that we scanned collection
+                                    all_public_projects.push(project);
+                                 }
+                              });
+                           } else {
+                              // No collections so we mark that we scanned project
+                              all_public_projects.push(project);
+                           }
+                        } else {
+                           // No collections so we mark that we scanned project
+                           all_public_projects.push(project);
+                        }
+                     });
+
+                     var reverse_projects = all_public_projects.slice(0,14).reverse();
 
                      res.render('p/details/details', {
                         project: project,
@@ -1465,7 +1699,53 @@ router.get('/micro/:id', (req, res, next) => {
                Project.find({$text: { $search: project.micro_body }}, {score: { $meta: "textScore" }}, (err, related_projects) => {
                   if (err) throw err;
 
-                  var reverse_projects = related_projects.slice(0,14).reverse();
+                  var all_public_projects = [];
+
+                  related_projects.forEach(function(project, key) {
+
+                     // Scan through every project
+
+                     if(project.posted_to_collection) {
+                        if (project.posted_to_collection.length > 0) {
+
+                           // See if project has any collections
+
+                           project.posted_to_collection.forEach(function(project_collection, key) {
+
+                              if (project_collection.collection_is_private) {
+
+                                 // If collection was private check to see if they're allowed to see it
+
+                                 if(req.isAuthenticated()) {
+                                    if (project_collection.followers.length > 0) {
+                                       project_collection.followers.forEach(function(follower, key) {
+                                          if (follower === req.user.username || project_collection.collection_owner === req.user.username) {
+                                             all_public_projects.push(project);
+                                          }
+                                       });
+                                    } else {
+                                       if (project_collection.collection_owner === req.user.username) {
+                                          all_public_projects.push(project);
+                                       }
+                                    }
+                                 }
+
+                              } else {
+                                 // If collection was public mark that we scanned collection
+                                 all_public_projects.push(project);
+                              }
+                           });
+                        } else {
+                           // No collections so we mark that we scanned project
+                           all_public_projects.push(project);
+                        }
+                     } else {
+                        // No collections so we mark that we scanned project
+                        all_public_projects.push(project);
+                     }
+                  });
+
+                  var reverse_projects = all_public_projects.slice(0,14).reverse();
 
                   if (related_projects.length > 4) {
 
@@ -1493,9 +1773,53 @@ router.get('/micro/:id', (req, res, next) => {
                         Project.find({ 'categories': { $in: project.categories} }, (err, related_projects) => {
                            if (err) throw err;
 
-                           console.log('yeah');
+                           var all_public_projects = [];
 
-                           var reverse_projects = related_projects.slice(0,14).reverse();
+                           related_projects.forEach(function(project, key) {
+
+                              // Scan through every project
+
+                              if(project.posted_to_collection) {
+                                 if (project.posted_to_collection.length > 0) {
+
+                                    // See if project has any collections
+
+                                    project.posted_to_collection.forEach(function(project_collection, key) {
+
+                                       if (project_collection.collection_is_private) {
+
+                                          // If collection was private check to see if they're allowed to see it
+
+                                          if(req.isAuthenticated()) {
+                                             if (project_collection.followers.length > 0) {
+                                                project_collection.followers.forEach(function(follower, key) {
+                                                   if (follower === req.user.username || project_collection.collection_owner === req.user.username) {
+                                                      all_public_projects.push(project);
+                                                   }
+                                                });
+                                             } else {
+                                                if (project_collection.collection_owner === req.user.username) {
+                                                   all_public_projects.push(project);
+                                                }
+                                             }
+                                          }
+
+                                       } else {
+                                          // If collection was public mark that we scanned collection
+                                          all_public_projects.push(project);
+                                       }
+                                    });
+                                 } else {
+                                    // No collections so we mark that we scanned project
+                                    all_public_projects.push(project);
+                                 }
+                              } else {
+                                 // No collections so we mark that we scanned project
+                                 all_public_projects.push(project);
+                              }
+                           });
+
+                           var reverse_projects = all_public_projects.slice(0,14).reverse();
 
                            res.render('p/micro/micro-details', {
                               project: project,
@@ -1521,7 +1845,53 @@ router.get('/micro/:id', (req, res, next) => {
                         Project.find({}, (err, related_projects) => {
                            if (err) throw err;
 
-                           var reverse_projects = related_projects.slice(0,14).reverse();
+                           var all_public_projects = [];
+
+                           related_projects.forEach(function(project, key) {
+
+                              // Scan through every project
+
+                              if(project.posted_to_collection) {
+                                 if (project.posted_to_collection.length > 0) {
+
+                                    // See if project has any collections
+
+                                    project.posted_to_collection.forEach(function(project_collection, key) {
+
+                                       if (project_collection.collection_is_private) {
+
+                                          // If collection was private check to see if they're allowed to see it
+
+                                          if(req.isAuthenticated()) {
+                                             if (project_collection.followers.length > 0) {
+                                                project_collection.followers.forEach(function(follower, key) {
+                                                   if (follower === req.user.username || project_collection.collection_owner === req.user.username) {
+                                                      all_public_projects.push(project);
+                                                   }
+                                                });
+                                             } else {
+                                                if (project_collection.collection_owner === req.user.username) {
+                                                   all_public_projects.push(project);
+                                                }
+                                             }
+                                          }
+
+                                       } else {
+                                          // If collection was public mark that we scanned collection
+                                          all_public_projects.push(project);
+                                       }
+                                    });
+                                 } else {
+                                    // No collections so we mark that we scanned project
+                                    all_public_projects.push(project);
+                                 }
+                              } else {
+                                 // No collections so we mark that we scanned project
+                                 all_public_projects.push(project);
+                              }
+                           });
+
+                           var reverse_projects = all_public_projects.slice(0,14).reverse();
 
                            res.render('p/micro/micro-details', {
                               project: project,
@@ -1637,7 +2007,53 @@ router.get('/micro/:id/guest', (req, res, next) => {
                Project.find({ 'categories': { $in: project.categories} }, (err, related_projects) => {
                   if (err) throw err;
 
-                  var reverse_projects = related_projects.slice(0,14).reverse();
+                  var all_public_projects = [];
+
+                  related_projects.forEach(function(project, key) {
+
+                     // Scan through every project
+
+                     if(project.posted_to_collection) {
+                        if (project.posted_to_collection.length > 0) {
+
+                           // See if project has any collections
+
+                           project.posted_to_collection.forEach(function(project_collection, key) {
+
+                              if (project_collection.collection_is_private) {
+
+                                 // If collection was private check to see if they're allowed to see it
+
+                                 if(req.isAuthenticated()) {
+                                    if (project_collection.followers.length > 0) {
+                                       project_collection.followers.forEach(function(follower, key) {
+                                          if (follower === req.user.username || project_collection.collection_owner === req.user.username) {
+                                             all_public_projects.push(project);
+                                          }
+                                       });
+                                    } else {
+                                       if (project_collection.collection_owner === req.user.username) {
+                                          all_public_projects.push(project);
+                                       }
+                                    }
+                                 }
+
+                              } else {
+                                 // If collection was public mark that we scanned collection
+                                 all_public_projects.push(project);
+                              }
+                           });
+                        } else {
+                           // No collections so we mark that we scanned project
+                           all_public_projects.push(project);
+                        }
+                     } else {
+                        // No collections so we mark that we scanned project
+                        all_public_projects.push(project);
+                     }
+                  });
+
+                  var reverse_projects = all_public_projects.slice(0,14).reverse();
 
                   res.render('p/micro/micro-details', {
                      project: project,
@@ -1663,7 +2079,53 @@ router.get('/micro/:id/guest', (req, res, next) => {
                Project.find({}, (err, related_projects) => {
                   if (err) throw err;
 
-                  var reverse_projects = related_projects.slice(0,14).reverse();
+                  var all_public_projects = [];
+
+                  related_projects.forEach(function(project, key) {
+
+                     // Scan through every project
+
+                     if(project.posted_to_collection) {
+                        if (project.posted_to_collection.length > 0) {
+
+                           // See if project has any collections
+
+                           project.posted_to_collection.forEach(function(project_collection, key) {
+
+                              if (project_collection.collection_is_private) {
+
+                                 // If collection was private check to see if they're allowed to see it
+
+                                 if(req.isAuthenticated()) {
+                                    if (project_collection.followers.length > 0) {
+                                       project_collection.followers.forEach(function(follower, key) {
+                                          if (follower === req.user.username || project_collection.collection_owner === req.user.username) {
+                                             all_public_projects.push(project);
+                                          }
+                                       });
+                                    } else {
+                                       if (project_collection.collection_owner === req.user.username) {
+                                          all_public_projects.push(project);
+                                       }
+                                    }
+                                 }
+
+                              } else {
+                                 // If collection was public mark that we scanned collection
+                                 all_public_projects.push(project);
+                              }
+                           });
+                        } else {
+                           // No collections so we mark that we scanned project
+                           all_public_projects.push(project);
+                        }
+                     } else {
+                        // No collections so we mark that we scanned project
+                        all_public_projects.push(project);
+                     }
+                  });
+
+                  var reverse_projects = all_public_projects.slice(0,14).reverse();
 
                   res.render('p/micro/micro-details', {
                      project: project,
@@ -2010,13 +2472,13 @@ router.post('/details/repost/:id', (req, res, next) => {
                         // Add Notification for User
                         User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
                            if (err) throw err;
-
-                           req.flash('success_msg', "Reposted Project");
-                           res.redirect('/groups/' + group._id);
                         });
                      });
                   });
                });
+
+               req.flash('success_msg', "Reposted Project");
+               res.redirect('/groups/' + group._id);
 
             });
 
@@ -2203,12 +2665,13 @@ router.post('/details/micro/repost/:id', (req, res, next) => {
                         User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
                            if (err) throw err;
 
-                           req.flash('success_msg', "Reposted Project");
-                           res.redirect('/p/micro/' + req.params.id);
                         });
                      });
                   });
                });
+
+               req.flash('success_msg', "Reposted Project");
+               res.redirect('/p/micro/' + req.params.id);
 
             });
 
@@ -2688,24 +3151,8 @@ router.post('/create-micro/micro', upload.fields([{name: 'micro_image', maxCount
             } else {
                var project_categories = [];
             }
-            var project_url = req.body.project_url;
-            var posted_to_group;
-            if (req.body.post_to != '') {
-               if (req.body.post_to != 'Followers') {
-                  Group.findOne({ '_id': { $in: req.body.post_to } }, (err, group) => {
-                     if (group) {
-                        posted_to_group = true;
-                     } else {
-                        posted_to_group = false;
-                     }
-                  });
-               } else {
-                  posted_to_group = false;
-               }
-            } else {
-               posted_to_group = false;
-            }
 
+            var project_url = req.body.project_url;
             var og_path = req.body.og_path;
 
             if (typeof og_path != 'undefined') {
@@ -2795,6 +3242,7 @@ router.post('/create-micro/micro', upload.fields([{name: 'micro_image', maxCount
 
             if (req.body.is_micro_text == 'true') {
 
+
                var newProject = new Project({
                   categories: project_categories,
                   project_owner: req.user.username,
@@ -2818,57 +3266,85 @@ router.post('/create-micro/micro', upload.fields([{name: 'micro_image', maxCount
                      if(err) throw err;
                   });
 
-                  if (posted_to_group) {
-                     Group.findOne({ '_id': { $in: req.body.post_to } }, (err, group) => {
+                  if (req.body.post_to != '') {
+                     if (req.body.post_to != 'followers') {
 
-                        info['groupId'] = group._id;
-                        info['groupName'] = group.group_name;
-                        info['groupIsPrivate'] = group.is_private;
+                        Group.findOne({ '_id': { $in: req.body.post_to } }, (err, group) => {
 
-                        console.log(info['projectId']);
+                           if (group) {
+                              info['groupId'] = group._id;
+                              info['groupName'] = group.group_name;
+                              info['groupIsPrivate'] = group.is_private;
 
-                        Group.addProject(info, (err, group) => {
-                           if(err) throw err;
-                        });
+                              console.log(info['projectId']);
+                              console.log(info);
 
-                        Project.addGroup(info, (err, project) => {
-                           if(err) throw err;
-                        });
-
-                        // Send notification to the user mentioned
-                        group.users.forEach(function(user, key) {
-                           User.findOne({ 'username': { $in: user} }, (err, reciever) => {
-                              if (err) throw err;
-
-                              var newNotification = new Notification({
-                                 sender: req.user._id,
-                                 reciever: reciever._id,
-                                 type: '@' + req.user.username + ' added a post in the group ' + group.group_name,
-                                 link: '/groups/' + group._id,
-                                 date_sent: current_date
+                              Group.addProject(info, (err, group) => {
+                                 if(err) throw err;
                               });
 
-                              // Create notification in database
-                              Notification.saveNotification(newNotification, (err, notification) => {
+                              Project.addGroup(info, (err, project) => {
                                  if(err) throw err;
+                              });
 
-                                 // Add Notification for User
-                                 User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+                              // Send notification to the user mentioned
+                              group.users.forEach(function(user, key) {
+                                 User.findOne({ 'username': { $in: user} }, (err, reciever) => {
                                     if (err) throw err;
+
+                                    var newNotification = new Notification({
+                                       sender: req.user._id,
+                                       reciever: reciever._id,
+                                       type: '@' + req.user.username + ' added a post in the group ' + group.group_name,
+                                       link: '/groups/' + group._id,
+                                       date_sent: current_date
+                                    });
+
+                                    // Create notification in database
+                                    Notification.saveNotification(newNotification, (err, notification) => {
+                                       if(err) throw err;
+
+                                       // Add Notification for User
+                                       User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+                                          if (err) throw err;
+                                       });
+                                    });
                                  });
                               });
-                           });
+
+                              req.flash('success_msg', "Micropost was created.");
+                              res.redirect('/groups/' + group._id);
+                           } else {
+                              Collection.findOne({ '_id': { $in: req.body.post_to } }, (err, collection) => {
+
+                                 info['collectionId'] = collection._id;
+                                 info['collectionName'] = collection.group_name;
+                                 info['collectionIsPrivate'] = collection.is_private;
+
+                                 Collection.addProject(info, (err, collection) => {
+                                    if(err) throw err;
+                                 });
+
+                                 Project.addCollection(info, (err, project) => {
+                                    if(err) throw err;
+                                 });
+
+                                 req.flash('success_msg', "Micropost was created.");
+                                 res.redirect(location_path);
+
+                              });
+                           }
+
                         });
-
+                     } else {
                         req.flash('success_msg', "Micropost was created.");
-                        res.redirect('/groups/' + group._id);
-
-                     });
-
+                        res.redirect(location_path);
+                     }
                   } else {
                      req.flash('success_msg', "Micropost was created.");
                      res.redirect(location_path);
                   }
+
                });
 
             } else if (req.body.is_micro_image == 'true') {
@@ -2927,51 +3403,80 @@ router.post('/create-micro/micro', upload.fields([{name: 'micro_image', maxCount
                            if(err) throw err;
                         });
 
-                        if (posted_to_group) {
-                           Group.findOne({ '_id': { $in: req.body.post_to } }, (err, group) => {
+                        if (req.body.post_to != '') {
+                           if (req.body.post_to != 'followers') {
 
-                              info['groupId'] = group._id;
-                              info['groupName'] = group.group_name;
-                              info['groupIsPrivate'] = group.is_private;
+                              Group.findOne({ '_id': { $in: req.body.post_to } }, (err, group) => {
 
-                              Group.addProject(info, (err, group) => {
-                                 if(err) throw err;
-                              });
+                                 if (group) {
+                                    info['groupId'] = group._id;
+                                    info['groupName'] = group.group_name;
+                                    info['groupIsPrivate'] = group.is_private;
 
-                              Project.addGroup(info, (err, project) => {
-                                 if(err) throw err;
-                              });
+                                    console.log(info['projectId']);
+                                    console.log(info);
 
-                              // Send notification to the user mentioned
-                              group.users.forEach(function(user, key) {
-                                 User.findOne({ 'username': { $in: user} }, (err, reciever) => {
-                                    if (err) throw err;
-
-                                    var newNotification = new Notification({
-                                       sender: req.user._id,
-                                       reciever: reciever._id,
-                                       type: '@' + req.user.username + ' added a post in the group ' + group.group_name,
-                                       link: '/groups/' + group._id,
-                                       date_sent: current_date
+                                    Group.addProject(info, (err, group) => {
+                                       if(err) throw err;
                                     });
 
-                                    // Create notification in database
-                                    Notification.saveNotification(newNotification, (err, notification) => {
+                                    Project.addGroup(info, (err, project) => {
                                        if(err) throw err;
+                                    });
 
-                                       // Add Notification for User
-                                       User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+                                    // Send notification to the user mentioned
+                                    group.users.forEach(function(user, key) {
+                                       User.findOne({ 'username': { $in: user} }, (err, reciever) => {
                                           if (err) throw err;
+
+                                          var newNotification = new Notification({
+                                             sender: req.user._id,
+                                             reciever: reciever._id,
+                                             type: '@' + req.user.username + ' added a post in the group ' + group.group_name,
+                                             link: '/groups/' + group._id,
+                                             date_sent: current_date
+                                          });
+
+                                          // Create notification in database
+                                          Notification.saveNotification(newNotification, (err, notification) => {
+                                             if(err) throw err;
+
+                                             // Add Notification for User
+                                             User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+                                                if (err) throw err;
+                                             });
+                                          });
                                        });
                                     });
-                                 });
+
+                                    req.flash('success_msg', "Micropost was created.");
+                                    res.redirect('/groups/' + group._id);
+                                 } else {
+                                    Collection.findOne({ '_id': { $in: req.body.post_to } }, (err, collection) => {
+
+                                       info['collectionId'] = collection._id;
+                                       info['collectionName'] = collection.group_name;
+                                       info['collectionIsPrivate'] = collection.is_private;
+
+                                       Collection.addProject(info, (err, collection) => {
+                                          if(err) throw err;
+                                       });
+
+                                       Project.addCollection(info, (err, project) => {
+                                          if(err) throw err;
+                                       });
+
+                                       req.flash('success_msg', "Micropost was created.");
+                                       res.redirect(location_path);
+
+                                    });
+                                 }
+
                               });
-
+                           } else {
                               req.flash('success_msg', "Micropost was created.");
-                              res.redirect('/groups/' + group._id);
-
-                           });
-
+                              res.redirect(location_path);
+                           }
                         } else {
                            req.flash('success_msg', "Micropost was created.");
                            res.redirect(location_path);
@@ -3085,51 +3590,83 @@ router.post('/create-micro/micro', upload.fields([{name: 'micro_image', maxCount
                               if(err) throw err;
                            });
 
-                           if (posted_to_group) {
-                              Group.findOne({ '_id': { $in: req.body.post_to } }, (err, group) => {
+                           if (req.body.post_to != '') {
+                              if (req.body.post_to != 'followers') {
 
-                                 info['groupId'] = group._id;
-                                 info['groupName'] = group.group_name;
-                                 info['groupIsPrivate'] = group.is_private;
+                                 Group.findOne({ '_id': { $in: req.body.post_to } }, (err, group) => {
 
-                                 Group.addProject(info, (err, group) => {
-                                    if(err) throw err;
-                                 });
+                                    if (group) {
+                                       info['groupId'] = group._id;
+                                       info['groupName'] = group.group_name;
+                                       info['groupIsPrivate'] = group.is_private;
 
-                                 Project.addGroup(info, (err, project) => {
-                                    if(err) throw err;
-                                 });
+                                       console.log(info['projectId']);
+                                       console.log(info);
 
-                                 // Send notification to the user mentioned
-                                 group.users.forEach(function(user, key) {
-                                    User.findOne({ 'username': { $in: user} }, (err, reciever) => {
-                                       if (err) throw err;
-
-                                       var newNotification = new Notification({
-                                          sender: req.user._id,
-                                          reciever: reciever._id,
-                                          type: '@' + req.user.username + ' added a post in the group ' + group.group_name,
-                                          link: '/groups/' + group._id,
-                                          date_sent: current_date
+                                       Group.addProject(info, (err, group) => {
+                                          if(err) throw err;
                                        });
 
-                                       // Create notification in database
-                                       Notification.saveNotification(newNotification, (err, notification) => {
+                                       Project.addGroup(info, (err, project) => {
                                           if(err) throw err;
+                                       });
 
-                                          // Add Notification for User
-                                          User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+                                       // Send notification to the user mentioned
+                                       group.users.forEach(function(user, key) {
+                                          User.findOne({ 'username': { $in: user} }, (err, reciever) => {
                                              if (err) throw err;
+
+                                             var newNotification = new Notification({
+                                                sender: req.user._id,
+                                                reciever: reciever._id,
+                                                type: '@' + req.user.username + ' added a post in the group ' + group.group_name,
+                                                link: '/groups/' + group._id,
+                                                date_sent: current_date
+                                             });
+
+                                             // Create notification in database
+                                             Notification.saveNotification(newNotification, (err, notification) => {
+                                                if(err) throw err;
+
+                                                // Add Notification for User
+                                                User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+                                                   if (err) throw err;
+                                                });
+                                             });
                                           });
                                        });
-                                    });
+
+                                       req.flash('success_msg', "Micropost was created.");
+                                       res.redirect('/groups/' + group._id);
+                                    } else {
+                                       Collection.findOne({ '_id': { $in: req.body.post_to } }, (err, collection) => {
+
+                                          info['collectionId'] = collection._id;
+                                          info['collectionName'] = collection.group_name;
+                                          info['collectionIsPrivate'] = collection.is_private;
+
+                                          console.log(info['projectId']);
+                                          console.log(info + '\n colelction');
+
+                                          Collection.addProject(info, (err, collection) => {
+                                             if(err) throw err;
+                                          });
+
+                                          Project.addCollection(info, (err, project) => {
+                                             if(err) throw err;
+                                          });
+
+                                          req.flash('success_msg', "Micropost was created.");
+                                          res.redirect(location_path);
+
+                                       });
+                                    }
+
                                  });
-
+                              } else {
                                  req.flash('success_msg', "Micropost was created.");
-                                 res.redirect('/groups/' + group._id);
-
-                              });
-
+                                 res.redirect(location_path);
+                              }
                            } else {
                               req.flash('success_msg', "Micropost was created.");
                               res.redirect(location_path);
@@ -3246,51 +3783,83 @@ router.post('/create-micro/micro', upload.fields([{name: 'micro_image', maxCount
                               if(err) throw err;
                            });
 
-                           if (posted_to_group) {
-                              Group.findOne({ '_id': { $in: req.body.post_to } }, (err, group) => {
+                           if (req.body.post_to != '') {
+                              if (req.body.post_to != 'followers') {
 
-                                 info['groupId'] = group._id;
-                                 info['groupName'] = group.group_name;
-                                 info['groupIsPrivate'] = group.is_private;
+                                 Group.findOne({ '_id': { $in: req.body.post_to } }, (err, group) => {
 
-                                 Group.addProject(info, (err, group) => {
-                                    if(err) throw err;
-                                 });
+                                    if (group) {
+                                       info['groupId'] = group._id;
+                                       info['groupName'] = group.group_name;
+                                       info['groupIsPrivate'] = group.is_private;
 
-                                 Project.addGroup(info, (err, project) => {
-                                    if(err) throw err;
-                                 });
+                                       console.log(info['projectId']);
+                                       console.log(info);
 
-                                 // Send notification to the user mentioned
-                                 group.users.forEach(function(user, key) {
-                                    User.findOne({ 'username': { $in: user} }, (err, reciever) => {
-                                       if (err) throw err;
-
-                                       var newNotification = new Notification({
-                                          sender: req.user._id,
-                                          reciever: reciever._id,
-                                          type: '@' + req.user.username + ' added a post in the group ' + group.group_name,
-                                          link: '/groups/' + group._id,
-                                          date_sent: current_date
+                                       Group.addProject(info, (err, group) => {
+                                          if(err) throw err;
                                        });
 
-                                       // Create notification in database
-                                       Notification.saveNotification(newNotification, (err, notification) => {
+                                       Project.addGroup(info, (err, project) => {
                                           if(err) throw err;
+                                       });
 
-                                          // Add Notification for User
-                                          User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+                                       // Send notification to the user mentioned
+                                       group.users.forEach(function(user, key) {
+                                          User.findOne({ 'username': { $in: user} }, (err, reciever) => {
                                              if (err) throw err;
+
+                                             var newNotification = new Notification({
+                                                sender: req.user._id,
+                                                reciever: reciever._id,
+                                                type: '@' + req.user.username + ' added a post in the group ' + group.group_name,
+                                                link: '/groups/' + group._id,
+                                                date_sent: current_date
+                                             });
+
+                                             // Create notification in database
+                                             Notification.saveNotification(newNotification, (err, notification) => {
+                                                if(err) throw err;
+
+                                                // Add Notification for User
+                                                User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+                                                   if (err) throw err;
+                                                });
+                                             });
                                           });
                                        });
-                                    });
+
+                                       req.flash('success_msg', "Micropost was created.");
+                                       res.redirect('/groups/' + group._id);
+                                    } else {
+                                       Collection.findOne({ '_id': { $in: req.body.post_to } }, (err, collection) => {
+
+                                          info['collectionId'] = collection._id;
+                                          info['collectionName'] = collection.group_name;
+                                          info['collectionIsPrivate'] = collection.is_private;
+
+                                          console.log(info['projectId']);
+                                          console.log(info + '\n colelction');
+
+                                          Collection.addProject(info, (err, collection) => {
+                                             if(err) throw err;
+                                          });
+
+                                          Project.addCollection(info, (err, project) => {
+                                             if(err) throw err;
+                                          });
+
+                                          req.flash('success_msg', "Micropost was created.");
+                                          res.redirect(location_path);
+
+                                       });
+                                    }
+
                                  });
-
+                              } else {
                                  req.flash('success_msg', "Micropost was created.");
-                                 res.redirect('/groups/' + group._id);
-
-                              });
-
+                                 res.redirect(location_path);
+                              }
                            } else {
                               req.flash('success_msg', "Micropost was created.");
                               res.redirect(location_path);

@@ -12,6 +12,7 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const mongo = require('mongodb');
 const mongoose = require('mongoose');
+mongoose.Promise = require('bluebird');
 const jwt = require('jsonwebtoken');
 const helmet = require('helmet');
 

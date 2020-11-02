@@ -52,6 +52,10 @@ const UserSchema = mongoose.Schema({
    saved_projects: [],
    reposted_projects: [],
    messages: [],
+   interests: [],
+   completed_interest_onboarding: {
+      type: Boolean
+   },
    has_notification: {
       type: Boolean
    },
@@ -60,6 +64,14 @@ const UserSchema = mongoose.Schema({
          type: String
       },
       group_id: {
+         type: String
+      }
+   }],
+   collections: [{
+      collection_name: {
+         type: String
+      },
+      collection_id: {
          type: String
       }
    }],
@@ -400,6 +412,61 @@ module.exports.updateGroup = (info, callback) => {
       {
          $set: {
             "groups.$.group_name": groupName
+         },
+      },
+      { safe: true, upsert: true },
+      callback
+   );
+}
+
+// Add Collection
+module.exports.addCollection = (info, callback) => {
+   collectionId = info['collectionId'];
+   profileUsername = info['profileUsername'];
+   collectionName = info['collectionName'];
+
+   const query = { username: profileUsername };
+
+   User.findOneAndUpdate(query,
+      {
+         $addToSet: {
+            "collections": {
+               "collection_name": collectionName,
+               "collection_id": collectionId
+            }
+         },
+      },
+      { safe: true, upsert: true },
+      callback
+   );
+}
+
+// Remove Collection
+module.exports.removeCollection = (info, callback) => {
+   collectionId = info['collectionId'];
+   profileUsername = info['profileUsername'];
+
+   const query = { username: profileUsername };
+
+   User.findOneAndUpdate(query,
+      { $pull: { collections: { 'collection_id': collectionId } } },
+      { multi: true },
+      callback
+   );
+}
+
+// Update Collection
+module.exports.updateCollection = (info, callback) => {
+   userId = info['userId'];
+   collectionName = info['collectionName'];
+   collectionId = info['collectionId'];
+
+   const query = { _id: userId, "collections.collection_id": collectionId };
+
+   User.findOneAndUpdate(query,
+      {
+         $set: {
+            "collections.$.collection_name": collectionName
          },
       },
       { safe: true, upsert: true },

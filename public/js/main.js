@@ -891,4 +891,35 @@ $(document).ready(function() {
    /**********/
 
 
+   // Profile Collections
+   var $collection = $('#selectCollection').find(":selected").text();
+   var $collection_project = $(".collection_project");
+
+   var $first_projects = $("#selectCollection").first().val();
+
+   $collection_project.css({ "display": "none" });
+   $(".edit_collection_btn").css({ "display": "none" });
+   $('.' + $first_projects).css({ "display": "block" });
+   $('.edit_collection_btn.' + $first_projects).css({ "display": "flex" });
+
+   var $ownProject = $(".ownProject");
+   var $savedProject = $(".savedProject");
+   var $repostedProject = $(".repostedProject");
+
+   $savedProject.css({ "display": "none" });
+   $repostedProject.css({ "display": "none" });
+
+   $("#selectCollection").on('change', function () {
+      $collection = $(this).val();
+      $collection_project.css({ "display": "none" });
+      $('.' + $collection).css({ "display": "block" });
+      $('.edit_collection_btn.' + $collection).css({ "display": "flex" });
+      $savedProject.css({ "display": "none" });
+      $repostedProject.css({ "display": "none" });
+
+      console.log($collection);
+   });
+
+  /**********/
+
 });

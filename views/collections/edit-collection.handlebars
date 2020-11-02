@@ -1,0 +1,204 @@
+{{#if collection}}
+<h3 style="text-align: center;">Edit Collection</h3>
+<form method="post" class="edit-project-form" action="/edit-collection/{{collection._id}}">
+   {{! Public or Private }}
+   <div class="checkbox__wrapper">
+      <label class="check__container">
+         <input id="isPrivateCheck" class="form__input-checkbox {{#if collection.is_private}}checked {{/if}}" type="checkbox" {{#if collection.is_private}}checked {{/if}}>
+         <span class="checkmark">Private Collection</span>
+      </label>
+      <label class="check__container">
+         <input id="isPublicCheck" class="form__input-checkbox {{#if collection.is_private}}{{else}}checked {{/if}}" type="checkbox" {{#if collection.is_private}}{{else}}checked {{/if}}>
+         <span class="checkmark">Public Collection</span>
+      </label>
+   </div>
+   <br />
+   <input id="checkbox" type="hidden" name="is_private" value="{{collection.is_private}}">
+
+   {{! Collection Name }}
+   <label for="collection_name" class="form__label" style="margin-top: 25px;">Collection Name</label>
+   <input class="form__input" type="text" placeholder="Let's name the collection" name="collection_name" value="{{collection.collection_name}}" required />
+
+
+   {{! Collection Categories }}
+   <label for="collection_categories" class="form__label" style="margin-top: 25px;">Change Categories</label>
+   <select data-placeholder="Add categories..." multiple class="chosen-select form__input" name="collection_categories[]">
+      <option value=""></option>
+      <option>Art</option>
+      <option>Beauty & Fashion</option>
+      <option>Business</option>
+      <option>Family & Society</option>
+      <option>Food & Drink</option>
+      <option>Health & Wellness</option>
+      <option>Home & Garden</option>
+      <option>Science & Technology</option>
+      <option>Sports & Fitness</option>
+      <option>Travel</option>
+   </select>
+
+   {{#if collection_followers}}
+   <label for="remove_followers" class="form__label" style="margin-top: 25px;">Remove followers from collection</label>
+   <section class="follower__profiles-section">
+      {{#each collection_followers}}
+      <label class="checkbox-img" >
+         <input type="checkbox" name="remove_followers[]" value="{{_id}}">
+         <a class="follower__profile">
+            <div class="follower__profile-img-container">
+               <img class="profile__img" {{#if this.profileimage}}src="https://s3.amazonaws.com/hryzn-app-static-assets/{{this.profileimage}}"{{else}}src="/img/site/hryzn-placeholder-01.jpg"{{/if}} />
+            </div>
+            @{{this.username}}
+         </a>
+      </label>
+      {{/each}}
+   </section>
+   {{/if}}
+
+   {{#if profile_followers}}
+   <label for="add_followers" class="form__label" style="margin-top: 25px;">Add followers to collection</label>
+   <section class="follower__profiles-section">
+      {{#each profile_followers}}
+      <label class="checkbox-img" >
+         <input type="checkbox" name="add_followers[]" value="{{_id}}">
+         <a class="follower__profile">
+            <div class="follower__profile-img-container">
+               <img class="profile__img" {{#if this.profileimage}}src="https://s3.amazonaws.com/hryzn-app-static-assets/{{this.profileimage}}"{{else}}src="/img/site/hryzn-placeholder-01.jpg"{{/if}} />
+            </div>
+            @{{this.username}}
+         </a>
+      </label>
+      {{/each}}
+   </section>
+   {{/if}}
+
+   {{#if collection_projects}}
+   {{! Collection Projects }}
+   <label for="remove_projects" class="form__label" style="margin-top: 25px;">Remove Projects</label>
+   <div class="collection_form_projects_container">
+   {{#each collection_projects}}
+      <div class="collection_form_projects">
+         <label class="checkbox-img" >
+            <input type="checkbox" name="remove_projects[]" value="{{_id}}">
+            {{#if is_micro_post}}
+            <div class="masonryItem ownProject" title="{{project_title}}">
+               <div class="micropost">
+                  <div class="micropost_card {{#if micro_image}}card_is_micro_image{{else}}{{#if micro_audio}}card_is_micro_audio{{else}}{{#if micro_video}}card_is_micro_video{{else}}card_is_micro_text{{/if}}{{/if}}{{/if}}">
+                     {{#if micro_image}}<img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{micro_image}}" class="img-responsive" alt="{{micro_body}}" />{{/if}}
+                     {{#if thumbnail_image}}<img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{thumbnail_image}}" class="img-responsive" alt="{{micro_body}}" />{{/if}}
+                     {{#if micro_video}}<div class="micro_play_btn"><img class="topnav__icon" src="/icons/play-button-white.png" /></div>{{/if}}
+                     {{#if micro_audio}}<div class="micro_play_btn"><img class="topnav__icon" src="/icons/audio-button-white.png" /></div>{{/if}}
+                     {{#if project_title}}<p class="micro_title">{{project_title}}</p>{{/if}}
+                     <p class="micro_body">{{{micro_body}}}</p>
+                  </div>
+               </div>
+            </div>
+            {{else}}
+            <div class="masonryItem ownProject" title="{{project_title}}">
+               <div class="project_card">
+                  <img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{#if thumbnail_image}}{{thumbnail_image}}{{else}}{{project_image}}{{/if}}" class="img-responsive" alt="{{project_title}}" />
+                  <div class="project_card_bottom">
+                     <div class="project_bottom_wrapper">
+                        <div class="bg_overlay"></div>
+                        <div class="project_bottom_details">
+                           <p class="project_card_title">{{project_title}}</p>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               {{#if is_private}}
+               <div class="is_private">private</div>
+               {{/if}}
+            </div>
+            {{/if}}
+         </label>
+      </div>
+   {{/each}}
+   </div>
+   {{/if}}
+
+   {{#if profile_projects}}
+   {{! Collection Projects }}
+   <label for="add_projects" class="form__label" style="margin-top: 25px;">Add Projects</label>
+   <div class="collection_form_projects_container">
+   {{#each profile_projects}}
+      <div class="collection_form_projects">
+         <label class="checkbox-img" >
+            <input type="checkbox" name="add_projects[]" value="{{_id}}">
+            {{#if is_micro_post}}
+            <div class="masonryItem ownProject" title="{{project_title}}">
+               <div class="micropost">
+                  <div class="micropost_card {{#if micro_image}}card_is_micro_image{{else}}{{#if micro_audio}}card_is_micro_audio{{else}}{{#if micro_video}}card_is_micro_video{{else}}card_is_micro_text{{/if}}{{/if}}{{/if}}">
+                     {{#if micro_image}}<img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{micro_image}}" class="img-responsive" alt="{{micro_body}}" />{{/if}}
+                     {{#if thumbnail_image}}<img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{thumbnail_image}}" class="img-responsive" alt="{{micro_body}}" />{{/if}}
+                     {{#if micro_video}}<div class="micro_play_btn"><img class="topnav__icon" src="/icons/play-button-white.png" /></div>{{/if}}
+                     {{#if micro_audio}}<div class="micro_play_btn"><img class="topnav__icon" src="/icons/audio-button-white.png" /></div>{{/if}}
+                     {{#if project_title}}<p class="micro_title">{{project_title}}</p>{{/if}}
+                     <p class="micro_body">{{{micro_body}}}</p>
+                  </div>
+               </div>
+            </div>
+            {{else}}
+            <div class="masonryItem ownProject" title="{{project_title}}">
+               <div class="project_card">
+                  <img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{#if thumbnail_image}}{{thumbnail_image}}{{else}}{{project_image}}{{/if}}" class="img-responsive" alt="{{project_title}}" />
+                  <div class="project_card_bottom">
+                     <div class="project_bottom_wrapper">
+                        <div class="bg_overlay"></div>
+                        <div class="project_bottom_details">
+                           <p class="project_card_title">{{project_title}}</p>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               {{#if is_private}}
+               <div class="is_private">private</div>
+               {{/if}}
+            </div>
+            {{/if}}
+         </label>
+      </div>
+   {{/each}}
+   </div>
+   {{/if}}
+
+   <input type="hidden" name="user" value="{{user.username}}">
+   <input type="hidden" name="id" value="{{user._id}}">
+
+   <div class="modal-footer">
+      <input type="submit" class="btn__secondary micro_submit" value="Submit" />
+      <span class="modalBtn btn__primary">Delete</span>
+   </div>
+</form>
+
+{{! Hidden Delete Modal }}
+<div class="popModal modalBackground">
+  <div class="modal-content">
+
+    <div class="modal-header ">
+      <p>Are You Sure?</p>
+    </div>
+
+    <div class="modal-body">
+      <p>
+         Deleting this is permanent and cannot be undone.
+         {{#if collection.is_private}}
+         {{else}}
+         <br />
+         All projects in a public collection will be unharmed.
+         {{/if}}
+      </p>
+    </div>
+
+    <div class="modal-footer {{#if collection.is_private}}modal-footer_private-group{{/if}}">
+      {{#if collection.is_private}}
+      <a href="/collection/delete/{{collection._id}}/true" class="btn__secondary project_submit">Yes I'm sure, delete everything</a>
+      <a href="/collection/delete/{{collection._id}}/false" class="btn__secondary project_submit">Yes I'm sure, but keep the projects</a>
+      {{else}}
+      <a href="/collection/delete/{{collection._id}}/false" class="btn__secondary project_submit">Yes I'm sure</a>
+      {{/if}}
+      <span class="closeModal btn__primary">Cancel</span>
+    </div>
+
+  </div>
+
+</div>
+{{/if}}

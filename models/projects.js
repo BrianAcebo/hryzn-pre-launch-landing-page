@@ -82,6 +82,21 @@ const ProjectSchema = mongoose.Schema({
       group_is_private: {
          type: String
       }
+   }],
+   posted_to_collection: [{
+      collection_id: {
+         type: String
+      },
+      collection_name: {
+         type: String
+      },
+      collection_is_private: {
+         type: String
+      },
+      followers: [],
+      collection_owner: {
+         type: String
+      }
    }]
 });
 
@@ -303,6 +318,78 @@ module.exports.removeGroup = (info, callback) => {
          $set: { "posted_to_group": [] }
       },
       { multi: true },
+      callback
+   );
+}
+
+// Add Collection
+module.exports.addCollection = (info, callback) => {
+   projectId = info['projectId'];
+   collectionName = info['collectionName'];
+   collectionId = info['collectionId'];
+   collectionIsPrivate = info['collectionIsPrivate'];
+   collectionFollowers = info['collectionFollowers'];
+   collectionOwner = info['collectionOwner'];
+
+   const query = { _id: projectId };
+
+   Project.findOneAndUpdate(query,
+      {
+         $addToSet: {
+            "posted_to_collection": {
+               "collection_id": collectionId,
+               "collection_name": collectionName,
+               "collection_is_private": collectionIsPrivate,
+               "followers": collectionFollowers,
+               "collection_owner": collectionOwner
+            }
+         },
+      },
+      { safe: true, upsert: true },
+      callback
+   );
+}
+
+// Remove Collection
+module.exports.removeCollection = (info, callback) => {
+   collectionId = info['collectionId'];
+   projectId = info['projectId'];
+
+   const query = { _id: projectId };
+
+   Project.findOneAndUpdate(query,
+      {
+         $set: { "posted_to_collection": [] }
+      },
+      { multi: true },
+      callback
+   );
+}
+
+// Update Collection
+module.exports.updateCollection = (info, callback) => {
+   projectId = info['projectId'];
+   collectionName = info['collectionName'];
+   collectionId = info['collectionId'];
+   collectionIsPrivate = info['collectionIsPrivate'];
+   collectionFollowers = info['collectionFollowers'];
+   collectionOwner = info['collectionOwner'];
+
+   const query = { _id: projectId };
+
+   Project.findOneAndUpdate(query,
+      {
+         $set: {
+            "posted_to_collection": {
+               "collection_id": collectionId,
+               "collection_name": collectionName,
+               "collection_is_private": collectionIsPrivate,
+               "followers": collectionFollowers,
+               "collection_owner": collectionOwner
+            }
+         },
+      },
+      { safe: true, upsert: true },
       callback
    );
 }

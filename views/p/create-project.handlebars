@@ -90,7 +90,10 @@
         <label for="post_to" class="form__label" style="margin-top: 25px;">Post To <span class="form_span_descriptor">( Optional )</span></label>
         <select data-placeholder="Post to..." class="chosen-select form__input" name="post_to">
            <option value=""></option>
-           <option value="followers">Followers</option>
+           <option value="followers">All Followers</option>
+           {{#each user.collections}}
+           <option value="{{this.collection_id}}">Your Collection "{{this.collection_name}}"</option>
+           {{/each}}
            {{#each user.groups}}
            <option value="{{this.group_id}}">Your Group "{{this.group_name}}"</option>
            {{/each}}
@@ -101,40 +104,16 @@
         <label for="project_categories" class="form__label" style="margin-top: 25px;">Add Project Categories <span class="form_span_descriptor">( Optional )</span></label>
         <select data-placeholder="Add categories..." multiple class="chosen-select form__input" name="project_categories[]">
            <option value=""></option>
-           <option>Animals</option>
-           <option>Architecture</option>
            <option>Art</option>
-           <option>Cars & Motorcycles</option>
-           <option>Celebrities</option>
-           <option>DIY & Crafts</option>
-           <option>Design</option>
-           <option>Education</option>
-           <option>Film, Music & Books</option>
-           <option>Finance</option>
+           <option>Beauty & Fashion</option>
+           <option>Business</option>
+           <option>Family & Society</option>
            <option>Food & Drink</option>
-           <option>Gardening</option>
-           <option>Geek</option>
-           <option>Hair & Beauty</option>
-           <option>Health & Fitness</option>
-           <option>History</option>
-           <option>Holidays & Events</option>
-           <option>Home Decor</option>
-           <option>Humor</option>
-           <option>Illustrations & Posters</option>
-           <option>Kids</option>
-           <option>Men’s Fashion</option>
-           <option>Outdoors</option>
-           <option>Photography</option>
-           <option>Products</option>
-           <option>Quotes</option>
-           <option>Science & Nature</option>
-           <option>Sports</option>
-           <option>Tattoos</option>
-           <option>Technology</option>
+           <option>Health & Wellness</option>
+           <option>Home & Garden</option>
+           <option>Science & Technology</option>
+           <option>Sports & Fitness</option>
            <option>Travel</option>
-           <option>Weddings</option>
-           <option>Women’s Fashion</option>
-           <option>Other</option>
         </select>
 
 

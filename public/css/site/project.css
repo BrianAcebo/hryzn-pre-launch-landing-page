@@ -149,6 +149,11 @@
    width: 100%;
 }
 
+.micropost_card img,
+.project_card img {
+   border-radius: 15px;
+}
+
 .project_card_bottom {
    position: absolute;
    width: 100%;
@@ -175,6 +180,7 @@
 
 .project_card_bottom .bg_overlay {
    opacity: 0.7;
+   border-radius: 15px;
 }
 
 .project_bottom_details {
@@ -1020,6 +1026,7 @@ section.project {
    background: #fff;
    text-align: left;
    position: relative;
+   border-radius: 15px;
 }
 
 .micropost .comment_box {

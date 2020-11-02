@@ -347,7 +347,7 @@ blockquote {
    position: fixed;
    align-items: center;
    border-top: 3px solid #5eb484;
-   top: 0;
+   top: 100px;
    z-index: 88888;
 }
 
@@ -1341,4 +1341,69 @@ blockquote {
 
 .modal-footer_private-group a {
    margin: 0 0 25px 0;
+}
+
+.onboarding_content {
+   max-width: 900px;
+}
+
+.onboarding_content h3,
+.onboarding_content p {
+   margin: 0;
+}
+
+.onboarding_content p {
+   font-weight: bold;
+   font-style: italic;
+   font-size: 14px;
+}
+
+.onboarding_content_row {
+   display: flex;
+   justify-content: flex-start;
+   align-items: flex-start;
+   flex-direction: row;
+}
+
+.onboarding_content_interest {
+   width: 33%;
+   padding: 25px;
+}
+
+.onboarding_content_interest p {
+   font-weight: bold;
+   font-size: 16px;
+}
+
+.onboarding_content_interest img {
+   width: 100%;
+}
+
+.onboarding_content_interest .checkbox-img input[type="checkbox"] {
+   display:none;
+}
+
+.onboarding_content_interest .checkbox-img label img{
+   pointer-events: none;
+}
+
+.onboarding_content_interest .checkbox-img label{
+   display: inline-block;
+}
+
+.onboarding_content_interest .checkbox-img img {
+   border: 3px solid #fff;
+   box-shadow: 1px 1px 10px #E9EEF4;
+   width:100%;
+   height: auto;
+}
+
+.onboarding_content_interest input[type=checkbox]:checked + img {
+   border: 3px solid #2FBCDF;
+   box-shadow: 1px 1px 5px #2FBCDF;
+}
+
+.onboarding_submit {
+   border: none;
+   padding: 12px 25px;
 }

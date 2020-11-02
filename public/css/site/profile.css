@@ -63,6 +63,8 @@
    align-items: center;
    flex-wrap: wrap;
    flex-direction: row;
+   border: 1px solid #ccc;
+   margin: 0 0 50px 0;
 }
 
 .follower__profiles-container {
@@ -76,17 +78,16 @@
    align-items: center;
    color: #333;
    margin: 25px;
-   min-width: 300px;
    font-size: 16px;
    font-weight: bold;
-   padding: 25px 50px;
+   padding: 12px 15px;
    border-radius: 35px;
    border: 3px solid #f3dbd6;
 }
 
 .follower__profile-img-container {
-   width: 75px;
-   height: 75px;
+   width: 35px;
+   height: 35px;
    border-radius: 50%;
    text-align: center;
    margin-right: 25px;
@@ -117,4 +118,102 @@
 .profile_themes_img_container img {
    width: 35%;
    margin: 15px;
+}
+
+.collection_form_modal {
+   max-width: 900px;
+}
+
+.collection_form_projects_container {
+   display: flex;
+   justify-content: flex-start;
+   align-items: flex-start;
+   flex-wrap: wrap;
+   border: 1px solid #ccc;
+   margin: 0 0 50px 0;
+}
+
+.collection_form_projects {
+   width: 33%;
+   padding: 15px;
+}
+
+.create_collections_btn {
+   width: 50px;
+}
+
+@media screen and (max-width: 768px) {
+   .collection_form_projects {
+      width: 50%;
+   }
+}
+
+.collection_form_projects .micropost_card .micro_body {
+   border: 1px solid #ccc;
+}
+
+.collections_dropdown {
+   cursor: pointer;
+   -webkit-transform: rotateZ(0);
+   transform: rotateZ(0);
+   -webkit-transition: box-shadow .1s ease,width .1s ease;
+   transition: box-shadow .1s ease,width .1s ease;
+   margin: 0 0 25px 0;
+   display: flex;
+   justify-content: flex-start;
+   align-items: center;
+   outline: none;
+}
+
+.collections_dropdown select {
+   display: block;
+   height: auto;
+   background: #fff;
+   border: 1px solid #000;
+   border-radius: 0;
+   box-shadow: 0 0 0 0 transparent inset;
+   padding: 10px;
+   margin: 0 25px 0 0;
+   outline: none;
+   color: #000;
+   -webkit-transition: color .1s ease,border-color .1s ease;
+   transition: color .1s ease,border-color .1s ease;
+}
+
+.collections_dropdown select option {
+   position: relative;
+   cursor: pointer;
+   display: block;
+   border: none;
+   height: auto;
+   text-align: left;
+   border-top: none;
+   color: #000;
+   padding: 0;
+   font-size: 14px;
+   text-transform: none;
+   font-weight: bold;
+   box-shadow: none;
+   -webkit-touch-callout: none;
+}
+
+.edit_collection_btn_white {
+   cursor: pointer;
+   padding: 15px;
+   border-radius: 50%;
+   background: #fff;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   margin: 0 15px;
+}
+
+.checkbox-img input[type="checkbox"] {
+   display: none;
+}
+
+.checkbox-img input[type="checkbox"]:checked + .masonryItem,
+.checkbox-img input[type="checkbox"]:checked + .follower__profile {
+   border: 3px solid #2FBCDF;
+   box-shadow: 1px 1px 5px #2FBCDF;
 }
