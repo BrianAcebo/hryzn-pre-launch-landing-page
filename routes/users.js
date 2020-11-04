@@ -103,14 +103,17 @@ router.post('/register', upload.single('profileimage'), (req, res, next) => {
 
    var errors = req.validationErrors();
 
-   if(errors || promo_error) {
-      if (errors) {
-         var err = errors;
-      } else {
-         var err = promo_error;
-      }
+   // if(errors || promo_error) {
+   //    if (errors) {
+   //       var err = errors;
+   //    } else {
+   //       var err = promo_error;
+   //    }
+   // }
+
+   if(errors) {
       res.render('users/register', {
-         errors: err,
+         errors: errors,
          firstname: firstname,
          lastname: lastname,
          username: username,
