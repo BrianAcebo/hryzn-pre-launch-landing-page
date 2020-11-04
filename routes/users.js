@@ -57,7 +57,7 @@ router.post('/register', upload.single('profileimage'), (req, res, next) => {
    var email = req.body.email.replace(/\r\n/g,'').trim();
    var password = req.body.password.replace(/\r\n/g,'').trim();
    var password2 = req.body.password2.replace(/\r\n/g,'').trim();
-   var promo_code = req.body.promo_code.replace(/\r\n/g,'').trim();
+   var promo_code; // = req.body.promo_code.replace(/\r\n/g,'').trim();
 
    if (promo_code != '') {
       if (promo_code === 'deathB4DECAF') {
