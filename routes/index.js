@@ -207,6 +207,11 @@ router.get('/', (req, res, next) => {
    }
 });
 
+// Get Welcome Redirect
+router.get('/welcome', (req, res, next) => {
+   res.redirect('/');
+});
+
 // Get Creatives
 router.get('/creatives', (req, res, next) => {
    if(req.isAuthenticated()) {
