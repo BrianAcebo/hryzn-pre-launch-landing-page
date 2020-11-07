@@ -433,6 +433,12 @@ router.post('/create-project/blog', upload.fields([{name: 'project_image', maxCo
                      var thumbnail_image = dateNow + req.files.thumbnail_image[0].originalname;
                   }
 
+                  if (req.user.profileimage) {
+                     var project_owner_profile_image =  req.user.profileimage
+                  } else {
+                     var project_owner_profile_image =  'hryzn-placeholder-01.jpg'
+                  }
+
                   var newProject = new Project({
                      project_title: project_title,
                      project_description: project_description,
@@ -444,7 +450,7 @@ router.post('/create-project/blog', upload.fields([{name: 'project_image', maxCo
                      admins: admin,
                      categories: project_categories,
                      project_owner: admin,
-                     project_owner_profile_image: req.user.profileimage,
+                     project_owner_profile_image: project_owner_profile_image,
                      project_notes: project_notes,
                      date_posted: current_date
                   });
@@ -3240,13 +3246,19 @@ router.post('/create-micro/micro', upload.fields([{name: 'micro_image', maxCount
                }
             });
 
+            if (req.user.profileimage) {
+               var project_owner_profile_image =  req.user.profileimage
+            } else {
+               var project_owner_profile_image =  'hryzn-placeholder-01.jpg'
+            }
+
             if (req.body.is_micro_text == 'true') {
 
 
                var newProject = new Project({
                   categories: project_categories,
                   project_owner: req.user.username,
-                  project_owner_profile_image: req.user.profileimage,
+                  project_owner_profile_image: project_owner_profile_image,
                   micro_body: micro_body,
                   project_url: project_url,
                   is_micro_post: true,
@@ -3382,7 +3394,7 @@ router.post('/create-micro/micro', upload.fields([{name: 'micro_image', maxCount
                         micro_image: micro_image,
                         categories: project_categories,
                         project_owner: req.user.username,
-                        project_owner_profile_image: req.user.profileimage,
+                        project_owner_profile_image: project_owner_profile_image,
                         project_title: micro_title,
                         micro_body: micro_body,
                         project_url: project_url,
@@ -3569,7 +3581,7 @@ router.post('/create-micro/micro', upload.fields([{name: 'micro_image', maxCount
                            thumbnail_image: thumbnail_image,
                            categories: project_categories,
                            project_owner: req.user.username,
-                           project_owner_profile_image: req.user.profileimage,
+                           project_owner_profile_image: project_owner_profile_image,
                            project_title: micro_title,
                            micro_body: micro_body,
                            project_url: project_url,
@@ -3762,7 +3774,7 @@ router.post('/create-micro/micro', upload.fields([{name: 'micro_image', maxCount
                            thumbnail_image: thumbnail_image,
                            categories: project_categories,
                            project_owner: req.user.username,
-                           project_owner_profile_image: req.user.profileimage,
+                           project_owner_profile_image: project_owner_profile_image,
                            project_title: micro_title,
                            micro_body: micro_body,
                            project_url: project_url,

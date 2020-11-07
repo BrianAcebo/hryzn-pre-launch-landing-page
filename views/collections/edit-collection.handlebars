@@ -44,7 +44,7 @@
          <input type="checkbox" name="remove_followers[]" value="{{_id}}">
          <a class="follower__profile">
             <div class="follower__profile-img-container">
-               <img class="profile__img" {{#if this.profileimage}}src="https://s3.amazonaws.com/hryzn-app-static-assets/{{this.profileimage}}"{{else}}src="/img/site/hryzn-placeholder-01.jpg"{{/if}} />
+               <img class="profile__img" {{#if this.profileimage}}src="https://ik.imagekit.io/w07am55tja/{{this.profileimage}}?tr=w-100"{{else}}src="/img/site/hryzn-placeholder-01.jpg"{{/if}} />
             </div>
             @{{this.username}}
          </a>
@@ -61,7 +61,7 @@
          <input type="checkbox" name="add_followers[]" value="{{_id}}">
          <a class="follower__profile">
             <div class="follower__profile-img-container">
-               <img class="profile__img" {{#if this.profileimage}}src="https://s3.amazonaws.com/hryzn-app-static-assets/{{this.profileimage}}"{{else}}src="/img/site/hryzn-placeholder-01.jpg"{{/if}} />
+               <img class="profile__img" {{#if this.profileimage}}src="https://ik.imagekit.io/w07am55tja/{{this.profileimage}}?tr=w-100"{{else}}src="/img/site/hryzn-placeholder-01.jpg"{{/if}} />
             </div>
             @{{this.username}}
          </a>
@@ -82,8 +82,8 @@
             <div class="masonryItem ownProject" title="{{project_title}}">
                <div class="micropost">
                   <div class="micropost_card {{#if micro_image}}card_is_micro_image{{else}}{{#if micro_audio}}card_is_micro_audio{{else}}{{#if micro_video}}card_is_micro_video{{else}}card_is_micro_text{{/if}}{{/if}}{{/if}}">
-                     {{#if micro_image}}<img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{micro_image}}" class="img-responsive" alt="{{micro_body}}" />{{/if}}
-                     {{#if thumbnail_image}}<img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{thumbnail_image}}" class="img-responsive" alt="{{micro_body}}" />{{/if}}
+                     {{#if micro_image}}<img src="https://ik.imagekit.io/w07am55tja/{{micro_image}}?tr=w-450" class="img-responsive" alt="{{micro_body}}" />{{/if}}
+                     {{#if thumbnail_image}}<img src="https://ik.imagekit.io/w07am55tja/{{thumbnail_image}}?tr=w-450" class="img-responsive" alt="{{micro_body}}" />{{/if}}
                      {{#if micro_video}}<div class="micro_play_btn"><img class="topnav__icon" src="/icons/play-button-white.png" /></div>{{/if}}
                      {{#if micro_audio}}<div class="micro_play_btn"><img class="topnav__icon" src="/icons/audio-button-white.png" /></div>{{/if}}
                      {{#if project_title}}<p class="micro_title">{{project_title}}</p>{{/if}}
@@ -95,7 +95,7 @@
             {{else}}
             <div class="masonryItem ownProject" title="{{project_title}}">
                <div class="project_card">
-                  <img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{#if thumbnail_image}}{{thumbnail_image}}{{else}}{{project_image}}{{/if}}" class="img-responsive" alt="{{project_title}}" />
+                  <img src="https://ik.imagekit.io/w07am55tja/{{#if thumbnail_image}}{{thumbnail_image}}{{else}}{{project_image}}{{/if}}?tr=w-450" class="img-responsive" alt="{{project_title}}" />
                   <div class="project_card_bottom">
                      <div class="project_bottom_wrapper">
                         <div class="bg_overlay"></div>
@@ -128,8 +128,8 @@
             <div class="masonryItem ownProject" title="{{project_title}}">
                <div class="micropost">
                   <div class="micropost_card {{#if micro_image}}card_is_micro_image{{else}}{{#if micro_audio}}card_is_micro_audio{{else}}{{#if micro_video}}card_is_micro_video{{else}}card_is_micro_text{{/if}}{{/if}}{{/if}}">
-                     {{#if micro_image}}<img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{micro_image}}" class="img-responsive" alt="{{micro_body}}" />{{/if}}
-                     {{#if thumbnail_image}}<img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{thumbnail_image}}" class="img-responsive" alt="{{micro_body}}" />{{/if}}
+                     {{#if micro_image}}<img src="https://ik.imagekit.io/w07am55tja/{{micro_image}}?tr=w-450" class="img-responsive" alt="{{micro_body}}" />{{/if}}
+                     {{#if thumbnail_image}}<img src="https://ik.imagekit.io/w07am55tja/{{thumbnail_image}}?tr=w-450" class="img-responsive" alt="{{micro_body}}" />{{/if}}
                      {{#if micro_video}}<div class="micro_play_btn"><img class="topnav__icon" src="/icons/play-button-white.png" /></div>{{/if}}
                      {{#if micro_audio}}<div class="micro_play_btn"><img class="topnav__icon" src="/icons/audio-button-white.png" /></div>{{/if}}
                      {{#if project_title}}<p class="micro_title">{{project_title}}</p>{{/if}}
@@ -141,7 +141,7 @@
             {{else}}
             <div class="masonryItem ownProject" title="{{project_title}}">
                <div class="project_card">
-                  <img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{#if thumbnail_image}}{{thumbnail_image}}{{else}}{{project_image}}{{/if}}" class="img-responsive" alt="{{project_title}}" />
+                  <img src="https://ik.imagekit.io/w07am55tja/{{#if thumbnail_image}}{{thumbnail_image}}{{else}}{{project_image}}{{/if}}?tr=w-450" class="img-responsive" alt="{{project_title}}" />
                   <div class="project_card_bottom">
                      <div class="project_bottom_wrapper">
                         <div class="bg_overlay"></div>

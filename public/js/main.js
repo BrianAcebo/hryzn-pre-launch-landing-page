@@ -8,7 +8,6 @@ $(document).ready(function() {
    // Smoothscroll Duration
    var cfg = { scrollDuration : 800 };
 
-
    // Welcome Page Preloader
    $("html").addClass('cl-preload');
 
@@ -21,7 +20,7 @@ $(document).ready(function() {
       $("html").addClass('cl-loaded');
    });
 
-   // If loader stuck past 20 secs
+   // If loader stuck past 12 secs
    setTimeout(function() {
       $("#loader").fadeOut("slow", function() {
          $("#preloader").delay(300).fadeOut("slow");
@@ -29,7 +28,7 @@ $(document).ready(function() {
 
       $("html").removeClass('cl-preload');
       $("html").addClass('cl-loaded');
-   }, 20000);
+   }, 12000);
    /**********/
 
 
@@ -159,7 +158,7 @@ $(document).ready(function() {
       });
    });
 
-   // If loader stuck past 20 secs
+   // If loader stuck past 12 secs
    setTimeout(function() {
       $(".loader_wrapper").delay(300).fadeOut("slow", function() {
          $('.loader_overlay').delay(300).fadeOut("slow");
@@ -168,7 +167,7 @@ $(document).ready(function() {
       $(".projects_loader").delay(300).fadeOut("slow", function() {
          $('.loader_overlay').delay(300).fadeOut("slow");
       });
-   }, 20000);
+   }, 12000);
    /**********/
 
 
@@ -919,7 +918,12 @@ $(document).ready(function() {
 
       console.log($collection);
    });
-
   /**********/
+
+  // Check if project background color was clicked
+  $("#profile_project_background_color").on('change', function () {
+     $("#color_was_chosen").val('true');
+  });
+/**********/
 
 });

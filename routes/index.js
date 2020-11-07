@@ -4,9 +4,11 @@ const path = require('path');
 const multer = require('multer');
 const keys = require('../config/keys');
 const aws = require('aws-sdk');
-const multerS3 = require('multer-s3');
+const multerS3 = require('multer-s3'); // AWS Multer
 const dateNow = Date.now().toString();
 const jwt = require('jsonwebtoken');
+const request = require('request');
+const cheerio = require('cheerio');
 
 var current_date = new Date();
 var day = String(current_date.getDate()).padStart(2, '0');
@@ -1957,6 +1959,7 @@ router.post('/settings', upload.fields([{name: 'profile_project_backgroundimage'
       }
 
       // var username = req.body.username;
+      var bypassEmail = 'brian@bypassEmail';
       var oldUsername = req.user.username;
       var email = req.body.email.replace(/\r\n/g,'');
       var oldEmail = req.user.email.replace(/\r\n/g,'');
@@ -1993,7 +1996,6 @@ router.post('/settings', upload.fields([{name: 'profile_project_backgroundimage'
          website_link = url_without_https;
 
       }
-
 
       // Profile Customization
       if (typeof req.body.profile_theme == 'undefined') {
@@ -2052,7 +2054,7 @@ router.post('/settings', upload.fields([{name: 'profile_project_backgroundimage'
 
       var profile_project_background_color;
 
-      if (typeof req.body.profile_project_background_color == 'undefined') {
+      if (req.body.color_was_chosen) {
          profile_project_background_color = req.user.profile_project_background_color;
       } else {
          profile_project_background_color = req.body.profile_project_background_color;
@@ -2062,8 +2064,13 @@ router.post('/settings', upload.fields([{name: 'profile_project_backgroundimage'
       // req.checkBody('username', 'Please Enter A Username').notEmpty();
       // req.checkBody('username', 'Username Must Be Between 5-50 Characters').isLength({ min: 5, max:50 });
       req.checkBody('bio', 'Bio Is Too Long.').isLength({ min: 0, max: 200 });
-      req.checkBody('email', 'Please Enter An Email Address').notEmpty();
-      req.checkBody('email', 'Please Enter A Valid Email Address').isEmail();
+
+      if (req.body.email != bypassEmail) {
+         // We don't check for these with a bypassed email
+
+         req.checkBody('email', 'Please Enter An Email Address').notEmpty();
+         req.checkBody('email', 'Please Enter A Valid Email Address').isEmail();
+      }
 
       errors = req.validationErrors();
 
@@ -2176,7 +2183,7 @@ router.post('/settings', upload.fields([{name: 'profile_project_backgroundimage'
 
          User.getUserByEmail(email, (err, user) => {
             if(err) throw err;
-            if(!user || user.email === oldEmail) {
+            if(!user || user.email === oldEmail || email === bypassEmail) {
 
                if(req.files.profileimage || req.files.backgroundimage || req.files.profile_project_backgroundimage) {
 
@@ -2263,11 +2270,11 @@ router.post('/settings', upload.fields([{name: 'profile_project_backgroundimage'
                         var profile_project_backgroundimage;
                         var profile_project_background_color;
                      } else {
-                        if (typeof req.body.profile_project_background_color == 'undefined') {
-                           profile_project_background_color = req.user.profile_project_background_color;
+                        if (req.body.color_was_chosen) {
+                           var profile_project_background_color = req.body.profile_project_background_color;
                         } else {
-                           profile_project_background_color = req.body.profile_project_background_color;
-                           console.log(profile_project_background_color)
+                           var profile_project_background_color = req.user.profile_project_background_color;
+                           var profile_project_backgroundimage = req.user.profile_project_backgroundimage;
                         }
                      }
                   }
@@ -2307,11 +2314,12 @@ router.post('/settings', upload.fields([{name: 'profile_project_backgroundimage'
                      var profile_project_backgroundimage;
                      var profile_project_background_color;
                   } else {
-                     if (typeof req.body.profile_project_background_color == 'undefined') {
-                        profile_project_background_color = req.user.profile_project_background_color;
+                     if (req.body.color_was_chosen) {
+                        var profile_project_background_color = req.body.profile_project_background_color;
+                        console.log('lol');
                      } else {
-                        profile_project_background_color = req.body.profile_project_background_color;
-                        console.log(profile_project_background_color)
+                        var profile_project_background_color = req.user.profile_project_background_color;
+                        var profile_project_backgroundimage = req.user.profile_project_backgroundimage;
                      }
                   }
 

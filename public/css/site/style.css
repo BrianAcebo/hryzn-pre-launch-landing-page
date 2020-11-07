@@ -775,7 +775,7 @@ blockquote {
    z-index: 999998;
    top: 0;
    left: 0;
-   background: #fff;
+   background: #31375A;
    overflow-y: hidden;
    transition: 0.5s;
 }
@@ -788,6 +788,76 @@ blockquote {
    position: relative;
    width: 100%;
    height: 100%;
+}
+
+.box {
+  height: 280px;
+  width: 280px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+  background: #ffe2a4;
+  border-radius: 100%;
+  overflow: hidden;
+}
+.box .water {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  -webkit-transform: translate(0, 50%);
+          transform: translate(0, 50%);
+  background: #3d57b5;
+  -webkit-transition: all .3s;
+  transition: all .3s;
+}
+.box .water_wave {
+  width: 200%;
+  position: absolute;
+  bottom: 100%;
+}
+.box .water_wave_back {
+  right: 0;
+  fill: #c1c5dd;
+  -webkit-animation: wave-back 1.4s infinite linear;
+          animation: wave-back 1.4s infinite linear;
+}
+.box .water_wave_front {
+  left: 0;
+  fill: #3d57b5;
+  margin-bottom: -1px;
+  -webkit-animation: wave-front .7s infinite linear;
+          animation: wave-front .7s infinite linear;
+}
+
+@-webkit-keyframes wave-front {
+  100% {
+    -webkit-transform: translate(-50%, 0);
+            transform: translate(-50%, 0);
+  }
+}
+
+@keyframes wave-front {
+  100% {
+    -webkit-transform: translate(-50%, 0);
+            transform: translate(-50%, 0);
+  }
+}
+@-webkit-keyframes wave-back {
+  100% {
+    -webkit-transform: translate(50%, 0);
+            transform: translate(50%, 0);
+  }
+}
+@keyframes wave-back {
+  100% {
+    -webkit-transform: translate(50%, 0);
+            transform: translate(50%, 0);
+  }
 }
 
 .loader {
@@ -811,10 +881,11 @@ blockquote {
 .loader_text {
    font-size: 16px;
    position: absolute;
-   top: 65%;
+   top: 75%;
    left: 0;
    right: 0;
    text-align: center;
+   color: #fff;
    padding: 0 15px;
 }
 

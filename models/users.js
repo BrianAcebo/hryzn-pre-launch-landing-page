@@ -107,6 +107,9 @@ const UserSchema = mongoose.Schema({
    },
    profile_project_background_color: {
       type: String
+   },
+   is_cc_profile: {
+      type: Boolean
    }
 });
 
@@ -146,6 +149,19 @@ module.exports.saveUser = (newUser, callback) => {
       console.log('User Saved');
       newUser.save(callback);
    });
+}
+
+module.exports.updateUser = (info, callback) => {
+   profileUsername = info['profileUsername'];
+   const query = { username: profileUsername };
+
+   User.findOneAndUpdate(query,
+      {
+         $addToSet: {"is_cc_profile": true},
+      },
+      { safe: true, upsert: true },
+      callback
+   );
 }
 
 // Create Project

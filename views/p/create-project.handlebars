@@ -1,9 +1,3 @@
-<div class="create_loader loader_overlay">
-   <div class="loader_wrapper">
-      <div class="loader"></div>
-   </div>
-</div>
-
 <form id="createProjectForm" method="post" class="edit-project-form" action="/p/create-project/blog" enctype="multipart/form-data">
    <div class="form__container">
 
@@ -72,12 +66,12 @@
         <p class="form__input-small" id="changeText">A public project can be viewed by anyone</p>
 
         {{! Project Image }}
-        <label for="project_image" class="form__label">Add Project Image 1000px by 550px min. <span class="form_span_descriptor">* Required *</span></label>
+        <label for="project_image" class="form__label">Add Project Image <span class="form_span_descriptor">* Required *</span></label>
         <input id="projectImage" class="form__input" type="file" name="project_image" value="{{project.project_image}}" />
 
 
         {{! Thumbnail Image }}
-        <label for="thumbnail_image" class="form__label">Add Thumbnail Image 300px by 450px min. <span class="form_span_descriptor">( Optional )</span></label>
+        <label for="thumbnail_image" class="form__label">Add Thumbnail Image <span class="form_span_descriptor">( Optional )</span></label>
         <input id="thumbnailImage" class="form__input" type="file" name="thumbnail_image" value="{{project.thumbnail_image}}"/>
 
 
@@ -137,29 +131,34 @@
 </form>
 <p class="go-back back-btn" style="margin-top: 50px;">Cancel</p>
 
-<!-- Loader Balls -->
 <div id="autoLoader" class="loader_project">
-   <div class='loader-container'>
-      <div class='ball-wrapper'>
-         <div class='ball-holder'>
-            <div class='ball'></div>
-         </div>
-         <div class='shadow'></div>
-      </div>
-
-      <div class='ball-wrapper'>
-         <div class='ball-holder'>
-            <div class='ball'></div>
-         </div>
-         <div class='shadow'></div>
-      </div>
-
-      <div class='ball-wrapper'>
-         <div class='ball-holder'>
-            <div class='ball'></div>
-         </div>
-         <div class='shadow'></div>
-      </div>
-      <p id="autoText" class="loader_text">Thank you, please wait the computer is doing its thing.</p>
-   </div>
+<svg xml:space="preserve" style="height: 100%; width: 100%; background: #31375A; shape-rendering: auto;" viewBox="0 0 128 128" y="0px" x="0px" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" id="圖層_1" version="1.1" width="156px" height="156px"><g class="ldl-scale" style="transform-origin: 50% 50%; transform: rotate(0deg) scale(0.3, 0.3);"><g class="ldl-ani"><style type="text/css">.st0{fill:none}.st1,.st2{stroke:#000;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10}.st1{stroke-width:3;fill:#e8f0c5}.st2{fill:none}.st2,.st3,.st4{stroke-width:3}.st3{stroke:#000;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;fill:#fce9f2}.st4{fill:#fff}.st4,.st5,.st6{stroke:#000;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10}.st5{fill:#ef66b2;stroke-width:3}.st6{stroke-width:.25}</style><g class="ldl-layer"><g class="ldl-ani" style="transform-origin: 64px 64px; transform: matrix(1, 0, 0, 1, 0, 0); animation: 1.72414s linear -1.35591s infinite normal forwards running bounce-09824019-aabd-4b50-b18d-7e789b3ef72a;"><path d="z" class="st0"></path></g></g><g class="ldl-layer"><g class="ldl-ani"><g><g class="ldl-layer"><g class="ldl-ani"><g><g class="ldl-layer"><g class="ldl-ani" style="transform-origin: 64px 64px; transform: matrix(1, 0, 0, 1, 0, 0); animation: 1.72414s linear -1.38424s infinite normal forwards running bounce-09824019-aabd-4b50-b18d-7e789b3ef72a;"><circle r="41.6" cy="53.9" cx="75.2" class="st1" style="fill: rgb(255, 255, 255); stroke: rgb(0, 0, 0);"></circle></g></g><g class="ldl-layer"><g class="ldl-ani" style="transform-origin: 64px 64px; transform: matrix(1, 0, 0, 1, 0, 0); animation: 1.72414s linear -1.41256s infinite normal forwards running bounce-09824019-aabd-4b50-b18d-7e789b3ef72a;"><path d="M75.1,12.3l0.2,12.8" class="st2" style="stroke: rgb(0, 0, 0);"></path></g></g><g class="ldl-layer"><g class="ldl-ani" style="transform-origin: 64px 64px; transform: matrix(1, 0, 0, 1, 0, 0); animation: 1.72414s linear -1.44089s infinite normal forwards running bounce-09824019-aabd-4b50-b18d-7e789b3ef72a;"><path d="M33.6,54l12.8-0.2" class="st2" style="stroke: rgb(0, 0, 0);"></path></g></g><g class="ldl-layer"><g class="ldl-ani" style="transform-origin: 64px 64px; transform: matrix(1, 0, 0, 1, 0, 0); animation: 1.72414s linear -1.46921s infinite normal forwards running bounce-09824019-aabd-4b50-b18d-7e789b3ef72a;"><path d="M76.6,95.5l-0.2-12.8" class="st2" style="stroke: rgb(0, 0, 0);"></path></g></g><g class="ldl-layer"><g class="ldl-ani" style="transform-origin: 64px 64px; transform: matrix(1, 0, 0, 1, 0, 0); animation: 1.72414s linear -1.49754s infinite normal forwards running bounce-09824019-aabd-4b50-b18d-7e789b3ef72a;"><path d="M116.8,52.5L104,52.7" class="st2" style="stroke: rgb(0, 0, 0);"></path></g></g></g></g></g><g class="ldl-layer"><g class="ldl-ani" style="transform-origin: 64px 64px; transform: matrix(1, 0, 0, 1, 0, 0); animation: 1.72414s linear -1.52586s infinite normal forwards running bounce-09824019-aabd-4b50-b18d-7e789b3ef72a;"><path d="M56.8,43.2L76,54.7" class="st2" style="stroke: rgb(0, 0, 0);"></path></g></g><g class="ldl-layer"><g class="ldl-ani" style="transform-origin: 64px 64px; transform: matrix(1, 0, 0, 1, 0, 0); animation: 1.72414s linear -1.55419s infinite normal forwards running bounce-09824019-aabd-4b50-b18d-7e789b3ef72a;"><path d="M102.9,38.1L76,54.7" class="st2" style="stroke: rgb(0, 0, 0);"></path></g></g></g></g></g><g class="ldl-layer"><g class="ldl-ani"><g><g class="ldl-layer"><g class="ldl-ani" style="transform-origin: 64px 64px; transform: matrix(1, 0, 0, 1, 0, 0); animation: 1.72414s linear -1.58251s infinite normal forwards running bounce-09824019-aabd-4b50-b18d-7e789b3ef72a;"><path d="M63.8,90.7c-0.2-11.2-11.2-20-24.7-19.8C29,71.1,20.5,76.5,16.9,83.9l-2.5,0c-1.8,0-3.3,1.5-3.2,3.3l0.1,8.2 c0,1.8,1.5,3.2,3.4,3.2l2.1,0c1.6,3.4,4.2,6.4,7.6,8.6l-1.5,5.9l11.1,2.7l1.4-5.5c1.1,0.5,2.6,1,4.4,1.2c3.5,0.4,6.3-0.6,7.7-1.2 l1.5,5.2l11-3.1l-2.3-7.9C61.6,100.7,63.9,96,63.8,90.7z" class="st3" style="fill: rgb(252, 233, 242); stroke: rgb(0, 0, 0);"></path></g></g><g class="ldl-layer"><g class="ldl-ani" style="transform-origin: 64px 64px; transform: matrix(1, 0, 0, 1, 0, 0); animation: 1.72414s linear -1.61084s infinite normal forwards running bounce-09824019-aabd-4b50-b18d-7e789b3ef72a;"><path d="M46.2,78.9c-2.1-1.1-4.4-1.6-6.6-1.3c-0.4,0.1-0.9,0.2-1.3,0.3" class="st4" style="fill: rgb(255, 255, 255); stroke: rgb(0, 0, 0);"></path></g></g><g class="ldl-layer"><g class="ldl-ani" style="transform-origin: 64px 64px; transform: matrix(1, 0, 0, 1, 0, 0); animation: 1.72414s linear -1.63916s infinite normal forwards running bounce-09824019-aabd-4b50-b18d-7e789b3ef72a;"><path d="M29,69.2c-2.9-2.3-7.2-1.8-9.5,1.2c0,0,0,0,0,0l10.7,8.4C32.5,75.7,32,71.5,29,69.2C29,69.2,29,69.2,29,69.2z" class="st5" style="fill: rgb(239, 102, 178); stroke: rgb(0, 0, 0);"></path></g></g><g class="ldl-layer"><g class="ldl-ani" style="transform-origin: 64px 64px; transform: matrix(1, 0, 0, 1, 0, 0); animation: 1.72414s linear -1.66749s infinite normal forwards running bounce-09824019-aabd-4b50-b18d-7e789b3ef72a;"><circle r="2.4" cy="85.3" cx="26" class="st6" style="fill: rgb(0, 0, 0); stroke: rgb(0, 0, 0);"></circle></g></g><g class="ldl-layer"><g class="ldl-ani" style="transform-origin: 64px 64px; transform: matrix(1, 0, 0, 1, 0, 0); animation: 1.72414s linear -1.69581s infinite normal forwards running bounce-09824019-aabd-4b50-b18d-7e789b3ef72a;"><path d="M57.4,77.6c0.2-2.6,1.8-4.9,3.7-6.7c1-1,2.4-1.8,3.8-1.4c1.1,0.4,1.8,1.6,1.9,2.7c0.1,1.2-0.3,2.5-1.3,3.1 c-0.9,0.6-2.1,0.4-3-0.2c-0.9-0.6-1.5-1.6-1.7-2.6c-0.6-2.2,0.2-4.7,2-6.1c0.6-0.5,1.3-0.8,2-0.8" class="st2" style="stroke: rgb(0, 0, 0);"></path></g></g></g></g></g><g class="ldl-layer"><g class="ldl-ani" style="transform-origin: 64px 64px; transform: matrix(1, 0, 0, 1, 0, 0); animation: 1.72414s linear -1.72414s infinite normal forwards running bounce-09824019-aabd-4b50-b18d-7e789b3ef72a;"><path d="z" class="st0"></path></g></g><metadata xmlns:d="https://loading.io/stock/">
+<d:name>wait</d:name>
+<d:tags>wait,investment,time,fundraising,crowdfunding</d:tags>
+<d:license>by</d:license>
+<d:slug>etw3ij</d:slug>
+</metadata></g></g><style id="bounce-09824019-aabd-4b50-b18d-7e789b3ef72a" data-anikit="">@keyframes bounce-09824019-aabd-4b50-b18d-7e789b3ef72a
+{
+  0% {
+    animation-timing-function: cubic-bezier(0.1361,0.2514,0.2175,0.8786);
+    transform: translate(0,0px) scaleY(1);
+  }
+  37% {
+    animation-timing-function: cubic-bezier(0.7674,0.1844,0.8382,0.7157);
+    transform: translate(0,-39.96px) scaleY(1);
+  }
+  72% {
+    animation-timing-function: cubic-bezier(0.1118,0.2149,0.2172,0.941);
+    transform: translate(0,0px) scaleY(1);
+  }
+  87% {
+    animation-timing-function: cubic-bezier(0.7494,0.2259,0.8209,0.6963);
+    transform: translate(0,19.900000000000002px) scaleY(0.602);
+  }
+  100% {
+    transform: translate(0,0px) scaleY(1);
+  }
+}</style>
+</svg>
+<p id="autoText" class="loader_text">Thank you, please wait the computer is doing its thing.</p>
 </div>

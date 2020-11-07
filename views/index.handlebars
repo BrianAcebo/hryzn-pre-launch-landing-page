@@ -1,6 +1,24 @@
+{{! Water Loader }}
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" style="display: none;">
+  <symbol id="wave">
+    <path d="M420,20c21.5-0.4,38.8-2.5,51.1-4.5c13.4-2.2,26.5-5.2,27.3-5.4C514,6.5,518,4.7,528.5,2.7c7.1-1.3,17.9-2.8,31.5-2.7c0,0,0,0,0,0v20H420z"></path>
+    <path d="M420,20c-21.5-0.4-38.8-2.5-51.1-4.5c-13.4-2.2-26.5-5.2-27.3-5.4C326,6.5,322,4.7,311.5,2.7C304.3,1.4,293.6-0.1,280,0c0,0,0,0,0,0v20H420z"></path>
+    <path d="M140,20c21.5-0.4,38.8-2.5,51.1-4.5c13.4-2.2,26.5-5.2,27.3-5.4C234,6.5,238,4.7,248.5,2.7c7.1-1.3,17.9-2.8,31.5-2.7c0,0,0,0,0,0v20H140z"></path>
+    <path d="M140,20c-21.5-0.4-38.8-2.5-51.1-4.5c-13.4-2.2-26.5-5.2-27.3-5.4C46,6.5,42,4.7,31.5,2.7C24.3,1.4,13.6-0.1,0,0c0,0,0,0,0,0l0,20H140z"></path>
+  </symbol>
+</svg>
 <div class="loader_overlay">
    <div class="loader_wrapper">
-      <div class="loader"></div>
+      <div class="box">
+        <div id="water" class="water">
+          <svg viewBox="0 0 560 20" class="water_wave water_wave_back">
+            <use xlink:href="#wave"></use>
+          </svg>
+          <svg viewBox="0 0 560 20" class="water_wave water_wave_front">
+            <use xlink:href="#wave"></use>
+          </svg>
+        </div>
+      </div>
       <p class="loader_text loader_text-1">Our robots are looking for the cool stuff.</p>
       <p class="loader_text loader_text-2">I hope you're having a nice day.</p>
       <p class="loader_text loader_text-3">Soon the computers will just take over.</p>
@@ -8,6 +26,7 @@
       <p class="loader_text loader_text-5">Your hair looks pretty.</p>
    </div>
 </div>
+{{! /Water Loader }}
 
 {{#if user.completed_interest_onboarding}}
 {{else}}
@@ -150,7 +169,7 @@
                   <div class="masonryItem ownProject" title="{{../project_title}}" >
                      <div class="project_avatar_left">
                         <a href="/profile/{{../project_owner}}">
-                           <img class="project_avatar_img" src="https://s3.amazonaws.com/hryzn-app-static-assets/{{../project_owner_profile_image}}" />
+                           <img class="project_avatar_img" src="https://ik.imagekit.io/w07am55tja/{{../project_owner_profile_image}}?tr=w-75" />
                         </a>
                      </div>
 
@@ -164,8 +183,8 @@
                               </a>
 
                               <a href="/p/micro/{{../_id}}">
-                                 {{#if ../micro_image}}<img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{../micro_image}}" class="img-responsive" alt="{{../micro_body}}" />{{/if}}
-                                 {{#if ../thumbnail_image}}<img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{../thumbnail_image}}" class="img-responsive" alt="{{../micro_body}}" />{{/if}}
+                                 {{#if ../micro_image}}<img src="https://ik.imagekit.io/w07am55tja/{{../micro_image}}?tr=w-650" class="img-responsive" alt="{{../micro_body}}" />{{/if}}
+                                 {{#if ../thumbnail_image}}<img src="https://ik.imagekit.io/w07am55tja/{{../thumbnail_image}}?tr=w-650" class="img-responsive" alt="{{../micro_body}}" />{{/if}}
                                  {{#if ../micro_video}}<div class="micro_play_btn"><img class="topnav__icon" src="/img/icons/play-button-white.png" /></div>{{/if}}
                                  {{#if ../micro_audio}}<div class="micro_play_btn"><img class="topnav__icon" src="/icons/audio-button-white.png" /></div>{{/if}}
                               </a>
@@ -179,7 +198,7 @@
                <div class="masonryItem ownProject" title="{{project_title}}" >
                   <div class="project_avatar_left">
                      <a href="/profile/{{project_owner}}">
-                        <img class="project_avatar_img" src="https://s3.amazonaws.com/hryzn-app-static-assets/{{project_owner_profile_image}}" />
+                        <img class="project_avatar_img" src="https://ik.imagekit.io/w07am55tja/{{project_owner_profile_image}}?tr=w-75" />
                      </a>
                   </div>
 
@@ -192,8 +211,8 @@
                               {{#if micro_body}}<p class="micro_body">{{{micro_body}}}</p>{{/if}}
                            </a>
                            <a href="/p/micro/{{_id}}" style="width: 100%;">
-                              {{#if micro_image}}<img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{micro_image}}" class="img-responsive" alt="{{micro_body}}" />{{/if}}
-                              {{#if thumbnail_image}}<img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{thumbnail_image}}" class="img-responsive" alt="{{micro_body}}" />{{/if}}
+                              {{#if micro_image}}<img src="https://ik.imagekit.io/w07am55tja/{{micro_image}}?tr=w-650" class="img-responsive" alt="{{micro_body}}" />{{/if}}
+                              {{#if thumbnail_image}}<img src="https://ik.imagekit.io/w07am55tja/{{thumbnail_image}}?tr=w-650" class="img-responsive" alt="{{micro_body}}" />{{/if}}
                               {{#if micro_video}}<div class="micro_play_btn"><img class="topnav__icon" src="/icons/play-button-white.png" /></div>{{/if}}
                               {{#if micro_audio}}<div class="micro_play_btn"><img class="topnav__icon" src="/icons/audio-button-white.png" /></div>{{/if}}
                            </a>
@@ -213,7 +232,7 @@
                         <div class="masonryItem ownProject" title="{{../project_title}}" >
                            <div class="project_avatar_left">
                               <a href="/profile/{{../project_owner}}">
-                                 <img class="project_avatar_img" src="https://s3.amazonaws.com/hryzn-app-static-assets/{{../project_owner_profile_image}}" />
+                                 <img class="project_avatar_img" src="https://ik.imagekit.io/w07am55tja/{{../project_owner_profile_image}}?tr=w-75" />
                               </a>
                            </div>
 
@@ -221,7 +240,7 @@
                               <a class="micro_tag {{#if project_title}}micro_tag_w_title{{/if}}" href="/profile/{{../project_owner}}">@{{../project_owner}}</a>
                               <div class="project_card">
                                  <a href="/p/details/{{../id}}" class="project_link">
-                                    <img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{#if ../thumbnail_image}}{{../thumbnail_image}}{{else}}{{../project_image}}{{/if}}" class="img-responsive" alt="{{../project_title}}" />
+                                    <img src="https://ik.imagekit.io/w07am55tja/{{#if ../thumbnail_image}}{{../thumbnail_image}}{{else}}{{../project_image}}{{/if}}?tr=w-650" class="img-responsive" alt="{{../project_title}}" />
                                  </a>
                                  <div class="project_card_bottom">
                                     <div class="project_bottom_wrapper">
@@ -243,7 +262,7 @@
                   <div class="masonryItem ownProject" title="{{project_title}}" >
                      <div class="project_avatar_left">
                         <a href="/profile/{{project_owner}}">
-                           <img class="project_avatar_img" src="https://s3.amazonaws.com/hryzn-app-static-assets/{{project_owner_profile_image}}" />
+                           <img class="project_avatar_img" src="https://ik.imagekit.io/w07am55tja/{{project_owner_profile_image}}?tr=w-75" />
                         </a>
                      </div>
 
@@ -251,7 +270,7 @@
                         <a class="micro_tag {{#if project_title}}micro_tag_w_title{{/if}}" href="/profile/{{project_owner}}">@{{project_owner}}</a>
                         <div class="project_card">
                            <a href="/p/details/{{id}}" class="project_link">
-                              <img src="https://s3.amazonaws.com/hryzn-app-static-assets/{{#if thumbnail_image}}{{thumbnail_image}}{{else}}{{project_image}}{{/if}}" class="img-responsive" alt="{{project_title}}" />
+                              <img src="https://ik.imagekit.io/w07am55tja/{{#if thumbnail_image}}{{thumbnail_image}}{{else}}{{project_image}}{{/if}}?tr=w-650" class="img-responsive" alt="{{project_title}}" />
                            </a>
                            <div class="project_card_bottom">
                               <div class="project_bottom_wrapper">
