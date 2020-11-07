@@ -435,7 +435,7 @@ blockquote {
 }
 
 #mainWelcome {
-   padding: 125px 25px;
+   padding: 125px 0;
 }
 
 #mainProject {

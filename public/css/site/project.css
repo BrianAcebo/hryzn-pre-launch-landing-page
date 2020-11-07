@@ -154,6 +154,10 @@
    border-radius: 15px;
 }
 
+.explore_main .micropost_card img {
+   border: 1px solid #ccc;
+}
+
 .project_card_bottom {
    position: absolute;
    width: 100%;
@@ -1030,6 +1034,10 @@ section.project {
    border-radius: 15px;
 }
 
+.explore_main .micropost_card {
+   background: transparent;
+}
+
 .micropost .comment_box {
    display: none;
 }
@@ -1110,6 +1118,12 @@ section.project {
    line-height: 25px;
 }
 
+.explore_main .micropost_card .micro_title {
+   font-size: 14px;
+   margin: 10px 5px 5px 5px;
+   line-height: 18px;
+}
+
 .index_feed .micropost_card .micro_title {
    font-weight: 700;
    color: #333;
@@ -1126,6 +1140,10 @@ section.project {
 
 .micropost_card.card_is_micro_text {
    border: 1px solid #ccc;
+}
+
+.explore_main .micropost_card.card_is_micro_text {
+   background: #fff;
 }
 
 .micropost_card.card_is_micro_image .micro_body {
@@ -1150,6 +1168,11 @@ section.project {
    line-height: 16px;
    display: inline-block;
    margin: 5px 0;
+}
+
+.explore_main .micro_tag {
+   font-size: 12px;
+   margin: 0;
 }
 
 .index_feed .micro_tag {

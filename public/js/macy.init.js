@@ -2,7 +2,7 @@
 if (window.innerWidth > 768) {
    var margin = 35;
 } else {
-   var margin = 15;
+   var margin = 18;
 }
 
 var masCon = document.getElementById("masonryContainer").offsetWidth;
