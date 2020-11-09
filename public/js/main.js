@@ -984,7 +984,7 @@ $('.project_action_btn.btn_p_submit').each(function() {
         project_id: $projectId,
         project_owner: $projectOwner
       }, function(data, status) {
-        alert("Data: " + data + "\nStatus: " + status);
+
       });
 
    });
@@ -1016,7 +1016,7 @@ $("#repostForm .repost_submit").click(function() {
      project_owner: $('#repostProjectOwner').val(),
      repost_to: $('#repostForm select').val()
    }, function(data, status) {
-     alert("Data: " + data + "\nStatus: " + status);
+
    });
 });
 
@@ -1038,7 +1038,7 @@ $("#unrepostForm .unrepost_btn").click(function() {
         username: $('#unrepostUsername').val(),
         project_id: $('#unrepostProjectId').val()
       }, function(data, status) {
-        alert("Data: " + data + "\nStatus: " + status);
+        
       });
    }
 });
