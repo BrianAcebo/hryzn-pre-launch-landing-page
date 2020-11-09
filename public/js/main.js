@@ -535,17 +535,17 @@ $(document).ready(function() {
          $("#repostForm #repostUsername").val($modalRepostUsername);
          $("#repostForm #repostProjectId").val($modalRepostProjectId);
          $("#repostForm #repostProjectOwner").val($modalRepostProjectOwner);
+         $("#repostForm #repostUserPosted").val($modalRepostUserReposted);
 
          $('#repostForm').attr('action', '/p/details/micro/repost/' + $modalRepostProjectId);
 
          if ($modalRepostUserReposted == 'true') {
-            $('#unrepostForm').attr('action', '/p/details/micro/repost/' + $modalRepostProjectId);
+            $('#unrepostForm').attr('action', '/p/details/micro/unrepost/' + $modalRepostProjectId);
 
             $("#unrepostForm #unrepostUsername").val($modalRepostUsername);
             $("#unrepostForm #unrepostProjectId").val($modalRepostProjectId);
          }
 
-         console.log($modalRepostUserReposted);
       });
    });
 
@@ -982,7 +982,8 @@ $('.project_action_btn.btn_p_submit').each(function() {
       $.post($action, {
         username: $projectUsername,
         project_id: $projectId,
-        project_owner: $projectOwner
+        project_owner: $projectOwner,
+        ajax: true
       }, function(data, status) {
 
       });
@@ -1014,7 +1015,8 @@ $("#repostForm .repost_submit").click(function() {
      username: $('#repostUsername').val(),
      project_id: $('#repostProjectId').val(),
      project_owner: $('#repostProjectOwner').val(),
-     repost_to: $('#repostForm select').val()
+     repost_to: $('#repostForm select').val(),
+     ajax: true
    }, function(data, status) {
 
    });
@@ -1036,9 +1038,10 @@ $("#unrepostForm .unrepost_btn").click(function() {
 
       $.post($('#unrepostForm').attr('action'), {
         username: $('#unrepostUsername').val(),
-        project_id: $('#unrepostProjectId').val()
+        project_id: $('#unrepostProjectId').val(),
+        ajax: true
       }, function(data, status) {
-        
+
       });
    }
 });

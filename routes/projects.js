@@ -2302,6 +2302,8 @@ router.post('/details/micro/save/:id', (req, res, next) => {
       var project_owner = req.body.project_owner;
       var og_path = req.body.og_path;
 
+      var ajax = req.body.ajax;
+
       Project.findOne({ '_id': { $in: req.params.id} }, (err, project) => {
 
          if (project.saves.length) {
@@ -2319,6 +2321,7 @@ router.post('/details/micro/save/:id', (req, res, next) => {
                   // Remove save from project
                   Project.removeSaves(info, (err, user) => {
                      if(err) throw err;
+
                      req.flash('success_msg', "Project Unsaved");
                      res.redirect('/p/micro/' + req.params.id);
                   });
@@ -2359,7 +2362,7 @@ router.post('/details/micro/save/:id', (req, res, next) => {
                               if (err) throw err;
 
                               req.flash('success_msg', "Project Saved");
-                              res.redirect(og_path);
+                              res.redirect('/p/micro/' + req.params.id);
                            });
                         });
                      });
@@ -2404,7 +2407,7 @@ router.post('/details/micro/save/:id', (req, res, next) => {
                         if (err) throw err;
 
                         req.flash('success_msg', "Project Saved");
-                        res.redirect(og_path);
+                        res.redirect('/p/micro/' + req.params.id);
                      });
                   });
                });
@@ -2611,24 +2614,28 @@ router.post('/details/micro/unrepost/:id', (req, res, next) => {
       Project.findOne({ '_id': { $in: req.params.id} }, (err, project) => {
          if (err) throw err;
 
-         // If the project has any reposts
-         if (project.reposts.length > 0) {
-            if (project.reposts.indexOf(req.user.username) > -1) {
-               User.unrepostProject(info, (err, user) => {
-                  if(err) throw err;
-               });
+         if (project) {
+            // If the project has any reposts
+            if (project.reposts.length > 0) {
+               if (project.reposts.indexOf(req.user.username) > -1) {
+                  User.unrepostProject(info, (err, user) => {
+                     if(err) throw err;
+                  });
 
-               // Remove repost from project
-               Project.removeReposts(info, (err, user) => {
-                  if(err) throw err;
-                  req.flash('success_msg', "Unreposted Project");
-                  res.redirect(location_path);
-               });
+                  // Remove repost from project
+                  Project.removeReposts(info, (err, user) => {
+                     if(err) throw err;
+                     req.flash('success_msg', "Unreposted Project");
+                     res.redirect('/p/micro/' + req.body.project_id);
+                  });
+               } else {
+                  res.redirect('/p/micro/' + req.body.project_id);
+               }
             } else {
-               res.redirect(location_path);
+               res.redirect('/p/micro/' + req.body.project_id);
             }
          } else {
-            res.redirect(location_path);
+            res.redirect('/p/micro/' + req.body.project_id);
          }
       });
    } else {
@@ -2762,13 +2769,13 @@ router.post('/details/micro/repost/:id', (req, res, next) => {
                });
 
                req.flash('success_msg', "Reposted Project");
-               res.redirect(og_path);
+               res.redirect('/p/micro/' + req.params.id);
 
             });
 
          } else {
             req.flash('success_msg', "Reposted Project");
-            res.redirect(og_path);
+            res.redirect('/p/micro/' + req.params.id);
          }
 
       });
@@ -2909,6 +2916,8 @@ router.post('/details/micro/like/:id', (req, res, next) => {
 
       Project.findOne({ '_id': { $in: req.params.id} }, (err, project) => {
 
+         project_owner = project.project_owner;
+
          if (project.likes.length) {
 
             project.likes.forEach(function(user, key) {
@@ -2922,7 +2931,7 @@ router.post('/details/micro/like/:id', (req, res, next) => {
                   Project.removeLikes(info, (err, user) => {
                      if(err) throw err;
                      req.flash('success_msg', "Project Unliked");
-                     res.redirect(og_path);
+                     res.redirect('/p/micro/' + req.params.id);
                   });
                } else {
                   info = [];
@@ -2957,7 +2966,7 @@ router.post('/details/micro/like/:id', (req, res, next) => {
                               if (err) throw err;
 
                               req.flash('success_msg', "Project Liked");
-                              res.redirect(og_path);
+                              res.redirect('/p/micro/' + req.params.id);
                            });
                         });
                      });
@@ -3000,7 +3009,7 @@ router.post('/details/micro/like/:id', (req, res, next) => {
                         if (err) throw err;
 
                         req.flash('success_msg', "Project Liked");
-                        res.redirect(og_path);
+                        res.redirect('/p/micro/' + req.params.id);
                      });
                   });
                });
