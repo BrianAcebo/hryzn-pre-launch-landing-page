@@ -1696,7 +1696,7 @@ router.get('/micro/:id', (req, res, next) => {
 
                var admin_amount = project.admins.length;
 
-               if (typeof project.project_title != 'undefined') {
+               if (project.project_title != '' || project.project_title.length > 0) {
                   var project_title = project.project_title;
                } else {
                   var project_title = 'Explore';
@@ -2174,39 +2174,85 @@ router.post('/details/save/:id', (req, res, next) => {
       info['isPrivate'] = req.body.is_private;
       info['projectImage'] = req.body.project_image;
 
-      User.saveToProfile(info, (err, user) => {
-         if(err) throw err;
-      });
+      Project.findOne({ '_id': { $in: req.params.id} }, (err, project) => {
+         if (err) throw err;
 
-      // Add save to project
-      Project.addSaves(info, (err, user) => {
-         if(err) throw err;
+         // If the project has any saves
+         if (project.saves.length > 0) {
+            if (project.saves.indexOf(req.user.username) > -1) {
+               res.redirect('/p/details/' + req.body.project_id);
+            } else {
+               User.saveToProfile(info, (err, user) => {
+                  if(err) throw err;
+               });
 
-         // Send notification to the user mentioned
-         User.findOne({ 'username': { $in: project_owner} }, (err, reciever) => {
-            if (err) throw err;
+               // Add save to project
+               Project.addSaves(info, (err, user) => {
+                  if(err) throw err;
 
-            var newNotification = new Notification({
-               sender: req.user._id,
-               reciever: reciever._id,
-               type: '@' + req.user.username + ' saved your post.',
-               link: '/p/details/' + req.params.id,
-               date_sent: current_date
+                  // Send notification to the user mentioned
+                  User.findOne({ 'username': { $in: project_owner} }, (err, reciever) => {
+                     if (err) throw err;
+
+                     var newNotification = new Notification({
+                        sender: req.user._id,
+                        reciever: reciever._id,
+                        type: '@' + req.user.username + ' saved your post.',
+                        link: '/p/details/' + req.params.id,
+                        date_sent: current_date
+                     });
+
+                     // Create notification in database
+                     Notification.saveNotification(newNotification, (err, notification) => {
+                        if(err) throw err;
+
+                        // Add Notification for User
+                        User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+                           if (err) throw err;
+
+                           req.flash('success_msg', "Project Saved");
+                           res.redirect('/p/details/' + req.body.project_id);
+                        });
+                     });
+                  });
+               });
+            }
+         } else {
+            User.saveToProfile(info, (err, user) => {
+               if(err) throw err;
             });
 
-            // Create notification in database
-            Notification.saveNotification(newNotification, (err, notification) => {
+            // Add save to project
+            Project.addSaves(info, (err, user) => {
                if(err) throw err;
 
-               // Add Notification for User
-               User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+               // Send notification to the user mentioned
+               User.findOne({ 'username': { $in: project_owner} }, (err, reciever) => {
                   if (err) throw err;
 
-                  req.flash('success_msg', "Project Saved");
-                  res.redirect('/p/details/' + req.body.project_id);
+                  var newNotification = new Notification({
+                     sender: req.user._id,
+                     reciever: reciever._id,
+                     type: '@' + req.user.username + ' saved your post.',
+                     link: '/p/details/' + req.params.id,
+                     date_sent: current_date
+                  });
+
+                  // Create notification in database
+                  Notification.saveNotification(newNotification, (err, notification) => {
+                     if(err) throw err;
+
+                     // Add Notification for User
+                     User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+                        if (err) throw err;
+
+                        req.flash('success_msg', "Project Saved");
+                        res.redirect('/p/details/' + req.body.project_id);
+                     });
+                  });
                });
             });
-         });
+         }
       });
    } else {
       res.redirect('/users/register');
@@ -2220,15 +2266,28 @@ router.post('/details/unsave/:id', (req, res, next) => {
       info['profileUsername'] = req.user.username;
       info['projectId'] = req.body.project_id;
 
-      User.unsaveToProfile(info, (err, user) => {
-         if(err) throw err;
-      });
+      Project.findOne({ '_id': { $in: req.params.id} }, (err, project) => {
+         if (err) throw err;
 
-      // Remove save from project
-      Project.removeSaves(info, (err, user) => {
-         if(err) throw err;
-         req.flash('success_msg', "Project Unsaved");
-         res.redirect('/p/details/' + req.body.project_id);
+         // If the project has any saves
+         if (project.saves.length > 0) {
+            if (project.saves.indexOf(req.user.username) > -1) {
+               User.unsaveToProfile(info, (err, user) => {
+                  if(err) throw err;
+               });
+
+               // Remove save from project
+               Project.removeSaves(info, (err, user) => {
+                  if(err) throw err;
+                  req.flash('success_msg', "Project Unsaved");
+                  res.redirect('/p/details/' + req.body.project_id);
+               });
+            } else {
+               res.redirect('/p/details/' + req.body.project_id);
+            }
+         } else {
+            res.redirect('/p/details/' + req.body.project_id);
+         }
       });
    } else {
       res.redirect('/users/register');
@@ -2300,7 +2359,7 @@ router.post('/details/micro/save/:id', (req, res, next) => {
                               if (err) throw err;
 
                               req.flash('success_msg', "Project Saved");
-                              res.redirect('/p/micro/' + req.params.id);
+                              res.redirect(og_path);
                            });
                         });
                      });
@@ -2345,7 +2404,7 @@ router.post('/details/micro/save/:id', (req, res, next) => {
                         if (err) throw err;
 
                         req.flash('success_msg', "Project Saved");
-                        res.redirect('/p/micro/' + req.params.id);
+                        res.redirect(og_path);
                      });
                   });
                });
@@ -2506,15 +2565,28 @@ router.post('/details/unrepost/:id', (req, res, next) => {
       info['profileUsername'] = req.user.username;
       info['projectId'] = req.body.project_id;
 
-      User.unrepostProject(info, (err, user) => {
-         if(err) throw err;
-      });
+      Project.findOne({ '_id': { $in: req.params.id} }, (err, project) => {
+         if (err) throw err;
 
-      // Remove repost from project
-      Project.removeReposts(info, (err, user) => {
-         if(err) throw err;
-         req.flash('success_msg', "Unreposted Project");
-         res.redirect('/p/details/' + req.body.project_id);
+         // If the project has any reposts
+         if (project.reposts.length > 0) {
+            if (project.reposts.indexOf(req.user.username) > -1) {
+               User.unrepostProject(info, (err, user) => {
+                  if(err) throw err;
+               });
+
+               // Remove repost from project
+               Project.removeReposts(info, (err, user) => {
+                  if(err) throw err;
+                  req.flash('success_msg', "Unreposted Project");
+                  res.redirect('/p/details/' + req.body.project_id);
+               });
+            } else {
+               res.redirect('/p/details/' + req.params.id);
+            }
+         } else {
+            res.redirect('/p/details/' + req.params.id);
+         }
       });
    } else {
       res.redirect('/users/register');
@@ -2533,18 +2605,31 @@ router.post('/details/micro/unrepost/:id', (req, res, next) => {
       if (typeof og_path != 'undefined') {
          var location_path = og_path;
       } else {
-         var location_path = '/p/details/' + req.body.project_id;
+         var location_path = '/p/micro/' + req.body.project_id;
       }
 
-      User.unrepostProject(info, (err, user) => {
-         if(err) throw err;
-      });
+      Project.findOne({ '_id': { $in: req.params.id} }, (err, project) => {
+         if (err) throw err;
 
-      // Remove repost from project
-      Project.removeReposts(info, (err, user) => {
-         if(err) throw err;
-         req.flash('success_msg', "Unreposted Project");
-         res.redirect('/p/micro/' + req.params.id);
+         // If the project has any reposts
+         if (project.reposts.length > 0) {
+            if (project.reposts.indexOf(req.user.username) > -1) {
+               User.unrepostProject(info, (err, user) => {
+                  if(err) throw err;
+               });
+
+               // Remove repost from project
+               Project.removeReposts(info, (err, user) => {
+                  if(err) throw err;
+                  req.flash('success_msg', "Unreposted Project");
+                  res.redirect(location_path);
+               });
+            } else {
+               res.redirect(location_path);
+            }
+         } else {
+            res.redirect(location_path);
+         }
       });
    } else {
       res.redirect('/users/register');
@@ -2677,13 +2762,13 @@ router.post('/details/micro/repost/:id', (req, res, next) => {
                });
 
                req.flash('success_msg', "Reposted Project");
-               res.redirect('/p/micro/' + req.params.id);
+               res.redirect(og_path);
 
             });
 
          } else {
             req.flash('success_msg', "Reposted Project");
-            res.redirect('/p/micro/' + req.params.id);
+            res.redirect(og_path);
          }
 
       });
@@ -2706,35 +2791,77 @@ router.post('/details/like/:id', (req, res, next) => {
       info['isPrivate'] = req.body.is_private;
       info['projectImage'] = req.body.project_image;
 
-      // Add like to project
-      Project.addLikes(info, (err, user) => {
-         if(err) throw err;
+      Project.findOne({ '_id': { $in: req.params.id} }, (err, project) => {
+         if (err) throw err;
 
-         // Send notification to the user mentioned
-         User.findOne({ 'username': { $in: project_owner} }, (err, reciever) => {
-            if (err) throw err;
+         // If the project has any likes
+         if (project.likes.length > 0) {
+            if (project.likes.indexOf(req.user.username) > -1) {
+               res.redirect('/p/details/' + req.body.project_id);
+            } else {
+               // Add like to project
+               Project.addLikes(info, (err, user) => {
+                  if(err) throw err;
 
-            var newNotification = new Notification({
-               sender: req.user._id,
-               reciever: reciever._id,
-               type: '@' + req.user.username + ' liked your post.',
-               link: '/p/details/' + req.params.id,
-               date_sent: current_date
-            });
+                  // Send notification to the user mentioned
+                  User.findOne({ 'username': { $in: project_owner} }, (err, reciever) => {
+                     if (err) throw err;
 
-            // Create notification in database
-            Notification.saveNotification(newNotification, (err, notification) => {
+                     var newNotification = new Notification({
+                        sender: req.user._id,
+                        reciever: reciever._id,
+                        type: '@' + req.user.username + ' liked your post.',
+                        link: '/p/details/' + req.params.id,
+                        date_sent: current_date
+                     });
+
+                     // Create notification in database
+                     Notification.saveNotification(newNotification, (err, notification) => {
+                        if(err) throw err;
+
+                        // Add Notification for User
+                        User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+                           if (err) throw err;
+
+                           req.flash('success_msg', "Project Liked");
+                           res.redirect('/p/details/' + req.body.project_id);
+                        });
+                     });
+                  });
+               });
+            }
+         } else {
+            // Add like to project
+            Project.addLikes(info, (err, user) => {
                if(err) throw err;
 
-               // Add Notification for User
-               User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+               // Send notification to the user mentioned
+               User.findOne({ 'username': { $in: project_owner} }, (err, reciever) => {
                   if (err) throw err;
 
-                  req.flash('success_msg', "Project Liked");
-                  res.redirect('/p/details/' + req.body.project_id);
+                  var newNotification = new Notification({
+                     sender: req.user._id,
+                     reciever: reciever._id,
+                     type: '@' + req.user.username + ' liked your post.',
+                     link: '/p/details/' + req.params.id,
+                     date_sent: current_date
+                  });
+
+                  // Create notification in database
+                  Notification.saveNotification(newNotification, (err, notification) => {
+                     if(err) throw err;
+
+                     // Add Notification for User
+                     User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+                        if (err) throw err;
+
+                        req.flash('success_msg', "Project Liked");
+                        res.redirect('/p/details/' + req.body.project_id);
+                     });
+                  });
                });
             });
-         });
+         }
       });
    } else {
       res.redirect('/users/register');
@@ -2748,11 +2875,24 @@ router.post('/details/unlike/:id', (req, res, next) => {
       info['profileUsername'] = req.user.username;
       info['projectId'] = req.body.project_id;
 
-      // Remove like from project
-      Project.removeLikes(info, (err, user) => {
-         if(err) throw err;
-         req.flash('success_msg', "Project Unliked");
-         res.redirect('/p/details/' + req.body.project_id);
+      Project.findOne({ '_id': { $in: req.params.id} }, (err, project) => {
+         if (err) throw err;
+
+         // If the project has any likes
+         if (project.likes.length > 0) {
+            if (project.likes.indexOf(req.user.username) > -1) {
+               // Remove like from project
+               Project.removeLikes(info, (err, user) => {
+                  if(err) throw err;
+                  req.flash('success_msg', "Project Unliked");
+                  res.redirect('/p/details/' + req.body.project_id);
+               });
+            } else {
+               res.redirect('/p/details/' + req.body.project_id);
+            }
+         } else {
+            res.redirect('/p/details/' + req.body.project_id);
+         }
       });
    } else {
       res.redirect('/users/register');
@@ -2782,7 +2922,7 @@ router.post('/details/micro/like/:id', (req, res, next) => {
                   Project.removeLikes(info, (err, user) => {
                      if(err) throw err;
                      req.flash('success_msg', "Project Unliked");
-                     res.redirect('/p/micro/' + req.params.id);
+                     res.redirect(og_path);
                   });
                } else {
                   info = [];
@@ -2817,7 +2957,7 @@ router.post('/details/micro/like/:id', (req, res, next) => {
                               if (err) throw err;
 
                               req.flash('success_msg', "Project Liked");
-                              res.redirect('/p/micro/' + req.params.id);
+                              res.redirect(og_path);
                            });
                         });
                      });
@@ -2860,7 +3000,7 @@ router.post('/details/micro/like/:id', (req, res, next) => {
                         if (err) throw err;
 
                         req.flash('success_msg', "Project Liked");
-                        res.redirect('/p/micro/' + req.params.id);
+                        res.redirect(og_path);
                      });
                   });
                });

@@ -148,7 +148,15 @@ $(document).ready(function() {
 
    $rand_loader.css({ "display": "block" });
 
+   var $dont_show_loader = $('.success__msg');
+
+   if($dont_show_loader) {
+      $('.loader_overlay').css({"display": "none"});
+   }
+
    $window.on('load', function() {
+      var $dont_show_loader = $('.success__msg');
+
       $(".loader_wrapper").delay(300).fadeOut("slow", function() {
          $('.loader_overlay').delay(300).fadeOut("slow");
       });
@@ -518,6 +526,26 @@ $(document).ready(function() {
    $detailsModalBtnRepost.each(function() {
       $(this).click(function() {
          $detailsModalRepost.css({ "display": "block" });
+
+         var $modalRepostUsername = $(this).children("input[name=username]").val();
+         var $modalRepostProjectId = $(this).children("input[name=project_id]").val();
+         var $modalRepostProjectOwner = $(this).children("input[name=project_owner]").val();
+         var $modalRepostUserReposted = $(this).children("input[name=user_reposted]").val();
+
+         $("#repostForm #repostUsername").val($modalRepostUsername);
+         $("#repostForm #repostProjectId").val($modalRepostProjectId);
+         $("#repostForm #repostProjectOwner").val($modalRepostProjectOwner);
+
+         $('#repostForm').attr('action', '/p/details/micro/repost/' + $modalRepostProjectId);
+
+         if ($modalRepostUserReposted == 'true') {
+            $('#unrepostForm').attr('action', '/p/details/micro/repost/' + $modalRepostProjectId);
+
+            $("#unrepostForm #unrepostUsername").val($modalRepostUsername);
+            $("#unrepostForm #unrepostProjectId").val($modalRepostProjectId);
+         }
+
+         console.log($modalRepostUserReposted);
       });
    });
 
@@ -924,6 +952,96 @@ $(document).ready(function() {
   $("#profile_project_background_color").on('change', function () {
      $("#color_was_chosen").val('true');
   });
+/**********/
+
+// Index feed AJAX post
+$('.project_action_btn.btn_p_submit').each(function() {
+   $(this).click(function() {
+
+      var $action = $(this).parent().children("input[name=action]").val();
+      var $projectUsername = $(this).parent().children("input[name=username]").val();
+      var $projectId = $(this).parent().children("input[name=project_id]").val();
+      var $projectOwner = $(this).parent().children("input[name=project_owner]").val();
+
+      var $btnIcon = $(this).children().children();
+
+      if ($btnIcon.hasClass('fa-heart')) {
+         $btnIcon.removeClass('fa-heart');
+         $btnIcon.addClass('fa-heart-o');
+      } else if ($btnIcon.hasClass('fa-heart-o')) {
+         $btnIcon.removeClass('fa-heart-o');
+         $btnIcon.addClass('fa-heart');
+      } else if ($btnIcon.hasClass('fa-bookmark')) {
+         $btnIcon.removeClass('fa-bookmark');
+         $btnIcon.addClass('fa-bookmark-o');
+      } else {
+         $btnIcon.removeClass('fa-bookmark-o');
+         $btnIcon.addClass('fa-bookmark');
+      }
+
+      $.post($action, {
+        username: $projectUsername,
+        project_id: $projectId,
+        project_owner: $projectOwner
+      }, function(data, status) {
+        alert("Data: " + data + "\nStatus: " + status);
+      });
+
+   });
+});
+
+$("#repostForm").submit(function(e){
+   e.preventDefault();
+});
+
+$("#unrepostForm").submit(function(e){
+   e.preventDefault();
+});
+
+$("#repostForm .repost_submit").click(function() {
+
+   $(".detailsRepostModal").css({ "display": "none" });
+
+   var $flashMsg = $('#flashMsg');
+   var $flash = '<div class="success__msg"><p>Reposted project.</p><p class="error__exit">×</p></div>';
+
+   $flashMsg.append($flash);
+   setTimeout(function() {
+      $($flashMsg).remove();
+   }, 3000);
+
+   $.post($('#repostForm').attr('action'), {
+     username: $('#repostUsername').val(),
+     project_id: $('#repostProjectId').val(),
+     project_owner: $('#repostProjectOwner').val(),
+     repost_to: $('#repostForm select').val()
+   }, function(data, status) {
+     alert("Data: " + data + "\nStatus: " + status);
+   });
+});
+
+$("#unrepostForm .unrepost_btn").click(function() {
+
+   if ($('#unrepostForm').attr('action')) {
+
+      $(".detailsRepostModal").css({ "display": "none" });
+
+      var $flashMsg = $('#flashMsg');
+      var $flash = '<div class="success__msg"><p>Unreposted project.</p><p class="error__exit">×</p></div>';
+
+      $flashMsg.append($flash);
+      setTimeout(function() {
+         $($flashMsg).remove();
+      }, 3000);
+
+      $.post($('#unrepostForm').attr('action'), {
+        username: $('#unrepostUsername').val(),
+        project_id: $('#unrepostProjectId').val()
+      }, function(data, status) {
+        alert("Data: " + data + "\nStatus: " + status);
+      });
+   }
+});
 /**********/
 
 });

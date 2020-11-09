@@ -28,6 +28,9 @@
 </div>
 {{! /Water Loader }}
 
+<div id="flashMsg">
+</div>
+
 {{#if user.completed_interest_onboarding}}
 {{else}}
 {{! Project Meta Modal }}
@@ -184,10 +187,112 @@
 
                               <a href="/p/micro/{{../_id}}">
                                  {{#if ../micro_image}}<img src="https://ik.imagekit.io/w07am55tja/{{../micro_image}}?tr=w-650" class="img-responsive" alt="{{../micro_body}}" />{{/if}}
+                                 {{#if ../micro_video}}
+                                 <video  preload="auto" controls controlsList="nodownload" class="micro_video">
+                                    <source src="https://ik.imagekit.io/w07am55tja/{{project.micro_video}}" type="video/mp4">
+                                    <source src="https://ik.imagekit.io/w07am55tja/{{project.micro_video}}" type="video/ogg">
+                                    <source src="https://ik.imagekit.io/w07am55tja/{{project.micro_video}}" type="video/webm">
+                                    Your browser does not support the video tag.
+                                 </video>
+                                 {{/if}}
+                                 {{#if ../micro_audio}}
                                  {{#if ../thumbnail_image}}<img src="https://ik.imagekit.io/w07am55tja/{{../thumbnail_image}}?tr=w-650" class="img-responsive" alt="{{../micro_body}}" />{{/if}}
-                                 {{#if ../micro_video}}<div class="micro_play_btn"><img class="topnav__icon" src="/img/icons/play-button-white.png" /></div>{{/if}}
-                                 {{#if ../micro_audio}}<div class="micro_play_btn"><img class="topnav__icon" src="/icons/audio-button-white.png" /></div>{{/if}}
+                                 <audio controls controlsList="nodownload" class="micro_audio">
+                                    <source src="https://ik.imagekit.io/w07am55tja/{{project.micro_audio}}" type="audio/ogg">
+                                    <source src="https://ik.imagekit.io/w07am55tja/{{project.micro_audio}}" type="audio/mpeg">
+                                    <source src="https://ik.imagekit.io/w07am55tja/{{project.micro_audio}}" type="audio/wav">
+                                     Your browser does not support the audio element.
+                                 </audio>
+                                 {{/if}}
                               </a>
+                           </div>
+                           <div class="micro_action_btns">
+                              {{#if ../../user}}
+                                 {{#if ../../user_liked}}
+
+                                 {{! Like / Unlike Project }}
+
+                                 <div title="unlike">
+                                    <input type="hidden" name="action" value="/p/details/micro/like/{{../_id}}">
+                                    <input type="hidden" name="username" value="{{../../user.username}}">
+                                    <input type="hidden" name="project_id" value="{{../_id}}">
+                                    <input type="hidden" name="og_path" value="" class="og_path"/>
+                                    <button class="project_action_btn btn_p_submit" name="submit" type="submit">
+                                       <a><i style="font-weight: bold" class="fa fa-heart"></i></a>
+                                    </button>
+                                 </div>
+
+                                 {{else}}
+
+                                 <div title="like">
+                                    <input type="hidden" name="action" value="/p/details/micro/like/{{../_id}}">
+                                    <input type="hidden" name="username" value="{{../../user.username}}">
+                                    <input type="hidden" name="project_id" value="{{../_id}}">
+                                    <input type="hidden" name="og_path" value="" class="og_path"/>
+                                    <input type="hidden" name="project_owner" value="{{../project_owner}}">
+                                    <button class="project_action_btn btn_p_submit" name="submit" type="submit">
+                                       <a><i style="font-weight: bold" class="fa fa-heart-o"></i></a>
+                                    </button>
+                                 </div>
+
+                                 {{/if}}
+
+                              {{else}}
+
+                              <button class="project_action_btn" name="submit" type="submit">
+                                 <a><i style="font-weight: bold" class="fa fa-heart-o"></i></a>
+                              </button>
+
+                              {{/if}}
+
+                              <button class="project_action_btn" name="submit" type="submit">
+                                 <a {{#if ../../user}}class="detailsRepostModalBtn"{{/if}}>
+                                    <i class="fa fa-retweet"></i>
+                                    <input type="hidden" name="username" value="{{../../user.username}}">
+                                    <input type="hidden" name="project_id" value="{{../_id}}">
+                                    <input type="hidden" name="project_owner" value="{{../project_owner}}">
+                                    <input type="hidden" name="user_reposted" value="{{../user_reposted}}">
+                                 </a>
+                              </button>
+
+
+                              {{#if ../../user}}
+                                 {{#if ../user_saved}}
+
+                                 {{! Save / Unsave Project }}
+
+                                 <div title="unsave">
+                                    <input type="hidden" name="action" value="/p/details/micro/save/{{../_id}}">
+                                    <input type="hidden" name="username" value="{{../../user.username}}">
+                                    <input type="hidden" name="project_id" value="{{../_id}}">
+                                    <input type="hidden" name="og_path" value="" class="og_path"/>
+                                    <button class="project_action_btn btn_p_submit" name="submit" type="submit">
+                                       <a><i style="font-weight: bold" class="fa fa-bookmark"></i></a>
+                                    </button>
+                                 </div>
+
+                                 {{else}}
+
+                                 <div title="save">
+                                    <input type="hidden" name="action" value="/p/details/micro/save/{{../_id}}">
+                                    <input type="hidden" name="username" value="{{../../user.username}}">
+                                    <input type="hidden" name="project_id" value="{{../_id}}">
+                                    <input type="hidden" name="og_path" value="" class="og_path"/>
+                                    <input type="hidden" name="project_owner" value="{{../project_owner}}">
+                                    <button class="project_action_btn btn_p_submit" name="submit" type="submit">
+                                       <a><i style="font-weight: bold" class="fa fa-bookmark-o"></i></a>
+                                    </button>
+                                 </div>
+
+                                 {{/if}}
+
+                              {{else}}
+
+                              <button class="project_action_btn" name="submit" type="submit">
+                                 <a><i style="font-weight: bold" class="fa fa-bookmark-o"></i></a>
+                              </button>
+
+                              {{/if}}
                            </div>
                         </div>
                      </div>
@@ -212,10 +317,113 @@
                            </a>
                            <a href="/p/micro/{{_id}}" style="width: 100%;">
                               {{#if micro_image}}<img src="https://ik.imagekit.io/w07am55tja/{{micro_image}}?tr=w-650" class="img-responsive" alt="{{micro_body}}" />{{/if}}
+                              {{#if micro_video}}
+                              <video  preload="auto" controls controlsList="nodownload" class="micro_video">
+                                 <source src="https://ik.imagekit.io/w07am55tja/{{micro_video}}" type="video/mp4">
+                                 <source src="https://ik.imagekit.io/w07am55tja/{{micro_video}}" type="video/ogg">
+                                 <source src="https://ik.imagekit.io/w07am55tja/{{micro_video}}" type="video/webm">
+                                 Your browser does not support the video tag.
+                              </video>
+                              {{/if}}
+                              {{#if micro_audio}}
                               {{#if thumbnail_image}}<img src="https://ik.imagekit.io/w07am55tja/{{thumbnail_image}}?tr=w-650" class="img-responsive" alt="{{micro_body}}" />{{/if}}
-                              {{#if micro_video}}<div class="micro_play_btn"><img class="topnav__icon" src="/icons/play-button-white.png" /></div>{{/if}}
-                              {{#if micro_audio}}<div class="micro_play_btn"><img class="topnav__icon" src="/icons/audio-button-white.png" /></div>{{/if}}
+                              <audio controls controlsList="nodownload" class="micro_audio">
+                                 <source src="https://ik.imagekit.io/w07am55tja/{{micro_audio}}" type="audio/ogg">
+                                 <source src="https://ik.imagekit.io/w07am55tja/{{micro_audio}}" type="audio/mpeg">
+                                 <source src="https://ik.imagekit.io/w07am55tja/{{micro_audio}}" type="audio/wav">
+                                  Your browser does not support the audio element.
+                              </audio>
+                              {{/if}}
                            </a>
+                        </div>
+                        <div class="micro_action_btns">
+                           {{#if ../user}}
+                              {{#if user_liked}}
+
+                              {{! Like / Unlike Project }}
+
+                              <div title="unlike">
+                                 <input type="hidden" name="action" value="/p/details/micro/like/{{_id}}">
+                                 <input type="hidden" name="username" value="{{../user.username}}">
+                                 <input type="hidden" name="project_id" value="{{_id}}">
+                                 <input type="hidden" name="og_path" value="" class="og_path"/>
+                                 <button class="project_action_btn btn_p_submit" name="submit" type="submit">
+                                    <a><i style="font-weight: bold" class="fa fa-heart"></i></a>
+                                 </button>
+                              </div>
+
+                              {{else}}
+
+                              <div title="like">
+                                 <input type="hidden" name="action" value="/p/details/micro/like/{{_id}}">
+                                 <input type="hidden" name="username" value="{{../user.username}}">
+                                 <input type="hidden" name="project_id" value="{{_id}}">
+                                 <input type="hidden" name="og_path" value="" class="og_path"/>
+                                 <input type="hidden" name="project_owner" value="{{project_owner}}">
+                                 <button class="project_action_btn btn_p_submit" name="submit" type="submit">
+                                    <a><i style="font-weight: bold" class="fa fa-heart-o"></i></a>
+                                 </button>
+                              </div>
+
+
+                              {{/if}}
+
+                           {{else}}
+
+                           <button class="project_action_btn" name="submit" type="submit">
+                              <a><i style="font-weight: bold" class="fa fa-heart-o"></i></a>
+                           </button>
+
+                           {{/if}}
+
+                           <button class="project_action_btn" name="submit" type="submit">
+                              <a {{#if ../user}}class="detailsRepostModalBtn"{{/if}}>
+                                 <i class="fa fa-retweet"></i>
+                                 <input type="hidden" name="username" value="{{../user.username}}">
+                                 <input type="hidden" name="project_id" value="{{_id}}">
+                                 <input type="hidden" name="project_owner" value="{{project_owner}}">
+                                 <input type="hidden" name="user_reposted" value="{{user_reposted}}">
+                              </a>
+                           </button>
+
+
+                           {{#if ../user}}
+                              {{#if user_saved}}
+
+                              {{! Save / Unsave Project }}
+
+                              <div title="unsave">
+                                 <input type="hidden" name="action" value="/p/details/micro/save/{{_id}}">
+                                 <input type="hidden" name="username" value="{{../user.username}}">
+                                 <input type="hidden" name="project_id" value="{{_id}}">
+                                 <input type="hidden" name="og_path" value="" class="og_path"/>
+                                 <button class="project_action_btn btn_p_submit" name="submit" type="submit">
+                                    <a><i style="font-weight: bold" class="fa fa-bookmark"></i></a>
+                                 </button>
+                              </div>
+
+                              {{else}}
+
+                              <div title="save">
+                                 <input type="hidden" name="action" value="/p/details/micro/save/{{_id}}">
+                                 <input type="hidden" name="username" value="{{../user.username}}">
+                                 <input type="hidden" name="project_id" value="{{_id}}">
+                                 <input type="hidden" name="og_path" value="" class="og_path"/>
+                                 <input type="hidden" name="project_owner" value="{{project_owner}}">
+                                 <button class="project_action_btn btn_p_submit" name="submit" type="submit">
+                                    <a><i style="font-weight: bold" class="fa fa-bookmark-o"></i></a>
+                                 </button>
+                              </div>
+
+                              {{/if}}
+
+                           {{else}}
+
+                           <button class="project_action_btn" name="submit" type="submit">
+                              <a><i style="font-weight: bold" class="fa fa-bookmark-o"></i></a>
+                           </button>
+
+                           {{/if}}
                         </div>
                      </div>
                   </div>
@@ -296,5 +504,41 @@
    </div>
 
    {{/if}}
+
+</div>
+
+<div class="detailsRepostModal modalBackground">
+   <div class="modal-content">
+
+   <div class="modal-header ">
+   <p>Where would you like to repost to?</p>
+   </div>
+
+   <form id="repostForm" title="repost" method="post" action="/p/details/micro/repost/{{project._id}}">
+      <input id="repostUsername" type="hidden" name="username" value="{{user.username}}">
+      <input id="repostProjectId" type="hidden" name="project_id" value="{{project.id}}">
+      <input id="repostProjectOwner" type="hidden" name="project_owner" value="{{project.project_owner}}">
+      <input type="hidden" name="og_path" value="" class="og_path"/>
+      <select data-placeholder="Repost to..." class="chosen-select form__input" name="repost_to">
+         <option value=""></option>
+         <option value="followers">Followers</option>
+         {{#each user.groups}}
+         <option value="{{this.group_id}}">Your Group "{{this.group_name}}"</option>
+         {{/each}}
+      </select>
+      <div class="modal-footer">
+         <input class="btn__secondary repost_submit" type="submit" value="Repost"/>
+         <span class="closeModal btn__primary">Cancel</span>
+      </div>
+   </form>
+
+   <form id="unrepostForm" title="unrepost" method="post">
+      <input id="unrepostUsername" type="hidden" name="username" value="">
+      <input id="unrepostProjectId" type="hidden" name="project_id" value="">
+      <input type="hidden" name="og_path" value="" class="og_path"/>
+      <input class="btn__secondary unrepost_btn" type="submit" value="I'm actually trying to unrepost this"/>
+   </form>
+
+   </div>
 
 </div>

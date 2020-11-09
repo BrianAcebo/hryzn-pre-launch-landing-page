@@ -97,6 +97,58 @@ router.get('/', (req, res, next) => {
 
                   // Scan through every project
 
+                  var project = project.toObject();
+
+                  // If the project has any saves
+                  if (project.saves.length  > 0) {
+                     var saves_amount = project.saves.length;
+                     var enough_saves = true;
+                     // If the person viewing saved the project
+                     if (project.saves.indexOf(req.user.username) > -1) {
+                        var user_saved = true;
+                        project.user_saved = true;
+                     }
+                  } else {
+                     // Project has no saves
+                     var user_saved = false;
+                     var saves_amount = 0;
+                     var enough_saves = false;
+                     project.user_saved = false;
+                  }
+
+                  // If the project has any likes
+                  if (project.likes.length > 0) {
+                     var likes_amount = project.likes.length;
+                     var enough_likes = true;
+                     // If the person viewing liked the project
+                     if (project.likes.indexOf(req.user.username) > -1) {
+                        var user_liked = true;
+                        project.user_liked = true;
+                     }
+                  } else {
+                     // Project has no likes
+                     var user_liked = false;
+                     var likes_amount = 0;
+                     var enough_likes = false;
+                     project.user_liked = false;
+                  }
+
+                  // If the project has any reposts
+                  if (project.reposts.length > 0) {
+                     var repost_amount = project.reposts.length;
+                     var enough_reposts = true;
+                     // If the person viewing reposted the project
+                     if (project.reposts.indexOf(req.user.username) > -1) {
+                        var user_reposted = true;
+                        project.user_reposted = true;
+                     }
+                  } else {
+                     // Project has no reposts
+                     var repost_amount = 0;
+                     var enough_reposts = false;
+                     project.user_reposted = false;
+                  }
+
                   if(project.posted_to_collection) {
                      if (project.posted_to_collection.length > 0) {
 
@@ -133,6 +185,7 @@ router.get('/', (req, res, next) => {
                      // No collections so we mark that we scanned project
                      all_public_projects.push(project);
                   }
+
                });
 
                res.render('index', {
