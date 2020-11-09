@@ -52,6 +52,7 @@
                         <form title="unlike" method="post" action="/p/details/micro/like/{{project._id}}">
                            <input type="hidden" name="username" value="{{user.username}}">
                            <input type="hidden" name="project_id" value="{{project.id}}">
+                           <input type="hidden" name="og_path" value="" class="og_path"/>
                            <button class="project_action_btn" name="submit" type="submit">
                               <a><i style="font-weight: bold" class="fa fa-heart"></i></a>
                            </button>
@@ -63,6 +64,7 @@
                            <input type="hidden" name="username" value="{{user.username}}">
                            <input type="hidden" name="project_id" value="{{project.id}}">
                            <input type="hidden" name="project_owner" value="{{project.project_owner}}">
+                           <input type="hidden" name="og_path" value="" class="og_path"/>
                            <button class="project_action_btn" name="submit" type="submit">
                               <a><i style="font-weight: bold" class="fa fa-heart-o"></i></a>
                            </button>
@@ -91,6 +93,7 @@
                         <form title="unsave" method="post" action="/p/details/micro/save/{{project._id}}">
                            <input type="hidden" name="username" value="{{user.username}}">
                            <input type="hidden" name="project_id" value="{{project.id}}">
+                           <input type="hidden" name="og_path" value="" class="og_path"/>
                            <button class="project_action_btn" name="submit" type="submit">
                               <a><i style="font-weight: bold" class="fa fa-bookmark"></i></a>
                            </button>
@@ -102,6 +105,7 @@
                            <input type="hidden" name="username" value="{{user.username}}">
                            <input type="hidden" name="project_id" value="{{project.id}}">
                            <input type="hidden" name="project_owner" value="{{project.project_owner}}">
+                           <input type="hidden" name="og_path" value="" class="og_path"/>
                            <button class="project_action_btn" name="submit" type="submit">
                               <a><i style="font-weight: bold" class="fa fa-bookmark-o"></i></a>
                            </button>
@@ -319,6 +323,7 @@
    <form title="repost" method="post" action="/p/details/micro/repost/{{project._id}}">
       <input type="hidden" name="username" value="{{user.username}}">
       <input type="hidden" name="project_id" value="{{project.id}}">
+      <input type="hidden" name="og_path" value="" class="og_path"/>
       <input type="hidden" name="project_owner" value="{{project.project_owner}}">
       <select data-placeholder="Repost to..." class="chosen-select form__input" name="repost_to">
          <option value=""></option>
@@ -336,6 +341,7 @@
    <form title="unrepost" method="post" action="/p/details/micro/unrepost/{{project._id}}">
       <input type="hidden" name="username" value="{{user.username}}">
       <input type="hidden" name="project_id" value="{{project.id}}">
+      <input type="hidden" name="og_path" value="" class="og_path"/>
       <input class="btn__secondary unrepost_btn" type="submit" value="I'm actually trying to unrepost this"/>
    </form>
 
