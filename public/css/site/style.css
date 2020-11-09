@@ -351,6 +351,12 @@ blockquote {
    z-index: 88888;
 }
 
+@media screen and (max-width: 992px) {
+   .success__msg {
+      top: 0;
+   }
+}
+
 .success__msg-2 {
    width: 100%;
    max-width: 600px;

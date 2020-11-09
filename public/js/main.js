@@ -246,6 +246,9 @@ $(document).ready(function() {
          $nav_social.addClass('dis-none');
          $landing_search.addClass('dis-none');
          $postBtns.addClass('postBtnsTop');
+         if ($window.width() > 992) {
+            $('.success__msg').css({ "top": "75px" });
+         }
 		} else {
          $menuTrigger.removeClass('opaque');
          if ($window.width() < 992) {
