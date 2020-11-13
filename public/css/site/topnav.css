@@ -758,6 +758,16 @@ nav.item-list {
    color: #fff;
 }
 
+@media screen and (max-width: 768px) {
+   .creatives_header .header-logo a {
+      color: #fff;
+   }
+
+   .creatives_header .header-logo a:hover {
+      color: #fff;
+   }
+}
+
 .landing-nav__right {
    justify-content: flex-end;
 }
@@ -841,6 +851,11 @@ nav.item-list {
 }
 
 .welcome_header .nav_social i {
+   border: 2px solid #fff;
+   color: #fff;
+}
+
+.creatives_header .nav_social i {
    border: 2px solid #fff;
    color: #fff;
 }
@@ -1082,7 +1097,8 @@ nav.item-list {
    background-color: #fff;
 }
 
-.welcome_header .ingredients {
+.welcome_header .ingredients,
+.creatives_header .ingredients {
    background-color: #fff;
 }
 

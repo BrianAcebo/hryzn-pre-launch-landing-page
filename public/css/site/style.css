@@ -489,6 +489,7 @@ blockquote {
    display: table-cell;
    text-align: center;
    vertical-align: middle;
+   background: #31375A;
 }
 
 .line-scale-pulse-out > div {

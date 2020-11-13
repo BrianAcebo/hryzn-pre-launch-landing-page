@@ -180,7 +180,7 @@
    position: absolute;
    width: 100%;
    z-index: 4444;
-   bottom: 13px;
+   bottom: 0;
 }
 
 @media screen and (max-width: 768px) {
@@ -190,7 +190,7 @@
    }
 
    .project_card_bottom {
-      bottom: 11px;
+      bottom: 0;
    }
 }
 

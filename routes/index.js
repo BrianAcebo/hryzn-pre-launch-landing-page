@@ -41,6 +41,7 @@ const Message = require('../models/messages');
 const Notification = require('../models/notifications');
 const Group = require('../models/groups');
 const Collection = require('../models/collections');
+const Email = require('../models/emails');
 
 // Get Welcome Landing Page
 router.get('/', (req, res, next) => {
@@ -276,9 +277,79 @@ router.get('/creatives', (req, res, next) => {
       res.render('creatives', {
         page_title: 'Creatives',
         notLoginPage: false,
-        welcomePage: false
+        creativesPage: true
       });
 
+   }
+});
+
+
+// Get Creatives
+router.get('/creatives/early', (req, res, next) => {
+   res.redirect('/creatives');
+});
+
+
+// POST Register
+router.post('/creatives/early', (req, res, next) => {
+
+   if (typeof req.body.top_email !='undefined') {
+      var body_email = req.body.top_email.replace(/\r\n/g,'').trim();
+
+      // Form Validation
+      req.checkBody('top_email', 'Please Enter An Email Address').notEmpty();
+      req.checkBody('top_email', 'Please Enter A Valid Email Address').isEmail();
+   } else {
+      var body_email = req.body.bottom_email.replace(/\r\n/g,'').trim();
+
+      // Form Validation
+      req.checkBody('bottom_email', 'Please Enter An Email Address').notEmpty();
+      req.checkBody('bottom_email', 'Please Enter A Valid Email Address').isEmail();
+   }
+
+   var errors = req.validationErrors();
+
+   if(errors) {
+      res.render('creatives', {
+        page_title: 'Creatives',
+        notLoginPage: false,
+        creativesPage: true,
+        errors: errors
+      });
+   } else {
+
+      Email.findOne({ 'email': { $in: body_email} }, (err, email) => {
+
+         if(err) throw err;
+
+         if (email) {
+
+            res.render('creatives', {
+              page_title: 'Creatives',
+              notLoginPage: false,
+              creativesPage: true,
+              error_msg: 'Sorry that email is already in use.'
+            });
+
+         } else {
+            var newEmail = new Email({
+               email: body_email
+            });
+
+            // Save email
+            Email.saveEmail(newEmail, (err, user) => {
+               if(err) throw err;
+
+               res.render('creatives', {
+                 page_title: 'Creatives',
+                 notLoginPage: false,
+                 creativesPage: true,
+                 thanks: true
+               });
+            });
+         }
+
+      });
    }
 });
 

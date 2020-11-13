@@ -132,6 +132,7 @@
       <link rel="stylesheet" type="text/css" href="/css/site/profile.css" />
       }}
 
+
       {{! For PROD }}
       <link rel="stylesheet" type="text/css" href="/dist/css/style.min.css" />
 
@@ -287,7 +288,7 @@
 
       {{! User is not logged in }}
       <!-- Landing Nav -->
-      <header class="landing-nav {{#if welcomePage}}welcome_header{{/if}}{{#if project}}guest_project{{/if}}">
+      <header class="landing-nav {{#if welcomePage}}welcome_header{{else}}{{#if creativesPage}}creatives_header{{/if}}{{/if}}{{#if project}}guest_project{{/if}}">
          <div class="landing-nav_wrapper">
 
             <div class="landing-nav__left">
@@ -555,6 +556,9 @@
          <a href="/about/terms">Terms Of Service</a>
          <a href="/about/privacy">Privacy Policy</a>
          {{! Not Ready Yet <a href="/about/copyright">Copyright</a> }}
+         <div style="width: 100%; text-align: center; font-size: 12px;">
+         Copyright &copy; <span style="display: inline; font-size: 12px;" id="copyrightYear"></span> Hryzn, Inc. All Rights Reserved.
+         </div>
       </footer>
       {{/if}}
       {{/if}}
@@ -567,6 +571,13 @@
    <script src="/js/welcome/pace.min.js"></script>
    <script src="/js/welcome/plugins.js" type="text/javascript"></script>
    <script src="/js/search-autocomplete.js" type="text/javascript"></script>
+   <script>
+   (function copyrightYear() {
+      var d = new Date();
+      var n = d.getFullYear();
+      document.getElementById("copyrightYear").innerHTML = n;
+   })();
+   </script>
    <script>
    autocomplete(document.getElementById("searchAuto"), project_titles_and_profile_usernames_and_group_names);
    </script>
