@@ -672,6 +672,11 @@ a img:hover {
 }
 
 @media screen and (max-width: 768px) {
+   #banner {
+      background-attachment: scroll;
+      width: 100%;
+   }
+
    #banner h1 {
       font-size: 35px;
       line-height: 40px;
@@ -684,7 +689,7 @@ a img:hover {
 
    #banner-content {
        padding: 35px;
-       width: 80%;
+       width: 90%;
        margin-top: 35px;
    }
 
@@ -696,7 +701,7 @@ a img:hover {
 
    .banner-input {
       text-indent: 15px;
-      font-size: 14px;
+      font-size: 12px;
       border-radius: 0;
    }
 
@@ -706,6 +711,18 @@ a img:hover {
 
    .creatives #about .creatives_col-3 {
       width: 100%;
+   }
+
+   .creatives #about .creatives_col-2 {
+      padding: 0 15px 25px 0;
+   }
+
+   .creatives .icon-block h4 {
+      line-height: 30px;
+   }
+
+   .client-overlay span {
+      font-size: 12px;
    }
 }
 
