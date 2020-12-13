@@ -28,7 +28,11 @@ const storage = {
    bucket: 'hryzn-app-static-assets',
    key: (req, file, cb) => {
       // var fileExt = file.originalname.split('.').pop();
-      cb(null, dateNow + file.originalname);
+      var filename = dateNow + file.originalname;
+      filename = filename.replace(/\s+/g, '-').toLowerCase();
+      filename = filename.replace("?", "");
+      filename = filename.replace("#", "");
+      cb(null, filename);
    }
 }
 
@@ -401,9 +405,9 @@ router.post('/create-group', upload.single('group_image'), (req, res, next) => {
 
       if(is_private) {
          var hex = 'H'+(Math.random()*0xFFFFFF<<0).toString(16);
-         var dateNow = Date.now().toString();
-         dateNow = dateNow.slice(0,3);
-         var group_code = hex + dateNow;
+         var newDate = Date.now().toString();
+         newDate = newDate.slice(0,3);
+         var group_code = hex + newDate;
       }
 
       if(req.file) {
@@ -432,7 +436,13 @@ router.post('/create-group', upload.single('group_image'), (req, res, next) => {
          } else {
             // No errors have been made
             // var fileExt = req.file.originalname.split('.').pop();
-            var group_image = dateNow + req.file.originalname;
+
+            var filename = dateNow + req.file.originalname;
+            filename = filename.replace(/\s+/g, '-').toLowerCase();
+            filename = filename.replace("?", "");
+            filename = filename.replace("#", "");
+
+            var group_image = filename;
 
             var newGroup = new Group({
                users: users,
@@ -700,7 +710,13 @@ router.post('/groups/edit/:id', upload.single('group_image'), (req, res, next) =
          } else {
             // No errors have been made
             // var fileExt = req.file.originalname.split('.').pop();
-            var group_image = dateNow + req.file.originalname;
+
+            var filename = dateNow + req.file.originalname;
+            filename = filename.replace(/\s+/g, '-').toLowerCase();
+            filename = filename.replace("?", "");
+            filename = filename.replace("#", "");
+
+            var group_image = filename;
 
             var info = [];
             info['groupId'] = req.params.id;
@@ -2329,7 +2345,12 @@ router.post('/settings', upload.fields([{name: 'profile_project_backgroundimage'
                            });
                         });
                      } else {
-                        var profileimage = dateNow + req.files.profileimage[0].originalname;
+                        var filename = dateNow + req.files.profileimage[0].originalname;
+                        filename = filename.replace(/\s+/g, '-').toLowerCase();
+                        filename = filename.replace("?", "");
+                        filename = filename.replace("#", "");
+
+                        var profileimage = filename;
 
                         Project.find({'_id': { $in: req.user.own_projects}}, (err, user_projects) => {
                            user_projects.forEach(function(proj_id, key) {
@@ -2363,7 +2384,12 @@ router.post('/settings', upload.fields([{name: 'profile_project_backgroundimage'
                            });
                         });
                      } else {
-                        var backgroundimage = dateNow + req.files.backgroundimage[0].originalname;
+                        var filename = dateNow + req.files.backgroundimage[0].originalname;
+                        filename = filename.replace(/\s+/g, '-').toLowerCase();
+                        filename = filename.replace("?", "");
+                        filename = filename.replace("#", "");
+
+                        var backgroundimage = filename;
                      }
                   } else {
                      var backgroundimage = req.user.backgroundimage;
@@ -2387,7 +2413,13 @@ router.post('/settings', upload.fields([{name: 'profile_project_backgroundimage'
                            });
                         });
                      } else {
-                        var profile_project_backgroundimage = dateNow + req.files.profile_project_backgroundimage[0].originalname;
+
+                        var filename = dateNow + req.files.profile_project_backgroundimage[0].originalname;
+                        filename = filename.replace(/\s+/g, '-').toLowerCase();
+                        filename = filename.replace("?", "");
+                        filename = filename.replace("#", "");
+
+                        var profile_project_backgroundimage = filename;
                      }
                   } else {
                      if (typeof req.body.remove_profile_project_bg != 'undefined') {

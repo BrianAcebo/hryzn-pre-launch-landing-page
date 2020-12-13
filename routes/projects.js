@@ -26,7 +26,11 @@ const storage = {
    bucket: 'hryzn-app-static-assets',
    key: (req, file, cb) => {
       // var fileExt = file.originalname.split('.').pop();
-      cb(null, dateNow + file.originalname);
+      var filename = dateNow + file.originalname;
+      filename = filename.replace(/\s+/g, '-').toLowerCase();
+      filename = filename.replace("?", "");
+      filename = filename.replace("#", "");
+      cb(null, filename);
    }
 }
 const upload = multer({storage: multerS3(storage)});
@@ -420,17 +424,31 @@ router.post('/create-project/blog', upload.fields([{name: 'project_image', maxCo
                   // No errors have been made
                   // var fileExt = req.file.originalname.split('.').pop();
                   if (req.files.project_video) {
+
                      var project_image;
-                     var project_video = dateNow + req.files.project_video[0].originalname;
+                     var filename = dateNow + req.files.project_video[0].originalname;
+                     filename = filename.replace(/\s+/g, '-').toLowerCase();
+                     filename = filename.replace("?", "");
+                     filename = filename.replace("#", "");
+                     var project_video = filename;
+
                   } else {
                      var project_video;
-                     var project_image = dateNow + req.files.project_image[0].originalname;
+                     var filename = dateNow + req.files.project_image[0].originalname;
+                     filename = filename.replace(/\s+/g, '-').toLowerCase();
+                     filename = filename.replace("?", "");
+                     filename = filename.replace("#", "");
+                     var project_image = filename;
                   }
 
                   if (no_thumbnail) {
                      var thumbnail_image = project_image;
                   } else {
-                     var thumbnail_image = dateNow + req.files.thumbnail_image[0].originalname;
+                     var filename = dateNow + req.files.thumbnail_image[0].originalname;
+                     filename = filename.replace(/\s+/g, '-').toLowerCase();
+                     filename = filename.replace("?", "");
+                     filename = filename.replace("#", "");
+                     var thumbnail_image = filename;
                   }
 
                   if (req.user.profileimage) {
@@ -707,7 +725,11 @@ router.post('/details/edit/:id', upload.fields([{name: 'project_image', maxCount
                   });
 
                } else {
-                  var project_video = dateNow + req.files.project_video[0].originalname;
+                  var filename = dateNow + req.files.project_video[0].originalname;
+                  filename = filename.replace(/\s+/g, '-').toLowerCase();
+                  filename = filename.replace("?", "");
+                  filename = filename.replace("#", "");
+                  var project_video = filename;
                }
 
             } else {
@@ -736,7 +758,11 @@ router.post('/details/edit/:id', upload.fields([{name: 'project_image', maxCount
                         });
                      });
                   } else {
-                     var project_image = dateNow + req.files.project_image[0].originalname;
+                     var filename = dateNow + req.files.project_image[0].originalname;
+                     filename = filename.replace(/\s+/g, '-').toLowerCase();
+                     filename = filename.replace("?", "");
+                     filename = filename.replace("#", "");
+                     var project_image = filename;
                      var project_video;
                   }
                }
@@ -768,7 +794,11 @@ router.post('/details/edit/:id', upload.fields([{name: 'project_image', maxCount
                      });
                   });
                } else {
-                  var thumbnail_image = dateNow + req.files.thumbnail_image[0].originalname;
+                  var filename = dateNow + req.files.thumbnail_image[0].originalname;
+                  filename = filename.replace(/\s+/g, '-').toLowerCase();
+                  filename = filename.replace("?", "");
+                  filename = filename.replace("#", "");
+                  var thumbnail_image = filename;
                }
             }
 
@@ -3256,7 +3286,11 @@ router.get('/details/delete/:id', (req, res, next) => {
 router.post('/upload', upload.single('editor_image'), (req, res, next) => {
    if(req.isAuthenticated()) {
       // var fileExt = req.file.originalname.split('.').pop();
-      res.status(200).send({"file": "https://s3.amazonaws.com/hryzn-app-static-assets/" + dateNow + req.file.originalname, "success":true});
+      var filename = dateNow + req.file.originalname;
+      filename = filename.replace(/\s+/g, '-').toLowerCase();
+      filename = filename.replace("?", "");
+      filename = filename.replace("#", "");
+      res.status(200).send({"file": "https://s3.amazonaws.com/hryzn-app-static-assets/" + filename, "success":true});
    } else {
       res.redirect('/users/register');
    }
@@ -3537,7 +3571,11 @@ router.post('/create-micro/micro', upload.fields([{name: 'micro_image', maxCount
                   } else {
                      // No errors have been made
                      // var fileExt = req.file.originalname.split('.').pop();
-                     var micro_image = dateNow + req.files.micro_image[0].originalname;
+                     var filename = dateNow + req.files.micro_image[0].originalname;
+                     filename = filename.replace(/\s+/g, '-').toLowerCase();
+                     filename = filename.replace("?", "");
+                     filename = filename.replace("#", "");
+                     var micro_image = filename;
 
                      var newProject = new Project({
                         micro_image: micro_image,
@@ -3722,8 +3760,17 @@ router.post('/create-micro/micro', upload.fields([{name: 'micro_image', maxCount
 
                         // No errors have been made
                         // var fileExt = req.file.originalname.split('.').pop();
-                        var micro_audio = dateNow + req.files.micro_audio[0].originalname;
-                        var thumbnail_image = dateNow + req.files.micro_thumbnail_image__audio[0].originalname;
+                        var filename = dateNow + req.files.micro_audio[0].originalname;
+                        filename = filename.replace(/\s+/g, '-').toLowerCase();
+                        filename = filename.replace("?", "");
+                        filename = filename.replace("#", "");
+                        var micro_audio = filename;
+
+                        var fileaudio = dateNow + req.files.micro_thumbnail_image__audio[0].originalname;
+                        fileaudio = fileaudio.replace(/\s+/g, '-').toLowerCase();
+                        fileaudio = fileaudio.replace("?", "");
+                        fileaudio = fileaudio.replace("#", "");
+                        var thumbnail_image = fileaudio;
 
                         var newProject = new Project({
                            micro_audio: micro_audio,
@@ -3912,11 +3959,19 @@ router.post('/create-micro/micro', upload.fields([{name: 'micro_image', maxCount
                         });
 
                      } else {
-
                         // No errors have been made
                         // var fileExt = req.file.originalname.split('.').pop();
-                        var micro_video = dateNow + req.files.micro_video[0].originalname;
-                        var thumbnail_image = dateNow + req.files.micro_thumbnail_image__video[0].originalname;
+                        var filename = dateNow + req.files.micro_video[0].originalname;
+                        filename = filename.replace(/\s+/g, '-').toLowerCase();
+                        filename = filename.replace("?", "");
+                        filename = filename.replace("#", "");
+                        var micro_video = filename;
+
+                        var filevideo = dateNow + req.files.micro_thumbnail_image__video[0].originalname;
+                        filevideo = filevideo.replace(/\s+/g, '-').toLowerCase();
+                        filevideo = filevideo.replace("?", "");
+                        filevideo = filevideo.replace("#", "");
+                        var thumbnail_image = filevideo;
 
                         var newProject = new Project({
                            micro_video: micro_video,

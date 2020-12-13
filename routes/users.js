@@ -29,8 +29,12 @@ const storage = {
    s3: s3,
    bucket: 'hryzn-app-static-assets',
    key: (req, file, cb) => {
-      var fileExt = file.originalname.split('.').pop();
-      cb(null, dateNow + '.' + fileExt);
+      //var fileExt = file.originalname.split('.').pop();
+      var filename = dateNow + file.originalname;
+      filename = filename.replace(/\s+/g, '-').toLowerCase();
+      filename = filename.replace("?", "");
+      filename = filename.replace("#", "");
+      cb(null, filename);
    }
 }
 
@@ -148,8 +152,14 @@ router.post('/register', upload.single('profileimage'), (req, res, next) => {
                         });
                      } else {
 
-                        var fileExt = req.file.originalname.split('.').pop();
-                        var profileimage = dateNow + '.' + fileExt;
+                        //var fileExt = req.file.originalname.split('.').pop();
+
+                        var filename = dateNow + req.file.originalname;
+                        filename = filename.replace(/\s+/g, '-').toLowerCase();
+                        filename = filename.replace("?", "");
+                        filename = filename.replace("#", "");
+
+                        var profileimage = filename;
 
                         var hex = 'H'+(Math.random()*0xFFFFFF<<0).toString(16);
                         var verify_code = hex + '$21B3';

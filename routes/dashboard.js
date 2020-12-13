@@ -20,7 +20,11 @@ const storage = {
    bucket: 'hryzn-app-static-assets',
    key: (req, file, cb) => {
       // var fileExt = file.originalname.split('.').pop();
-      cb(null, dateNow + file.originalname);
+      var filename = dateNow + file.originalname;
+      filename = filename.replace(/\s+/g, '-').toLowerCase();
+      filename = filename.replace("?", "");
+      filename = filename.replace("#", "");
+      cb(null, filename);
    }
 }
 
