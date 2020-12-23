@@ -356,14 +356,14 @@ button {
 
 .login_page_secondary {
    font-weight: bold;
-   margin-left: 16%;
+   margin-left: 19%;
    color: #31375A;
 }
 
 
 @media screen and (max-width: 595px) {
    .login_page_secondary {
-      margin-left: 15%;
+      margin-left: 18%;
    }
 }
 
@@ -375,4 +375,105 @@ button {
    color: #999;
    font-size: 10px;
    margin-left: 8px;
+}
+
+.register_dob {
+   position: relative;
+   margin: 25px 0 75px 0;
+   border: 1px solid #ccc;
+   padding: 0 20px 15px 20px;
+}
+
+.register_dob legend {
+   font-size: 12px;
+}
+
+.date-field {
+  width: 30px;
+  text-align: center;
+  border: 1px solid #ccc;
+}
+.date-field--year {
+  width: 60px;
+}
+
+.single-date-field {
+  width: 120px;
+}
+
+.field-inline-block {
+  display: inline-block;
+  margin-right: 5px;
+  margin-left: 5px;
+}
+.field-inline-block label {
+  text-align: center;
+  font-size: 12px;
+}
+
+.dob_tooltip_container {
+  position: absolute;
+  right: 0;
+}
+
+.dob_tooltip {
+  position: relative;
+  display: inline-block;
+  margin-top: 15px;
+  cursor: help;
+}
+
+.dob_small {
+   font-size: 12px;
+}
+
+.dob_tooltip .dob_tooltiptext {
+   visibility: hidden;
+   width: 400px;
+   background-color: black;
+   color: #fff;
+   text-align: center;
+   border-radius: 6px;
+   font-size: 14px;
+   line-height: 20px;
+   padding: 10px;
+   position: absolute;
+   z-index: 1;
+   top: 100%;
+   left: -300%;
+}
+
+.dob_tooltip .dob_tooltiptext::after {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  right: 25px;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent black transparent;
+}
+
+.dob_tooltip:hover .dob_tooltiptext {
+  visibility: visible;
+}
+
+.dob_tooltip:active .dob_tooltiptext {
+  visibility: visible;
+}
+
+.small_tos {
+   margin-top: 50px;
+}
+
+.small_tos,
+.small_tos a {
+   font-size: 10px;
+   text-align: center;
+   line-height: 15px;
+   display: inline-block;
+}
+
+.small_tos a {
+   color: #2196F3;
 }

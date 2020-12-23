@@ -56,6 +56,12 @@ const UserSchema = mongoose.Schema({
    completed_interest_onboarding: {
       type: Boolean
    },
+   completed_profile_setup: {
+      type: Boolean
+   },
+   completed_modal_walkthrough: {
+      type: Boolean
+   },
    has_notification: {
       type: Boolean
    },
@@ -110,6 +116,9 @@ const UserSchema = mongoose.Schema({
    },
    is_cc_profile: {
       type: Boolean
+   },
+   music_link: {
+      type: String
    }
 });
 
@@ -157,7 +166,10 @@ module.exports.updateUser = (info, callback) => {
 
    User.findOneAndUpdate(query,
       {
-         $addToSet: {"is_cc_profile": true},
+         $addToSet: {
+            "completed_profile_setup": true,
+            "completed_modal_walkthrough": false
+         },
       },
       { safe: true, upsert: true },
       callback

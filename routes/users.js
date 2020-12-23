@@ -61,6 +61,29 @@ router.post('/register', upload.single('profileimage'), (req, res, next) => {
    var email = req.body.email.replace(/\r\n/g,'').trim();
    var password = req.body.password.replace(/\r\n/g,'').trim();
    var password2 = req.body.password2.replace(/\r\n/g,'').trim();
+   var bypassEmail = 'brian@bypassEmail.com';
+
+   var dob_day = req.body.dob_day.replace(/\r\n/g,'').trim();
+   var dob_month = req.body.dob_month.replace(/\r\n/g,'').trim();
+   var dob_year = req.body.dob_year.replace(/\r\n/g,'').trim();
+
+   var curr_dateObj = new Date();
+   var curr_month = curr_dateObj.getUTCMonth() + 1; //months from 1-12
+   var curr_day = curr_dateObj.getUTCDate();
+   var curr_year = curr_dateObj.getUTCFullYear();
+
+   var dob_error = true;
+
+   if (parseInt(curr_year) - parseInt(dob_year) > 13) {
+      dob_error = false;
+   } else if (parseInt(curr_month) - parseInt(dob_month) > 0 && parseInt(curr_year) - parseInt(dob_year) == 13) {
+      dob_error = false;
+   } else if (parseInt(curr_day) - parseInt(dob_day) >= 0 && parseInt(curr_month) - parseInt(dob_month) == 0 && parseInt(curr_year) - parseInt(dob_year) == 13) {
+      dob_error = false;
+   } else {
+      dob_error = true;
+   }
+
    // var promo_code; req.body.promo_code.replace(/\r\n/g,'').trim();
 
    // if (promo_code != '') {
@@ -115,18 +138,32 @@ router.post('/register', upload.single('profileimage'), (req, res, next) => {
    //    }
    // }
 
-   if(errors) {
-      res.render('users/register', {
-         errors: errors,
-         firstname: firstname,
-         lastname: lastname,
-         username: username,
-         email: email,
-         password: password,
-         inviteAllowed: true,
-         page_title: 'Register Your Account',
-         notLoginPage: false
-      });
+   if(errors || dob_error) {
+      if (errors) {
+         res.render('users/register', {
+            errors: errors,
+            firstname: firstname,
+            lastname: lastname,
+            username: username,
+            email: email,
+            password: password,
+            inviteAllowed: true,
+            page_title: 'Register Your Account',
+            notLoginPage: false
+         });
+      } else {
+         res.render('users/register', {
+            error_msg: 'Sorry, you are not old enough.',
+            firstname: firstname,
+            lastname: lastname,
+            username: username,
+            email: email,
+            password: password,
+            inviteAllowed: true,
+            page_title: 'Register Your Account',
+            notLoginPage: false
+         });
+      }
    } else {
       User.getUserByUsername(username, (err, user) => {
          if(err) throw err;
@@ -134,7 +171,7 @@ router.post('/register', upload.single('profileimage'), (req, res, next) => {
             User.getUserByEmail(email, (err, user) => {
                if(err) throw err;
 
-               if(!user) {
+               if(!user || email === bypassEmail) {
 
                   if(req.file) {
                      var ext = path.extname(req.file.originalname);
@@ -274,8 +311,6 @@ router.post('/register', upload.single('profileimage'), (req, res, next) => {
          }
       });
    }
-   // req.flash('error_msg', "Sorry the site is under construction...");
-   // res.redirect('/');
 });
 
 // POST Register Next
@@ -300,12 +335,50 @@ router.post('/register-next', (req, res, next) => {
             password: password,
             profileimage: req.body.profileimage,
             profile_theme: 'default',
-            completed_interest_onboarding: false
+            completed_interest_onboarding: false,
+            completed_modal_walkthrough: false,
+            completed_profile_setup: false
          });
 
          // Create user in database
          User.saveUser(newUser, (err, user) => {
             if(err) throw err;
+
+            // Follow @welcome_to_hryzn
+            User.findOne({ '_id': { $in: '5fe22ee746497818fbb7c9d3' } }, (err, welcome_user) => {
+
+               info = [];
+               info['userUsername'] = welcome_user.username;
+               info['profileId'] = user._id;
+               info['profileUsername'] = user.username;
+               info['userId'] = welcome_user._id;
+
+               // Update following for User
+               User.addFollowing(info, (err, user) => {
+                  if(err) throw err;
+               });
+
+               // Add followers to profile
+               User.addFollowers(info, (err, user) => {
+                  if(err) throw err;
+               });
+
+               info = [];
+               info['userUsername'] = user.username;
+               info['profileId'] = welcome_user._id;
+               info['profileUsername'] = welcome_user.username;
+               info['userId'] = user._id;
+
+               // Update following for User
+               User.addFollowing(info, (err, user) => {
+                  if(err) throw err;
+               });
+
+               // Add followers to profile
+               User.addFollowers(info, (err, user) => {
+                  if(err) throw err;
+               });
+            });
          });
 
          //////////
@@ -368,12 +441,50 @@ router.post('/register-next', (req, res, next) => {
             email: email,
             password: password,
             profile_theme: 'default',
-            completed_interest_onboarding: false
+            completed_interest_onboarding: false,
+            completed_modal_walkthrough: false,
+            completed_profile_setup: false
          });
 
          // Create user in database
          User.saveUser(newUser, (err, user) => {
             if(err) throw err;
+
+            // Follow @welcome_to_hryzn
+            User.findOne({ '_id': { $in: '5fe22ee746497818fbb7c9d3' } }, (err, welcome_user) => {
+
+               info = [];
+               info['userUsername'] = welcome_user.username;
+               info['profileId'] = user._id;
+               info['profileUsername'] = user.username;
+               info['userId'] = welcome_user._id;
+
+               // Update following for User
+               User.addFollowing(info, (err, user) => {
+                  if(err) throw err;
+               });
+
+               // Add followers to profile
+               User.addFollowers(info, (err, user) => {
+                  if(err) throw err;
+               });
+
+               info = [];
+               info['userUsername'] = user.username;
+               info['profileId'] = welcome_user._id;
+               info['profileUsername'] = welcome_user.username;
+               info['userId'] = user._id;
+
+               // Update following for User
+               User.addFollowing(info, (err, user) => {
+                  if(err) throw err;
+               });
+
+               // Add followers to profile
+               User.addFollowers(info, (err, user) => {
+                  if(err) throw err;
+               });
+            });
          });
 
 
@@ -506,12 +617,50 @@ router.post('/register-next/text/1', (req, res, next) => {
             password: password,
             profileimage: req.body.profileimage,
             profile_theme: 'default',
-            completed_interest_onboarding: false
+            completed_interest_onboarding: false,
+            completed_modal_walkthrough: false,
+            completed_profile_setup: false
          });
 
          // Create user in database
          User.saveUser(newUser, (err, user) => {
             if(err) throw err;
+
+            // Follow @welcome_to_hryzn
+            User.findOne({ '_id': { $in: '5fe22ee746497818fbb7c9d3' } }, (err, welcome_user) => {
+
+               info = [];
+               info['userUsername'] = welcome_user.username;
+               info['profileId'] = user._id;
+               info['profileUsername'] = user.username;
+               info['userId'] = welcome_user._id;
+
+               // Update following for User
+               User.addFollowing(info, (err, user) => {
+                  if(err) throw err;
+               });
+
+               // Add followers to profile
+               User.addFollowers(info, (err, user) => {
+                  if(err) throw err;
+               });
+
+               info = [];
+               info['userUsername'] = user.username;
+               info['profileId'] = welcome_user._id;
+               info['profileUsername'] = welcome_user.username;
+               info['userId'] = user._id;
+
+               // Update following for User
+               User.addFollowing(info, (err, user) => {
+                  if(err) throw err;
+               });
+
+               // Add followers to profile
+               User.addFollowers(info, (err, user) => {
+                  if(err) throw err;
+               });
+            });
          });
 
          client.messages
@@ -530,12 +679,50 @@ router.post('/register-next/text/1', (req, res, next) => {
             email: email,
             password: password,
             profile_theme: 'default',
-            completed_interest_onboarding: false
+            completed_interest_onboarding: false,
+            completed_modal_walkthrough: false,
+            completed_profile_setup: false
          });
 
          // Create user in database
          User.saveUser(newUser, (err, user) => {
             if(err) throw err;
+
+            // Follow @welcome_to_hryzn
+            User.findOne({ '_id': { $in: '5fe22ee746497818fbb7c9d3' } }, (err, welcome_user) => {
+
+               info = [];
+               info['userUsername'] = welcome_user.username;
+               info['profileId'] = user._id;
+               info['profileUsername'] = user.username;
+               info['userId'] = welcome_user._id;
+
+               // Update following for User
+               User.addFollowing(info, (err, user) => {
+                  if(err) throw err;
+               });
+
+               // Add followers to profile
+               User.addFollowers(info, (err, user) => {
+                  if(err) throw err;
+               });
+
+               info = [];
+               info['userUsername'] = user.username;
+               info['profileId'] = welcome_user._id;
+               info['profileUsername'] = welcome_user.username;
+               info['userId'] = user._id;
+
+               // Update following for User
+               User.addFollowing(info, (err, user) => {
+                  if(err) throw err;
+               });
+
+               // Add followers to profile
+               User.addFollowers(info, (err, user) => {
+                  if(err) throw err;
+               });
+            });
          });
 
 
@@ -575,7 +762,19 @@ passport.deserializeUser( (id, done) => {
 // POST Login
 router.post('/login', passport.authenticate('local-login', { failureRedirect:'/users/login', failureFlash: true }), (req, res, next) => {
    // Logged In successfully
-   res.redirect('/');
+   if (req.user.completed_profile_setup) {
+      if (req.user.completed_interest_onboarding) {
+         if (req.user.completed_modal_walkthrough) {
+            res.redirect('/');
+         } else {
+            res.redirect('/walkthrough/modal');
+         }
+      } else {
+         res.redirect('/walkthrough/interests');
+      }
+   } else {
+      res.redirect('/setup-profile');
+   }
 });
 
 passport.use('local-login', new LocalStrategy( (username, password, done) => {

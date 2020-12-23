@@ -70,6 +70,11 @@ $(document).ready(function() {
    /**********/
 
 
+   // Date of birth for create account
+   $('.date-field').autotab('number');
+   /**********/
+   
+
    // Nav dropdown menu
    var $dropNav = $('.dropNav');
    var $dropBtn = $('.dropBtn');

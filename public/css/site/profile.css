@@ -57,6 +57,34 @@
    color: #333;
 }
 
+.profile_page iframe {
+   min-height: auto!important;
+   max-height: 115px!important;
+   max-width: 350px!important;
+   border-radius: 15px;
+}
+
+.profile__top-desktop-music {
+   width: 100%;
+}
+
+.profile__top-mobile-music {
+   display: none;
+   width: 100%;
+   margin: 0 auto;
+   text-align: center;
+}
+
+@media screen and (max-width: 992px) {
+   .profile__top-desktop-music {
+      display: none;
+   }
+
+   .profile__top-mobile-music {
+      display: block;
+   }
+}
+
 .follower__profiles-section {
    display: flex;
    justify-content: center;

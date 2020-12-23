@@ -45,13 +45,44 @@
             </div>
             <input class="form__input" type="password" placeholder="Enter password" name="password" value="{{password}}" required autocapitalize="none" />
             <input class="form__input" type="password" placeholder="Confirm password" name="password2" value="{{password2}}" required autocapitalize="none" />
+
+            <fieldset class="register_dob">
+               <legend>Date Of Birth</legend>
+               <div class="field-inline-block">
+                  <label>DD</label>
+                  <input type="text" pattern="[0-9]*" maxlength="2" size="2" class="date-field" name="dob_day"/>
+               </div>
+               /
+               <div class="field-inline-block">
+                  <label>MM</label>
+                  <input type="text" pattern="[0-9]*" maxlength="2" size="2" class="date-field" name="dob_month" />
+               </div>
+               /
+               <div class="field-inline-block">
+                  <label>YYYY</label>
+                  <input type="text" pattern="[0-9]*" maxlength="4" size="4" class="date-field date-field--year" name="dob_year" />
+               </div>
+
+               <div class="dob_tooltip_container">
+                  <div class="dob_tooltip">
+                     <small class="dob_small">Why date of birth&quest;</small>
+                     <span class="dob_tooltiptext">
+                        You must be at least 13 years old to have a Hryzn account. This information helps ensure that underage people aren’t using Hryzn,
+                        while providing a safe, age-appropriate experience for the Hryzn community.
+                     </span>
+                  </div>
+               </div>
+            </fieldset>
+
             <!--<input class="form__input" type="text" placeholder="Enter promotional code" name="promo_code" value="{{promo_code}}" autocapitalize="none" />-->
-            <label for="profileimage" class="form__label">Select your profile image ( Optional )</label>
-            <input class="form__input" type="file" name="profileimage" value="{{profileimage}}" />
+            <!-- <label for="profileimage" class="form__label">Select your profile image ( Optional )</label>
+            <input class="form__input" type="file" name="profileimage" value="{{profileimage}}" /> -->
             <div class="form_row auth_btn">
              <button class="form__sign-up-button login_page_btn project_submit" name="submit" type="submit">Sign Up</button>
              <a class="form__href login_page_secondary" href="/users/login">Login</a>
             </div>
+            <small class="small_tos">By clicking Sign Up, you agree to our <a href="/about/terms">Terms</a>. Learn how we collect, use, and share your data in our <a href="/about/terms">Data Policy</a>,
+            and how we use cookies and similar technology in our <a href="/about/terms">Cookies Policy</a></small>
         </div>
       </form>
    </div>

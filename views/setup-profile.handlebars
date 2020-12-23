@@ -1,0 +1,192 @@
+{{#if setup_next}}
+
+<form id="setup_profile_form" action="/setup-profile/next" method="post"  enctype="multipart/form-data">
+   <h3 class="setup_h3" style="margin-top: 0;">We're just gonna cover the basics.</h3>
+   <p class="setup_p">
+      You can dive in and customize some more in the 'Edit' tab in your profile's settings.
+   </p>
+
+   <div class="form-container-2">
+
+      <div class="tab">
+         <div class="form_row">
+            <div class="col-lg-6">
+               <p><input placeholder="First Name" oninput="this.className = ''" name="firstname"></p>
+            </div>
+
+            <div class="col-lg-6">
+               <p><input placeholder="Last Name" oninput="this.className = ''" name="lastname"></p>
+            </div>
+         </div>
+         <textarea placeholder="Enter a little description of yourself (200 characters)" oninput="this.className = ''" name="bio"></textarea>
+      </div>
+
+      <div class="tab">
+         <label for="profileimage" class="form__label">Upload a profile image</label>
+         <input id="profileImage" class="form__input" type="file" oninput="this.className = ''" name="profileimage" value="{{user.profileimage}}" />
+
+         <label for="backgroundimage" class="form__label">Upload your profile's background header</label>
+         <input id="backgroundImage" class="form__input" type="file" oninput="this.className = ''" name="backgroundimage" value="{{user.backgroundimage}}" />
+      </div>
+
+      <div class="tab">Select a profile theme:
+         <label class="setup_checkbox_container">One
+            <input type="radio" name="profile_theme" value="default" oninput="this.className = ''">
+            <span class="setup_checkmark"></span>
+         </label>
+         <div class="profile_themes_img_container">
+            <img src="/img/profile-themes/default/default-04.png" />
+            <img src="/img/profile-themes/default/default-03.png" />
+            <img src="/img/profile-themes/default/default-02.png" />
+            <img src="/img/profile-themes/default/default-01.png" />
+         </div>
+         <br>
+         <label class="setup_checkbox_container">Two
+            <input type="radio" name="profile_theme" value="one" oninput="this.className = ''">
+            <span class="setup_checkmark"></span>
+         </label>
+         <div class="profile_themes_img_container">
+            <img src="/img/profile-themes/one/one-04.png" />
+            <img src="/img/profile-themes/one/one-03.png" />
+            <img src="/img/profile-themes/one/one-02.png" />
+            <img src="/img/profile-themes/one/one-01.png" />
+         </div>
+         <br>
+         <label class="setup_checkbox_container">Three
+            <input type="radio" name="profile_theme" value="two" oninput="this.className = ''">
+            <span class="setup_checkmark"></span>
+         </label>
+         <div class="profile_themes_img_container">
+            <img src="/img/profile-themes/two/two-01.png" />
+            <img src="/img/profile-themes/two/two-02.png" />
+            <img src="/img/profile-themes/two/two-03.png" />
+            <img src="/img/profile-themes/two/two-04.png" />
+         </div>
+      </div>
+
+      <div class="tab">
+         <p><input placeholder="Lastly, add your favorite song with a link" oninput="this.className = ''" name="music_link"></p>
+         <br />
+         <p>
+            Suported Platforms: Spotify, Tidal, Apple Music, Deezer
+         </p>
+         <br />
+         <br />
+         For example: <strong>https://open.spotify.com/track/3TGRqZ0a2l1LRblBkJoaDx</strong>
+         <br />
+         <iframe style="min-height: auto!important;" src="https://open.spotify.com/embed/track/3TGRqZ0a2l1LRblBkJoaDx" width="300" height="80" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+      </div>
+
+      <div style="overflow:auto; margin-top: 25px;">
+         <div style="float:right;">
+            <button type="button" id="prevBtn" onclick="nextPrev(-1)">Back</button>
+            <button type="button" id="nextBtn" onclick="nextPrev(1)">Next</button>
+         </div>
+      </div>
+
+      <div style="text-align:center;margin-top:40px;">
+         <span class="step"></span>
+         <span class="step"></span>
+         <span class="step"></span>
+         <span class="step"></span>
+      </div>
+
+   </div>
+</form>
+
+<script>
+var currentTab = 0; // Current tab is set to be the first tab (0)
+showTab(currentTab); // Display the current tab
+
+function showTab(n) {
+  // This function will display the specified tab of the form...
+  var x = document.getElementsByClassName("tab");
+  x[n].style.display = "block";
+  //... and fix the Previous/Next buttons:
+  if (n == 0) {
+    document.getElementById("prevBtn").style.display = "none";
+  } else {
+    document.getElementById("prevBtn").style.display = "inline";
+  }
+  if (n == (x.length - 1)) {
+    document.getElementById("nextBtn").innerHTML = "Submit";
+  } else {
+    document.getElementById("nextBtn").innerHTML = "Next";
+  }
+  //... and run a function that will display the correct step indicator:
+  fixStepIndicator(n)
+}
+
+function nextPrev(n) {
+  // This function will figure out which tab to display
+  var x = document.getElementsByClassName("tab");
+  // Exit the function if any field in the current tab is invalid:
+  if (n == 1 && !validateForm()) return false;
+  // Hide the current tab:
+  x[currentTab].style.display = "none";
+  // Increase or decrease the current tab by 1:
+  currentTab = currentTab + n;
+  // if you have reached the end of the form...
+  if (currentTab >= x.length) {
+    // ... the form gets submitted:
+    document.getElementById("setup_profile_form").submit();
+    return false;
+  }
+  // Otherwise, display the correct tab:
+  showTab(currentTab);
+}
+
+function validateForm() {
+  // This function deals with validation of the form fields
+  var x, y, i, valid = true;
+  x = document.getElementsByClassName("tab");
+  y = x[currentTab].getElementsByTagName("input");
+  // A loop that checks every input field in the current tab:
+
+  // If the valid status is true, mark the step as finished and valid:
+  if (valid) {
+    document.getElementsByClassName("step")[currentTab].className += " finish";
+  }
+  return valid; // return the valid status
+}
+
+function fixStepIndicator(n) {
+  // This function removes the "active" class of all steps...
+  var i, x = document.getElementsByClassName("step");
+  for (i = 0; i < x.length; i++) {
+    x[i].className = x[i].className.replace(" active", "");
+  }
+  //... and adds the "active" class on the current step:
+  x[n].className += " active";
+}
+</script>
+
+{{else}}
+<div class="setup_profile_container">
+   <h1 class="setup_welcome_header" data-shadow='Welcome!'>Welcome!</h1>
+
+   <br />
+
+   <h3 class="setup_h3">Setup Your Profile</h3>
+
+   <p class="setup_p">
+      Hryzn allows you to customize your profile to match your unique style. It will only take a few moments, about 2 minutes.
+      You can always customize your profile by clicking on the 'Edit' tab in your profile's settings.
+   </p>
+
+
+   <div class="setup_cta_container">
+      <a href="/setup-profile/next">
+         <div class="setup_cta_go">
+            Let's do it!
+         </div>
+      </a>
+
+      <a href="setup-profile/skip">
+         <div class="setup_cta_skip">
+            Skip for now
+         </div>
+      </a>
+   </div>
+</div>
+{{/if}}

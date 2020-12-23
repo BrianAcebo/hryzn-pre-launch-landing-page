@@ -193,6 +193,14 @@
 <div class="profile-main__container profile_project_backgroundimage">
 
    <div class="profile__top">
+      <div class="profile__top-desktop-music">
+         {{#if profile.music_link}}
+         <div class="mini-spacer"></div>
+         {{{profile.music_link}}}
+         <div class="semi-spacer"></div>
+         {{/if}}
+      </div>
+
       <div class="follow__btn-container">
          <div class="profile_social_container social_mobile">
             {{#if profile.website}}
@@ -260,6 +268,13 @@
          </div>
       </div>
 
+   </div>
+
+   <div class="profile__top-mobile-music">
+      {{#if profile.music_link}}
+      {{{profile.music_link}}}
+      <div class="semi-spacer"></div>
+      {{/if}}
    </div>
 
    {{#if collections}}

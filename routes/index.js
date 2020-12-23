@@ -51,6 +51,8 @@ const Email = require('../models/emails');
 router.get('/', (req, res, next) => {
    if(req.isAuthenticated()) {
 
+      var info = [];
+
       // Greeting was not working on iphone
 
       // var now = new Date();
@@ -194,7 +196,7 @@ router.get('/', (req, res, next) => {
                });
 
                res.render('index', {
-                  page_title: 'Explore Projects',
+                  page_title: 'Welcome',
                   greeting: greeting,
                   projects: all_public_projects.reverse(),
                   profiles: profiles,
@@ -294,7 +296,7 @@ router.get('/creatives/early', (req, res, next) => {
 });
 
 
-// POST Register
+// POST Creatives
 router.post('/creatives/early', (req, res, next) => {
 
    if (typeof req.body.top_email !='undefined') {
@@ -354,6 +356,320 @@ router.post('/creatives/early', (req, res, next) => {
          }
 
       });
+   }
+});
+
+
+// Get Profile Setup
+router.get('/setup-profile', (req, res, next) => {
+   if(req.isAuthenticated()) {
+
+      User.find({ '_id': { $in: req.user._id} }, (err, user) => {
+
+         if (err) throw err;
+
+         if (user.completed_profile_setup) {
+            res.redirect('/settings');
+         } else {
+            res.render('setup-profile', {
+              page_title: 'Setup Your Profile',
+              notLoginPage: false,
+              setupProfilePage: true
+            });
+         }
+
+      });
+
+   } else {
+      res.redirect('/');
+   }
+});
+
+
+// Get Profile Setup Next or Skip
+router.get('/setup-profile/:answer', (req, res, next) => {
+   if(req.isAuthenticated()) {
+
+      if (req.user.completed_profile_setup) {
+         res.redirect('/settings');
+      } else {
+
+         var answer = req.params.answer;
+
+         if (answer === 'skip') {
+
+            User.findByIdAndUpdate(req.user._id, {
+               completed_profile_setup: true
+            }, (err, user) => {
+               if (err) throw err;
+               res.redirect('/walkthrough/interests');
+            });
+
+         } else if (answer === 'next') {
+
+            res.render('setup-profile', {
+               page_title: 'Setup Your Profile',
+               notLoginPage: false,
+               setupProfilePage: true,
+               setup_next: true
+            });
+
+         } else {
+            res.redirect('/');
+         }
+      }
+
+   } else {
+      res.redirect('/');
+   }
+});
+
+
+// Post Profile Setup Next
+router.post('/setup-profile/next',  upload.fields([{name: 'profileimage', maxCount: 1}, {name: 'backgroundimage', maxCount: 1}]), (req, res, next) => {
+   if(req.isAuthenticated()) {
+
+      function capitalize(string) {
+         return string.charAt(0).toUpperCase() + string.slice(1);
+      }
+
+      // var username = req.body.username;
+      var bio = req.body.bio.replace(/\r\n/g,'');
+      var music_link = req.body.music_link.replace(/\r\n/g,'');
+
+      if(req.body.firstname === "") {
+         var firstname = "";
+      } else {
+         var firstname = req.body.firstname.replace(/\r\n/g,'');
+         firstname = capitalize(firstname);
+         req.checkBody('firstname', 'First Name Is Too Long').isLength({ min: 0, max:50 });
+      }
+
+      if(req.body.lastname === "") {
+         var lastname = "";
+      } else {
+         var lastname = req.body.lastname.replace(/\r\n/g,'');
+         lastname = capitalize(lastname);
+         req.checkBody('lastname', 'Last Name Is Too Long').isLength({ min: 0, max:50 });
+      }
+
+      // See which service is music link
+      var is_spotify = music_link.search("https://open.spotify.com/track/");
+      var is_tidal = music_link.search("https://tidal.com/browse/track/");
+      var is_soundcloud = music_link.search("https://soundcloud.com/");
+      var is_apple = music_link.search("https://music.apple.com/us/album/");
+      var is_deezer = music_link.search("https://www.deezer.com/track");
+
+      var embed_link;
+
+      if (is_spotify > -1) {
+         var spotify_track_id = music_link.split("https://open.spotify.com/track/")[1];
+         embed_link = '<iframe style="min-height: auto!important; z-index: 555555;" src="https://open.spotify.com/embed/track/' + spotify_track_id + '" width="300" height="80" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>'
+         console.log(embed_link);
+      } else if (is_tidal > -1) {
+         var tidal_track_id = music_link.split("https://tidal.com/browse/track/")[1];
+         embed_link = '<div style="position: relative;  overflow: hidden; max-width: 100%; z-index: 555555;"><iframe src="https://embed.tidal.com/tracks/' + tidal_track_id + '?layout=gridify" frameborder="0" allowfullscreen style="top: 0; left: 0; width: 100%; min-height: 100%; margin: 0 auto;"></iframe></div>'
+         console.log(embed_link);
+      } else if (is_apple > -1) {
+         var apple_track_id = music_link.split("https://music.apple.com/us/")[1];
+         embed_link = '<iframe allow="autoplay *; encrypted-media *; fullscreen *" frameborder="0" height="150" style="width:100%;max-width:660px;overflow:hidden;background:transparent;z-index: 555555;" sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation" src="https://embed.music.apple.com/us/' + apple_track_id + '"></iframe>'
+         console.log(embed_link);
+      } else if (is_deezer > -1) {
+         var deezer_track_id = music_link.split("https://www.deezer.com/track/")[1];
+         embed_link = '<iframe style="z-index: 555555;"scrolling="no" frameborder="0" allowTransparency="true" src="https://www.deezer.com/plugins/player?format=classic&autoplay=false&playlist=true&width=700&height=350&color=EF5466&layout=&size=medium&type=tracks&id=' + deezer_track_id + '&app_id=1" width="700" height="350"></iframe>'
+         console.log(embed_link);
+      } else {
+         // nothing
+      }
+
+      // Profile Customization
+      if (typeof req.body.profile_theme == 'undefined') {
+         var profile_theme = req.user.profile_theme;
+      } else {
+         var profile_theme = req.body.profile_theme;
+      }
+
+      // Form Validation
+      // req.checkBody('username', 'Please Enter A Username').notEmpty();
+      // req.checkBody('username', 'Username Must Be Between 5-50 Characters').isLength({ min: 5, max:50 });
+      req.checkBody('bio', 'Bio Is Too Long.').isLength({ min: 0, max: 200 });
+
+      errors = req.validationErrors();
+
+      if(errors) {
+         User.findById(req.user._id, (err, user) => {
+            if(err) throw err;
+
+            res.render('setup-profile', {
+               errors: errors,
+               page_title: 'Setup Your Profile',
+               user: user,
+               setup_next: true,
+               firstname: firstname,
+               lastname: lastname,
+               bio: bio,
+               profile_theme: profile_theme,
+               music_link: music_link
+            });
+         });
+      } else {
+         if(req.files.profileimage || req.files.backgroundimage) {
+
+            var continue_process = true;
+
+            if (req.files.profileimage) {
+               var ext = path.extname(req.files.profileimage[0].originalname);
+
+               if(ext !== '.png' && ext !== '.PNG' && ext !== '.jpg' && ext !== '.JPG' && ext !== '.gif' && ext !== '.GIF' && ext !== '.jpeg' && ext !== '.JPEG') {
+
+                  continue_process = false;
+
+                  User.findById(req.user._id, (err, user) => {
+                     if(err) throw err;
+
+                     res.render('setup-profile', {
+                        error_msg: 'Profile Image Must End With .jpg .jpeg .png .gif',
+                        page_title: 'Setup Your Profile',
+                        user: user,
+                        setup_next: true,
+                        firstname: firstname,
+                        lastname: lastname,
+                        bio: bio,
+                        profile_theme: profile_theme,
+                        music_link: embed_link
+                     });
+                  });
+               } else {
+                  var filename = dateNow + req.files.profileimage[0].originalname;
+                  filename = filename.replace(/\s+/g, '-').toLowerCase();
+                  filename = filename.replace("?", "");
+                  filename = filename.replace("#", "");
+
+                  var profileimage = filename;
+               }
+            } else {
+               var profileimage = req.user.profileimage;
+            }
+
+            if (req.files.backgroundimage) {
+               var ext = path.extname(req.files.backgroundimage[0].originalname);
+
+               if(ext !== '.png' && ext !== '.PNG' && ext !== '.jpg' && ext !== '.JPG' && ext !== '.gif' && ext !== '.GIF' && ext !== '.jpeg' && ext !== '.JPEG') {
+
+                  if (continue_process) {
+                     User.findById(req.user._id, (err, user) => {
+                        if(err) throw err;
+
+                        res.render('setup-profile', {
+                           error_msg: 'Header Image Must End With .jpg .jpeg .png .gif',
+                           page_title: 'Setup Your Profile',
+                           user: user,
+                           setup_next: true,
+                           firstname: firstname,
+                           lastname: lastname,
+                           bio: bio,
+                           profile_theme: profile_theme,
+                           music_link: embed_link
+                        });
+                     });
+                  }
+               } else {
+                  var filename = dateNow + req.files.backgroundimage[0].originalname;
+                  filename = filename.replace(/\s+/g, '-').toLowerCase();
+                  filename = filename.replace("?", "");
+                  filename = filename.replace("#", "");
+
+                  var backgroundimage = filename;
+               }
+            } else {
+               var backgroundimage = req.user.backgroundimage;
+            }
+
+            User.findByIdAndUpdate(req.user._id, {
+               firstname: firstname,
+               lastname: lastname,
+               bio: bio,
+               music_link: embed_link,
+               profile_theme: profile_theme,
+               profileimage: profileimage,
+               backgroundimage: backgroundimage,
+               completed_profile_setup: true
+            }, (err, user) => {
+               if (err) throw err;
+            });
+
+            res.redirect('/walkthrough/interests');
+
+         } else {
+
+            // User didn't upload images
+
+            User.findByIdAndUpdate(req.user._id, {
+               firstname: firstname,
+               lastname: lastname,
+               bio: bio,
+               music_link: embed_link,
+               profile_theme: profile_theme,
+               completed_profile_setup: true
+            }, (err, user) => {
+               if (err) throw err;
+            });
+
+            res.redirect('/walkthrough/interests');
+         }
+      }
+
+   } else {
+      res.redirect('/');
+   }
+});
+
+// Post Modal Walkthrough
+router.post('/walkthrough', (req, res, next) => {
+   if(req.isAuthenticated()) {
+      User.findByIdAndUpdate(req.user._id, {
+         completed_modal_walkthrough: true
+      }, (err, user) => {
+         if (err) throw err;
+      });
+
+      res.redirect('/');
+   } else {
+      res.redirect('/');
+   }
+});
+
+// Get Modal Walkthrough
+router.get('/walkthrough/:onboarding', (req, res, next) => {
+   if(req.isAuthenticated()) {
+
+      if (req.user.completed_modal_walkthrough) {
+         res.redirect('/');
+      } else {
+
+         var which_onboarding = req.params.onboarding;
+
+         if (which_onboarding === 'interests') {
+            res.render('walkthrough', {
+               page_title: 'Welcome',
+               onboarding_interests: true
+            });
+         } else if (which_onboarding === 'modal') {
+            User.findOne({ '_id': { $in: '5fe22ee746497818fbb7c9d3' } }, (err, modal_user) => {
+               Project.find({ '_id': { $in: modal_user.own_projects } }, (err, modal_walkthrough_project) => {
+                  res.render('walkthrough', {
+                     page_title: 'Welcome',
+                     projects: modal_walkthrough_project
+                  });
+               });
+            });
+         } else {
+            res.redirect('/');
+         }
+      }
+
+   } else {
+      res.redirect('/');
    }
 });
 
@@ -2137,6 +2453,43 @@ router.post('/settings', upload.fields([{name: 'profile_project_backgroundimage'
 
       }
 
+      if (typeof req.body.music_link == 'undefined' || req.body.music_link == '' || req.body.music_link.length < 0) {
+         var embed_link = req.user.music_link;
+      } else {
+         var music_link = req.body.music_link.replace(/\r\n/g,'');
+
+         // See which service is music link
+         var is_spotify = music_link.search("https://open.spotify.com/track/");
+         var is_tidal = music_link.search("https://tidal.com/browse/track/");
+         var is_soundcloud = music_link.search("https://soundcloud.com/");
+         var is_apple = music_link.search("https://music.apple.com/us/album/");
+         var is_deezer = music_link.search("https://www.deezer.com/track");
+
+         var embed_link;
+
+         if (is_spotify > -1) {
+            var spotify_track_id = music_link.split("https://open.spotify.com/track/")[1];
+            embed_link = '<iframe style="min-height: auto!important; z-index: 555555;" src="https://open.spotify.com/embed/track/' + spotify_track_id + '" width="300" height="80" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>'
+            console.log(embed_link);
+         } else if (is_tidal > -1) {
+            var tidal_track_id = music_link.split("https://tidal.com/browse/track/")[1];
+            embed_link = '<div style="position: relative;  overflow: hidden; max-width: 100%; z-index: 555555;"><iframe src="https://embed.tidal.com/tracks/' + tidal_track_id + '?layout=gridify" frameborder="0" allowfullscreen style="top: 0; left: 0; width: 100%; min-height: 100%; margin: 0 auto;"></iframe></div>'
+            console.log(embed_link);
+         } else if (is_apple > -1) {
+            var apple_track_id = music_link.split("https://music.apple.com/us/")[1];
+            embed_link = '<iframe allow="autoplay *; encrypted-media *; fullscreen *" frameborder="0" height="150" style="width:100%;max-width:660px;overflow:hidden;background:transparent;z-index: 555555;" sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation" src="https://embed.music.apple.com/us/' + apple_track_id + '"></iframe>'
+            console.log(embed_link);
+         } else if (is_deezer > -1) {
+            var deezer_track_id = music_link.split("https://www.deezer.com/track/")[1];
+            embed_link = '<iframe style="z-index: 555555;"scrolling="no" frameborder="0" allowTransparency="true" src="https://www.deezer.com/plugins/player?format=classic&autoplay=false&playlist=true&width=700&height=350&color=EF5466&layout=&size=medium&type=tracks&id=' + deezer_track_id + '&app_id=1" width="700" height="350"></iframe>'
+            console.log(embed_link);
+         } else {
+            // nothing
+            embed_link = req.user.music_link;
+         }
+      }
+
+
       // Profile Customization
       if (typeof req.body.profile_theme == 'undefined') {
          var profile_theme = req.user.profile_theme;
@@ -2446,6 +2799,7 @@ router.post('/settings', upload.fields([{name: 'profile_project_backgroundimage'
                      instagram: instagram_link,
                      facebook: facebook_link,
                      profileimage: profileimage,
+                     music_link: embed_link,
                      backgroundimage: backgroundimage,
                      profile_theme: profile_theme,
                      profile_project_backgroundimage: profile_project_backgroundimage,
@@ -2492,6 +2846,7 @@ router.post('/settings', upload.fields([{name: 'profile_project_backgroundimage'
                      twitter: twitter_link,
                      instagram: instagram_link,
                      facebook: facebook_link,
+                     music_link: embed_link,
                      profile_cursor: profile_cursor,
                      profile_theme: profile_theme,
                      profile_secondary_accent_color: profile_secondary_accent_color,
@@ -2819,7 +3174,7 @@ router.post('/onboarding_survey', (req, res, next) => {
       }, (err, user) => {
          if (err) throw err;
 
-         res.redirect('/');
+         res.redirect('/walkthrough/modal');
       });
 
    } else {

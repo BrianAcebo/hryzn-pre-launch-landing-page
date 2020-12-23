@@ -148,6 +148,11 @@
       <a class="profile_secondary_font profile_main_accent_color" href="/profile/{{profile.username}}/followers"><strong>{{amount_of_followers}}</strong> followers</a>
       <a class="profile_secondary_font profile_main_accent_color" href="/profile/{{profile.username}}/following"><strong>{{amount_of_following}}</strong> following</a>
    </div>
+   {{#if profile.music_link}}
+   <div class="mini-spacer"></div>
+   {{{profile.music_link}}}
+   <div class="semi-spacer"></div>
+   {{/if}}
   </div>
 </nav>
 

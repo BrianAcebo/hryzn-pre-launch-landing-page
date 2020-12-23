@@ -26,6 +26,13 @@
          <label for="bio" class="form__label">Enter a bio</label>
          <textarea name="bio" value="{{user.bio}}" class="form__input profile_bio">{{user.bio}}</textarea>
 
+         <input class="form__input" type="text" placeholder="Add your favorite song with a link" name="music_link">
+         <p>Suported Platforms: Spotify, Tidal, Apple Music, Deezer</p>
+         <br />
+         For example: <strong>https://open.spotify.com/track/3TGRqZ0a2l1LRblBkJoaDx</strong>
+         <br />
+         <iframe style="min-height: auto!important;" src="https://open.spotify.com/embed/track/3TGRqZ0a2l1LRblBkJoaDx" width="300" height="80" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+
          <input class="form__input" type="text" placeholder="Enter your website link" name="website_link" value="{{user.website}}" autocapitalize="none" />
          <input class="form__input" type="text" placeholder="Enter your Youtube username" name="youtube_link" value="{{user.youtube}}" autocapitalize="none" />
          <input class="form__input" type="text" placeholder="Enter your Twitter username" name="twitter_link" value="{{user.twitter}}" autocapitalize="none" />

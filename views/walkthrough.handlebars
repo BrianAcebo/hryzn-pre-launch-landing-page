@@ -1,0 +1,549 @@
+{{#if onboarding_interests}}
+{{! Project Meta Modal }}
+<div class="popModalMeta modalBackground">
+   <div class="modal-content onboarding_content">
+      <form name="builder" action="/onboarding_survey" method="post" novalidate="novalidate">
+         <h3>Please choose your interests</h3>
+         <p>Don't worry, you can change this later in settings</p>
+
+         <div class="onboarding_content_row">
+            <div class="onboarding_content_interest">
+               <label class="checkbox-img" >
+                  <p>Art</p>
+                  <input type="checkbox" name="art">
+                  <img src="/img/site/onboarding/onboarding-art.jpg"/>
+               </label>
+            </div>
+
+            <div class="onboarding_content_interest">
+               <label class="checkbox-img" >
+                  <p>Beauty & Fashion</p>
+                  <input type="checkbox" name="beauty_fashion">
+                  <img src="/img/site/onboarding/onboarding-beauty-fashion.jpg"/>
+               </label>
+            </div>
+
+            <div class="onboarding_content_interest">
+               <label class="checkbox-img" >
+                  <p>Business</p>
+                  <input type="checkbox" name="business">
+                  <img src="/img/site/onboarding/onboarding-business.jpg"/>
+               </label>
+            </div>
+         </div>
+
+         <div class="onboarding_content_row">
+            <div class="onboarding_content_interest">
+               <label class="checkbox-img" >
+                  <p>Family & Society</p>
+                  <input type="checkbox" name="family_society">
+                  <img src="/img/site/onboarding/onboarding-family-society.jpg"/>
+               </label>
+            </div>
+
+            <div class="onboarding_content_interest">
+               <label class="checkbox-img" >
+                  <p>Food & Drink</p>
+                  <input type="checkbox" name="food_drink">
+                  <img src="/img/site/onboarding/onboarding-food-drink.jpg"/>
+               </label>
+            </div>
+
+            <div class="onboarding_content_interest">
+               <label class="checkbox-img" >
+                  <p>Health & Wellness</p>
+                  <input type="checkbox" name="health_wellness">
+                  <img src="/img/site/onboarding/onboarding-health-wellness.jpg"/>
+               </label>
+            </div>
+         </div>
+
+         <div class="onboarding_content_row">
+            <div class="onboarding_content_interest">
+               <label class="checkbox-img" >
+                  <p>Home & Garden</p>
+                  <input type="checkbox" name="home_garden">
+                  <img src="/img/site/onboarding/onboarding-home-garden.jpg"/>
+               </label>
+            </div>
+
+            <div class="onboarding_content_interest">
+               <label class="checkbox-img" >
+                  <p>Science & Technology</p>
+                  <input type="checkbox" name="science_technology">
+                  <img src="/img/site/onboarding/onboarding-science-technology.jpg"/>
+               </label>
+            </div>
+
+            <div class="onboarding_content_interest">
+               <label class="checkbox-img" >
+                  <p>Sports & Fitness</p>
+                  <input type="checkbox" name="sports_fitness">
+                  <img src="/img/site/onboarding/onboarding-sports-fitness.jpg"/>
+               </label>
+            </div>
+         </div>
+
+         <div class="onboarding_content_row">
+            <div class="onboarding_content_interest">
+               <label class="checkbox-img" >
+                  <p>Travel</p>
+                  <input type="checkbox" name="travel">
+                  <img src="/img/site/onboarding/onboarding-travel.jpg"/>
+               </label>
+            </div>
+         </div>
+
+         <div class="modal-footer">
+            <input type="submit" class="btn__primary onboarding_submit" value="Submit">
+         </div>
+
+      </form>
+   </div>
+</div>
+{{else}}
+
+<div class="index_feed" style="position: relative;">
+
+<form id="setup_profile_form" action="/walkthrough" method="post"  enctype="multipart/form-data">
+
+   <div class="form-container-2">
+
+      <div class="tab tab_1">
+         {{#if projects}}
+         {{#each projects}}
+         <div class="masonryItem ownProject" title="{{project_title}}" style="margin: 0 auto;" >
+            <div class="project_avatar_left">
+               <a>
+                  <img class="project_avatar_img" src="https://ik.imagekit.io/w07am55tja/{{project_owner_profile_image}}?tr=w-75" />
+               </a>
+            </div>
+
+            <div class="project_content_right">
+               <div class="walkthrough_bg"></div>
+               <div class="walk_tooltip_container">
+                  <div class="walk_tooltip">
+                     <a class="micro_tag {{#if project_title}}micro_tag_w_title{{/if}}">@{{project_owner}}</a>
+                     <span class="walk_tooltiptext">
+                     Usernames begin with an '@' such as this. You can find usernames on post thumbnails, at the top of the blog title for blog posts, or directly in posts themselves.
+                     Clicking on the username sends you to their profile page, where you can message or follow them.
+                     </span>
+                  </div>
+               </div>
+               <div class="micropost">
+                  <div class="micropost_card {{#if micro_image}}card_is_micro_image{{else}}{{#if micro_audio}}card_is_micro_audio{{else}}{{#if micro_video}}card_is_micro_video{{else}}card_is_micro_text{{/if}}{{/if}}{{/if}}">
+                     <a style="width: 100%;">
+                        {{#if project_title}}<p class="micro_title">{{project_title}}</p>{{/if}}
+                        {{#if micro_body}}<p class="micro_body">{{{micro_body}}}</p>{{/if}}
+                     </a>
+                     <a style="width: 100%;">
+                        {{#if micro_image}}<img src="https://ik.imagekit.io/w07am55tja/{{micro_image}}?tr=w-650" class="img-responsive" alt="{{micro_body}}" />{{/if}}
+                        {{#if micro_video}}
+                        <video  preload="auto" controls controlsList="nodownload" class="micro_video">
+                           <source src="https://ik.imagekit.io/w07am55tja/{{micro_video}}" type="video/mp4">
+                           <source src="https://ik.imagekit.io/w07am55tja/{{micro_video}}" type="video/ogg">
+                           <source src="https://ik.imagekit.io/w07am55tja/{{micro_video}}" type="video/webm">
+                           Your browser does not support the video tag.
+                        </video>
+                        {{/if}}
+                        {{#if micro_audio}}
+                        {{#if thumbnail_image}}<img src="https://ik.imagekit.io/w07am55tja/{{thumbnail_image}}?tr=w-650" class="img-responsive" alt="{{micro_body}}" />{{/if}}
+                        <audio controls controlsList="nodownload" class="micro_audio">
+                           <source src="https://ik.imagekit.io/w07am55tja/{{micro_audio}}" type="audio/ogg">
+                           <source src="https://ik.imagekit.io/w07am55tja/{{micro_audio}}" type="audio/mpeg">
+                           <source src="https://ik.imagekit.io/w07am55tja/{{micro_audio}}" type="audio/wav">
+                            Your browser does not support the audio element.
+                        </audio>
+                        {{/if}}
+                     </a>
+                  </div>
+                  <div class="micro_action_btns">
+
+                     <div class="project_action_btn" name="submit" type="submit">
+                        <a><i style="font-weight: bold" class="fa fa-heart-o"></i></a>
+                     </div>
+
+                     <div class="project_action_btn" name="submit" type="submit">
+                        <a><i class="fa fa-retweet"></i></a>
+                     </div>
+
+                     <div class="project_action_btn" name="submit" type="submit">
+                        <a><i style="font-weight: bold" class="fa fa-bookmark-o"></i></a>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+         {{/each}}
+         {{/if}}
+      </div>
+
+      <div class="tab tab_2">
+         {{#if projects}}
+         {{#each projects}}
+         <div class="masonryItem ownProject" title="{{project_title}}" style="margin: 0 auto;" >
+            <div class="project_avatar_left">
+               <a>
+                  <img class="project_avatar_img" src="https://ik.imagekit.io/w07am55tja/{{project_owner_profile_image}}?tr=w-75" />
+               </a>
+            </div>
+
+            <div class="project_content_right">
+               <a class="micro_tag {{#if project_title}}micro_tag_w_title{{/if}}">@{{project_owner}}</a>
+               <div class="micropost">
+                  <div class="micropost_card {{#if micro_image}}card_is_micro_image{{else}}{{#if micro_audio}}card_is_micro_audio{{else}}{{#if micro_video}}card_is_micro_video{{else}}card_is_micro_text{{/if}}{{/if}}{{/if}}">
+                     <a style="width: 100%;">
+                        {{#if project_title}}<p class="micro_title">{{project_title}}</p>{{/if}}
+                        {{#if micro_body}}<p class="micro_body">{{{micro_body}}}</p>{{/if}}
+                     </a>
+                     <a style="width: 100%;">
+                        {{#if micro_image}}<img src="https://ik.imagekit.io/w07am55tja/{{micro_image}}?tr=w-650" class="img-responsive" alt="{{micro_body}}" />{{/if}}
+                        {{#if micro_video}}
+                        <video  preload="auto" controls controlsList="nodownload" class="micro_video">
+                           <source src="https://ik.imagekit.io/w07am55tja/{{micro_video}}" type="video/mp4">
+                           <source src="https://ik.imagekit.io/w07am55tja/{{micro_video}}" type="video/ogg">
+                           <source src="https://ik.imagekit.io/w07am55tja/{{micro_video}}" type="video/webm">
+                           Your browser does not support the video tag.
+                        </video>
+                        {{/if}}
+                        {{#if micro_audio}}
+                        {{#if thumbnail_image}}<img src="https://ik.imagekit.io/w07am55tja/{{thumbnail_image}}?tr=w-650" class="img-responsive" alt="{{micro_body}}" />{{/if}}
+                        <audio controls controlsList="nodownload" class="micro_audio">
+                           <source src="https://ik.imagekit.io/w07am55tja/{{micro_audio}}" type="audio/ogg">
+                           <source src="https://ik.imagekit.io/w07am55tja/{{micro_audio}}" type="audio/mpeg">
+                           <source src="https://ik.imagekit.io/w07am55tja/{{micro_audio}}" type="audio/wav">
+                            Your browser does not support the audio element.
+                        </audio>
+                        {{/if}}
+                     </a>
+                  </div>
+
+                  <div class="walkthrough_bg"></div>
+                  <div class="walk_tooltip_container">
+                     <div class="walk_tooltip">
+                        <span class="walk_tooltiptext">
+                           These buttons from left to right give you the ability to like, repost, and save posts. Clicking on the post itself will send you to the post's page,
+                           where you can find these buttons, with the addition of leaving comments and finding related posts.
+                        </span>
+
+                        <div class="micro_action_btns">
+
+                           <div class="project_action_btn" name="submit" type="submit">
+                              <a><i style="font-weight: bold" class="fa fa-heart-o"></i></a>
+                           </div>
+
+                           <div class="project_action_btn" name="submit" type="submit">
+                              <a><i class="fa fa-retweet"></i></a>
+                           </div>
+
+                           <div class="project_action_btn" name="submit" type="submit">
+                              <a><i style="font-weight: bold" class="fa fa-bookmark-o"></i></a>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+         {{/each}}
+         {{/if}}
+      </div>
+
+      <div class="tab tab_3">
+         {{#if projects}}
+         {{#each projects}}
+         <div class="masonryItem ownProject" title="{{project_title}}" style="margin: 0 auto;" >
+            <div class="project_avatar_left">
+               <a>
+                  <img class="project_avatar_img" src="https://ik.imagekit.io/w07am55tja/{{project_owner_profile_image}}?tr=w-75" />
+               </a>
+            </div>
+
+            <div class="project_content_right">
+               <a class="micro_tag {{#if project_title}}micro_tag_w_title{{/if}}">@{{project_owner}}</a>
+               <div class="micropost">
+                  <div class="micropost_card {{#if micro_image}}card_is_micro_image{{else}}{{#if micro_audio}}card_is_micro_audio{{else}}{{#if micro_video}}card_is_micro_video{{else}}card_is_micro_text{{/if}}{{/if}}{{/if}}">
+                     <a style="width: 100%;">
+                        {{#if project_title}}<p class="micro_title">{{project_title}}</p>{{/if}}
+                        {{#if micro_body}}<p class="micro_body">{{{micro_body}}}</p>{{/if}}
+                     </a>
+                     <a style="width: 100%;">
+                        {{#if micro_image}}<img src="https://ik.imagekit.io/w07am55tja/{{micro_image}}?tr=w-650" class="img-responsive" alt="{{micro_body}}" />{{/if}}
+                        {{#if micro_video}}
+                        <video  preload="auto" controls controlsList="nodownload" class="micro_video">
+                           <source src="https://ik.imagekit.io/w07am55tja/{{micro_video}}" type="video/mp4">
+                           <source src="https://ik.imagekit.io/w07am55tja/{{micro_video}}" type="video/ogg">
+                           <source src="https://ik.imagekit.io/w07am55tja/{{micro_video}}" type="video/webm">
+                           Your browser does not support the video tag.
+                        </video>
+                        {{/if}}
+                        {{#if micro_audio}}
+                        {{#if thumbnail_image}}<img src="https://ik.imagekit.io/w07am55tja/{{thumbnail_image}}?tr=w-650" class="img-responsive" alt="{{micro_body}}" />{{/if}}
+                        <audio controls controlsList="nodownload" class="micro_audio">
+                           <source src="https://ik.imagekit.io/w07am55tja/{{micro_audio}}" type="audio/ogg">
+                           <source src="https://ik.imagekit.io/w07am55tja/{{micro_audio}}" type="audio/mpeg">
+                           <source src="https://ik.imagekit.io/w07am55tja/{{micro_audio}}" type="audio/wav">
+                            Your browser does not support the audio element.
+                        </audio>
+                        {{/if}}
+                     </a>
+                  </div>
+                  <div class="micro_action_btns">
+
+                     <div class="project_action_btn" name="submit" type="submit">
+                        <a><i style="font-weight: bold" class="fa fa-heart-o"></i></a>
+                     </div>
+
+                     <div class="project_action_btn" name="submit" type="submit">
+                        <a><i class="fa fa-retweet"></i></a>
+                     </div>
+
+                     <div class="project_action_btn" name="submit" type="submit">
+                        <a><i style="font-weight: bold" class="fa fa-bookmark-o"></i></a>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div class="walkthrough_bg"></div>
+         <div class="walk_tooltip_container create_post_walk_modal">
+            <div class="walk_tooltip">
+               <span class="walk_tooltiptext">
+                  The grey button is how you create a post. You're presented with two types of posts: long-form blog posts or microposts. Long-form blog posts
+                  is a way to write a load of information for under 1000 words, while microposts are neat compact little posts for pictures, videos, audio, and text.
+               </span>
+            </div>
+         </div>
+         {{/each}}
+         {{/if}}
+      </div>
+
+      <div class="tab tab_4">
+         {{#if projects}}
+         {{#each projects}}
+         <div class="masonryItem ownProject" title="{{project_title}}" style="margin: 0 auto;" >
+            <div class="project_avatar_left">
+               <a>
+                  <img class="project_avatar_img" src="https://ik.imagekit.io/w07am55tja/{{project_owner_profile_image}}?tr=w-75" />
+               </a>
+            </div>
+
+            <div class="project_content_right">
+               <a class="micro_tag {{#if project_title}}micro_tag_w_title{{/if}}">@{{project_owner}}</a>
+               <div class="micropost">
+                  <div class="micropost_card {{#if micro_image}}card_is_micro_image{{else}}{{#if micro_audio}}card_is_micro_audio{{else}}{{#if micro_video}}card_is_micro_video{{else}}card_is_micro_text{{/if}}{{/if}}{{/if}}">
+                     <a style="width: 100%;">
+                        {{#if project_title}}<p class="micro_title">{{project_title}}</p>{{/if}}
+                        {{#if micro_body}}<p class="micro_body">{{{micro_body}}}</p>{{/if}}
+                     </a>
+                     <a style="width: 100%;">
+                        {{#if micro_image}}<img src="https://ik.imagekit.io/w07am55tja/{{micro_image}}?tr=w-650" class="img-responsive" alt="{{micro_body}}" />{{/if}}
+                        {{#if micro_video}}
+                        <video  preload="auto" controls controlsList="nodownload" class="micro_video">
+                           <source src="https://ik.imagekit.io/w07am55tja/{{micro_video}}" type="video/mp4">
+                           <source src="https://ik.imagekit.io/w07am55tja/{{micro_video}}" type="video/ogg">
+                           <source src="https://ik.imagekit.io/w07am55tja/{{micro_video}}" type="video/webm">
+                           Your browser does not support the video tag.
+                        </video>
+                        {{/if}}
+                        {{#if micro_audio}}
+                        {{#if thumbnail_image}}<img src="https://ik.imagekit.io/w07am55tja/{{thumbnail_image}}?tr=w-650" class="img-responsive" alt="{{micro_body}}" />{{/if}}
+                        <audio controls controlsList="nodownload" class="micro_audio">
+                           <source src="https://ik.imagekit.io/w07am55tja/{{micro_audio}}" type="audio/ogg">
+                           <source src="https://ik.imagekit.io/w07am55tja/{{micro_audio}}" type="audio/mpeg">
+                           <source src="https://ik.imagekit.io/w07am55tja/{{micro_audio}}" type="audio/wav">
+                            Your browser does not support the audio element.
+                        </audio>
+                        {{/if}}
+                     </a>
+                  </div>
+                  <div class="micro_action_btns">
+
+                     <div class="project_action_btn" name="submit" type="submit">
+                        <a><i style="font-weight: bold" class="fa fa-heart-o"></i></a>
+                     </div>
+
+                     <div class="project_action_btn" name="submit" type="submit">
+                        <a><i class="fa fa-retweet"></i></a>
+                     </div>
+
+                     <div class="project_action_btn" name="submit" type="submit">
+                        <a><i style="font-weight: bold" class="fa fa-bookmark-o"></i></a>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div class="walkthrough_bg"></div>
+         <div class="walk_tooltip_container create_post_walk_modal">
+            <div class="walk_tooltip">
+               <span class="walk_tooltiptext">
+                  The rocket is your key to explore our universe. You can search for topics you're passionate about or even find groups of like-minded people.
+                  You have endless opportunities to discover.
+               </span>
+            </div>
+         </div>
+         {{/each}}
+         {{/if}}
+      </div>
+
+      <div class="tab tab_5">
+         {{#if projects}}
+         {{#each projects}}
+         <div class="masonryItem ownProject" title="{{project_title}}" style="margin: 0 auto;" >
+            <div class="project_avatar_left">
+               <a>
+                  <img class="project_avatar_img" src="https://ik.imagekit.io/w07am55tja/{{project_owner_profile_image}}?tr=w-75" />
+               </a>
+            </div>
+
+            <div class="project_content_right">
+               <a class="micro_tag {{#if project_title}}micro_tag_w_title{{/if}}">@{{project_owner}}</a>
+               <div class="micropost">
+                  <div class="micropost_card {{#if micro_image}}card_is_micro_image{{else}}{{#if micro_audio}}card_is_micro_audio{{else}}{{#if micro_video}}card_is_micro_video{{else}}card_is_micro_text{{/if}}{{/if}}{{/if}}">
+                     <a style="width: 100%;">
+                        {{#if project_title}}<p class="micro_title">{{project_title}}</p>{{/if}}
+                        {{#if micro_body}}<p class="micro_body">{{{micro_body}}}</p>{{/if}}
+                     </a>
+                     <a style="width: 100%;">
+                        {{#if micro_image}}<img src="https://ik.imagekit.io/w07am55tja/{{micro_image}}?tr=w-650" class="img-responsive" alt="{{micro_body}}" />{{/if}}
+                        {{#if micro_video}}
+                        <video  preload="auto" controls controlsList="nodownload" class="micro_video">
+                           <source src="https://ik.imagekit.io/w07am55tja/{{micro_video}}" type="video/mp4">
+                           <source src="https://ik.imagekit.io/w07am55tja/{{micro_video}}" type="video/ogg">
+                           <source src="https://ik.imagekit.io/w07am55tja/{{micro_video}}" type="video/webm">
+                           Your browser does not support the video tag.
+                        </video>
+                        {{/if}}
+                        {{#if micro_audio}}
+                        {{#if thumbnail_image}}<img src="https://ik.imagekit.io/w07am55tja/{{thumbnail_image}}?tr=w-650" class="img-responsive" alt="{{micro_body}}" />{{/if}}
+                        <audio controls controlsList="nodownload" class="micro_audio">
+                           <source src="https://ik.imagekit.io/w07am55tja/{{micro_audio}}" type="audio/ogg">
+                           <source src="https://ik.imagekit.io/w07am55tja/{{micro_audio}}" type="audio/mpeg">
+                           <source src="https://ik.imagekit.io/w07am55tja/{{micro_audio}}" type="audio/wav">
+                            Your browser does not support the audio element.
+                        </audio>
+                        {{/if}}
+                     </a>
+                  </div>
+                  <div class="micro_action_btns">
+
+                     <div class="project_action_btn" name="submit" type="submit">
+                        <a><i style="font-weight: bold" class="fa fa-heart-o"></i></a>
+                     </div>
+
+                     <div class="project_action_btn" name="submit" type="submit">
+                        <a><i class="fa fa-retweet"></i></a>
+                     </div>
+
+                     <div class="project_action_btn" name="submit" type="submit">
+                        <a><i style="font-weight: bold" class="fa fa-bookmark-o"></i></a>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div class="walkthrough_bg"></div>
+         <div class="walk_tooltip_container walk_final">
+            <div class="walk_tooltip">
+               <span class="walk_tooltiptext">
+                  Lastly, we want to say thank you for joining Hryzn. Find your passion, connect with your people, and express yourself. Enjoy!
+               </span>
+            </div>
+         </div>
+         {{/each}}
+         {{/if}}
+      </div>
+
+      <div style="overflow:auto; margin: 25px auto 0 auto;" class="nxt_bck_btn_container" id="walkMoveTop">
+         <div style="float:right;">
+            <button type="button" id="prevBtn" onclick="nextPrev(-1)">Back</button>
+            <button type="button" id="nextBtn" onclick="nextPrev(1)">Next</button>
+         </div>
+      </div>
+
+      <div style="text-align:center;margin-top:40px;" class="steps_container">
+         <span class="step"></span>
+         <span class="step"></span>
+         <span class="step"></span>
+         <span class="step"></span>
+         <span class="step"></span>
+      </div>
+
+   </div>
+</form>
+
+</div>
+
+<script>
+var currentTab = 0; // Current tab is set to be the first tab (0)
+showTab(currentTab); // Display the current tab
+
+function showTab(n) {
+   // This function will display the specified tab of the form...
+   var x = document.getElementsByClassName("tab");
+   x[n].style.display = "block";
+   //... and fix the Previous/Next buttons:
+   if (n == 0) {
+      document.getElementById("prevBtn").style.display = "none";
+   } else {
+      document.getElementById("prevBtn").style.display = "inline";
+   }
+   if (n == (x.length - 1)) {
+      document.getElementById("nextBtn").innerHTML = "Done";
+   } else {
+      document.getElementById("nextBtn").innerHTML = "Next";
+   }
+   if (n == 2 || n == 3) {
+      document.getElementById("walkMoveTop").classList.add("walk_move_top");
+   } else {
+      document.getElementById("walkMoveTop").classList.remove("walk_move_top");
+   }
+   //... and run a function that will display the correct step indicator:
+   fixStepIndicator(n)
+}
+
+function nextPrev(n) {
+  // This function will figure out which tab to display
+  var x = document.getElementsByClassName("tab");
+  // Exit the function if any field in the current tab is invalid:
+  if (n == 1 && !validateForm()) return false;
+  // Hide the current tab:
+  x[currentTab].style.display = "none";
+  // Increase or decrease the current tab by 1:
+  currentTab = currentTab + n;
+  // if you have reached the end of the form...
+  if (currentTab >= x.length) {
+    // ... the form gets submitted:
+    document.getElementById("setup_profile_form").submit();
+    return false;
+  }
+  // Otherwise, display the correct tab:
+  showTab(currentTab);
+}
+
+function validateForm() {
+  // This function deals with validation of the form fields
+  var x, y, i, valid = true;
+  x = document.getElementsByClassName("tab");
+  y = x[currentTab].getElementsByTagName("input");
+  // A loop that checks every input field in the current tab:
+
+  // If the valid status is true, mark the step as finished and valid:
+  if (valid) {
+    document.getElementsByClassName("step")[currentTab].className += " finish";
+  }
+  return valid; // return the valid status
+}
+
+function fixStepIndicator(n) {
+  // This function removes the "active" class of all steps...
+  var i, x = document.getElementsByClassName("step");
+  for (i = 0; i < x.length; i++) {
+    x[i].className = x[i].className.replace(" active", "");
+  }
+  //... and adds the "active" class on the current step:
+  x[n].className += " active";
+}
+</script>
+{{/if}}

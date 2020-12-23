@@ -434,9 +434,9 @@
 }
 
 .welcome_primary {
-   background: #31375A!important;
    color: #fff!important;
    border: none!important;
+   background-image: linear-gradient(to right, #7F7FFF, #DADCEB)!important;
 }
 
 .section_home_content__buttons {
@@ -453,12 +453,12 @@
    font-size: 14px;
    font-weight: 600;
    text-transform: uppercase;
-   color: #31375A;
+   color: #fff;
    margin: 0 35px 0 0;
    letter-spacing: 1px;
-   -webkit-transition: all 0.5s ease-in-out;
-   transition: all 0.5s ease-in-out;
-   background: #fff;
+   transition: all .3s ease-in-out;
+   background: transparent;
+   border: 3px solid #fff;
    font-family: 'Poppins', sans-serif;
 }
 
@@ -468,7 +468,7 @@
 
 .section_home_content__buttons .btn:hover,
 .section_home_content__buttons .btn:focus {
-   width: 275px;
+   border-radius: 35px;
 }
 
 @media screen and (max-width: 768px) {
@@ -479,10 +479,6 @@
    .section_home_content__buttons .btn {
       width: 150px;
       font-size: 12px;
-   }
-
-   .section_home_content__buttons .btn:hover {
-      width: 175px;
    }
 }
 
