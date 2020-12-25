@@ -1726,10 +1726,10 @@ router.get('/micro/:id', (req, res, next) => {
 
                var admin_amount = project.admins.length;
 
-               if (project.project_title != '' || project.project_title.length > 0) {
-                  var project_title = project.project_title;
+               if (typeof project.project_title == 'undefined') {
+                  var page_title = 'Explore'
                } else {
-                  var project_title = 'Explore';
+                  var page_title = project.project_title;
                }
 
                Project.find({$text: { $search: project.micro_body }}, {score: { $meta: "textScore" }}, (err, related_projects) => {
@@ -1784,12 +1784,11 @@ router.get('/micro/:id', (req, res, next) => {
                   var reverse_projects = all_public_projects.slice(0,14).reverse();
 
                   if (related_projects.length > 4) {
-
                      res.render('p/micro/micro-details', {
                         project: project,
                         related_projects: reverse_projects,
                         projects: reverse_projects, // masonry related projects
-                        page_title: project_title,
+                        page_title: page_title,
                         is_admin_of_project: is_admin_of_project,
                         comment_amount: comment_amount,
                         enough_comments: enough_comments,
@@ -1861,7 +1860,7 @@ router.get('/micro/:id', (req, res, next) => {
                               project: project,
                               related_projects: reverse_projects,
                               projects: reverse_projects, // masonry related projects
-                              page_title: project_title,
+                              page_title: page_title,
                               is_admin_of_project: is_admin_of_project,
                               comment_amount: comment_amount,
                               enough_comments: enough_comments,
@@ -1933,7 +1932,7 @@ router.get('/micro/:id', (req, res, next) => {
                               project: project,
                               related_projects: reverse_projects,
                               projects: reverse_projects, // masonry related projects
-                              page_title: project_title,
+                              page_title: page_title,
                               is_admin_of_project: is_admin_of_project,
                               comment_amount: comment_amount,
                               enough_comments: enough_comments,
@@ -2031,10 +2030,10 @@ router.get('/micro/:id/guest', (req, res, next) => {
 
             var admin_amount = project.admins.length;
 
-            if (typeof project.project_title != 'undefined') {
-               var project_title = project.project_title;
+            if (typeof project.project_title == 'undefined') {
+               var page_title = 'Explore'
             } else {
-               var project_title = 'Explore';
+               var page_title = project.project_title;
             }
 
             console.log(project.project_title);
@@ -2095,7 +2094,7 @@ router.get('/micro/:id/guest', (req, res, next) => {
                      project: project,
                      related_projects: reverse_projects,
                      projects: reverse_projects,
-                     page_title: project_title,
+                     page_title: page_title,
                      is_admin_of_project: false,
                      comment_amount: comment_amount,
                      enough_comments: enough_comments,
@@ -2167,7 +2166,7 @@ router.get('/micro/:id/guest', (req, res, next) => {
                      project: project,
                      related_projects: reverse_projects,
                      projects: reverse_projects,
-                     page_title: project_title,
+                     page_title: page_title,
                      is_admin_of_project: false,
                      comment_amount: comment_amount,
                      enough_saves: enough_saves,

@@ -1064,15 +1064,15 @@ var $indexSuggestedBtn = $("#indexSuggestedBtn");
 $indexSuggestedBtn.click(function() {
    $indexSuggestedFeed.css({ "display": "block" });
    $indexFollowingFeed.css({ "display": "none" });
-   $indexFollowingBtn.css({ "font-weight": "normal", "font-size": "16px" });
-   $indexSuggestedBtn.css({ "font-weight": "bold", "font-size": "18px" });
+   $indexFollowingBtn.css({ "font-weight": "normal", "font-size": "14px" });
+   $indexSuggestedBtn.css({ "font-weight": "bold", "font-size": "16px" });
 });
 
 $indexFollowingBtn.click(function() {
    $indexFollowingFeed.css({ "display": "block" });
    $indexSuggestedFeed.css({ "display": "none" });
-   $indexSuggestedBtn.css({ "font-weight": "normal", "font-size": "16px" });
-   $indexFollowingBtn.css({ "font-weight": "bold", "font-size": "18px" });
+   $indexSuggestedBtn.css({ "font-weight": "normal", "font-size": "14px" });
+   $indexFollowingBtn.css({ "font-weight": "bold", "font-size": "16px" });
 });
 /**********/
 
