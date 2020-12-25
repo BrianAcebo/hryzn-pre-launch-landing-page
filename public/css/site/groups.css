@@ -110,8 +110,7 @@
 .explore_groups_container .group_wrapper {
    display: block;
    padding: 25px 0;
-   border-top: 1px solid #ccc;
-   border-bottom: 1px solid #ccc;
+   border: 1px solid #ccc;
    overflow: auto;
    white-space: nowrap;
    margin-bottom: 50px;

@@ -73,7 +73,7 @@ $(document).ready(function() {
    // Date of birth for create account
    $('.date-field').autotab('number');
    /**********/
-   
+
 
    // Nav dropdown menu
    var $dropNav = $('.dropNav');
@@ -1052,6 +1052,27 @@ $("#unrepostForm .unrepost_btn").click(function() {
 
       });
    }
+});
+/**********/
+
+// Tabs for suggested index feed
+var $indexFollowingFeed = $(".following_index_feed");
+var $indexSuggestedFeed = $(".suggested_index_feed");
+var $indexFollowingBtn = $("#indexFollowingBtn");
+var $indexSuggestedBtn = $("#indexSuggestedBtn");
+
+$indexSuggestedBtn.click(function() {
+   $indexSuggestedFeed.css({ "display": "block" });
+   $indexFollowingFeed.css({ "display": "none" });
+   $indexFollowingBtn.css({ "font-weight": "normal", "font-size": "16px" });
+   $indexSuggestedBtn.css({ "font-weight": "bold", "font-size": "18px" });
+});
+
+$indexFollowingBtn.click(function() {
+   $indexFollowingFeed.css({ "display": "block" });
+   $indexSuggestedFeed.css({ "display": "none" });
+   $indexSuggestedBtn.css({ "font-weight": "normal", "font-size": "16px" });
+   $indexFollowingBtn.css({ "font-weight": "bold", "font-size": "18px" });
 });
 /**********/
 

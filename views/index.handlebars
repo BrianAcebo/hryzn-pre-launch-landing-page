@@ -41,12 +41,38 @@
 </div>
 {{/if}}
 
-<div class="explore_main">
+<div class="explore_main index_feed_container">
+
+   <div class="following_or_suggested">
+      <p id="indexFollowingBtn">Following</p>
+      |
+      <p id="indexSuggestedBtn">Suggested</p>
+   </div>
+
+   <div class="following_index_feed">
+
+   {{#if groups}}
+      <section class="explore_groups_container">
+         <div class="group_wrapper">
+            {{#each groups}}
+            {{#if this.is_private}}
+            {{else}}
+               <a href="/groups/{{this._id}}" class="follower__profile">
+                  <div class="follower__profile-img-container">
+                     <img class="profile__img" src="https://ik.imagekit.io/w07am55tja/{{this.group_image}}?tr=w-100" />
+                  </div>
+                  {{this.group_name}}
+               </a>
+            {{/if}}
+            {{/each}}
+         </div>
+      </section>
+   {{/if}}
 
    {{#if projects}}
 
-   <p class="top_results">{{greeting}} {{user.username}}</p>
-   <hr class="top_results_underline" />
+   <!-- <p class="top_results">{{greeting}} {{user.username}}</p>
+   <hr class="top_results_underline" /> -->
 
    <div class="index_feed">
 
@@ -402,6 +428,157 @@
    </div>
 
    {{/if}}
+
+   </div>
+
+   <div class="suggested_index_feed">
+
+      <p class="suggested_results">Suggested</p>
+
+      <div class="suggested_user_container">
+         {{#if suggested_profiles}}
+         {{#each suggested_profiles}}
+         <a href="/profile/{{this.username}}" class="group_user">
+            <div class="suggested_user" style="background-image: url('https://ik.imagekit.io/w07am55tja/{{#if this.backgroundimage}}{{this.backgroundimage}}{{else}}hryzn-placeholder-01.jpg{{/if}}?tr=w-300')">
+               <div class="suggested_user_img_container">
+                  <img class="profile__img" src="https://ik.imagekit.io/w07am55tja/{{#if this.profileimage}}{{this.profileimage}}{{else}}hryzn-placeholder-01.jpg{{/if}}?tr=w-100">
+               </div>
+               <small class="suggested_username">@{{this.username}}</small>
+               <div class="suggested_view_btn">View</div>
+               <div class="bg_overlay"></div>
+            </div>
+         </a>
+         {{/each}}
+         {{/if}}
+      </div>
+
+
+      {{#if suggested_projects}}
+
+      <div class="index_feed">
+
+         {{#each suggested_projects}}
+
+            {{#if is_private}}
+            {{! Can't show private projects to people other than logged in User }}
+            {{else}}
+
+               {{#if is_micro_post}}
+
+               {{#if posted_to_group}}
+                  {{#each posted_to_group}}
+                     {{#ifEquals this.group_is_private "true"}}
+                        {{! Don't show projects in private groups }}
+                     {{else}}
+                        <div class="masonryItem ownProject" title="{{../project_title}}">
+                           <a href="/p/micro/{{../_id}}">
+                              <div class="micropost">
+                                 <div class="micropost_card {{#if ../micro_image}}card_is_micro_image{{else}}{{#if ../micro_audio}}card_is_micro_audio{{else}}{{#if ../micro_video}}card_is_micro_video{{else}}card_is_micro_text{{/if}}{{/if}}{{/if}}">
+                                    {{#if ../micro_image}}<img src="https://ik.imagekit.io/w07am55tja/{{../micro_image}}?tr=w-450" class="img-responsive" alt="{{../micro_body}}" />{{/if}}
+                                    {{#if ../thumbnail_image}}<img src="https://ik.imagekit.io/w07am55tja/{{../thumbnail_image}}?tr=w-450" class="img-responsive" alt="{{../micro_body}}" />{{/if}}
+                                    {{#if ../micro_video}}<div class="micro_play_btn"><img class="topnav__icon" src="/img/icons/play-button-white.png" /></div>{{/if}}
+                                    {{#if ../micro_audio}}<div class="micro_play_btn"><img class="topnav__icon" src="/icons/audio-button-white.png" /></div>{{/if}}
+                                    {{#if ../project_title}}<p class="micro_title">{{../project_title}}</p>{{/if}}
+                                    <p class="micro_body">{{{../micro_body}}}</p>
+                                 </div>
+                                 <a class="micro_tag" href="/profile/{{../project_owner}}">@{{../project_owner}}</a>
+                              </div>
+                           </a>
+                        </div>
+                     {{/ifEquals}}
+                  {{/each}}
+               {{else}}
+                  <div class="masonryItem ownProject" title="{{project_title}}">
+                     <a href="/p/micro/{{_id}}">
+                        <div class="micropost">
+                           <div class="micropost_card {{#if micro_image}}card_is_micro_image{{else}}{{#if micro_audio}}card_is_micro_audio{{else}}{{#if micro_video}}card_is_micro_video{{else}}card_is_micro_text{{/if}}{{/if}}{{/if}}">
+                              {{#if micro_image}}<img src="https://ik.imagekit.io/w07am55tja/{{micro_image}}?tr=w-450" class="img-responsive" alt="{{micro_body}}" />{{/if}}
+                              {{#if thumbnail_image}}<img src="https://ik.imagekit.io/w07am55tja/{{thumbnail_image}}450" class="img-responsive" alt="{{micro_body}}" />{{/if}}
+                              {{#if micro_video}}<div class="micro_play_btn"><img class="topnav__icon" src="/icons/play-button-white.png" /></div>{{/if}}
+                              {{#if micro_audio}}<div class="micro_play_btn"><img class="topnav__icon" src="/icons/audio-button-white.png" /></div>{{/if}}
+                              {{#if project_title}}<p class="micro_title">{{project_title}}</p>{{/if}}
+                              <p class="micro_body">
+                                 {{{micro_body}}}
+                              </p>
+                           </div>
+                           <a class="micro_tag {{#if project_title}}micro_tag_w_title{{/if}}" href="/profile/{{project_owner}}">@{{project_owner}}</a>
+                        </div>
+                     </a>
+                  </div>
+               {{/if}}
+
+               {{else}}
+
+                  {{#if posted_to_group}}
+                     {{#each posted_to_group}}
+                        {{#ifEquals this.group_is_private "true"}}
+                           {{! Don't show projects in private groups }}
+                        {{else}}
+                           <div class="masonryItem ownProject" title="{{../project_title}}">
+                              <div class="project_card">
+                                 <a href="/p/details/{{../id}}" class="project_link">
+                                    <img src="https://ik.imagekit.io/w07am55tja/{{#if ../thumbnail_image}}{{../thumbnail_image}}{{else}}{{../project_image}}{{/if}}?tr=w-450" class="img-responsive" alt="{{../project_title}}" />
+                                 </a>
+                                 <div class="project_card_bottom">
+                                    <div class="project_bottom_wrapper">
+                                       <div class="bg_overlay"></div>
+                                       <div class="project_bottom_details">
+                                          <a href="/profile/{{../project_owner}}"><p class="project_owner">@{{../project_owner}}</p></a>
+                                          <a href="/p/details/{{../id}}" class="project_link">
+                                             <p class="project_card_title">{{../project_title}}</p>
+                                          </a>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                        {{/ifEquals}}
+                     {{/each}}
+                  {{else}}
+                     <div class="masonryItem ownProject" title="{{project_title}}">
+                        <div class="project_card">
+                           <a href="/p/details/{{id}}" class="project_link">
+                              <img src="https://ik.imagekit.io/w07am55tja/{{#if thumbnail_image}}{{thumbnail_image}}{{else}}{{project_image}}{{/if}}?tr=w-450" class="img-responsive" alt="{{project_title}}" />
+                           </a>
+                           <div class="project_card_bottom">
+                              <div class="project_bottom_wrapper">
+                                 <div class="bg_overlay"></div>
+                                 <div class="project_bottom_details">
+                                    <a href="/profile/{{project_owner}}"><p class="project_owner">@{{project_owner}}</p></a>
+                                    <a href="/p/details/{{id}}" class="project_link">
+                                       <p class="project_card_title">{{project_title}}</p>
+                                    </a>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  {{/if}}
+
+               {{/if}}
+
+            {{/if}}
+
+         {{/each}}
+
+      </div>
+
+      {{/if}}
+
+      {{#if suggested_groups}}
+      {{#each suggested_groups}}
+      {{#if this.is_private}}
+      {{else}}
+         <a href="/groups/{{this._id}}" class="follower__profile" style="margin: 10px 0; line-height: 20px;">
+            <div class="follower__profile-img-container">
+               <img class="profile__img" src="https://ik.imagekit.io/w07am55tja/{{this.group_image}}?tr=w-100" />
+            </div>
+            {{this.group_name}}
+         </a>
+      {{/if}}
+      {{/each}}
+      {{/if}}
+   </div>
 
 </div>
 

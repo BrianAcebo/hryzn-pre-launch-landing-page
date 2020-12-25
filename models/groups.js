@@ -23,6 +23,9 @@ const GroupSchema = mongoose.Schema({
    },
    group_code: {
       type: String
+   },
+   has_notification: {
+      type: Boolean
    }
 });
 

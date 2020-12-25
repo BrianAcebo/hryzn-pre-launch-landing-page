@@ -195,14 +195,110 @@ router.get('/', (req, res, next) => {
 
                });
 
-               res.render('index', {
-                  page_title: 'Welcome',
-                  greeting: greeting,
-                  projects: all_public_projects.reverse(),
-                  profiles: profiles,
-                  explore_default: true,
-                  index_active: true,
-                  linear_feed: true
+               var user_groups = [];
+
+               req.user.groups.forEach(function(group, key) {
+                  user_groups.push(group.group_id);
+               });
+
+               Group.find({ '_id': { $in: user_groups } }, (err, groups) => {
+
+                  Project.find({ 'categories': { $in: req.user.interests} }, (err, suggested_projects) => {
+                     if (err) throw err;
+
+                     var suggested_public_projects = [];
+
+                     suggested_projects.forEach(function(project, key) {
+
+                        // Scan through every project
+
+                        if(project.posted_to_collection) {
+                           if (project.posted_to_collection.length > 0) {
+
+                              // See if project has any collections
+
+                              project.posted_to_collection.forEach(function(project_collection, key) {
+
+                                 if (project_collection.collection_is_private) {
+
+                                    // If collection was private check to see if they're allowed to see it
+
+                                    if(req.isAuthenticated()) {
+                                       if (project_collection.followers.length > 0) {
+                                          project_collection.followers.forEach(function(follower, key) {
+                                             if (follower === req.user.username || project_collection.collection_owner === req.user.username) {
+                                                suggested_public_projects.push(project);
+                                             }
+                                          });
+                                       } else {
+                                          if (project_collection.collection_owner === req.user.username) {
+                                             suggested_public_projects.push(project);
+                                          }
+                                       }
+                                    }
+
+                                 } else {
+                                    // If collection was public mark that we scanned collection
+                                    suggested_public_projects.push(project);
+                                 }
+                              });
+                           } else {
+                              // No collections so we mark that we scanned project
+                              suggested_public_projects.push(project);
+                           }
+                        } else {
+                           // No collections so we mark that we scanned project
+                           suggested_public_projects.push(project);
+                        }
+                     });
+
+                     var reverse_suggested_projects = suggested_public_projects.slice(0,3);
+
+                     User.find({ 'interests': { $in: req.user.interests} }, (err, suggested_profiles) => {
+
+                        var reverse_suggested_profiles = suggested_profiles.slice(0,19).reverse();
+
+                        Group.find({ 'group_categories': { $in: req.user.interests} }, (err, suggested_groups) => {
+
+                           if (suggested_groups.length < 1) {
+                              Group.find({}, (err, suggested_groups) => {
+                                 var reverse_suggested_groups = suggested_groups.slice(0,3).reverse();
+
+                                 res.render('index', {
+                                    page_title: 'Welcome',
+                                    greeting: greeting,
+                                    projects: all_public_projects.reverse(),
+                                    suggested_projects: reverse_suggested_projects,
+                                    suggested_profiles: reverse_suggested_profiles,
+                                    suggested_groups: reverse_suggested_groups,
+                                    profiles: profiles,
+                                    groups: groups,
+                                    explore_default: true,
+                                    index_active: true,
+                                    linear_feed: true
+                                 });
+                              });
+                           } else {
+                              var reverse_suggested_groups = suggested_groups.slice(0,3).reverse();
+
+                              res.render('index', {
+                                 page_title: 'Welcome',
+                                 greeting: greeting,
+                                 projects: all_public_projects.reverse(),
+                                 suggested_projects: reverse_suggested_projects,
+                                 suggested_profiles: reverse_suggested_profiles,
+                                 suggested_groups: reverse_suggested_groups,
+                                 profiles: profiles,
+                                 groups: groups,
+                                 explore_default: true,
+                                 index_active: true,
+                                 linear_feed: true
+                              });
+                           }
+                        });
+                     });
+                  });
+
                });
 
             });
@@ -1385,7 +1481,7 @@ router.get('/groups/:groupId/remove/:projectId', (req, res, next) => {
                   var newNotification = new Notification({
                      sender: req.user._id,
                      reciever: reciever._id,
-                     type: 'Sorry, your project removed from the group ' + group.group_name,
+                     type: 'Sorry, your project was removed from the group ' + group.group_name,
                      link: '/groups',
                      date_sent: current_date
                   });
