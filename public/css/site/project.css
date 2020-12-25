@@ -164,9 +164,13 @@
 }
 
 @media screen and (max-width: 595px) {
+   .index_feed {
+      padding: 0 25px;
+   }
+
    .index_feed .masonryItem {
       margin: 50px auto;
-      max-width: 470px;
+      max-width: 375px;
    }
 
    .index_feed .project_avatar_left {
