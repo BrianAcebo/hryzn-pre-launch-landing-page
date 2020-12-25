@@ -37,7 +37,13 @@
    justify-content: flex-start;
    align-items: center;
    flex-direction: row;
-   margin: 35px 0;
+   margin: 25px 0;
+   z-index: 888888;
+   position: fixed;
+   background: #fff;
+   padding: 15px 15px 15px 0;
+   border-top-right-radius: 15px;
+   border-bottom-right-radius: 15px;
 }
 
 .following_or_suggested,
@@ -87,7 +93,7 @@
 
 .suggested_index_feed {
    width: 25%;
-   padding: 25px;
+   padding: 25px 35px 50px 35px;
    border: 1px solid #ccc;
    position: fixed;
    right: 35px;
@@ -100,6 +106,10 @@
 
 .suggested_index_feed::-webkit-scrollbar {
   display: none;
+}
+
+.suggested_index_feed .micropost {
+   max-width: 375px;
 }
 
 @media screen and (max-width: 992px) {
@@ -120,10 +130,12 @@
       right: auto;
       top: auto;
       height: 100%;
+      margin-top: 75px;
    }
 
    .following_index_feed {
       width: 100%;
+      margin-top: 75px;
    }
 }
 
@@ -207,14 +219,14 @@
 
 .suggested_user_container {
    display: flex;
-   padding: 25px;
+   padding: 25px 0;
    overflow: auto;
    white-space: nowrap;
    width: 100%;
    -ms-overflow-style: none;
    scrollbar-width: none;
    flex-direction: row;
-   justify-content: center;
+   justify-content: flex-start;
    align-items: center;
 }
 
@@ -230,7 +242,7 @@
    justify-content: center;
    width: 200px;
    padding: 35px 0;
-   margin: 0 15px;
+   margin-right: 25px;
    background-position: center;
    background-repeat: no-repeat;
    background-size: cover;
@@ -259,9 +271,10 @@
 
 .suggested_view_btn {
    color: #fff;
+   text-transform: uppercase;
    background: #31375A;
    text-align: center;
-   padding: 12px 25px;
+   padding: 8px 25px;
    font-weight: bold;
    font-size: 12px;
    line-height: 15px;
@@ -1325,7 +1338,7 @@ section.project {
    display: none;
 }
 
-.index_feed .micro_body {
+.index_feed .following_index_feed .micro_body {
    display: block!important;
 }
 

@@ -1074,6 +1074,18 @@ $indexFollowingBtn.click(function() {
    $indexSuggestedBtn.css({ "font-weight": "normal", "font-size": "16px" });
    $indexFollowingBtn.css({ "font-weight": "bold", "font-size": "18px" });
 });
+
+$(window).resize(function(){
+   if ($(window).width() > 992) {
+      $indexSuggestedFeed.css({ "display": "block" });
+      $indexFollowingFeed.css({ "display": "block" });
+   } else {
+      $indexFollowingFeed.css({ "display": "block" });
+      $indexSuggestedFeed.css({ "display": "none" });
+      $indexSuggestedBtn.css({ "font-weight": "normal", "font-size": "16px" });
+      $indexFollowingBtn.css({ "font-weight": "bold", "font-size": "18px" });
+   }
+});
 /**********/
 
 });

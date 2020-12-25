@@ -252,17 +252,55 @@ router.get('/', (req, res, next) => {
                         }
                      });
 
-                     var reverse_suggested_projects = suggested_public_projects.slice(0,3);
+                     function shuffle(array) {
+                       var currentIndex = array.length, temporaryValue, randomIndex;
+
+                       // While there remain elements to shuffle...
+                       while (0 !== currentIndex) {
+
+                         // Pick a remaining element...
+                         randomIndex = Math.floor(Math.random() * currentIndex);
+                         currentIndex -= 1;
+
+                         // And swap it with the current element.
+                         temporaryValue = array[currentIndex];
+                         array[currentIndex] = array[randomIndex];
+                         array[randomIndex] = temporaryValue;
+                       }
+
+                       return array;
+                     }
+
+                     shuffle(suggested_public_projects);
+
+                     var reverse_suggested_projects = suggested_public_projects.slice(0,9);
+
+                     var reverse_suggested_projects_num2 = suggested_public_projects.slice(10,19);
+
+                     var reverse_suggested_projects_num3 = suggested_public_projects.slice(20,29);
 
                      User.find({ 'interests': { $in: req.user.interests} }, (err, suggested_profiles) => {
 
-                        var reverse_suggested_profiles = suggested_profiles.slice(0,19).reverse();
+                        shuffle(suggested_profiles);
+
+                        var reverse_suggested_profiles = suggested_profiles.slice(0,9).reverse();
+
+                        var reverse_suggested_profiles_num2 = suggested_profiles.slice(10,19).reverse();
+
+                        var reverse_suggested_profiles_num3 = suggested_profiles.slice(20,29).reverse();
 
                         Group.find({ 'group_categories': { $in: req.user.interests} }, (err, suggested_groups) => {
 
                            if (suggested_groups.length < 1) {
                               Group.find({}, (err, suggested_groups) => {
+
+                                 shuffle(suggested_groups);
+
                                  var reverse_suggested_groups = suggested_groups.slice(0,3).reverse();
+
+                                 var reverse_suggested_groups_num2 = suggested_groups.slice(4,6).reverse();
+
+                                 var reverse_suggested_groups_num3 = suggested_groups.slice(7,10).reverse();
 
                                  res.render('index', {
                                     page_title: 'Welcome',
@@ -271,6 +309,12 @@ router.get('/', (req, res, next) => {
                                     suggested_projects: reverse_suggested_projects,
                                     suggested_profiles: reverse_suggested_profiles,
                                     suggested_groups: reverse_suggested_groups,
+                                    suggested_projects_num2: reverse_suggested_projects_num2,
+                                    suggested_profiles_num2: reverse_suggested_profiles_num2,
+                                    suggested_groups_num2: reverse_suggested_groups_num2,
+                                    suggested_projects_num3: reverse_suggested_projects_num3,
+                                    suggested_profiles_num3: reverse_suggested_profiles_num3,
+                                    suggested_groups_num3: reverse_suggested_groups_num3,
                                     profiles: profiles,
                                     groups: groups,
                                     explore_default: true,
@@ -279,6 +323,9 @@ router.get('/', (req, res, next) => {
                                  });
                               });
                            } else {
+
+                              shuffle(suggested_groups);
+
                               var reverse_suggested_groups = suggested_groups.slice(0,3).reverse();
 
                               res.render('index', {
