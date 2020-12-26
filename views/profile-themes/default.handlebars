@@ -251,7 +251,7 @@
                <form method="post" action="/profile/unfollow/{{profile._id}}">
                   <input type="hidden" name="user_username" value="{{user.username}}">
                   <input type="hidden" name="profile_username" value="{{profile.username}}">
-                  <button class="profile__unfollow profile_main_accent_color profile_follow_btn profile_btns_rounding profile_main_font" name="submit" type="submit">Unsubscribe</button>
+                  <button class="profile__unfollow profile_main_accent_color profile_follow_btn profile_btns_rounding profile_main_font" name="submit" type="submit">Unfollow</button>
                </form>
 
                {{else}}
@@ -259,7 +259,7 @@
                <form method="post" action="/profile/follow/{{profile._id}}">
                   <input type="hidden" name="user_username" value="{{user.username}}">
                   <input type="hidden" name="profile_username" value="{{profile.username}}">
-                  <button class="profile__follow profile_main_accent_color profile_btns_rounding profile_main_font" name="submit" type="submit">Subscribe</button>
+                  <button class="profile__follow profile_main_accent_color profile_btns_rounding profile_main_font" name="submit" type="submit">Follow</button>
                </form>
 
                {{/if}}
