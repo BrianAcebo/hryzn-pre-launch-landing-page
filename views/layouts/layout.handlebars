@@ -145,7 +145,7 @@
 
    </head>
 
-   <body id="top">
+   <body id="top" {{#if user.profile_cursor}}style="cursor: url('/cursors/{{user.profile_cursor}}.cur'),auto;"{{else}}cunt{{/if}}>
 
       {{! Check if user is logged in }}
 
