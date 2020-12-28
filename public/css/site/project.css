@@ -3,6 +3,10 @@
    padding: 50px;
 }
 
+.explore_main.index_feed_container {
+   padding: 0;
+}
+
 .feed_container {
    padding: 50px;
    width: 100%;
@@ -87,24 +91,128 @@
    flex-direction: row;
 }
 
+.profile_index_feed {
+   width: 25%;
+   border-right: 1px solid rgb(235, 238, 240);
+   height: 100vh;
+   -ms-overflow-style: none;
+   scrollbar-width: none;
+   overflow: auto;
+   padding: 0 0 100px 0;
+}
+
+.profile_index_info {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   flex-direction: column;
+   width: 100%;
+   padding: 35px;
+   background-size: cover;
+   background-position: center;
+   background-repeat: no-repeat;
+   position: relative;
+}
+
+.profile_index_info_wrapper {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   flex-direction: column;
+   font-size: 22px;
+   font-weight: bold;
+   z-index: 777777;
+   color: #fff;
+}
+
+.profile_index_sub_info_container {
+   display: flex;
+   flex-direction: column;
+   width: 100%;
+   margin: 0 auto;
+   padding: 25px 0;
+}
+
+.profile_missing_info_wrapper {
+   display: flex;
+   justify-content: flex-start;
+   align-items: center;
+   flex-direction: row;
+   margin: 15px 0 0 25%;
+}
+
+.missing_info_btn {
+   padding: 5px;
+   border-radius: 50%;
+   background: #ff7f7f;
+   display: flex;
+   margin-right: 15px;
+}
+
+.missing_info_btn img {
+   max-width: 10px;
+}
+
+.profile_index_img_container {
+   width: 75px;
+   height: 75px;
+   border-radius: 50%;
+   text-align: center;
+   position: relative;
+   overflow: hidden;
+   border: 1px solid #fff;
+   margin-bottom: 25px;
+}
+
+.profile_missing_info {
+   font-size: 14px;
+   font-weight: bold;
+   display: block;
+   color: #ff7f7f;
+   line-height: 16px;
+}
+
+.profile_index_link {
+   font-size: 25px;
+   font-weight: bold;
+   display: flex;
+   line-height: 25px;
+   margin: 15px 0 15px 25%;
+   justify-content: space-between;
+   align-items: center;
+   width: 100%;
+   max-width: 100px;
+}
+
+.profile_index_link img {
+   max-width: 22px;
+   margin-right: 15px;
+}
+
+
 .following_index_feed {
-   width: 70%;
+   width: 50%;
+   -ms-overflow-style: none;
+   scrollbar-width: none;
+   overflow: auto;
+   height: 100vh;
 }
 
 .suggested_index_feed {
    width: 25%;
-   padding: 25px 35px 50px 35px;
-   border: 1px solid #ccc;
-   position: fixed;
-   right: 35px;
-   height: 85vh;
-   top: 150px;
+   padding: 35px 50px 50px 50px;
+   border-left: 1px solid rgb(235, 238, 240);
+   right: 0;
+   height: 100vh;
+   top: 0;
    -ms-overflow-style: none;
    scrollbar-width: none;
    overflow: auto;
 }
 
-.suggested_index_feed::-webkit-scrollbar {
+.suggested_index_feed::-webkit-scrollbar,
+.following_index_feed::-webkit-scrollbar,
+.profile_index_feed::-webkit-scrollbar {
   display: none;
 }
 
@@ -113,6 +221,10 @@
 }
 
 @media screen and (max-width: 992px) {
+   .profile_index_feed {
+      display: none;
+   }
+
    .index_feed_container {
       flex-direction: column;
       padding: 0;
@@ -148,8 +260,22 @@
    align-items: flex-start;
 }
 
+.following_index_feed .masonryItem {
+   border-bottom: 1px solid #f1f1f1;
+}
+
+.following_index_feed .index_feed_blog_post {
+   padding-bottom: 35px;
+}
+
 .suggested_index_feed .masonryItem {
   margin: 15px 0;
+}
+
+@media screen and (max-width: 992px) {
+   .following_index_feed .masonryItem {
+      padding-bottom: 50px;
+   }
 }
 
 .index_feed .project_avatar_left {
@@ -258,6 +384,7 @@
 .suggested_username {
    z-index: 777777;
    font-size: 18px;
+   margin: 5px 0;
 }
 
 .suggested_user .bg_overlay {
@@ -265,9 +392,10 @@
 }
 
 .suggested_user_img_container {
-   width: 35px;
-   height: 35px;
+   width: 65px;
+   height: 65px;
    border-radius: 50%;
+   z-index: 777777;
    text-align: center;
    position: relative;
    overflow: hidden;
@@ -283,7 +411,8 @@
    font-weight: bold;
    font-size: 12px;
    line-height: 15px;
-   margin: 15px 0 0 0;
+   z-index: 777777;
+   margin: 0;
 }
 
 .projects__container {
@@ -1313,11 +1442,11 @@ section.project {
 
 .explore_main .micropost_card .micro_title {
    font-size: 14px;
-   margin: 10px 5px 5px 5px;
+   margin: 10px 5px 5px 10px;
    line-height: 18px;
 }
 
-.index_feed .micropost_card .micro_title {
+.following_index_feed .micropost_card .micro_title {
    font-weight: 700;
    color: #333;
    font-size: 16px;
@@ -1365,10 +1494,15 @@ section.project {
 
 .explore_main .micro_tag {
    font-size: 12px;
-   margin: 0;
+   margin: 10px 0 0 10px;
+   display: block;
 }
 
-.index_feed .micro_tag {
+.explore_main .micro_tag_w_title {
+   margin: 0px 0 0 10px;
+}
+
+.following_index_feed .micro_tag {
    font-weight: bold;
    font-size: 16px;
    line-height: 18px;

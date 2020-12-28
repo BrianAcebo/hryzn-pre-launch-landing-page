@@ -436,6 +436,11 @@ blockquote {
    transition: 0.3s;
 }
 
+#mainBodyIndex {
+   padding: 100px 0 0 0;
+   transition: 0.3s;
+}
+
 .bodyBlur {
    filter: blur(10px);
 }
@@ -453,7 +458,8 @@ blockquote {
 }
 
 @media screen and (max-width: 992px) {
-   #mainBody {
+   #mainBody,
+   #mainBodyIndex {
       padding: 0 0 100px 0;
       transition: 0.3s;
    }

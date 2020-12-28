@@ -43,6 +43,40 @@
 
 <div class="explore_main index_feed_container">
 
+   <div class="profile_index_feed">
+      <div class="profile_index_info" style="background-image: url('https://ik.imagekit.io/w07am55tja/{{user.backgroundimage}}?tr=w-300')">
+         <a href="/groups/{{user._id}}" class="profile_index_info_wrapper">
+            <div class="profile_index_img_container">
+               <img class="profile__img" src="https://ik.imagekit.io/w07am55tja/{{user.profileimage}}?tr=w-100" />
+            </div>
+            @{{user.username}}
+         </a>
+         <div class="bg_overlay"></div>
+      </div>
+
+      <div class="profile_index_sub_info_container">
+         {{#if user.firstname}}{{else}}<a href="/settings"><div class="profile_missing_info_wrapper"><div class="missing_info_btn"><img class="topnav__icon" src="/icons/add-white.png" /></div><p class="profile_missing_info">Missing first name</p></div></a>{{/if}}
+         {{#if user.lastname}}{{else}}<a href="/settings"><div class="profile_missing_info_wrapper"><div class="missing_info_btn"><img class="topnav__icon" src="/icons/add-white.png" /></div><p class="profile_missing_info">Missing last name</p></div></a>{{/if}}
+         {{#if user.bio}}{{else}}<a href="/settings"><div class="profile_missing_info_wrapper"><div class="missing_info_btn"><img class="topnav__icon" src="/icons/add-white.png" /></div><p class="profile_missing_info">Missing bio</p></div></a>{{/if}}
+         {{#if user.profileimage}}{{else}}<a href="/settings"><div class="profile_missing_info_wrapper"><div class="missing_info_btn"><img class="topnav__icon" src="/icons/add-white.png" /></div><p class="profile_missing_info">Missing profile image</p></div></a>{{/if}}
+         {{#if user.backgroundimage}}{{else}}<a href="/settings"><div class="profile_missing_info_wrapper"><div class="missing_info_btn"><img class="topnav__icon" src="/icons/add-white.png" /></div><p class="profile_missing_info">Missing background header</p></div></a>{{/if}}
+         {{#if user.music_link}}{{else}}<a href="/settings"><div class="profile_missing_info_wrapper"><div class="missing_info_btn"><img class="topnav__icon" src="/icons/add-white.png" /></div><p class="profile_missing_info">Missing favorite song</p></div></a>{{/if}}
+      </div>
+
+      <div class="profile_index_sub_info_container">
+         <a href="/p/create-project" class="profile_index_link"><img class="topnav__icon" src="/icons/create-icon.png" />Create</a>
+         <a href="/explore" class="profile_index_link"><img class="topnav__icon" src="/icons/explore-black.png" />Explore</a>
+         <a href="/messages" class="profile_index_link"><img class="topnav__icon" src="/icons/messages-envelope.png" />Messages</a>
+         <a href="/groups" class="profile_index_link"><img class="topnav__icon" src="/icons/group-black.png" />Groups</a>
+
+         <div class="semi-spacer"></div>
+
+         <a href="/settings" class="profile_index_link">Settings</a>
+         <a href="/blog/hryzn-tutorial---site-walk-through" class="profile_index_link">Help</a>
+      </div>
+
+   </div>
+
    <div class="following_or_suggested">
       <p id="indexFollowingBtn">Following</p>
       |
@@ -361,7 +395,7 @@
                      {{#ifEquals this.group_is_private "true"}}
                         {{! Don't show projects in private groups }}
                      {{else}}
-                        <div class="masonryItem ownProject" title="{{../project_title}}" >
+                        <div class="masonryItem ownProject index_feed_blog_post" title="{{../project_title}}" >
                            <div class="project_avatar_left">
                               <a href="/profile/{{../project_owner}}">
                                  <img class="project_avatar_img" src="https://ik.imagekit.io/w07am55tja/{{../project_owner_profile_image}}?tr=w-75" />
@@ -391,7 +425,7 @@
                      {{/ifEquals}}
                   {{/each}}
                {{else}}
-                  <div class="masonryItem ownProject" title="{{project_title}}" >
+                  <div class="masonryItem ownProject index_feed_blog_post" title="{{project_title}}" >
                      <div class="project_avatar_left">
                         <a href="/profile/{{project_owner}}">
                            <img class="project_avatar_img" src="https://ik.imagekit.io/w07am55tja/{{project_owner_profile_image}}?tr=w-75" />
