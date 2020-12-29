@@ -2602,30 +2602,27 @@ router.post('/settings', upload.fields([{name: 'profile_project_backgroundimage'
          var music_link = req.body.music_link.replace(/\r\n/g,'');
 
          // See which service is music link
-         var is_spotify = music_link.search("https://open.spotify.com/track/");
-         var is_tidal = music_link.search("https://tidal.com/browse/track/");
-         var is_soundcloud = music_link.search("https://soundcloud.com/");
-         var is_apple = music_link.search("https://music.apple.com/us/album/");
-         var is_deezer = music_link.search("https://www.deezer.com/track");
+         var is_spotify = music_link.search("open.spotify.com/track/");
+         var is_tidal = music_link.search("tidal.com/browse/track/");
+         var is_tidal_2 = music_link.search("tidal.com/track/");
+         var is_soundcloud = music_link.search("soundcloud.com/");
+         var is_apple = music_link.search("music.apple.com/us/album/");
+         var is_deezer = music_link.search("deezer.com/track");
 
          var embed_link;
 
          if (is_spotify > -1) {
-            var spotify_track_id = music_link.split("https://open.spotify.com/track/")[1];
+            var spotify_track_id = music_link.split("/track/")[1];
             embed_link = '<iframe style="min-height: auto!important; z-index: 555555;" src="https://open.spotify.com/embed/track/' + spotify_track_id + '" width="300" height="80" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>'
-            console.log(embed_link);
-         } else if (is_tidal > -1) {
-            var tidal_track_id = music_link.split("https://tidal.com/browse/track/")[1];
+         } else if (is_tidal > -1 || is_tidal_2 > -1) {
+            var tidal_track_id = music_link.split("/track/")[1];
             embed_link = '<div style="position: relative;  overflow: hidden; max-width: 100%; z-index: 555555;"><iframe src="https://embed.tidal.com/tracks/' + tidal_track_id + '?layout=gridify" frameborder="0" allowfullscreen style="top: 0; left: 0; width: 100%; min-height: 100%; margin: 0 auto;"></iframe></div>'
-            console.log(embed_link);
          } else if (is_apple > -1) {
-            var apple_track_id = music_link.split("https://music.apple.com/us/")[1];
+            var apple_track_id = music_link.split("music.apple.com/us/")[1];
             embed_link = '<iframe allow="autoplay *; encrypted-media *; fullscreen *" frameborder="0" height="150" style="width:100%;max-width:660px;overflow:hidden;background:transparent;z-index: 555555;" sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation" src="https://embed.music.apple.com/us/' + apple_track_id + '"></iframe>'
-            console.log(embed_link);
          } else if (is_deezer > -1) {
-            var deezer_track_id = music_link.split("https://www.deezer.com/track/")[1];
+            var deezer_track_id = music_link.split("/track/")[1];
             embed_link = '<iframe style="z-index: 555555;"scrolling="no" frameborder="0" allowTransparency="true" src="https://www.deezer.com/plugins/player?format=classic&autoplay=false&playlist=true&width=700&height=350&color=EF5466&layout=&size=medium&type=tracks&id=' + deezer_track_id + '&app_id=1" width="700" height="350"></iframe>'
-            console.log(embed_link);
          } else {
             // nothing
             embed_link = req.user.music_link;
