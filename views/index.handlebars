@@ -44,10 +44,10 @@
 <div class="explore_main index_feed_container">
 
    <div class="profile_index_feed">
-      <div class="profile_index_info" style="background-image: url('https://ik.imagekit.io/w07am55tja/{{user.backgroundimage}}?tr=w-300')">
+      <div class="profile_index_info" style="background-image: url('https://ik.imagekit.io/w07am55tja/{{#if user.backgroundimage}}{{user.backgroundimage}}{{else}}hryzn-placeholder-01.jpg{{/if}}?tr=w-600')">
          <a href="/profile/{{user.username}}" class="profile_index_info_wrapper">
             <div class="profile_index_img_container">
-               <img class="profile__img" src="https://ik.imagekit.io/w07am55tja/{{user.profileimage}}?tr=w-100" />
+               <img class="profile__img" src="https://ik.imagekit.io/w07am55tja/{{#if user.profileimage}}{{user.profileimage}}{{else}}hryzn-placeholder-01.jpg{{/if}}?tr=w-600" />
             </div>
             @{{user.username}}
          </a>
