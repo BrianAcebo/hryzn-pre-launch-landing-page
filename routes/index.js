@@ -3267,7 +3267,8 @@ router.get('/sitemap', (req, res, next) => {
 // Get Loader IO
 router.get('/loaderio-aec7fb408421b42661b8aa1a3039d7e8', (req, res, next) => {
    res.render('loaderio', {
-      page_title: 'Loader IO'
+      page_title: 'Loader IO',
+      sitemap: true
    });
 });
 
