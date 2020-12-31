@@ -13,6 +13,7 @@ const LocalStrategy = require('passport-local').Strategy;
 const mongo = require('mongodb');
 const mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
+const MongoStore = require('connect-mongo')(session);
 const jwt = require('jsonwebtoken');
 const helmet = require('helmet');
 
@@ -88,6 +89,7 @@ app.use(session({
    secret: '$2a$10$BJn0b4OzBarDigcTVxUl0urmExfHuhuVxSI.JrlLKeSsOi8oKqBAK',
    saveUninitialized: true,
    resave: true,
+   store: new MongoStore({ mongooseConnection: mongoose.connection }),
    rolling: true,
    cookie: {
       maxAge: 365 * 24 * 60 * 60 * 1000, // One Year
