@@ -31,6 +31,7 @@
                </video>
                {{/if}}
 
+               {{#if project.private_collection_name}}<span style="color: #555; font-weight: bold; font-size: 12px;">Posted in "{{project.private_collection_name}}" (Private Collection)</span>{{/if}}
                {{#if project.date_posted}}<p class="micro_date">{{project.date_posted}}</p>{{/if}}
 
                <div class="micro_top_action">

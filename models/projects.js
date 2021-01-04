@@ -358,13 +358,12 @@ module.exports.removeCollection = (info, callback) => {
    const query = { _id: projectId };
 
    Project.findOneAndUpdate(query,
-      {
-         $set: { "posted_to_collection": [] }
-      },
+      { $pull: { posted_to_collection: [{ 'collection_id': collectionId }] } },
       { multi: true },
       callback
    );
 }
+
 
 // Update Collection
 module.exports.updateCollection = (info, callback) => {

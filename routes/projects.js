@@ -12,7 +12,7 @@ var current_date = new Date();
 var day = String(current_date.getDate()).padStart(2, '0');
 var month = String(current_date.getMonth() + 1).padStart(2, '0');
 var year = current_date.getFullYear();
-current_date = day + '/' + month + '/' + year;
+current_date = month + '/' + day + '/' + year;
 
 // AWS S3 Access
 aws.config.update({
@@ -1184,231 +1184,239 @@ router.get('/details/:id', (req, res, next) => {
                   }
 
 
+                  var good_project = false;
+
+                  project = project.toObject();
+
+                  if(project.posted_to_collection) {
+                     if (project.posted_to_collection.length > 0) {
+
+                        // See if project has any collections
+
+                        project.posted_to_collection.forEach(function(project_collection, key) {
+
+                           if (project_collection.collection_is_private) {
+
+                              // If collection was private check to see if they're allowed to see it
+
+                              if(req.isAuthenticated()) {
+                                 if (project_collection.followers.length > 0) {
+                                    project_collection.followers.forEach(function(follower, key) {
+                                       if (follower == req.user._id || project_collection.collection_owner === req.user.username) {
+                                          good_project = true;
+                                          project.private_collection_name = project_collection.collection_name;
+                                       }
+                                    });
+                                 } else {
+                                    if (project_collection.collection_owner === req.user.username) {
+                                       good_project = true;
+                                       project.private_collection_name = project_collection.collection_name;
+                                    }
+                                 }
+                              }
+
+                           } else {
+                              // If collection was public mark that we scanned collection
+                              good_project = true;
+                           }
+                        });
+                     } else {
+                        // No collections so we mark that we scanned project
+                        good_project = true;
+                     }
+                  } else {
+                     // No collections so we mark that we scanned project
+                     good_project = true;
+                  }
+
                   var admin_amount = project.admins.length;
 
                   var search_notes = project.project_notes.toString();
 
-                  Project.find({$text: { $search: search_notes }}, {score: { $meta: "textScore" }}, (err, related_projects) => {
-                     if (err) throw err;
+                  if (good_project) {
 
-                     var all_public_projects = [];
+                     Project.find({$text: { $search: search_notes }}, {score: { $meta: "textScore" }}, (err, related_projects) => {
+                        if (err) throw err;
 
-                     related_projects.forEach(function(project, key) {
+                        var all_public_projects = [];
 
-                        // Scan through every project
+                        related_projects.forEach(function(project, key) {
 
-                        if(project.posted_to_collection) {
-                           if (project.posted_to_collection.length > 0) {
+                           // Scan through every project
 
-                              // See if project has any collections
+                           if(project.posted_to_collection) {
+                              if (project.posted_to_collection.length > 0) {
 
-                              project.posted_to_collection.forEach(function(project_collection, key) {
+                                 // See if project has any collections
 
-                                 if (project_collection.collection_is_private) {
+                                 project.posted_to_collection.forEach(function(project_collection, key) {
 
-                                    // If collection was private check to see if they're allowed to see it
+                                    if (project_collection.collection_is_private) {
 
-                                    if(req.isAuthenticated()) {
-                                       if (project_collection.followers.length > 0) {
-                                          project_collection.followers.forEach(function(follower, key) {
-                                             if (follower === req.user.username || project_collection.collection_owner === req.user.username) {
-                                                all_public_projects.push(project);
-                                             }
-                                          });
-                                       } else {
-                                          if (project_collection.collection_owner === req.user.username) {
-                                             all_public_projects.push(project);
-                                          }
-                                       }
+                                       // If collection was private skip
+
+                                    } else {
+                                       // If collection was public mark that we scanned collection
+                                       all_public_projects.push(project);
                                     }
-
-                                 } else {
-                                    // If collection was public mark that we scanned collection
-                                    all_public_projects.push(project);
-                                 }
-                              });
+                                 });
+                              } else {
+                                 // No collections so we mark that we scanned project
+                                 all_public_projects.push(project);
+                              }
                            } else {
                               // No collections so we mark that we scanned project
                               all_public_projects.push(project);
                            }
-                        } else {
-                           // No collections so we mark that we scanned project
-                           all_public_projects.push(project);
-                        }
-                     });
-
-                     var reverse_projects = all_public_projects.slice(0,14).reverse();
-
-                     if (related_projects.length > 4) {
-
-                        res.render('p/details/details', {
-                           project: project,
-                           related_projects: reverse_projects,
-                           projects: reverse_projects, // masonry related projects
-                           page_title: project.project_title,
-                           is_admin_of_project: is_admin_of_project,
-                           comment_amount: comment_amount,
-                           enough_comments: enough_comments,
-                           enough_saves: enough_saves,
-                           saves_amount: saves_amount,
-                           enough_likes: enough_likes,
-                           likes_amount: likes_amount,
-                           user_saved: user_saved,
-                           user_liked: user_liked,
-                           enough_reposts: enough_reposts,
-                           repost_amount: repost_amount,
-                           user_reposted: user_reposted,
-                           admin_amount: admin_amount
                         });
-                     } else {
-                        if (project.categories.length > 4) {
-                           Project.find({ 'categories': { $in: project.categories} }, (err, related_projects) => {
-                              if (err) throw err;
 
-                              var all_public_projects = [];
+                        var reverse_projects = all_public_projects.slice(0,14).reverse();
 
-                              related_projects.forEach(function(project, key) {
+                        if (related_projects.length > 4) {
 
-                                 // Scan through every project
-
-                                 if(project.posted_to_collection) {
-                                    if (project.posted_to_collection.length > 0) {
-
-                                       // See if project has any collections
-
-                                       project.posted_to_collection.forEach(function(project_collection, key) {
-
-                                          if (project_collection.collection_is_private) {
-
-                                             // If collection was private check to see if they're allowed to see it
-
-                                             if(req.isAuthenticated()) {
-                                                if (project_collection.followers.length > 0) {
-                                                   project_collection.followers.forEach(function(follower, key) {
-                                                      if (follower === req.user.username || project_collection.collection_owner === req.user.username) {
-                                                         all_public_projects.push(project);
-                                                      }
-                                                   });
-                                                } else {
-                                                   if (project_collection.collection_owner === req.user.username) {
-                                                      all_public_projects.push(project);
-                                                   }
-                                                }
-                                             }
-
-                                          } else {
-                                             // If collection was public mark that we scanned collection
-                                             all_public_projects.push(project);
-                                          }
-                                       });
-                                    } else {
-                                       // No collections so we mark that we scanned project
-                                       all_public_projects.push(project);
-                                    }
-                                 } else {
-                                    // No collections so we mark that we scanned project
-                                    all_public_projects.push(project);
-                                 }
-                              });
-
-                              var reverse_projects = all_public_projects.slice(0,14).reverse();
-
-                              res.render('p/details/details', {
-                                 project: project,
-                                 related_projects: reverse_projects,
-                                 projects: reverse_projects, // masonry related projects
-                                 page_title: project.project_title,
-                                 is_admin_of_project: is_admin_of_project,
-                                 comment_amount: comment_amount,
-                                 enough_comments: enough_comments,
-                                 enough_saves: enough_saves,
-                                 saves_amount: saves_amount,
-                                 enough_likes: enough_likes,
-                                 likes_amount: likes_amount,
-                                 user_saved: user_saved,
-                                 user_liked: user_liked,
-                                 enough_reposts: enough_reposts,
-                                 repost_amount: repost_amount,
-                                 user_reposted: user_reposted,
-                                 admin_amount: admin_amount
-                              });
+                           res.render('p/details/details', {
+                              project: project,
+                              related_projects: reverse_projects,
+                              projects: reverse_projects, // masonry related projects
+                              page_title: project.project_title,
+                              is_admin_of_project: is_admin_of_project,
+                              comment_amount: comment_amount,
+                              enough_comments: enough_comments,
+                              enough_saves: enough_saves,
+                              saves_amount: saves_amount,
+                              enough_likes: enough_likes,
+                              likes_amount: likes_amount,
+                              user_saved: user_saved,
+                              user_liked: user_liked,
+                              enough_reposts: enough_reposts,
+                              repost_amount: repost_amount,
+                              user_reposted: user_reposted,
+                              admin_amount: admin_amount
                            });
                         } else {
-                           Project.find({}, (err, related_projects) => {
-                              if (err) throw err;
+                           if (project.categories.length > 4) {
+                              Project.find({ 'categories': { $in: project.categories} }, (err, related_projects) => {
+                                 if (err) throw err;
 
-                              var all_public_projects = [];
+                                 var all_public_projects = [];
 
-                              related_projects.forEach(function(project, key) {
+                                 related_projects.forEach(function(project, key) {
 
-                                 // Scan through every project
+                                    // Scan through every project
 
-                                 if(project.posted_to_collection) {
-                                    if (project.posted_to_collection.length > 0) {
+                                    if(project.posted_to_collection) {
+                                       if (project.posted_to_collection.length > 0) {
 
-                                       // See if project has any collections
+                                          // See if project has any collections
 
-                                       project.posted_to_collection.forEach(function(project_collection, key) {
+                                          project.posted_to_collection.forEach(function(project_collection, key) {
 
-                                          if (project_collection.collection_is_private) {
+                                             if (project_collection.collection_is_private) {
 
-                                             // If collection was private check to see if they're allowed to see it
+                                                // If collection was private skip
 
-                                             if(req.isAuthenticated()) {
-                                                if (project_collection.followers.length > 0) {
-                                                   project_collection.followers.forEach(function(follower, key) {
-                                                      if (follower === req.user.username || project_collection.collection_owner === req.user.username) {
-                                                         all_public_projects.push(project);
-                                                      }
-                                                   });
-                                                } else {
-                                                   if (project_collection.collection_owner === req.user.username) {
-                                                      all_public_projects.push(project);
-                                                   }
-                                                }
+                                             } else {
+                                                // If collection was public mark that we scanned collection
+                                                all_public_projects.push(project);
                                              }
-
-                                          } else {
-                                             // If collection was public mark that we scanned collection
-                                             all_public_projects.push(project);
-                                          }
-                                       });
+                                          });
+                                       } else {
+                                          // No collections so we mark that we scanned project
+                                          all_public_projects.push(project);
+                                       }
                                     } else {
                                        // No collections so we mark that we scanned project
                                        all_public_projects.push(project);
                                     }
-                                 } else {
-                                    // No collections so we mark that we scanned project
-                                    all_public_projects.push(project);
-                                 }
-                              });
+                                 });
 
-                              var reverse_projects = all_public_projects.slice(0,14).reverse();
+                                 var reverse_projects = all_public_projects.slice(0,14).reverse();
 
-                              res.render('p/details/details', {
-                                 project: project,
-                                 related_projects: reverse_projects,
-                                 projects: reverse_projects, // masonry related projects
-                                 page_title: project.project_title,
-                                 is_admin_of_project: is_admin_of_project,
-                                 comment_amount: comment_amount,
-                                 enough_comments: enough_comments,
-                                 enough_saves: enough_saves,
-                                 saves_amount: saves_amount,
-                                 enough_likes: enough_likes,
-                                 likes_amount: likes_amount,
-                                 user_saved: user_saved,
-                                 user_liked: user_liked,
-                                 enough_reposts: enough_reposts,
-                                 repost_amount: repost_amount,
-                                 user_reposted: user_reposted,
-                                 admin_amount: admin_amount
+                                 res.render('p/details/details', {
+                                    project: project,
+                                    related_projects: reverse_projects,
+                                    projects: reverse_projects, // masonry related projects
+                                    page_title: project.project_title,
+                                    is_admin_of_project: is_admin_of_project,
+                                    comment_amount: comment_amount,
+                                    enough_comments: enough_comments,
+                                    enough_saves: enough_saves,
+                                    saves_amount: saves_amount,
+                                    enough_likes: enough_likes,
+                                    likes_amount: likes_amount,
+                                    user_saved: user_saved,
+                                    user_liked: user_liked,
+                                    enough_reposts: enough_reposts,
+                                    repost_amount: repost_amount,
+                                    user_reposted: user_reposted,
+                                    admin_amount: admin_amount
+                                 });
                               });
-                           });
+                           } else {
+                              Project.find({}, (err, related_projects) => {
+                                 if (err) throw err;
+
+                                 var all_public_projects = [];
+
+                                 related_projects.forEach(function(project, key) {
+
+                                    // Scan through every project
+
+                                    if(project.posted_to_collection) {
+                                       if (project.posted_to_collection.length > 0) {
+
+                                          // See if project has any collections
+
+                                          project.posted_to_collection.forEach(function(project_collection, key) {
+
+                                             if (project_collection.collection_is_private) {
+
+                                                // If collection was private skip
+
+                                             } else {
+                                                // If collection was public mark that we scanned collection
+                                                all_public_projects.push(project);
+                                             }
+                                          });
+                                       } else {
+                                          // No collections so we mark that we scanned project
+                                          all_public_projects.push(project);
+                                       }
+                                    } else {
+                                       // No collections so we mark that we scanned project
+                                       all_public_projects.push(project);
+                                    }
+                                 });
+
+                                 var reverse_projects = all_public_projects.slice(0,14).reverse();
+
+                                 res.render('p/details/details', {
+                                    project: project,
+                                    related_projects: reverse_projects,
+                                    projects: reverse_projects, // masonry related projects
+                                    page_title: project.project_title,
+                                    is_admin_of_project: is_admin_of_project,
+                                    comment_amount: comment_amount,
+                                    enough_comments: enough_comments,
+                                    enough_saves: enough_saves,
+                                    saves_amount: saves_amount,
+                                    enough_likes: enough_likes,
+                                    likes_amount: likes_amount,
+                                    user_saved: user_saved,
+                                    user_liked: user_liked,
+                                    enough_reposts: enough_reposts,
+                                    repost_amount: repost_amount,
+                                    user_reposted: user_reposted,
+                                    admin_amount: admin_amount
+                                 });
+                              });
+                           }
                         }
-                     }
 
-                  }).sort({score: { $meta: "textScore" }});
+                     }).sort({score: { $meta: "textScore" }});
+                  } else {
+                     res.redirect('/');
+                  }
                }
             }
          } else {
@@ -1723,6 +1731,50 @@ router.get('/micro/:id', (req, res, next) => {
                   var enough_reposts = false;
                }
 
+               var good_project = false;
+
+               project = project.toObject();
+
+               if(project.posted_to_collection) {
+                  if (project.posted_to_collection.length > 0) {
+
+                     // See if project has any collections
+
+                     project.posted_to_collection.forEach(function(project_collection, key) {
+
+                        if (project_collection.collection_is_private) {
+
+                           // If collection was private check to see if they're allowed to see it
+
+                           if(req.isAuthenticated()) {
+                              if (project_collection.followers.length > 0) {
+                                 project_collection.followers.forEach(function(follower, key) {
+                                    if (follower == req.user._id || project_collection.collection_owner === req.user.username) {
+                                       good_project = true;
+                                       project.private_collection_name = project_collection.collection_name;
+                                    }
+                                 });
+                              } else {
+                                 if (project_collection.collection_owner === req.user.username) {
+                                    good_project = true;
+                                    project.private_collection_name = project_collection.collection_name;
+                                 }
+                              }
+                           }
+
+                        } else {
+                           // If collection was public mark that we scanned collection
+                           good_project = true;
+                        }
+                     });
+                  } else {
+                     // No collections so we mark that we scanned project
+                     good_project = true;
+                  }
+               } else {
+                  // No collections so we mark that we scanned project
+                  good_project = true;
+               }
 
                var admin_amount = project.admins.length;
 
@@ -1732,226 +1784,189 @@ router.get('/micro/:id', (req, res, next) => {
                   var page_title = project.project_title;
                }
 
-               Project.find({$text: { $search: project.micro_body }}, {score: { $meta: "textScore" }}, (err, related_projects) => {
-                  if (err) throw err;
+               if (good_project) {
 
-                  var all_public_projects = [];
+                  Project.find({$text: { $search: project.micro_body }}, {score: { $meta: "textScore" }}, (err, related_projects) => {
+                     if (err) throw err;
 
-                  related_projects.forEach(function(project, key) {
+                     var all_public_projects = [];
 
-                     // Scan through every project
+                     related_projects.forEach(function(project, key) {
 
-                     if(project.posted_to_collection) {
-                        if (project.posted_to_collection.length > 0) {
+                        // Scan through every project
 
-                           // See if project has any collections
+                        if(project.posted_to_collection) {
+                           if (project.posted_to_collection.length > 0) {
 
-                           project.posted_to_collection.forEach(function(project_collection, key) {
+                              // See if project has any collections
 
-                              if (project_collection.collection_is_private) {
+                              project.posted_to_collection.forEach(function(project_collection, key) {
 
-                                 // If collection was private check to see if they're allowed to see it
+                                 if (project_collection.collection_is_private) {
 
-                                 if(req.isAuthenticated()) {
-                                    if (project_collection.followers.length > 0) {
-                                       project_collection.followers.forEach(function(follower, key) {
-                                          if (follower === req.user.username || project_collection.collection_owner === req.user.username) {
-                                             all_public_projects.push(project);
-                                          }
-                                       });
-                                    } else {
-                                       if (project_collection.collection_owner === req.user.username) {
-                                          all_public_projects.push(project);
-                                       }
-                                    }
+                                    // If collection was private skip project
+
+                                 } else {
+                                    // If collection was public mark that we scanned collection
+                                    all_public_projects.push(project);
                                  }
-
-                              } else {
-                                 // If collection was public mark that we scanned collection
-                                 all_public_projects.push(project);
-                              }
-                           });
+                              });
+                           } else {
+                              // No collections so we mark that we scanned project
+                              all_public_projects.push(project);
+                           }
                         } else {
                            // No collections so we mark that we scanned project
                            all_public_projects.push(project);
                         }
-                     } else {
-                        // No collections so we mark that we scanned project
-                        all_public_projects.push(project);
-                     }
-                  });
-
-                  var reverse_projects = all_public_projects.slice(0,14).reverse();
-
-                  if (related_projects.length > 4) {
-                     res.render('p/micro/micro-details', {
-                        project: project,
-                        related_projects: reverse_projects,
-                        projects: reverse_projects, // masonry related projects
-                        page_title: page_title,
-                        is_admin_of_project: is_admin_of_project,
-                        comment_amount: comment_amount,
-                        enough_comments: enough_comments,
-                        enough_saves: enough_saves,
-                        saves_amount: saves_amount,
-                        enough_likes: enough_likes,
-                        likes_amount: likes_amount,
-                        user_saved: user_saved,
-                        user_liked: user_liked,
-                        enough_reposts: enough_reposts,
-                        repost_amount: repost_amount,
-                        user_reposted: user_reposted,
-                        admin_amount: admin_amount
                      });
-                  } else {
-                     if (project.categories.length > 4) {
-                        Project.find({ 'categories': { $in: project.categories} }, (err, related_projects) => {
-                           if (err) throw err;
 
-                           var all_public_projects = [];
+                     var reverse_projects = all_public_projects.slice(0,14).reverse();
 
-                           related_projects.forEach(function(project, key) {
-
-                              // Scan through every project
-
-                              if(project.posted_to_collection) {
-                                 if (project.posted_to_collection.length > 0) {
-
-                                    // See if project has any collections
-
-                                    project.posted_to_collection.forEach(function(project_collection, key) {
-
-                                       if (project_collection.collection_is_private) {
-
-                                          // If collection was private check to see if they're allowed to see it
-
-                                          if(req.isAuthenticated()) {
-                                             if (project_collection.followers.length > 0) {
-                                                project_collection.followers.forEach(function(follower, key) {
-                                                   if (follower === req.user.username || project_collection.collection_owner === req.user.username) {
-                                                      all_public_projects.push(project);
-                                                   }
-                                                });
-                                             } else {
-                                                if (project_collection.collection_owner === req.user.username) {
-                                                   all_public_projects.push(project);
-                                                }
-                                             }
-                                          }
-
-                                       } else {
-                                          // If collection was public mark that we scanned collection
-                                          all_public_projects.push(project);
-                                       }
-                                    });
-                                 } else {
-                                    // No collections so we mark that we scanned project
-                                    all_public_projects.push(project);
-                                 }
-                              } else {
-                                 // No collections so we mark that we scanned project
-                                 all_public_projects.push(project);
-                              }
-                           });
-
-                           var reverse_projects = all_public_projects.slice(0,14).reverse();
-
-                           res.render('p/micro/micro-details', {
-                              project: project,
-                              related_projects: reverse_projects,
-                              projects: reverse_projects, // masonry related projects
-                              page_title: page_title,
-                              is_admin_of_project: is_admin_of_project,
-                              comment_amount: comment_amount,
-                              enough_comments: enough_comments,
-                              enough_saves: enough_saves,
-                              saves_amount: saves_amount,
-                              enough_likes: enough_likes,
-                              likes_amount: likes_amount,
-                              user_saved: user_saved,
-                              user_liked: user_liked,
-                              enough_reposts: enough_reposts,
-                              repost_amount: repost_amount,
-                              user_reposted: user_reposted,
-                              admin_amount: admin_amount
-                           });
+                     if (related_projects.length > 4) {
+                        res.render('p/micro/micro-details', {
+                           project: project,
+                           related_projects: reverse_projects,
+                           projects: reverse_projects, // masonry related projects
+                           page_title: page_title,
+                           is_admin_of_project: is_admin_of_project,
+                           comment_amount: comment_amount,
+                           enough_comments: enough_comments,
+                           enough_saves: enough_saves,
+                           saves_amount: saves_amount,
+                           enough_likes: enough_likes,
+                           likes_amount: likes_amount,
+                           user_saved: user_saved,
+                           user_liked: user_liked,
+                           enough_reposts: enough_reposts,
+                           repost_amount: repost_amount,
+                           user_reposted: user_reposted,
+                           admin_amount: admin_amount
                         });
                      } else {
-                        Project.find({}, (err, related_projects) => {
-                           if (err) throw err;
+                        if (project.categories.length > 4) {
+                           Project.find({ 'categories': { $in: project.categories} }, (err, related_projects) => {
+                              if (err) throw err;
 
-                           var all_public_projects = [];
+                              var all_public_projects = [];
 
-                           related_projects.forEach(function(project, key) {
+                              related_projects.forEach(function(project, key) {
 
-                              // Scan through every project
+                                 // Scan through every project
 
-                              if(project.posted_to_collection) {
-                                 if (project.posted_to_collection.length > 0) {
+                                 if(project.posted_to_collection) {
+                                    if (project.posted_to_collection.length > 0) {
 
-                                    // See if project has any collections
+                                       // See if project has any collections
 
-                                    project.posted_to_collection.forEach(function(project_collection, key) {
+                                       project.posted_to_collection.forEach(function(project_collection, key) {
 
-                                       if (project_collection.collection_is_private) {
+                                          if (project_collection.collection_is_private) {
 
-                                          // If collection was private check to see if they're allowed to see it
+                                             // If collection was private skip project
 
-                                          if(req.isAuthenticated()) {
-                                             if (project_collection.followers.length > 0) {
-                                                project_collection.followers.forEach(function(follower, key) {
-                                                   if (follower === req.user.username || project_collection.collection_owner === req.user.username) {
-                                                      all_public_projects.push(project);
-                                                   }
-                                                });
-                                             } else {
-                                                if (project_collection.collection_owner === req.user.username) {
-                                                   all_public_projects.push(project);
-                                                }
-                                             }
+                                          } else {
+                                             // If collection was public mark that we scanned collection
+                                             all_public_projects.push(project);
                                           }
-
-                                       } else {
-                                          // If collection was public mark that we scanned collection
-                                          all_public_projects.push(project);
-                                       }
-                                    });
+                                       });
+                                    } else {
+                                       // No collections so we mark that we scanned project
+                                       all_public_projects.push(project);
+                                    }
                                  } else {
                                     // No collections so we mark that we scanned project
                                     all_public_projects.push(project);
                                  }
-                              } else {
-                                 // No collections so we mark that we scanned project
-                                 all_public_projects.push(project);
-                              }
-                           });
+                              });
 
-                           var reverse_projects = all_public_projects.slice(0,14).reverse();
+                              var reverse_projects = all_public_projects.slice(0,14).reverse();
 
-                           res.render('p/micro/micro-details', {
-                              project: project,
-                              related_projects: reverse_projects,
-                              projects: reverse_projects, // masonry related projects
-                              page_title: page_title,
-                              is_admin_of_project: is_admin_of_project,
-                              comment_amount: comment_amount,
-                              enough_comments: enough_comments,
-                              enough_saves: enough_saves,
-                              saves_amount: saves_amount,
-                              enough_likes: enough_likes,
-                              likes_amount: likes_amount,
-                              user_saved: user_saved,
-                              user_liked: user_liked,
-                              enough_reposts: enough_reposts,
-                              repost_amount: repost_amount,
-                              user_reposted: user_reposted,
-                              admin_amount: admin_amount
+                              res.render('p/micro/micro-details', {
+                                 project: project,
+                                 related_projects: reverse_projects,
+                                 projects: reverse_projects, // masonry related projects
+                                 page_title: page_title,
+                                 is_admin_of_project: is_admin_of_project,
+                                 comment_amount: comment_amount,
+                                 enough_comments: enough_comments,
+                                 enough_saves: enough_saves,
+                                 saves_amount: saves_amount,
+                                 enough_likes: enough_likes,
+                                 likes_amount: likes_amount,
+                                 user_saved: user_saved,
+                                 user_liked: user_liked,
+                                 enough_reposts: enough_reposts,
+                                 repost_amount: repost_amount,
+                                 user_reposted: user_reposted,
+                                 admin_amount: admin_amount
+                              });
                            });
-                        });
+                        } else {
+                           Project.find({}, (err, related_projects) => {
+                              if (err) throw err;
+
+                              var all_public_projects = [];
+
+                              related_projects.forEach(function(project, key) {
+
+                                 // Scan through every project
+
+                                 if(project.posted_to_collection) {
+                                    if (project.posted_to_collection.length > 0) {
+
+                                       // See if project has any collections
+
+                                       project.posted_to_collection.forEach(function(project_collection, key) {
+
+                                          if (project_collection.collection_is_private) {
+
+                                             // If collection was private check skip project
+
+                                          } else {
+                                             // If collection was public mark that we scanned collection
+                                             all_public_projects.push(project);
+                                          }
+                                       });
+                                    } else {
+                                       // No collections so we mark that we scanned project
+                                       all_public_projects.push(project);
+                                    }
+                                 } else {
+                                    // No collections so we mark that we scanned project
+                                    all_public_projects.push(project);
+                                 }
+                              });
+
+                              var reverse_projects = all_public_projects.slice(0,14).reverse();
+
+                              res.render('p/micro/micro-details', {
+                                 project: project,
+                                 related_projects: reverse_projects,
+                                 projects: reverse_projects, // masonry related projects
+                                 page_title: page_title,
+                                 is_admin_of_project: is_admin_of_project,
+                                 comment_amount: comment_amount,
+                                 enough_comments: enough_comments,
+                                 enough_saves: enough_saves,
+                                 saves_amount: saves_amount,
+                                 enough_likes: enough_likes,
+                                 likes_amount: likes_amount,
+                                 user_saved: user_saved,
+                                 user_liked: user_liked,
+                                 enough_reposts: enough_reposts,
+                                 repost_amount: repost_amount,
+                                 user_reposted: user_reposted,
+                                 admin_amount: admin_amount
+                              });
+                           });
+                        }
                      }
-                  }
 
-               }).sort({score: { $meta: "textScore" }});
+                  }).sort({score: { $meta: "textScore" }});
+               } else {
+                  res.redirect('/');
+               }
             }
          } else {
             res.redirect('/');

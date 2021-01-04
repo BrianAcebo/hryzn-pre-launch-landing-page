@@ -106,6 +106,20 @@ router.get('/', (req, res, next) => {
 
                   var project = project.toObject();
 
+                  profiles.forEach(function(profile, key) {
+                     profile.reposted_projects.forEach(function(proj_id, key) {
+                        if (project._id == proj_id) {
+                           project.reposted_by = profile.username;
+                        }
+                     });
+                  });
+
+                  req.user.reposted_projects.forEach(function(proj_id, key) {
+                     if (project._id == proj_id) {
+                        project.reposted_by = req.user.username;
+                     }
+                  });
+
                   // If the project has any saves
                   if (project.saves.length  > 0) {
                      var saves_amount = project.saves.length;
@@ -169,12 +183,14 @@ router.get('/', (req, res, next) => {
 
                               if (project_collection.followers.length > 0) {
                                  project_collection.followers.forEach(function(follower, key) {
-                                    if (follower === req.user.username || project_collection.collection_owner === req.user.username) {
+                                    if (follower == req.user._id || project_collection.collection_owner === req.user.username) {
+                                       project.private_collection_name = project_collection.collection_name;
                                        all_public_projects.push(project);
                                     }
                                  });
                               } else {
                                  if (project_collection.collection_owner === req.user.username) {
+                                    project.private_collection_name = project_collection.collection_name;
                                     all_public_projects.push(project);
                                  }
                               }
@@ -221,21 +237,7 @@ router.get('/', (req, res, next) => {
 
                                  if (project_collection.collection_is_private) {
 
-                                    // If collection was private check to see if they're allowed to see it
-
-                                    if(req.isAuthenticated()) {
-                                       if (project_collection.followers.length > 0) {
-                                          project_collection.followers.forEach(function(follower, key) {
-                                             if (follower === req.user.username || project_collection.collection_owner === req.user.username) {
-                                                suggested_public_projects.push(project);
-                                             }
-                                          });
-                                       } else {
-                                          if (project_collection.collection_owner === req.user.username) {
-                                             suggested_public_projects.push(project);
-                                          }
-                                       }
-                                    }
+                                    // If collection was private skip project
 
                                  } else {
                                     // If collection was public mark that we scanned collection
@@ -2215,7 +2217,7 @@ router.get('/profile/:username', (req, res, next) => {
 
                         // Must follow to see private collection
                         collection.followers.forEach(function(follower, key) {
-                           if (follower === req.user.username) {
+                           if (follower == req.user._id) {
                               Project.find({ '_id': { $in: collection.projects} }, (err, projects) => {
                                  if (err) throw err;
 
@@ -3160,21 +3162,7 @@ router.get('/explore', (req, res, next) => {
 
                   if (project_collection.collection_is_private) {
 
-                     // If collection was private check to see if they're allowed to see it
-
-                     if(req.isAuthenticated()) {
-                        if (project_collection.followers.length > 0) {
-                           project_collection.followers.forEach(function(follower, key) {
-                              if (follower === req.user.username || project_collection.collection_owner === req.user.username) {
-                                 all_public_projects.push(project);
-                              }
-                           });
-                        } else {
-                           if (project_collection.collection_owner === req.user.username) {
-                              all_public_projects.push(project);
-                           }
-                        }
-                     }
+                     // If collection was private skip project
 
                   } else {
                      // If collection was public mark that we scanned collection
@@ -3239,12 +3227,46 @@ router.get('/search', (req, res, next) => {
       Project.find({$text: { $search: searchTerm }}, {score: { $meta: "textScore" }}, (err, projects) => {
          if (err) throw err;
 
+         var all_public_projects = [];
+
+         projects.forEach(function(project, key) {
+
+            // Scan through every project
+
+            var project = project.toObject();
+
+            if(project.posted_to_collection) {
+               if (project.posted_to_collection.length > 0) {
+
+                  // See if project has any collections
+
+                  project.posted_to_collection.forEach(function(project_collection, key) {
+
+                     if (project_collection.collection_is_private) {
+
+                        // If collection was private skip project
+
+                     } else {
+                        // If collection was public mark that we scanned collection
+                        all_public_projects.push(project);
+                     }
+                  });
+               } else {
+                  // No collections so we mark that we scanned project
+                  all_public_projects.push(project);
+               }
+            } else {
+               // No collections so we mark that we scanned project
+               all_public_projects.push(project);
+            }
+         });
+
          Group.find({$text: { $search: searchTerm }}, {score: { $meta: "textScore" }}, (err, groups) => {
             if (err) throw err;
 
             res.render('explore', {
                page_title: 'Explore Projects',
-               projects: projects,
+               projects: all_public_projects,
                group_search: groups,
                user_search: user,
                project_search: projects,
@@ -3457,9 +3479,32 @@ router.post('/edit-collection/:id', (req, res, next) => {
                info['projectId'] = project_id;
                info['collectionId'] = req.params.id;
 
-               Project.removeCollection(info, (err, project) => {
-                  if(err) throw err;
+               Project.findOne({ '_id': { $in: project_id } }, (err, project) => {
+                  if (project) {
+
+                     project.toObject();
+
+                     var new_collection_array = [];
+
+                     project.posted_to_collection.forEach(function(project_collection, key) {
+                        if (project_collection.collection_id != req.params.id) {
+                           new_collection_array.push(project_collection);
+                        }
+                     });
+
+                     Project.findByIdAndUpdate(project_id, {
+                        posted_to_collection: new_collection_array,
+                     }, (err, project) => {
+                        if (err) throw err;
+                     });
+                  }
                });
+
+               // $pull from mongoose not working
+               // Project.removeCollection(info, (err, project) => {
+               //    if(err) throw err;
+               //    console.log(project);
+               // });
 
                Collection.removeProject(info, (err, collection) => {
                   if(err) throw err;
@@ -3474,6 +3519,13 @@ router.post('/edit-collection/:id', (req, res, next) => {
          if (add_projects) {
             add_projects.forEach(function(project_id, key) {
                project_list.push(project_id);
+
+               var info = [];
+               info['collectionId'] = req.params.id;
+               info['projectId'] = project_id;
+               Project.addCollection(info, (err, project) => {
+                  if(err) throw err;
+               });
             });
          }
 
@@ -3522,7 +3574,6 @@ router.post('/edit-collection/:id', (req, res, next) => {
                info['userId'] = user._id.toString();
                User.updateCollection(info, (err, user) => {
                   if(err) throw err;
-                  console.log(user);
                });
             }
          });
@@ -3534,7 +3585,7 @@ router.post('/edit-collection/:id', (req, res, next) => {
             projects: project_list,
             collection_slug: collection_slug,
             collection_categories: collection_categories
-         }, (err, user) => {
+         }, (err, collection) => {
             if (err) throw err;
          });
 
@@ -3739,9 +3790,30 @@ router.get('/collection/delete/:id/:deleteAll', (req, res, next) => {
                      info['projectId'] = proj;
                      info['collectionId'] = req.params.id;
 
-                     Project.removeCollection(info, (err, project) => {
-                        if(err) throw err;
+                     Project.findOne({ '_id': { $in: proj } }, (err, project) => {
+                        if (project) {
+
+                           project.toObject();
+
+                           var new_collection_array = [];
+
+                           project.posted_to_collection.forEach(function(project_collection, key) {
+                              if (project_collection.collection_id != req.params.id) {
+                                 new_collection_array.push(project_collection);
+                              }
+                           });
+
+                           Project.findByIdAndUpdate(proj, {
+                              posted_to_collection: new_collection_array,
+                           }, (err, project) => {
+                              if (err) throw err;
+                           });
+                        }
                      });
+
+                     // Project.removeCollection(info, (err, project) => {
+                     //    if(err) throw err;
+                     // });
 
                   });
 
