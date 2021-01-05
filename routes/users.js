@@ -638,7 +638,7 @@ router.post('/register-next/text/1', (req, res, next) => {
             from: '"Hryzn" <hello@myhryzn.com>',
             to: '"Brian" <brianacebo@gmail.com>',
             subject: 'New User',
-            text: email + ' created a new account through email with IP = ' + ip
+            text: email + ' created a new account through text with IP = ' + ip
          }
 
          transporter.sendMail(mailOptions, (error, info) => {
@@ -652,7 +652,7 @@ router.post('/register-next/text/1', (req, res, next) => {
             from: '"Hryzn" <hello@myhryzn.com>',
             to: '"Brandon" <wokeupwitabankroll@protonmail.com>',
             subject: 'New User',
-            text: email + ' created a new account through email with IP = ' + ip
+            text: email + ' created a new account through text with IP = ' + ip
          }
 
          transporter.sendMail(mailOptions, (error, info) => {
@@ -744,7 +744,7 @@ router.post('/register-next/text/1', (req, res, next) => {
             from: '"Hryzn" <hello@myhryzn.com>',
             to: '"Brian" <brianacebo@gmail.com>',
             subject: 'New User',
-            text: email + ' created a new account through email with IP = ' + ip
+            text: email + ' created a new account through text with IP = ' + ip
          }
 
          transporter.sendMail(mailOptions, (error, info) => {
@@ -758,7 +758,7 @@ router.post('/register-next/text/1', (req, res, next) => {
             from: '"Hryzn" <hello@myhryzn.com>',
             to: '"Brandon" <wokeupwitabankroll@protonmail.com>',
             subject: 'New User',
-            text: email + ' created a new account through email with IP = ' + ip
+            text: email + ' created a new account through text with IP = ' + ip
          }
 
          transporter.sendMail(mailOptions, (error, info) => {
