@@ -381,9 +381,8 @@ router.post('/register-next', (req, res, next) => {
             });
          });
 
-         //////////
+         ///// Thank You Email /////
 
-         // Thank you email //
          // Gmail Credentials
          var transporter = nodemailer.createTransport({
             service: 'Gmail',
@@ -393,14 +392,15 @@ router.post('/register-next', (req, res, next) => {
             }
          });
 
+
+         // Email Brian about new user
          var ip = req.header('x-forwarded-for') || req.connection.remoteAddress;
 
-         // Mail Body
          var mailOptions = {
             from: '"Hryzn" <hello@myhryzn.com>',
             to: '"Brian" <brianacebo@gmail.com>',
             subject: 'New User',
-            text: email + ' created a new account with IP = ' + ip
+            text: email + ' created a new account through email with IP = ' + ip
          }
 
          transporter.sendMail(mailOptions, (error, info) => {
@@ -408,19 +408,22 @@ router.post('/register-next', (req, res, next) => {
             }
          });
 
-         ///////////
 
-         // Thank you email //
-         // Gmail Credentials
-         var transporter = nodemailer.createTransport({
-            service: 'Gmail',
-            auth: {
-               user: 'hello@myhryzn.com',
-               pass: '+ar+oo-55'
+         // Email Brandon about new user
+         var mailOptions = {
+            from: '"Hryzn" <hello@myhryzn.com>',
+            to: '"Brandon" <wokeupwitabankroll@protonmail.com>',
+            subject: 'New User',
+            text: email + ' created a new account through email with IP = ' + ip
+         }
+
+         transporter.sendMail(mailOptions, (error, info) => {
+            if(!error) {
             }
          });
 
-         // Mail Body
+
+         // Thank you email //
          var mailOptions = {
             from: '"Hryzn" <hello@myhryzn.com>',
             to: email,
@@ -435,6 +438,7 @@ router.post('/register-next', (req, res, next) => {
                res.redirect('/users/login');
             }
          });
+         //////////
       } else {
          var newUser = new User({
             username: username,
@@ -488,9 +492,8 @@ router.post('/register-next', (req, res, next) => {
          });
 
 
-         //////////
+         ///// Thank You Email /////
 
-         // Thank you email //
          // Gmail Credentials
          var transporter = nodemailer.createTransport({
             service: 'Gmail',
@@ -500,14 +503,15 @@ router.post('/register-next', (req, res, next) => {
             }
          });
 
+
+         // Email Brian about new user
          var ip = req.header('x-forwarded-for') || req.connection.remoteAddress;
 
-         // Mail Body
          var mailOptions = {
             from: '"Hryzn" <hello@myhryzn.com>',
             to: '"Brian" <brianacebo@gmail.com>',
             subject: 'New User',
-            text: email + ' created a new account with IP = ' + ip
+            text: email + ' created a new account through email with IP = ' + ip
          }
 
          transporter.sendMail(mailOptions, (error, info) => {
@@ -515,20 +519,22 @@ router.post('/register-next', (req, res, next) => {
             }
          });
 
-         ///////////
 
+         // Email Brandon about new user
+         var mailOptions = {
+            from: '"Hryzn" <hello@myhryzn.com>',
+            to: '"Brandon" <wokeupwitabankroll@protonmail.com>',
+            subject: 'New User',
+            text: email + ' created a new account through email with IP = ' + ip
+         }
 
-         // Thank you email //
-         // Gmail Credentials
-         var transporter = nodemailer.createTransport({
-            service: 'Gmail',
-            auth: {
-               user: 'hello@myhryzn.com',
-               pass: '+ar+oo-55'
+         transporter.sendMail(mailOptions, (error, info) => {
+            if(!error) {
             }
          });
 
-         // Mail Body
+
+         // Thank you email //
          var mailOptions = {
             from: '"Hryzn" <hello@myhryzn.com>',
             to: email,
@@ -543,6 +549,7 @@ router.post('/register-next', (req, res, next) => {
                res.redirect('/users/login');
             }
          });
+         //////////
       }
 
    } else {
@@ -611,6 +618,49 @@ router.post('/register-next/text/1', (req, res, next) => {
    if (user_code === verify_code) {
 
       if (req.body.profileimage) {
+
+         ///// Thank You Email /////
+
+         // Gmail Credentials
+         var transporter = nodemailer.createTransport({
+            service: 'Gmail',
+            auth: {
+               user: 'hello@myhryzn.com',
+               pass: '+ar+oo-55'
+            }
+         });
+
+
+         // Email Brian about new user
+         var ip = req.header('x-forwarded-for') || req.connection.remoteAddress;
+
+         var mailOptions = {
+            from: '"Hryzn" <hello@myhryzn.com>',
+            to: '"Brian" <brianacebo@gmail.com>',
+            subject: 'New User',
+            text: email + ' created a new account through email with IP = ' + ip
+         }
+
+         transporter.sendMail(mailOptions, (error, info) => {
+            if(!error) {
+            }
+         });
+
+
+         // Email Brandon about new user
+         var mailOptions = {
+            from: '"Hryzn" <hello@myhryzn.com>',
+            to: '"Brandon" <wokeupwitabankroll@protonmail.com>',
+            subject: 'New User',
+            text: email + ' created a new account through email with IP = ' + ip
+         }
+
+         transporter.sendMail(mailOptions, (error, info) => {
+            if(!error) {
+            }
+         });
+         //////////
+
          var newUser = new User({
             username: username,
             email: email,
@@ -674,6 +724,49 @@ router.post('/register-next/text/1', (req, res, next) => {
          req.flash('success_msg', "Account Created. Please Log In");
          res.redirect('/users/login');
       } else {
+
+         ///// Thank You Email /////
+
+         // Gmail Credentials
+         var transporter = nodemailer.createTransport({
+            service: 'Gmail',
+            auth: {
+               user: 'hello@myhryzn.com',
+               pass: '+ar+oo-55'
+            }
+         });
+
+
+         // Email Brian about new user
+         var ip = req.header('x-forwarded-for') || req.connection.remoteAddress;
+
+         var mailOptions = {
+            from: '"Hryzn" <hello@myhryzn.com>',
+            to: '"Brian" <brianacebo@gmail.com>',
+            subject: 'New User',
+            text: email + ' created a new account through email with IP = ' + ip
+         }
+
+         transporter.sendMail(mailOptions, (error, info) => {
+            if(!error) {
+            }
+         });
+
+
+         // Email Brandon about new user
+         var mailOptions = {
+            from: '"Hryzn" <hello@myhryzn.com>',
+            to: '"Brandon" <wokeupwitabankroll@protonmail.com>',
+            subject: 'New User',
+            text: email + ' created a new account through email with IP = ' + ip
+         }
+
+         transporter.sendMail(mailOptions, (error, info) => {
+            if(!error) {
+            }
+         });
+         //////////
+
          var newUser = new User({
             username: username,
             email: email,
