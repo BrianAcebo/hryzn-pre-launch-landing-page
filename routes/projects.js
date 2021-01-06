@@ -7,6 +7,7 @@ const aws = require('aws-sdk');
 const multerS3 = require('multer-s3');
 const dateNow = Date.now().toString();
 const jwt = require('jsonwebtoken');
+const mongoose = require('mongoose');
 
 var current_date = new Date();
 var day = String(current_date.getDate()).padStart(2, '0');
@@ -1186,8 +1187,6 @@ router.get('/details/:id', (req, res, next) => {
 
                   var good_project = false;
 
-                  project = project.toObject();
-
                   if(project.posted_to_collection) {
                      if (project.posted_to_collection.length > 0) {
 
@@ -1732,8 +1731,6 @@ router.get('/micro/:id', (req, res, next) => {
                }
 
                var good_project = false;
-
-               project = project.toObject();
 
                if(project.posted_to_collection) {
                   if (project.posted_to_collection.length > 0) {
