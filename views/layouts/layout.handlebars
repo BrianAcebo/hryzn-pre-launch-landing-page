@@ -575,6 +575,8 @@
    <script src="/js/welcome/plugins.js" type="text/javascript"></script>
    <script src="/js/search-autocomplete.js" type="text/javascript"></script>
    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-autotab/1.9.2/js/jquery.autotab.js" /></script>
+   {{#if user}}
+   {{else}}
    <script>
    (function copyrightYear() {
       var d = new Date();
@@ -582,6 +584,7 @@
       document.getElementById("copyrightYear").innerHTML = n;
    })();
    </script>
+   {{/if}}
    <script>
    autocomplete(document.getElementById("searchAuto"), project_titles_and_profile_usernames_and_group_names);
    </script>
