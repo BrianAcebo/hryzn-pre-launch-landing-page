@@ -52,35 +52,35 @@ var cookieHttp;
 var cookieSecure;
 
 // Redirect http to https
-// app.use(function (req, res, next) {
-//
-//    var url_host = req.get('Host');
-//
-//    if (url_host === 'localhost:5000' || url_host === '127.0.0.1:5000') {
-//
-//       // Set to development
-//       var env = process.env.NODE_ENV || 'development';
-//       var cookieDomain = 'localhost:5000';
-//       var cookieHttp = false;
-//       var cookieSecure = false;
-//       console.log('In development mode');
-//
-//    } else {
-//
-//       // Set to production
-//       var env = process.env.NODE_ENV || 'production';
-//       var cookieDomain = 'myhryzn.com';
-//       var cookieHttp = true;
-//       var cookieSecure = true;
-//
-//       if (req.headers['x-forwarded-proto'] !== 'https') {
-//          return res.redirect(['https://', req.get('Host'), req.url].join(''));
-//       }
-//
-//    }
-//
-//    next();
-// });
+app.use(function (req, res, next) {
+
+   var url_host = req.get('Host');
+
+   if (url_host === 'localhost:5000' || url_host === '127.0.0.1:5000') {
+
+      // Set to development
+      var env = process.env.NODE_ENV || 'development';
+      var cookieDomain = 'localhost:5000';
+      var cookieHttp = false;
+      var cookieSecure = false;
+      console.log('In development mode');
+
+   } else {
+
+      // Set to production
+      var env = process.env.NODE_ENV || 'production';
+      var cookieDomain = 'myhryzn.com';
+      var cookieHttp = true;
+      var cookieSecure = true;
+
+      if (req.headers['x-forwarded-proto'] !== 'https') {
+         return res.redirect(['https://', req.get('Host'), req.url].join(''));
+      }
+
+   }
+
+   next();
+});
 
 
 // Express Session
