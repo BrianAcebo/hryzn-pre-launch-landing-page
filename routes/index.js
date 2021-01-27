@@ -47,6 +47,36 @@ const Group = require('../models/groups');
 const Collection = require('../models/collections');
 const Email = require('../models/emails');
 
+
+// To create csv file for email list
+
+// const createCsvWriter = require('csv-writer').createObjectCsvWriter;
+// var emails = [];
+//
+// User.find({}, (err, users) => {
+//   users.forEach(function(user, key) {
+//     var emailObject = {
+//       email: user.email
+//     }
+//     emails.push(emailObject);
+//   });
+//
+//
+//  console.log(emails);
+//
+//  const csvWriter = createCsvWriter({
+//    path: 'email-list_2.csv',
+//    header: [
+//      {id: 'email', title: 'Email'}
+//    ]
+//  });
+//
+//  csvWriter
+//    .writeRecords(emails)
+//    .then(()=> console.log('The CSV file was written successfully'));
+//
+// });
+
 // Get Welcome Landing Page
 router.get('/', (req, res, next) => {
    if(req.isAuthenticated()) {
