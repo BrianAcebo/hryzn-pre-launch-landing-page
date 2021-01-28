@@ -58,8 +58,10 @@ app.use(function (req, res, next) {
 
    if (req.subdomains.length && req.subdomains.slice(-1)[0] != 'www') {
      var wildcard_subdomain = true;
+     console.log('yes wild subdomains');
    } else {
      var wildcard_subdomain = false;
+     console.log('no wild subdomains');
    }
 
    if (url_host === 'localhost:5000' || url_host === '127.0.0.1:5000' || wildcard_subdomain) {
