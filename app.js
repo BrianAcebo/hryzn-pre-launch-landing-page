@@ -60,39 +60,47 @@ app.use(function (req, res, next) {
    if (req.subdomains.length && req.subdomains.slice(-1)[0] != 'www') {
 
      if (url_path != '/') {
-       res.redirect('https://www.myhryzn.com' + url_path);
+
+       return res.redirect('https://www.myhryzn.com' + url_path);
+
        var wildcard_subdomain = false;
+       var continue_url = false;
+
      } else {
        var wildcard_subdomain = true;
+       var continue_url = false;
      }
 
    } else {
      var wildcard_subdomain = false;
+     var continue_url = false;
    }
 
-   if (url_host === 'localhost:5000' || url_host === '127.0.0.1:5000') {
+   if (continue_url) {
+     if (url_host === 'localhost:5000' || url_host === '127.0.0.1:5000') {
 
-      // Set to development
-      var env = process.env.NODE_ENV || 'development';
-      var cookieHttp = false;
-      var cookieSecure = false;
-      console.log('In development mode');
+        // Set to development
+        var env = process.env.NODE_ENV || 'development';
+        var cookieHttp = false;
+        var cookieSecure = false;
+        console.log('In development mode');
 
-   } else {
+     } else {
 
-      // Set to production
-      var env = process.env.NODE_ENV || 'production';
-      var cookieHttp = true;
-      var cookieSecure = true;
+        // Set to production
+        var env = process.env.NODE_ENV || 'production';
+        var cookieHttp = true;
+        var cookieSecure = true;
 
-      if (wildcard_subdomain) {
+        if (wildcard_subdomain) {
 
-      } else {
-        if (req.headers['x-forwarded-proto'] !== 'https') {
-           return res.redirect(['https://', req.get('Host'), req.url].join(''));
+        } else {
+          if (req.headers['x-forwarded-proto'] !== 'https') {
+             return res.redirect(['https://', req.get('Host'), req.url].join(''));
+          }
         }
-      }
 
+     } 
    }
 
    next();
