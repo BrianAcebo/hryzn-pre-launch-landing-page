@@ -77,7 +77,7 @@ app.use(function (req, res, next) {
 
       // Set to production
       var env = process.env.NODE_ENV || 'production';
-      var cookieDomain = 'myhryzn.com';
+      var cookieDomain = '.myhryzn.com';
       var cookieHttp = true;
       var cookieSecure = true;
 
@@ -85,7 +85,7 @@ app.use(function (req, res, next) {
       //    return res.redirect(['https://', req.get('Host'), req.url].join(''));
       // }
 
-      console.log(req.subdomains);
+      console.log(cookieDomain);
 
    }
 
