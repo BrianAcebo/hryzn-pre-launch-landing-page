@@ -60,7 +60,7 @@ app.use(function (req, res, next) {
    if (req.subdomains.length && req.subdomains.slice(-1)[0] != 'www') {
 
      if (url_path != '/') {
-       res.redirect('www.myhryzn.com' + url_path);
+       res.redirect('https://www.myhryzn.com' + url_path);
        var wildcard_subdomain = false;
      } else {
        var wildcard_subdomain = true;
