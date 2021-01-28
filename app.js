@@ -56,7 +56,13 @@ app.use(function (req, res, next) {
 
    var url_host = req.get('Host');
 
-   if (url_host === 'localhost:5000' || url_host === '127.0.0.1:5000') {
+   if (req.subdomains.length && req.subdomains.slice(-1)[0] != 'www') {
+     var wildcard_subdomain = true;
+   } else {
+     var wildcard_subdomain = false;
+   }
+
+   if (url_host === 'localhost:5000' || url_host === '127.0.0.1:5000' || wildcard_subdomain) {
 
       // Set to development
       var env = process.env.NODE_ENV || 'development';
@@ -126,7 +132,7 @@ app.use(expressValidator({
 app.use(flash());
 
 // Global User Object
-app.get('*', function(req, res, next) {
+app.get('*', function (req, res, next) {
    res.locals.user = req.user || null;
    if(req.user) {
       res.locals.username = req.user.username;
