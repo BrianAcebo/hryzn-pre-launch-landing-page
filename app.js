@@ -68,7 +68,6 @@ app.use(function (req, res, next) {
 
       // Set to development
       var env = process.env.NODE_ENV || 'development';
-      var cookieDomain = 'localhost:5000';
       var cookieHttp = false;
       var cookieSecure = false;
       console.log('In development mode');
@@ -77,7 +76,6 @@ app.use(function (req, res, next) {
 
       // Set to production
       var env = process.env.NODE_ENV || 'production';
-      var cookieDomain = '.myhryzn.com';
       var cookieHttp = true;
       var cookieSecure = true;
 
@@ -105,7 +103,7 @@ app.use(session({
       maxAge: 365 * 24 * 60 * 60 * 1000, // One Year
       secure: cookieSecure,
       httpOnly: cookieHttp,
-      domain: cookieDomain,
+      domain: '.myhryzn.com',
       expires: 365 * 24 * 60 * 60 * 1000
    }
 }));
