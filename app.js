@@ -55,16 +55,22 @@ var cookieSecure;
 app.use(function (req, res, next) {
 
    var url_host = req.get('Host');
+   var url_path = req.path;
 
    if (req.subdomains.length && req.subdomains.slice(-1)[0] != 'www') {
-     var wildcard_subdomain = true;
-     console.log('yes wild subdomains');
+
+     if (url_path != '/') {
+       res.redirect('www.myhryzn.com' + url_path);
+       var wildcard_subdomain = false;
+     } else {
+       var wildcard_subdomain = true;
+     }
+
    } else {
      var wildcard_subdomain = false;
-     console.log('no wild subdomains');
    }
 
-   if (url_host === 'localhost:5000' || url_host === '127.0.0.1:5000' || wildcard_subdomain) {
+   if (url_host === 'localhost:5000' || url_host === '127.0.0.1:5000') {
 
       // Set to development
       var env = process.env.NODE_ENV || 'development';
@@ -79,9 +85,13 @@ app.use(function (req, res, next) {
       var cookieHttp = true;
       var cookieSecure = true;
 
-      // if (req.headers['x-forwarded-proto'] !== 'https') {
-      //    return res.redirect(['https://', req.get('Host'), req.url].join(''));
-      // }
+      if (wildcard_subdomain) {
+
+      } else {
+        if (req.headers['x-forwarded-proto'] !== 'https') {
+           return res.redirect(['https://', req.get('Host'), req.url].join(''));
+        }
+      }
 
    }
 
@@ -152,6 +162,7 @@ app.use(function (req, res, next) {
    res.locals.error_msg = req.flash('error_msg');
    res.locals.error = req.flash('error');
    res.locals.site_url = req.get('host');
+
    next();
 });
 
