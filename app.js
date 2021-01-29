@@ -68,12 +68,14 @@ app.use(function (req, res, next) {
 
      } else {
        var wildcard_subdomain = true;
-       var continue_url = false;
+       var continue_url = true;
+
+       res.locals.on_wildcard_profile = true;
      }
 
    } else {
      var wildcard_subdomain = false;
-     var continue_url = false;
+     var continue_url = true;
    }
 
    if (continue_url) {
@@ -100,7 +102,7 @@ app.use(function (req, res, next) {
           }
         }
 
-     } 
+     }
    }
 
    next();
