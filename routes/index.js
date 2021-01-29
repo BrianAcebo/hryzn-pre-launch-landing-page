@@ -315,6 +315,7 @@ router.get('/', (req, res, next) => {
 
                             res.render(pageRender, {
                                page_title: profile.username,
+                               page_description: profile.bio,
                                profile: profile,
                                projects: reversed_projects,
                                collections: all_collections.reverse(),
@@ -374,6 +375,7 @@ router.get('/', (req, res, next) => {
 
                       res.render(pageRender, {
                          page_title: profile.username,
+                         page_description: profile.bio,
                          profile: profile,
                          projects: reversed_projects,
                          saved_projects: reversed_saved_projects,
@@ -2698,6 +2700,7 @@ router.get('/profile/:username', (req, res, next) => {
 
                            res.render(pageRender, {
                               page_title: profile.username,
+                              page_description: profile.bio,
                               profile: profile,
                               projects: reversed_projects,
                               collections: all_collections.reverse(),
@@ -2757,6 +2760,7 @@ router.get('/profile/:username', (req, res, next) => {
 
                      res.render(pageRender, {
                         page_title: profile.username,
+                        page_description: profile.bio,
                         profile: profile,
                         projects: reversed_projects,
                         saved_projects: reversed_saved_projects,
