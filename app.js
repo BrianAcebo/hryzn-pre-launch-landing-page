@@ -94,12 +94,8 @@ app.use(function (req, res, next) {
         var cookieHttp = true;
         var cookieSecure = true;
 
-        if (wildcard_subdomain) {
-
-        } else {
-          if (req.headers['x-forwarded-proto'] !== 'https') {
-             return res.redirect(['https://', req.get('Host'), req.url].join(''));
-          }
+        if (req.headers['x-forwarded-proto'] !== 'https') {
+           return res.redirect(['https://', req.get('Host'), req.url].join(''));
         }
 
      }
