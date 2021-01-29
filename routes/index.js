@@ -314,7 +314,7 @@ router.get('/', (req, res, next) => {
                             }
 
                             res.render(pageRender, {
-                               page_title: profile.username,
+                               page_title: '@' + profile.username,
                                page_description: profile.bio,
                                profile: profile,
                                projects: reversed_projects,
@@ -374,7 +374,7 @@ router.get('/', (req, res, next) => {
                       }
 
                       res.render(pageRender, {
-                         page_title: profile.username,
+                         page_title: '@' + profile.username,
                          page_description: profile.bio,
                          profile: profile,
                          projects: reversed_projects,
@@ -2699,7 +2699,7 @@ router.get('/profile/:username', (req, res, next) => {
                            }
 
                            res.render(pageRender, {
-                              page_title: profile.username,
+                              page_title: '@' + profile.username,
                               page_description: profile.bio,
                               profile: profile,
                               projects: reversed_projects,
@@ -2759,7 +2759,7 @@ router.get('/profile/:username', (req, res, next) => {
                      }
 
                      res.render(pageRender, {
-                        page_title: profile.username,
+                        page_title: '@' + profile.username,
                         page_description: profile.bio,
                         profile: profile,
                         projects: reversed_projects,
@@ -2872,7 +2872,7 @@ router.get('/profile/:username/followers', (req, res, next) => {
          User.find({ 'username': { $in: profile.followers} }, (err, profiles) => {
             if (err) throw err;
             res.render('followers', {
-               page_title: profile.username,
+               page_title: '@' + profile.username,
                profiles: profiles
             });
          });
@@ -2893,7 +2893,7 @@ router.get('/profile/:username/following', (req, res, next) => {
          }, (err, profiles) => {
             if (err) throw err;
             res.render('followers', {
-               page_title: profile.username,
+               page_title: '@' + profile.username,
                profiles: profiles
             });
          });

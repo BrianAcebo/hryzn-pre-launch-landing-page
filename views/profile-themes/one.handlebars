@@ -178,7 +178,7 @@
             </a>
 
             {{#if user_follows_profile}}
-            <form method="post" action="/profile/unfollow/{{profile._id}}">
+            <form method="post" action="{{#if on_wildcard_profile}}https://www.myhryzn.com{{/if}}/profile/unfollow/{{profile._id}}">
                <input type="hidden" name="user_username" value="{{user.username}}">
                <input type="hidden" name="profile_username" value="{{profile.username}}">
                <button class="profile__unfollow profile_btn profile_btns_rounding profile_secondary_accent_color profile_secondary_font" name="submit" type="submit">Unfollow</button>
@@ -186,7 +186,7 @@
 
             {{else}}
 
-            <form method="post" action="/profile/follow/{{profile._id}}">
+            <form method="post" action="{{#if on_wildcard_profile}}https://www.myhryzn.com{{/if}}/profile/follow/{{profile._id}}">
                <input type="hidden" name="user_username" value="{{user.username}}">
                <input type="hidden" name="profile_username" value="{{profile.username}}">
                <button class="profile__follow profile_btn profile_btns_rounding profile_secondary_accent_color profile_secondary_font" name="submit" type="submit">Follow</button>
@@ -863,7 +863,7 @@
 <div class="groupModal groupModalBackground {{#if group_error}}groupError{{/if}}">
    <div class="modal-content collection_form_modal">
 
-   <form method="post" class="edit-project-form" action="/create-collection">
+   <form method="post" class="edit-project-form" action="{{#if on_wildcard_profile}}https://www.myhryzn.com{{/if}}/create-collection">
       {{! Public or Private }}
       <div class="checkbox__wrapper">
          <label class="check__container">
