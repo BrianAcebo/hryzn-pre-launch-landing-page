@@ -50,7 +50,7 @@
   },
   "devDependencies": {
     "del": "*",
-    "gulp": "*",
+    "gulp": "^4.0.2",
     "gulp-autoprefixer": "*",
     "gulp-concat": "*",
     "gulp-minify-css": "*",

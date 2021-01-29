@@ -1425,6 +1425,12 @@ section.project {
    display: block;
 }
 
+.following_index_feed .card_is_micro_image .micro_body,
+.following_index_feed .card_is_micro_audio .micro_body,
+.following_index_feed .card_is_micro_video .micro_body {
+   display: block;
+}
+
 #micropostPop .card_is_micro_image .micro_top_action,
 #micropostPop .card_is_micro_audio .micro_top_action,
 #micropostPop .card_is_micro_video .micro_top_action {
