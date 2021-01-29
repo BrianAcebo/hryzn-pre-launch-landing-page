@@ -1425,12 +1425,6 @@ section.project {
    display: block;
 }
 
-.following_index_feed .micropost_card.card_is_micro_image .micro_body,
-.following_index_feed .micropost_card.card_is_micro_audio .micro_body,
-.following_index_feed .micropost_card.card_is_micro_video .micro_body {
-   display: block;
-}
-
 #micropostPop .card_is_micro_image .micro_top_action,
 #micropostPop .card_is_micro_audio .micro_top_action,
 #micropostPop .card_is_micro_video .micro_top_action {
@@ -1799,6 +1793,12 @@ section.project {
    padding: 15px;
    justify-content: flex-end;
    margin: 0;
+}
+
+.following_index_feed .micropost_card.card_is_micro_image .micro_body,
+.following_index_feed .micropost_card.card_is_micro_audio .micro_body,
+.following_index_feed .micropost_card.card_is_micro_video .micro_body {
+   display: block;
 }
 
 #micropostPop .reposts_length {
