@@ -200,7 +200,7 @@
 
 .suggested_index_feed {
    width: 25%;
-   padding: 35px 50px 50px 50px;
+   padding: 35px 35px 50px 35px;
    border-left: 1px solid rgb(235, 238, 240);
    right: 0;
    height: 100vh;
@@ -371,7 +371,7 @@
    align-items: center;
    font-weight: 600;
    justify-content: center;
-   width: 200px;
+   width: 175px;
    padding: 35px 0;
    margin-right: 25px;
    background-position: center;

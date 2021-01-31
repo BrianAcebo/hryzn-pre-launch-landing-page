@@ -79,7 +79,11 @@ $(document).ready(function() {
    var $dropNav = $('.dropNav');
    var $dropBtn = $('.dropBtn');
    var $post_container = $('.post_container');
-   var $mainBody = $('#mainBody');
+   if ($('#mainBody').attr('id') === '#mainBody' ) {
+     var $mainBody = $('#mainBody');
+   } else {
+     var $mainBody = $('#mainBodyIndex');
+   }
    var $createIcon = $(".create-icon");
 
    $dropBtn.each(function() {

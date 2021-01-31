@@ -46,7 +46,8 @@
     "request-promise": "^4.2.6",
     "socket.io": "^2.3.0",
     "trumbowyg": "^2.15.2",
-    "twilio": "^3.44.0"
+    "twilio": "^3.44.0",
+    "unsplash-js": "^7.0.4"
   },
   "devDependencies": {
     "del": "*",
