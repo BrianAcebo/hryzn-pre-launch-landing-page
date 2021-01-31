@@ -79,7 +79,8 @@ $(document).ready(function() {
    var $dropNav = $('.dropNav');
    var $dropBtn = $('.dropBtn');
    var $post_container = $('.post_container');
-   if ($('#mainBody').attr('id') === '#mainBody' ) {
+
+   if ($('#mainBody').attr('id') === 'mainBody' ) {
      var $mainBody = $('#mainBody');
    } else {
      var $mainBody = $('#mainBodyIndex');
