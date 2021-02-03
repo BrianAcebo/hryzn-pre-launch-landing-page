@@ -84,6 +84,8 @@ router.post('/register', upload.single('profileimage'), (req, res, next) => {
       dob_error = true;
    }
 
+   var profile_dob = dob_day + '/' + dob_month + '/' + dob_year;
+
    // var promo_code; req.body.promo_code.replace(/\r\n/g,'').trim();
 
    // if (promo_code != '') {
@@ -230,6 +232,7 @@ router.post('/register', upload.single('profileimage'), (req, res, next) => {
                            username: username,
                            email: email,
                            password: password,
+                           profile_dob: profile_dob,
                            profileimage: profileimage,
                            inviteAllowed: true,
                            verify_code: verify_code,
@@ -273,6 +276,7 @@ router.post('/register', upload.single('profileimage'), (req, res, next) => {
                         username: username,
                         email: email,
                         password: password,
+                        profile_dob: profile_dob,
                         inviteAllowed: true,
                         verify_code: verify_code,
                         verify_through_email: true,
@@ -320,6 +324,7 @@ router.post('/register-next', (req, res, next) => {
    var email = req.body.email.replace(/\r\n/g,'').trim();
    var password = req.body.password.replace(/\r\n/g,'').trim();
    var user_code = req.body.user_code.replace(/\r\n/g,'').trim();
+   var profile_dob = req.body.profile_dob.replace(/\r\n/g,'').trim();
 
    var verify_code = req.body.verify_code.split('$21B3')[0];
 
@@ -337,7 +342,8 @@ router.post('/register-next', (req, res, next) => {
             profile_theme: 'default',
             completed_interest_onboarding: false,
             completed_modal_walkthrough: false,
-            completed_profile_setup: false
+            completed_profile_setup: false,
+            date_of_birth: profile_dob
          });
 
          // Create user in database
@@ -447,7 +453,8 @@ router.post('/register-next', (req, res, next) => {
             profile_theme: 'default',
             completed_interest_onboarding: false,
             completed_modal_walkthrough: false,
-            completed_profile_setup: false
+            completed_profile_setup: false,
+            date_of_birth: profile_dob
          });
 
          // Create user in database
@@ -558,6 +565,7 @@ router.post('/register-next', (req, res, next) => {
          email: email,
          username: username,
          password: password,
+         profile_dob: profile_dob,
          inviteAllowed: true,
          page_title: 'Verify Your Account',
          notLoginPage: false,
@@ -574,6 +582,7 @@ router.post('/register-next/text', (req, res, next) => {
    var email = req.body.email.replace(/\r\n/g,'').trim();
    var password = req.body.password.replace(/\r\n/g,'').trim();
    var phone = req.body.phone.replace(/\r\n/g,'').trim();
+   var profile_dob = req.body.profile_dob.replace(/\r\n/g,'').trim();
    var profileimage = req.body.profileimage;
    var verify_code = req.body.verify_code.split('$21B3')[0];
 
@@ -589,6 +598,7 @@ router.post('/register-next/text', (req, res, next) => {
       username: username,
       email: email,
       password: password,
+      profile_dob: profile_dob,
       phone: phone,
       profileimage: profileimage,
       inviteAllowed: true,
@@ -606,6 +616,7 @@ router.post('/register-next/text/1', (req, res, next) => {
    var email = req.body.email.replace(/\r\n/g,'').trim();
    var phone = req.body.phone.replace(/\r\n/g,'').trim();
    var password = req.body.password.replace(/\r\n/g,'').trim();
+   var profile_dob = req.body.profile_dob.replace(/\r\n/g,'').trim();
    var profileimage = req.body.profileimage;
 
    var user_code = req.body.user_code.replace(/\r\n/g,'').trim();
@@ -669,7 +680,8 @@ router.post('/register-next/text/1', (req, res, next) => {
             profile_theme: 'default',
             completed_interest_onboarding: false,
             completed_modal_walkthrough: false,
-            completed_profile_setup: false
+            completed_profile_setup: false,
+            date_of_birth: profile_dob
          });
 
          // Create user in database
@@ -774,7 +786,8 @@ router.post('/register-next/text/1', (req, res, next) => {
             profile_theme: 'default',
             completed_interest_onboarding: false,
             completed_modal_walkthrough: false,
-            completed_profile_setup: false
+            completed_profile_setup: false,
+            date_of_birth: profile_dob
          });
 
          // Create user in database

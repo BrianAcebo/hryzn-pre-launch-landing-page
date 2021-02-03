@@ -83,16 +83,24 @@ app.use(function (req, res, next) {
 
         // Set to development
         var env = process.env.NODE_ENV || 'development';
-        var cookieHttp = false;
-        var cookieSecure = false;
+        cookieHttp = false;
+        cookieSecure = false;
+
+        if (url_host === 'localhost:5000') {
+          cookieDomain = 'localhost:5000';
+        } else {
+          cookieDomain = '127.0.0.1:5000';
+        }
+
         console.log('In development mode');
 
      } else {
 
         // Set to production
         var env = process.env.NODE_ENV || 'production';
-        var cookieHttp = true;
-        var cookieSecure = true;
+        cookieHttp = true;
+        cookieSecure = true;
+        cookieDomain = '.myhryzn.com';
 
         if (req.headers['x-forwarded-proto'] !== 'https') {
            return res.redirect(['https://', req.get('Host'), req.url].join(''));
@@ -115,12 +123,13 @@ app.use(session({
    rolling: true,
    cookie: {
       maxAge: 365 * 24 * 60 * 60 * 1000, // One Year
-      secure: cookieSecure,
-      httpOnly: cookieHttp,
-      domain: '.myhryzn.com',
+      secure: true, //cookieSecure
+      httpOnly: true, //cookieHttp
+      domain: '.myhryzn.com', //cookieDomain
       expires: 365 * 24 * 60 * 60 * 1000
    }
 }));
+
 
 // Passport JS
 app.use(passport.initialize());

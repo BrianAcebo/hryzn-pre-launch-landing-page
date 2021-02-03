@@ -119,6 +119,9 @@ const UserSchema = mongoose.Schema({
    },
    music_link: {
       type: String
+   },
+   date_of_birth: {
+      type: String
    }
 });
 

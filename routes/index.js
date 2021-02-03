@@ -747,22 +747,6 @@ router.get('/', (req, res, next) => {
                 welcomePage: true
              });
 
-             // Group.find({}, (err, groups) => {
-             //
-             //    if (err) throw err;
-             //
-             //    var group_names = [];
-             //
-             //    groups.forEach(function(group, key) {
-             //       if (!group.is_private) {
-             //          group_names.push(group.group_name);
-             //       }
-             //    });
-             //
-             //    console.log(group_names);
-             //
-             // });
-
           });
 
        }).limit(8);
