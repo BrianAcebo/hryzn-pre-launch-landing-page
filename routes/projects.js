@@ -1775,8 +1775,8 @@ router.get('/micro/:id', (req, res, next) => {
 
                var admin_amount = project.admins.length;
 
-               if (typeof project.project_title == 'undefined') {
-                  var page_title = 'Explore'
+               if (typeof project.project_title == 'undefined' || project.project_title.length === 0) {
+                  var page_title = '@' + project.project_owner + ' on Hryzn';
                } else {
                   var page_title = project.project_title;
                }
@@ -2042,13 +2042,11 @@ router.get('/micro/:id/guest', (req, res, next) => {
 
             var admin_amount = project.admins.length;
 
-            if (typeof project.project_title == 'undefined') {
-               var page_title = 'Explore'
+            if (typeof project.project_title == 'undefined' || project.project_title.length === 0) {
+               var page_title = '@' + project.project_owner + ' on Hryzn';
             } else {
                var page_title = project.project_title;
             }
-
-            console.log(project.project_title);
 
             if (project.categories.length > 0) {
                Project.find({ 'categories': { $in: project.categories} }, (err, related_projects) => {
