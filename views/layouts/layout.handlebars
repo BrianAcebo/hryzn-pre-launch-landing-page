@@ -152,6 +152,8 @@
 
       {{! Check if user is logged in }}
 
+      <div id="cookieconsent"></div>
+
       {{#if user}}
 
          {{#if dashboard}}
@@ -576,6 +578,7 @@
    <script src="/js/welcome/plugins.js" type="text/javascript"></script>
    <script src="/js/search-autocomplete.js" type="text/javascript"></script>
    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-autotab/1.9.2/js/jquery.autotab.js" /></script>
+   <script src="/js/cookie-consent.js"></script>
    {{#if user}}
    {{else}}
    <script>

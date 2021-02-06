@@ -124,6 +124,14 @@ router.get('/privacy', (req, res, next) => {
 });
 
 
+// Get Cookie Policy
+router.get('/cookies', (req, res, next) => {
+   res.render('about/cookies', {
+     page_title: 'Cookie Policy'
+   });
+});
+
+
 // Get Forgot Password
 router.get('/forgot', (req, res, next) => {
    res.render('about/contact', {

@@ -79,7 +79,13 @@ router.post('/create-project/blog', upload.fields([{name: 'project_image', maxCo
             res.sendStatus(403);
          } else {
 
-            var project_title = req.body.project_title.replace(/\r\n/g,'');
+            var project_title = req.body.project_title.replace(/\r\n/g,'')
+
+            // var project_slug = proj.project_title.trim();
+            // project_slug = project_slug.replace(/\s+/g, '-').toLowerCase();
+            // project_slug = project_slug.replace(/[^a-z0-9\s-]/ig, "");
+            // project_slug = project_slug + '-' + proj._id;
+
             var project_description = req.body.project_description.replace(/\r\n/g,'');
             var admin = req.body.admin; // Owner of project
             var is_private = req.body.is_private;

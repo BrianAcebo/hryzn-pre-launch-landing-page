@@ -97,7 +97,10 @@ const ProjectSchema = mongoose.Schema({
       collection_owner: {
          type: String
       }
-   }]
+   }],
+   project_slug: {
+      type: String
+   }
 });
 
 const Project = module.exports = mongoose.model('Project', ProjectSchema);
