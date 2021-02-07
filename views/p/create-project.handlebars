@@ -65,43 +65,19 @@
         <br />
         <p class="form__input-small" id="changeText">A public project can be viewed by anyone</p>
 
-
-        <div class="tab tab_1">
-          {{! Project Image }}
-          <label for="project_image" class="form__label">Add Project Image <span class="form_span_descriptor">* Required for blog, but optional for video *</span></label>
-          <input id="projectImage" class="form__input" type="file" name="project_image" value="{{project.project_image}}" />
+        {{! Project Image }}
+        <label for="project_image" class="form__label">Add Project Image <span class="form_span_descriptor">* Required for blog, but optional for video *</span></label>
+        <input id="projectImage" class="form__input" type="file" name="project_image" value="{{project.project_image}}" />
 
 
-          {{! Thumbnail Image }}
-          <label for="thumbnail_image" class="form__label">Add Thumbnail Image <span class="form_span_descriptor">( Optional for blog, but required for video )</span></label>
-          <input id="thumbnailImage" class="form__input" type="file" name="thumbnail_image" value="{{project.thumbnail_image}}"/>
-        </div>
+        {{! Thumbnail Image }}
+        <label for="thumbnail_image" class="form__label">Add Thumbnail Image <span class="form_span_descriptor">( Optional for blog, but required for video )</span></label>
+        <input id="thumbnailImage" class="form__input" type="file" name="thumbnail_image" value="{{project.thumbnail_image}}"/>
 
-        <div class="tab tab_2">
-        unsplash
-        </div>
-
-        <div class="tab tab_3">
-          {{! Project Video }}
-          <label for="project_video" class="form__label">Add Video <span class="form_span_descriptor">( Thumbnail image is required )</span></label>
-          <input class="form__input" type="file" name="project_video" value="{{project.project_video}}" />
-          <small style="font-size: 12px; display: block; font-style: italic; color: #999; margin: -25px 0 25px 0;">Video is still in progress. May experience some issues.</small>
-        </div>
-
-        <div style="overflow:auto; margin: 25px auto 0 auto;" class="nxt_bck_btn_container" id="walkMoveTop">
-           <div style="float:right;">
-              <button type="button" id="prevBtn" onclick="nextPrev(-1)">Back</button>
-              <button type="button" id="nextBtn" onclick="nextPrev(1)">Next</button>
-           </div>
-        </div>
-
-        <div style="text-align:center;margin-top:40px;" class="steps_container">
-           <span class="step"></span>
-           <span class="step"></span>
-           <span class="step"></span>
-           <span class="step"></span>
-           <span class="step"></span>
-        </div>
+        {{! Project Video }}
+        <label for="project_video" class="form__label">Add Video <span class="form_span_descriptor">( Thumbnail image is required )</span></label>
+        <input class="form__input" type="file" name="project_video" value="{{project.project_video}}" />
+        <small style="font-size: 12px; display: block; font-style: italic; color: #999; margin: -25px 0 25px 0;">Video is still in progress. May experience some issues.</small>
 
 
         {{! Post To }}
