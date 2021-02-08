@@ -37,17 +37,12 @@
    align-items: center;
 }
 
-.topnav__logo img {
-   width: 50px;
-   margin-right: 25px;
-}
-
 .topnav__logo:hover {
    background: transparent!important;
 }
 
 .logo_beta {
-   margin-left: 10px;
+   margin-left: 0;
    font-size: 16px;
    font-weight: 300;
    text-transform: lowercase;
