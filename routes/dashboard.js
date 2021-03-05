@@ -21,9 +21,7 @@ const storage = {
    key: (req, file, cb) => {
       // var fileExt = file.originalname.split('.').pop();
       var filename = dateNow + file.originalname;
-      filename = filename.replace(/\s+/g, '-').toLowerCase();
-      filename = filename.replace("?", "");
-      filename = filename.replace("#", "");
+      filename = filename.replace(/[^a-zA-Z0-9]/g, '').toLowerCase(); // replace everything except letters and numbers
       cb(null, filename);
    }
 }

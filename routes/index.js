@@ -29,9 +29,7 @@ const storage = {
    key: (req, file, cb) => {
       // var fileExt = file.originalname.split('.').pop();
       var filename = dateNow + file.originalname;
-      filename = filename.replace(/\s+/g, '-').toLowerCase();
-      filename = filename.replace("?", "");
-      filename = filename.replace("#", "");
+      filename = filename.replace(/[^a-zA-Z0-9]/g, '').toLowerCase(); // replace everything except letters and numbers
       cb(null, filename);
    }
 }
@@ -1032,9 +1030,7 @@ router.post('/setup-profile/next',  upload.fields([{name: 'profileimage', maxCou
                   });
                } else {
                   var filename = dateNow + req.files.profileimage[0].originalname;
-                  filename = filename.replace(/\s+/g, '-').toLowerCase();
-                  filename = filename.replace("?", "");
-                  filename = filename.replace("#", "");
+                  filename = filename.replace(/[^a-zA-Z0-9]/g, '').toLowerCase(); // replace everything except letters and numbers
 
                   var profileimage = filename;
                }
@@ -1066,9 +1062,7 @@ router.post('/setup-profile/next',  upload.fields([{name: 'profileimage', maxCou
                   }
                } else {
                   var filename = dateNow + req.files.backgroundimage[0].originalname;
-                  filename = filename.replace(/\s+/g, '-').toLowerCase();
-                  filename = filename.replace("?", "");
-                  filename = filename.replace("#", "");
+                  filename = filename.replace(/[^a-zA-Z0-9]/g, '').toLowerCase(); // replace everything except letters and numbers
 
                   var backgroundimage = filename;
                }
@@ -1245,9 +1239,7 @@ router.post('/create-group', upload.single('group_image'), (req, res, next) => {
             // var fileExt = req.file.originalname.split('.').pop();
 
             var filename = dateNow + req.file.originalname;
-            filename = filename.replace(/\s+/g, '-').toLowerCase();
-            filename = filename.replace("?", "");
-            filename = filename.replace("#", "");
+            filename = filename.replace(/[^a-zA-Z0-9]/g, '').toLowerCase(); // replace everything except letters and numbers
 
             var group_image = filename;
 
@@ -1519,9 +1511,7 @@ router.post('/groups/edit/:id', upload.single('group_image'), (req, res, next) =
             // var fileExt = req.file.originalname.split('.').pop();
 
             var filename = dateNow + req.file.originalname;
-            filename = filename.replace(/\s+/g, '-').toLowerCase();
-            filename = filename.replace("?", "");
-            filename = filename.replace("#", "");
+            filename = filename.replace(/[^a-zA-Z0-9]/g, '').toLowerCase(); // replace everything except letters and numbers
 
             var group_image = filename;
 
@@ -3189,9 +3179,7 @@ router.post('/settings', upload.fields([{name: 'profile_project_backgroundimage'
                         });
                      } else {
                         var filename = dateNow + req.files.profileimage[0].originalname;
-                        filename = filename.replace(/\s+/g, '-').toLowerCase();
-                        filename = filename.replace("?", "");
-                        filename = filename.replace("#", "");
+                        filename = filename.replace(/[^a-zA-Z0-9]/g, '').toLowerCase(); // replace everything except letters and numbers
 
                         var profileimage = filename;
 
@@ -3228,10 +3216,7 @@ router.post('/settings', upload.fields([{name: 'profile_project_backgroundimage'
                         });
                      } else {
                         var filename = dateNow + req.files.backgroundimage[0].originalname;
-                        filename = filename.replace(/\s+/g, '-').toLowerCase();
-                        filename = filename.replace("?", "");
-                        filename = filename.replace("#", "");
-
+                        filename = filename.replace(/[^a-zA-Z0-9]/g, '').toLowerCase(); // replace everything except letters and numbers
                         var backgroundimage = filename;
                      }
                   } else {
@@ -3258,9 +3243,7 @@ router.post('/settings', upload.fields([{name: 'profile_project_backgroundimage'
                      } else {
 
                         var filename = dateNow + req.files.profile_project_backgroundimage[0].originalname;
-                        filename = filename.replace(/\s+/g, '-').toLowerCase();
-                        filename = filename.replace("?", "");
-                        filename = filename.replace("#", "");
+                        filename = filename.replace(/[^a-zA-Z0-9]/g, '').toLowerCase(); // replace everything except letters and numbers
 
                         var profile_project_backgroundimage = filename;
                      }
