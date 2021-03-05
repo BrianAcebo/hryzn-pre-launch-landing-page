@@ -28,9 +28,7 @@ const storage = {
    key: (req, file, cb) => {
       // var fileExt = file.originalname.split('.').pop();
       var filename = dateNow + file.originalname;
-      filename = filename.replace(/\s+/g, '-').toLowerCase();
-      filename = filename.replace("?", "");
-      filename = filename.replace("#", "");
+      filename = filename.replace(/[^a-zA-Z0-9]/g, '').toLowerCase(); // replace everything except letters and numbers
       cb(null, filename);
    }
 }
@@ -429,17 +427,13 @@ router.post('/create-project/blog', upload.fields([{name: 'project_image', maxCo
 
                var project_image;
                var filename = dateNow + req.files.project_video[0].originalname;
-               filename = filename.replace(/\s+/g, '-').toLowerCase();
-               filename = filename.replace("?", "");
-               filename = filename.replace("#", "");
+               filename = filename.replace(/[^a-zA-Z0-9]/g, '').toLowerCase(); // replace everything except letters and numbers
                var project_video = filename;
 
             } else {
                var project_video;
                var filename = dateNow + req.files.project_image[0].originalname;
-               filename = filename.replace(/\s+/g, '-').toLowerCase();
-               filename = filename.replace("?", "");
-               filename = filename.replace("#", "");
+               filename = filename.replace(/[^a-zA-Z0-9]/g, '').toLowerCase(); // replace everything except letters and numbers
                var project_image = filename;
             }
 
@@ -447,9 +441,7 @@ router.post('/create-project/blog', upload.fields([{name: 'project_image', maxCo
                var thumbnail_image = project_image;
             } else {
                var filename = dateNow + req.files.thumbnail_image[0].originalname;
-               filename = filename.replace(/\s+/g, '-').toLowerCase();
-               filename = filename.replace("?", "");
-               filename = filename.replace("#", "");
+               filename = filename.replace(/[^a-zA-Z0-9]/g, '').toLowerCase(); // replace everything except letters and numbers
                var thumbnail_image = filename;
             }
 
@@ -726,9 +718,7 @@ router.post('/details/edit/:id', upload.fields([{name: 'project_image', maxCount
 
                } else {
                   var filename = dateNow + req.files.project_video[0].originalname;
-                  filename = filename.replace(/\s+/g, '-').toLowerCase();
-                  filename = filename.replace("?", "");
-                  filename = filename.replace("#", "");
+                  filename = filename.replace(/[^a-zA-Z0-9]/g, '').toLowerCase(); // replace everything except letters and numbers
                   var project_video = filename;
                }
 
@@ -759,9 +749,7 @@ router.post('/details/edit/:id', upload.fields([{name: 'project_image', maxCount
                      });
                   } else {
                      var filename = dateNow + req.files.project_image[0].originalname;
-                     filename = filename.replace(/\s+/g, '-').toLowerCase();
-                     filename = filename.replace("?", "");
-                     filename = filename.replace("#", "");
+                     filename = filename.replace(/[^a-zA-Z0-9]/g, '').toLowerCase(); // replace everything except letters and numbers
                      var project_image = filename;
                      var project_video;
                   }
@@ -795,9 +783,7 @@ router.post('/details/edit/:id', upload.fields([{name: 'project_image', maxCount
                   });
                } else {
                   var filename = dateNow + req.files.thumbnail_image[0].originalname;
-                  filename = filename.replace(/\s+/g, '-').toLowerCase();
-                  filename = filename.replace("?", "");
-                  filename = filename.replace("#", "");
+                  filename = filename.replace(/[^a-zA-Z0-9]/g, '').toLowerCase(); // replace everything except letters and numbers
                   var thumbnail_image = filename;
                }
             }
@@ -3295,9 +3281,7 @@ router.post('/upload', upload.single('editor_image'), (req, res, next) => {
    if(req.isAuthenticated()) {
       // var fileExt = req.file.originalname.split('.').pop();
       var filename = dateNow + req.file.originalname;
-      filename = filename.replace(/\s+/g, '-').toLowerCase();
-      filename = filename.replace("?", "");
-      filename = filename.replace("#", "");
+      filename = filename.replace(/[^a-zA-Z0-9]/g, '').toLowerCase(); // replace everything except letters and numbers
       res.status(200).send({"file": "https://s3.amazonaws.com/hryzn-app-static-assets/" + filename, "success":true});
    } else {
       res.redirect('/users/register');
@@ -3580,9 +3564,7 @@ router.post('/create-micro/micro', upload.fields([{name: 'micro_image', maxCount
                      // No errors have been made
                      // var fileExt = req.file.originalname.split('.').pop();
                      var filename = dateNow + req.files.micro_image[0].originalname;
-                     filename = filename.replace(/\s+/g, '-').toLowerCase();
-                     filename = filename.replace("?", "");
-                     filename = filename.replace("#", "");
+                     filename = filename.replace(/[^a-zA-Z0-9]/g, '').toLowerCase(); // replace everything except letters and numbers
                      var micro_image = filename;
 
                      var newProject = new Project({
@@ -3769,15 +3751,11 @@ router.post('/create-micro/micro', upload.fields([{name: 'micro_image', maxCount
                         // No errors have been made
                         // var fileExt = req.file.originalname.split('.').pop();
                         var filename = dateNow + req.files.micro_audio[0].originalname;
-                        filename = filename.replace(/\s+/g, '-').toLowerCase();
-                        filename = filename.replace("?", "");
-                        filename = filename.replace("#", "");
+                        filename = filename.replace(/[^a-zA-Z0-9]/g, '').toLowerCase(); // replace everything except letters and numbers
                         var micro_audio = filename;
 
                         var fileaudio = dateNow + req.files.micro_thumbnail_image__audio[0].originalname;
-                        fileaudio = fileaudio.replace(/\s+/g, '-').toLowerCase();
-                        fileaudio = fileaudio.replace("?", "");
-                        fileaudio = fileaudio.replace("#", "");
+                        fileaudio = fileaudio.replace(/[^a-zA-Z0-9]/g, '').toLowerCase(); // replace everything except letters and numbers
                         var thumbnail_image = fileaudio;
 
                         var newProject = new Project({
@@ -3970,15 +3948,11 @@ router.post('/create-micro/micro', upload.fields([{name: 'micro_image', maxCount
                         // No errors have been made
                         // var fileExt = req.file.originalname.split('.').pop();
                         var filename = dateNow + req.files.micro_video[0].originalname;
-                        filename = filename.replace(/\s+/g, '-').toLowerCase();
-                        filename = filename.replace("?", "");
-                        filename = filename.replace("#", "");
+                        filename = filename.replace(/[^a-zA-Z0-9]/g, '').toLowerCase(); // replace everything except letters and numbers
                         var micro_video = filename;
 
                         var filevideo = dateNow + req.files.micro_thumbnail_image__video[0].originalname;
-                        filevideo = filevideo.replace(/\s+/g, '-').toLowerCase();
-                        filevideo = filevideo.replace("?", "");
-                        filevideo = filevideo.replace("#", "");
+                        filevideo = filevideo.replace(/[^a-zA-Z0-9]/g, '').toLowerCase(); // replace everything except letters and numbers
                         var thumbnail_image = filevideo;
 
                         var newProject = new Project({
