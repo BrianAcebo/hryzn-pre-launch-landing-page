@@ -80,7 +80,7 @@
                            {{! Don't show projects in private groups }}
                         {{else}}
                            <div class="masonryItem ownProject" title="{{../project_title}}">
-                              <a href="/p/micro/{{../_id}}">
+                              <a href="/p/micro/{{../id}}">
                                  <div class="micropost">
                                     <div class="micropost_card {{#if ../micro_image}}card_is_micro_image{{else}}{{#if ../micro_audio}}card_is_micro_audio{{else}}{{#if ../micro_video}}card_is_micro_video{{else}}card_is_micro_text{{/if}}{{/if}}{{/if}}">
                                        {{#if ../micro_image}}<img src="https://ik.imagekit.io/w07am55tja/{{../micro_image}}?tr=w-450" class="img-responsive" alt="{{../micro_body}}" />{{/if}}
@@ -98,11 +98,11 @@
                      {{/each}}
                   {{else}}
                      <div class="masonryItem ownProject" title="{{project_title}}">
-                        <a href="/p/micro/{{_id}}">
+                        <a href="/p/micro/{{id}}">
                            <div class="micropost">
                               <div class="micropost_card {{#if micro_image}}card_is_micro_image{{else}}{{#if micro_audio}}card_is_micro_audio{{else}}{{#if micro_video}}card_is_micro_video{{else}}card_is_micro_text{{/if}}{{/if}}{{/if}}">
                                  {{#if micro_image}}<img src="https://ik.imagekit.io/w07am55tja/{{micro_image}}?tr=w-450" class="img-responsive" alt="{{micro_body}}" />{{/if}}
-                                 {{#if thumbnail_image}}<img src="https://ik.imagekit.io/w07am55tja/{{thumbnail_image}}450" class="img-responsive" alt="{{micro_body}}" />{{/if}}
+                                 {{#if thumbnail_image}}<img src="https://ik.imagekit.io/w07am55tja/{{thumbnail_image}}?tr=w-450" class="img-responsive" alt="{{micro_body}}" />{{/if}}
                                  {{#if micro_video}}<div class="micro_play_btn"><img class="topnav__icon" src="/icons/play-button-white.png" /></div>{{/if}}
                                  {{#if micro_audio}}<div class="micro_play_btn"><img class="topnav__icon" src="/icons/audio-button-white.png" /></div>{{/if}}
                                  {{#if project_title}}<p class="micro_title">{{project_title}}</p>{{/if}}
