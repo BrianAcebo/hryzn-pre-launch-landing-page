@@ -47,6 +47,8 @@ hbs.handlebars.registerHelper('ifEquals', function(arg1, arg2, options) {
     return (arg1 == arg2) ? options.fn(this) : options.inverse(this);
 });
 
+const Category = require('./models/categories');
+
 var cookieDomain;
 var cookieHttp;
 var cookieSecure;
@@ -168,6 +170,11 @@ app.get('*', function (req, res, next) {
    jwt.sign({user: req.user}, 'SuperSecretKey', { expiresIn: "1h" }, (err, token) => {
       res.locals.csrf_web_token = 'Bearer '+ token;
    });
+
+    Category.find({}, (err, categories) => {
+      res.locals.categories = categories;
+    });
+
    next();
 });
 

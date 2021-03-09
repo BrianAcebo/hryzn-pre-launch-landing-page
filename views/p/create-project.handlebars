@@ -98,16 +98,9 @@
         <label for="project_categories" class="form__label" style="margin-top: 25px;">Add Project Categories <span class="form_span_descriptor">( Optional )</span></label>
         <select data-placeholder="Add categories..." multiple class="chosen-select form__input" name="project_categories[]">
            <option value=""></option>
-           <option>Art</option>
-           <option>Beauty & Fashion</option>
-           <option>Business & Finance</option>
-           <option>Family & Society</option>
-           <option>Food & Drink</option>
-           <option>Health & Wellness</option>
-           <option>Home & Garden</option>
-           <option>Science & Technology</option>
-           <option>Sports & Fitness</option>
-           <option>Travel</option>
+           {{#each categories}}
+           <option>{{this.category}}</option>
+           {{/each}}
         </select>
 
 

@@ -44,6 +44,7 @@ const Notification = require('../models/notifications');
 const Group = require('../models/groups');
 const Collection = require('../models/collections');
 const Email = require('../models/emails');
+const Category = require('../models/categories');
 
 
 // To create csv file for email list

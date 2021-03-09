@@ -42,6 +42,7 @@ const Project = require('../models/projects');
 const Notification = require('../models/notifications');
 const Group = require('../models/groups');
 const Collection = require('../models/collections');
+const Category = require('../models/categories');
 
 
 // GET Create Project
@@ -450,6 +451,23 @@ router.post('/create-project/blog', upload.fields([{name: 'project_image', maxCo
             } else {
                var project_owner_profile_image =  'hryzn-placeholder-01.jpg'
             }
+
+            project_categories.forEach(function(cat, key) {
+              Category.findOne({ 'category': { $in: cat} }, (err, category) => {
+                  if (err) throw err;
+
+                  if (!category) {
+                    var newCategory = new Category({
+                       category: cat
+                    });
+
+                    // Create category in database
+                    Category.saveCategory(newCategory, (err, category) => {
+                       if(err) throw err;
+                    });
+                  }
+               });
+             });
 
             var newProject = new Project({
                project_title: project_title,
@@ -978,6 +996,23 @@ router.post('/details/edit/:id', upload.fields([{name: 'project_image', maxCount
                      });
                   }
 
+                  project_categories.forEach(function(cat, key) {
+                    Category.findOne({ 'category': { $in: cat} }, (err, category) => {
+                        if (err) throw err;
+
+                        if (!category) {
+                          var newCategory = new Category({
+                             category: cat
+                          });
+
+                          // Create category in database
+                          Category.saveCategory(newCategory, (err, category) => {
+                             if(err) throw err;
+                          });
+                        }
+                     });
+                   });
+
                   req.flash('success_msg', "Project was updated.");
                   res.redirect('/p/details/' + project_id);
                });
@@ -1075,6 +1110,23 @@ router.post('/details/edit/:id', upload.fields([{name: 'project_image', maxCount
                }, (err, user) => {
                   if (err) throw err;
                });
+
+               project_categories.forEach(function(cat, key) {
+                 Category.findOne({ 'category': { $in: cat} }, (err, category) => {
+                     if (err) throw err;
+
+                     if (!category) {
+                       var newCategory = new Category({
+                          category: cat
+                       });
+
+                       // Create category in database
+                       Category.saveCategory(newCategory, (err, category) => {
+                          if(err) throw err;
+                       });
+                     }
+                  });
+                });
 
                req.flash('success_msg', "Project was updated.");
                res.redirect('/p/details/' + project_id);
@@ -3429,6 +3481,22 @@ router.post('/create-micro/micro', upload.fields([{name: 'micro_image', maxCount
 
             if (req.body.is_micro_text == 'true') {
 
+              project_categories.forEach(function(cat, key) {
+                Category.findOne({ 'category': { $in: cat} }, (err, category) => {
+                    if (err) throw err;
+
+                    if (!category) {
+                      var newCategory = new Category({
+                         category: cat
+                      });
+
+                      // Create category in database
+                      Category.saveCategory(newCategory, (err, category) => {
+                         if(err) throw err;
+                      });
+                    }
+                 });
+               });
 
                var newProject = new Project({
                   categories: project_categories,
@@ -3561,6 +3629,23 @@ router.post('/create-micro/micro', upload.fields([{name: 'micro_image', maxCount
                      });
 
                   } else {
+                    project_categories.forEach(function(cat, key) {
+                      Category.findOne({ 'category': { $in: cat} }, (err, category) => {
+                          if (err) throw err;
+
+                          if (!category) {
+                            var newCategory = new Category({
+                               category: cat
+                            });
+
+                            // Create category in database
+                            Category.saveCategory(newCategory, (err, category) => {
+                               if(err) throw err;
+                            });
+                          }
+                       });
+                     });
+
                      // No errors have been made
                      // var fileExt = req.file.originalname.split('.').pop();
                      var filename = dateNow + req.files.micro_image[0].originalname;
@@ -3747,6 +3832,23 @@ router.post('/create-micro/micro', upload.fields([{name: 'micro_image', maxCount
                         });
 
                      } else {
+
+                       project_categories.forEach(function(cat, key) {
+                         Category.findOne({ 'category': { $in: cat} }, (err, category) => {
+                             if (err) throw err;
+
+                             if (!category) {
+                               var newCategory = new Category({
+                                  category: cat
+                               });
+
+                               // Create category in database
+                               Category.saveCategory(newCategory, (err, category) => {
+                                  if(err) throw err;
+                               });
+                             }
+                          });
+                        });
 
                         // No errors have been made
                         // var fileExt = req.file.originalname.split('.').pop();
@@ -3945,6 +4047,24 @@ router.post('/create-micro/micro', upload.fields([{name: 'micro_image', maxCount
                         });
 
                      } else {
+
+                       project_categories.forEach(function(cat, key) {
+                         Category.findOne({ 'category': { $in: cat} }, (err, category) => {
+                             if (err) throw err;
+
+                             if (!category) {
+                               var newCategory = new Category({
+                                  category: cat
+                               });
+
+                               // Create category in database
+                               Category.saveCategory(newCategory, (err, category) => {
+                                  if(err) throw err;
+                               });
+                             }
+                          });
+                        });
+
                         // No errors have been made
                         // var fileExt = req.file.originalname.split('.').pop();
                         var filename = dateNow + req.files.micro_video[0].originalname;
