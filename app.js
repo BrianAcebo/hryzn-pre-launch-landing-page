@@ -123,9 +123,9 @@ app.use(session({
    rolling: true,
    cookie: {
       maxAge: 365 * 24 * 60 * 60 * 1000, // One Year
-      secure: true,//cookieSecure,
-      httpOnly: true,//cookieHttp,
-      domain: '.myhryzn.com',//cookieDomain,
+      secure: cookieSecure,//true
+      httpOnly: cookieHttp,//true
+      domain: cookieDomain,//'.myhryzn.com'
       expires: 365 * 24 * 60 * 60 * 1000
    }
 }));
