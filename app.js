@@ -48,6 +48,9 @@ hbs.handlebars.registerHelper('ifEquals', function(arg1, arg2, options) {
 });
 
 const Category = require('./models/categories');
+const User = require('./models/users');
+const Project = require('./models/projects');
+const Group = require('./models/groups');
 
 var cookieDomain;
 var cookieHttp;
@@ -125,9 +128,9 @@ app.use(session({
    rolling: true,
    cookie: {
       maxAge: 365 * 24 * 60 * 60 * 1000, // One Year
-      secure: true,//cookieSecure
-      httpOnly: true,//cookieHttp
-      domain: '.myhryzn.com',//cookieDomain
+      secure: true, //cookieSecure
+      httpOnly: true, //cookieHttp
+      domain: '.myhryzn.com', //cookieDomain
       expires: 365 * 24 * 60 * 60 * 1000
    }
 }));
@@ -172,10 +175,97 @@ app.get('*', function (req, res, next) {
    });
 
     Category.find({}, (err, categories) => {
-      res.locals.categories = categories;
-    });
 
-   next();
+      User.find({}, (err, users) => {
+         if (err) throw err;
+
+         var all_public_users = [];
+
+         users.forEach(function(user, key) {
+           all_public_users.push(user.username);
+         });
+
+         Project.find({}, (err, projects) => {
+            if (err) throw err;
+
+            var all_public_projects = [];
+
+            projects.forEach(function(project, key) {
+
+               // Scan through every project
+
+               var project = project.toObject();
+
+               if (project.is_private != 'true') {
+                 if(project.posted_to_collection) {
+                    if (project.posted_to_collection.length > 0) {
+
+                       // See if project has any collections
+
+                       project.posted_to_collection.forEach(function(project_collection, key) {
+
+                          if (project_collection.collection_is_private) {
+
+                             // If collection was private skip project
+
+                          } else {
+                             // If collection was public mark that we scanned collection
+
+                             if (project.project_title) {
+                                all_public_projects.push(project.project_title);
+                             } else {
+                               if (project.micro_body) {
+                                 all_public_projects.push(project.micro_body.slice(0, 100));
+                               }
+                            }
+                          }
+                       });
+                    } else {
+                       // No collections so we mark that we scanned project
+                       if (project.project_title) {
+                          all_public_projects.push(project.project_title);
+                       } else {
+                         if (project.micro_body) {
+                           all_public_projects.push(project.micro_body.slice(0, 100));
+                         }
+                      }
+                    }
+                 } else {
+                    // No collections so we mark that we scanned project
+                    if (project.project_title) {
+                       all_public_projects.push(project.project_title);
+                    } else {
+                      if (project.micro_body) {
+                        all_public_projects.push(project.micro_body.slice(0, 100));
+                      }
+                   }
+                 }
+               }
+            });
+
+            Group.find({}, (err, groups) => {
+               if (err) throw err;
+
+               var all_public_groups = [];
+
+               groups.forEach(function(group, key) {
+                 if (group.is_private != 'true') {
+                   all_public_groups.push(group.group_name);
+                 }
+               });
+
+               res.locals.categories = categories;
+               res.locals.all_usernames = all_public_users;
+               res.locals.all_projects = all_public_projects;
+               res.locals.all_groups = all_public_groups;
+
+               console.log(all_public_users);
+
+               next();
+            })
+         })
+      })
+    });
 });
 
 // Global Variables
