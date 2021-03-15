@@ -37,6 +37,10 @@
    align-items: center;
 }
 
+.topnav__logo img {
+  height: 50px;
+}
+
 .topnav__logo:hover {
    background: transparent!important;
 }
@@ -46,6 +50,12 @@
    font-size: 16px;
    font-weight: 300;
    text-transform: lowercase;
+}
+
+.nav_bck_btn {
+   max-width: 20px;
+   border-radius: 50%;
+   cursor: pointer;
 }
 
 @media screen and (max-width: 768px) {
@@ -59,6 +69,18 @@
 }
 
 @media screen and (max-width: 992px) {
+  .nav_bck_btn {
+     max-width: 16px;
+  }
+
+  .topnav.shadow {
+     height: 50px;
+  }
+
+  .topnav__logo img {
+    height: 35px;
+  }
+
    .guest_project .topnav__logo {
       color: #fff;
    }
@@ -188,6 +210,7 @@
    border-top-right-radius: 35px;
    border-bottom-right-radius: 35px;
    transition: 0.3s;
+   outline: none;
 }
 
 .landing-nav .search-container button {
@@ -217,6 +240,7 @@
    display: none;
    margin-left: 30px;
    cursor: pointer;
+
 }
 
 @media screen and (max-width: 992px) {
@@ -224,8 +248,12 @@
       position: fixed;
       right: 25px;
       border-radius: 35px;
-      background: #fff;
-      box-shadow: rgba(0,0,0,.1) 0 2px 10px 1px;
+      background: transparent;
+      padding: 0;
+   }
+
+   .topnav .search-container button:hover {
+      background: transparent;
    }
 
    .topnav .search-container button.open_btn {
@@ -237,9 +265,10 @@
       border-top-right-radius: 35px;
       border-bottom-right-radius: 35px;
       box-shadow: none;
+      padding: 13px 20px 11px 20px;
    }
 
-   .topnav.mobile_topnav .close_icon {
+   .topnav.mobile_topnav.open_search .close_icon {
       display: block;
    }
 }
@@ -256,7 +285,7 @@
    }
 
    .topnav .search-container button {
-      padding: 13px 20px 11px 20px;
+      padding: 0
    }
 
    .topnav .search-container button img {
@@ -381,18 +410,51 @@ nav.item-list {
    top: 100px;
 }
 
+.mobile_page_title {
+  display: none;
+}
+
 @media screen and (max-width: 992px) {
-   .topnav.mobile_topnav {
-      right: -100%;
+  .topnav.mobile_topnav.open_search {
+    height: 65px;
+  }
+
+  .mobile_page_title {
+    display: inline-block;
+    text-align: center;
+    margin: 0 auto;
+    position: static;
+    font-weight: bold;
+    line-height: 30px;
+    font-size: 14px;
+  }
+   .topnav .search-container {
+      width: 0;
+      float: right;
       transition: 0.3s;
    }
 
-   .topnav.mobile_topnav.open_search {
-      right: 0;
+   .topnav input[type=text] {
+      background: transparent;
+   }
+
+   .topnav.mobile_topnav.open_search .mobile_page_title {
+     position: absolute;
+     top: -200px;
+   }
+
+   .topnav.mobile_topnav.open_search .search-container {
+      clear: both;
+      width: 100%;
+   }
+
+   .topnav.mobile_topnav.open_search input[type=text] {
+      background: #f1f1f1;
    }
 
    .topnav {
-      padding: 25px;
+      padding: 0 25px;
+      height: 50px;
    }
 
    .topnav-left {
@@ -401,11 +463,6 @@ nav.item-list {
 
    .topnav .search-container {
       margin: 0 0 0 25px;
-   }
-
-   .topnav input[type=text] {
-      width: 100%;
-      min-width: 0;
    }
 
    nav.item-list {
@@ -432,7 +489,7 @@ nav.item-list {
    }
 
    .drop_nav.showDrop {
-      bottom: 65px;
+      bottom: 60px;
    }
 
    .drop_nav.showDrop.dropNavTop {
@@ -502,18 +559,17 @@ nav.item-list {
    background-color: #fff;
    position: fixed;
    box-shadow: rgba(0,0,0,.1) 0 2px 10px 1px;
-   bottom: 15px;
-   width: 85%;
+   bottom: 0;
+   width: 100%;
    left: 0;
    right: 0;
    margin: 0 auto;
-   border-radius: 15px;
    z-index: 999998;
 }
 
 .mobile-nav__item-list {
    width: 100%;
-   padding: 10px 0;
+   padding: 8px 0;
    list-style-type: none;
    justify-content: center;
    display: flex;
@@ -523,7 +579,7 @@ nav.item-list {
 }
 
 .mobile-nav__item {
-   margin: 0 8px;
+   margin: 0 18px;
 }
 
 .main-topnav__profile {
@@ -541,7 +597,7 @@ nav.item-list {
    text-align: center;
    text-decoration: none;
    font-size: 17px;
-   padding: 15px;
+   padding: 10px;
    display: flex;
    justify-content: center;
    align-items: center;
@@ -552,7 +608,7 @@ nav.item-list {
 }
 
 .mobile-nav__icon {
-   max-width: 18px;
+   max-width: 16px;
    height: auto;
 }
 
@@ -650,7 +706,7 @@ nav.item-list {
    }
 
    .post_container.showPostBtns {
-      bottom: 100px;
+      bottom: 75px;
       top: auto;
    }
 

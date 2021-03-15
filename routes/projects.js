@@ -56,7 +56,8 @@ router.get('/create-project', (req, res, next) => {
             res.render('p/create-project', {
                page_title: 'Create Project',
                editProject: true,
-               mention: profiles
+               mention: profiles,
+               main_page_nav: true
             });
          });
       });
@@ -209,7 +210,8 @@ router.post('/create-project/blog', upload.fields([{name: 'project_image', maxCo
                   editProject: true,
                   project_error: true,
                   mention: profiles,
-                  user: user
+                  user: user,
+                  main_page_nav: true
                });
             });
          });
@@ -244,7 +246,8 @@ router.post('/create-project/blog', upload.fields([{name: 'project_image', maxCo
                         editProject: true,
                         project_error: true,
                         mention: profiles,
-                        user: user
+                        user: user,
+                        main_page_nav: true
                      });
                   });
                });
@@ -276,7 +279,8 @@ router.post('/create-project/blog', upload.fields([{name: 'project_image', maxCo
                               editProject: true,
                               project_error: true,
                               mention: profiles,
-                              user: user
+                              user: user,
+                              main_page_nav: true
                            });
                         });
                      });
@@ -304,7 +308,8 @@ router.post('/create-project/blog', upload.fields([{name: 'project_image', maxCo
                            editProject: true,
                            project_error: true,
                            mention: profiles,
-                           user: user
+                           user: user,
+                           main_page_nav: true
                         });
                      });
                   });
@@ -339,7 +344,8 @@ router.post('/create-project/blog', upload.fields([{name: 'project_image', maxCo
                            editProject: true,
                            project_error: true,
                            mention: profiles,
-                           user: user
+                           user: user,
+                           main_page_nav: true
                         });
                      });
                   });
@@ -371,7 +377,8 @@ router.post('/create-project/blog', upload.fields([{name: 'project_image', maxCo
                                  editProject: true,
                                  project_error: true,
                                  mention: profiles,
-                                 user: user
+                                 user: user,
+                                 main_page_nav: true
                               });
                            });
                         });
@@ -412,7 +419,8 @@ router.post('/create-project/blog', upload.fields([{name: 'project_image', maxCo
                         editProject: true,
                         project_error: true,
                         mention: profiles,
-                        user: user
+                        user: user,
+                        main_page_nav: true
                      });
                   });
                });
@@ -729,7 +737,8 @@ router.post('/details/edit/:id', upload.fields([{name: 'project_image', maxCount
                            editProject: true,
                            project_error: true,
                            mention: profiles,
-                           user: user
+                           user: user,
+                           main_page_nav: true
                         });
                      });
                   });
@@ -3623,7 +3632,8 @@ router.post('/create-micro/micro', upload.fields([{name: 'micro_image', maxCount
                               editProject: true,
                               project_error: true,
                               mention: profiles,
-                              user: user
+                              user: user,
+                              main_page_nav: true
                            });
                         });
                      });
@@ -3772,7 +3782,8 @@ router.post('/create-micro/micro', upload.fields([{name: 'micro_image', maxCount
                            editProject: true,
                            project_error: true,
                            mention: profiles,
-                           user: user
+                           user: user,
+                           main_page_nav: true
                         });
                      });
                   });
@@ -3800,7 +3811,8 @@ router.post('/create-micro/micro', upload.fields([{name: 'micro_image', maxCount
                               editProject: true,
                               project_error: true,
                               mention: profiles,
-                              user: user
+                              user: user,
+                              main_page_nav: true
                            });
                         });
                      });
@@ -3826,7 +3838,8 @@ router.post('/create-micro/micro', upload.fields([{name: 'micro_image', maxCount
                                  editProject: true,
                                  project_error: true,
                                  mention: profiles,
-                                 user: user
+                                 user: user,
+                                 main_page_nav: true
                               });
                            });
                         });
@@ -3986,7 +3999,8 @@ router.post('/create-micro/micro', upload.fields([{name: 'micro_image', maxCount
                            editProject: true,
                            project_error: true,
                            mention: profiles,
-                           user: user
+                           user: user,
+                           main_page_nav: true
                         });
                      });
                   });
@@ -4015,7 +4029,8 @@ router.post('/create-micro/micro', upload.fields([{name: 'micro_image', maxCount
                               editProject: true,
                               project_error: true,
                               mention: profiles,
-                              user: user
+                              user: user,
+                              main_page_nav: true
                            });
                         });
                      });
@@ -4041,7 +4056,8 @@ router.post('/create-micro/micro', upload.fields([{name: 'micro_image', maxCount
                                  editProject: true,
                                  project_error: true,
                                  mention: profiles,
-                                 user: user
+                                 user: user,
+                                 main_page_nav: true
                               });
                            });
                         });
@@ -4201,7 +4217,8 @@ router.post('/create-micro/micro', upload.fields([{name: 'micro_image', maxCount
                            editProject: true,
                            project_error: true,
                            mention: profiles,
-                           user: user
+                           user: user,
+                           main_page_nav: true
                         });
                      });
                   });

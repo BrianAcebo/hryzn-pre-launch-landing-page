@@ -353,7 +353,7 @@ blockquote {
 
 @media screen and (max-width: 992px) {
    .success__msg {
-      top: 0;
+      top: 50px;
    }
 }
 
@@ -460,12 +460,12 @@ blockquote {
 @media screen and (max-width: 992px) {
    #mainBody,
    #mainBodyIndex {
-      padding: 0 0 100px 0;
+      padding: 50px 0 100px 0;
       transition: 0.3s;
    }
 
    #mainProject {
-      padding: 0 0 100px 0;
+      padding: 50px 0 100px 0;
    }
 }
 

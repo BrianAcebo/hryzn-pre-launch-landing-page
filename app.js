@@ -259,8 +259,6 @@ app.get('*', function (req, res, next) {
                res.locals.all_projects = all_public_projects;
                res.locals.all_groups = all_public_groups;
 
-               console.log(all_public_users);
-
                next();
             })
          })

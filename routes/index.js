@@ -329,7 +329,8 @@ router.get('/', (req, res, next) => {
                                hryznAdmin: hryznAdmin,
                                profile_active: true,
                                profilePage: true,
-                               followers: followers
+                               followers: followers,
+                               main_page_nav: true
                             });
                          });
 
@@ -388,7 +389,8 @@ router.get('/', (req, res, next) => {
                          hryznAdmin: hryznAdmin,
                          profile_active: true,
                          profilePage: true,
-                         noCollections: noCollections
+                         noCollections: noCollections,
+                         main_page_nav: true
                       });
                    });
                 });
@@ -676,7 +678,8 @@ router.get('/', (req, res, next) => {
                                      groups: groups,
                                      explore_default: true,
                                      index_active: true,
-                                     linear_feed: true
+                                     linear_feed: true,
+                                     main_page_nav: true
                                   });
                                });
                             } else {
@@ -696,7 +699,8 @@ router.get('/', (req, res, next) => {
                                   groups: groups,
                                   explore_default: true,
                                   index_active: true,
-                                  linear_feed: true
+                                  linear_feed: true,
+                                  main_page_nav: true
                                });
                             }
                          });
@@ -2414,7 +2418,8 @@ router.get('/notifications', (req, res, next) => {
             page_title: 'Notifications',
             notifications: notifications.reverse(),
             notification_page: true,
-            notification_active: true
+            notification_active: true,
+            main_page_nav: true
          });
 
       });
@@ -2690,7 +2695,8 @@ router.get('/profile/:username', (req, res, next) => {
                               hryznAdmin: hryznAdmin,
                               profile_active: true,
                               profilePage: true,
-                              followers: followers
+                              followers: followers,
+                              main_page_nav: true
                            });
                         });
 
@@ -2749,7 +2755,8 @@ router.get('/profile/:username', (req, res, next) => {
                         hryznAdmin: hryznAdmin,
                         profile_active: true,
                         profilePage: true,
-                        noCollections: noCollections
+                        noCollections: noCollections,
+                        main_page_nav: true
                      });
                   });
                });
@@ -3509,11 +3516,12 @@ router.get('/explore', (req, res, next) => {
 
       Group.find({}, (err, groups) => {
          res.render('explore', {
-            page_title: 'Explore Projects',
+            page_title: 'Explore',
             projects: all_public_projects.reverse(),
             groups: groups.reverse(),
             explore_default: true,
-            explore_active: true
+            explore_active: true,
+            main_page_nav: true
          });
       });
 
@@ -3530,11 +3538,11 @@ router.get('/explore/:category', (req, res, next) => {
          Group.find({ 'group_categories': { $in: req.params.category} }, (err, groups) => {
 
             res.render('explore', {
-               page_title: 'Explore ' + req.params.category,
+               page_title: "#" + req.params.category,
                projects: projects.reverse(),
                groups: groups.reverse(),
                explore_default: true,
-               category_title: req.params.category
+               category_title: "#" + req.params.category
             });
 
          });
@@ -3593,7 +3601,7 @@ router.get('/search', (req, res, next) => {
             if (err) throw err;
 
             res.render('explore', {
-               page_title: 'Explore Projects',
+               page_title: 'Explore',
                projects: all_public_projects,
                group_search: groups,
                user_search: user,
@@ -3741,7 +3749,7 @@ router.get('/collection/edit/:id', (req, res, next) => {
                            });
 
                            res.render('collections/edit-collection', {
-                              page_title: 'Edit ' + collection.collection_name,
+                              page_title: 'Edit Collection',
                               collection: collection,
                               collection_projects: projects.reverse(),
                               profile_projects: profile_projects.reverse(),

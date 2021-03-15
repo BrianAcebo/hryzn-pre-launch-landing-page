@@ -38,16 +38,14 @@
 
 .following_or_suggested {
    display: none;
-   justify-content: flex-start;
+   justify-content: center;
    align-items: center;
    flex-direction: row;
-   margin: 0;
+   margin: 0 auto;
    top: 0;
-   width: 100%;
    z-index: 888888;
-   position: fixed;
    background: #fff;
-   padding: 15px;
+   padding: 0;
 }
 
 .following_or_suggested,
@@ -58,13 +56,13 @@
 
 #indexFollowingBtn {
    margin-right: 10px;
-   font-size: 16px;
+   font-size: 14px;
    font-weight: bold;
 }
 
 #indexSuggestedBtn {
    margin-left: 10px;
-   font-size: 14px;
+   font-size: 12px;
    font-weight: normal;
 }
 
@@ -248,7 +246,6 @@
 
    .following_index_feed {
       width: 100%;
-      margin-top: 75px;
    }
 }
 
@@ -289,15 +286,26 @@
    border: 1px solid #394961;
 }
 
-@media screen and (max-width: 595px) {
-   .index_feed {
-      padding: 0 25px;
-   }
 
+@media screen and (max-width: 992px) {
+   .index_feed {
+      padding: 50px 25px;
+      background: #fff;
+      border-top-right-radius: 35px;
+      border-top-left-radius: 35px;
+      box-shadow: rgb(0 0 0 / 10%) 0px 2px 10px 1px;
+   }
+ }
+
+@media screen and (max-width: 595px) {
    .index_feed .masonryItem {
       margin: 50px auto;
-      max-width: 375px;
+      max-width: 475px;
    }
+
+  .index_feed > :first-child {
+      margin: 0 auto 50px auto;
+  }
 
    .index_feed .project_avatar_left {
       margin: 0 15px 0 -25px;
@@ -313,6 +321,12 @@
    object-fit: cover;
    top: 0;
    left: 0;
+}
+
+.following_index_feed .explore_groups_container .group_wrapper {
+    margin-bottom: 0;
+    padding: 50px 0;
+    border: none;
 }
 
 @media screen and (max-width: 768px) {
@@ -1443,7 +1457,7 @@ section.project {
 .explore_main .micropost_card .micro_title {
    font-size: 14px;
    margin: 10px 5px 5px 10px;
-   line-height: 18px;
+   line-height: 25px;
 }
 
 .following_index_feed .micropost_card .micro_title {
@@ -1479,7 +1493,7 @@ section.project {
 @media screen and (max-width: 768px) {
    .micropost_card .micro_body {
       font-size: 14px;
-      line-height: 20px;
+      line-height: 25px;
       padding: 15px;
    }
 }
