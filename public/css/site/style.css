@@ -1460,6 +1460,17 @@ blockquote {
    font-size: 16px;
 }
 
+@media screen and (max-width: 768px) {
+  .onboarding_content_interest {
+     padding: 10px;
+  }
+
+  .onboarding_content_interest p {
+    line-height: 20px;
+    font-size: 14px;
+  }
+}
+
 .onboarding_content_interest img {
    width: 100%;
 }

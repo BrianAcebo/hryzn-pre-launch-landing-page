@@ -452,6 +452,6 @@
 
 @media screen and (max-width: 768px) {
    .create_post_walk_modal {
-      bottom: -75px;
+      bottom: 50px;
    }
 }
