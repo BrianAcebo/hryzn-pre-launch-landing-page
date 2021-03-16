@@ -330,7 +330,7 @@
 }
 
 .following_index_feed .explore_groups_container .group_wrapper {
-    padding: 50px 0;
+    padding: 15px 0;
     border: none;
     margin: 0 0 0 15px;
 }
@@ -342,7 +342,7 @@
    }
 
    .following_index_feed .explore_groups_container .group_wrapper {
-       padding: 75px 0;
+       padding: 25px 0;
    }
 }
 
