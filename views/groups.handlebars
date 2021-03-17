@@ -13,12 +13,9 @@
    <section class="groups_container">
       {{#each groups}}
          <div class="group_wrapper">
-         <a href="/groups/{{this._id}}" class="follower__profile">
-            <div class="follower__profile-img-container">
-               <img class="profile__img" src="https://ik.imagekit.io/w07am55tja/{{this.group_image}}?tr=w-75" />
-            </div>
-            {{this.group_name}}
-         </a>
+           <a href="/groups/{{this._id}}" class="group_bg" style="background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.3)), url('https://ik.imagekit.io/w07am55tja/{{this.group_image}}?tr=w-300')">
+              {{this.group_name}}
+           </a>
          {{#if is_private}}
          <div class="is_private">private</div>
          {{/if}}

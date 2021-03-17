@@ -1276,7 +1276,11 @@ router.get('/details/:id', (req, res, next) => {
 
                   var admin_amount = project.admins.length;
 
-                  var search_notes = project.project_notes.toString();
+                  if (project.project_notes) {
+                      var search_notes = project.project_notes.toString();
+                  } else {
+                    search_notes = '';
+                  }
 
                   if (good_project) {
 
