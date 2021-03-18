@@ -118,6 +118,13 @@
    -ms-overflow-style: none;
 }
 
+@media screen and (max-width: 992px) {
+  .group_user_container, .explore_groups_container .group_wrapper {
+    padding: 25px 0;
+    border-top: none;
+  }
+}
+
 .group_user_container::-webkit-scrollbar,
 .explore_groups_container .group_wrapper::-webkit-scrollbar {
   display: none;

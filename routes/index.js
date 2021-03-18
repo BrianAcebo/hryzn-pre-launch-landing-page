@@ -577,133 +577,152 @@ router.get('/', (req, res, next) => {
                 Group.find({ '_id': { $in: user_groups } }, (err, groups) => {
 
                    Project.find({ 'categories': { $in: req.user.interests} }, (err, suggested_projects) => {
-                      if (err) throw err;
 
-                      var suggested_public_projects = [];
+                     if (err) throw err;
 
-                      suggested_projects.forEach(function(project, key) {
+                     Project.find({}, (err, all_suggested_projects) => {
 
-                         // Scan through every project
+                        if (err) throw err;
 
-                         if(project.posted_to_collection) {
-                            if (project.posted_to_collection.length > 0) {
+                        suggested_projects = suggested_projects.concat(all_suggested_projects);
 
-                               // See if project has any collections
+                        var suggested_public_projects = [];
 
-                               project.posted_to_collection.forEach(function(project_collection, key) {
+                        suggested_projects.forEach(function(project, key) {
 
-                                  if (project_collection.collection_is_private) {
+                           // Scan through every project
 
-                                     // If collection was private skip project
+                           if(project.posted_to_collection) {
+                              if (project.posted_to_collection.length > 0) {
 
-                                  } else {
-                                     // If collection was public mark that we scanned collection
-                                     suggested_public_projects.push(project);
-                                  }
-                               });
-                            } else {
-                               // No collections so we mark that we scanned project
-                               suggested_public_projects.push(project);
-                            }
-                         } else {
-                            // No collections so we mark that we scanned project
-                            suggested_public_projects.push(project);
-                         }
-                      });
+                                 // See if project has any collections
 
-                      function shuffle(array) {
-                        var currentIndex = array.length, temporaryValue, randomIndex;
+                                 project.posted_to_collection.forEach(function(project_collection, key) {
 
-                        // While there remain elements to shuffle...
-                        while (0 !== currentIndex) {
+                                    if (project_collection.collection_is_private) {
 
-                          // Pick a remaining element...
-                          randomIndex = Math.floor(Math.random() * currentIndex);
-                          currentIndex -= 1;
+                                       // If collection was private skip project
 
-                          // And swap it with the current element.
-                          temporaryValue = array[currentIndex];
-                          array[currentIndex] = array[randomIndex];
-                          array[randomIndex] = temporaryValue;
+                                    } else {
+                                       // If collection was public mark that we scanned collection
+                                       suggested_public_projects.push(project);
+                                    }
+                                 });
+                              } else {
+                                 // No collections so we mark that we scanned project
+                                 suggested_public_projects.push(project);
+                              }
+                           } else {
+                              // No collections so we mark that we scanned project
+                              suggested_public_projects.push(project);
+                           }
+                        });
+
+                        function shuffle(array) {
+                          var currentIndex = array.length, temporaryValue, randomIndex;
+
+                          // While there remain elements to shuffle...
+                          while (0 !== currentIndex) {
+
+                            // Pick a remaining element...
+                            randomIndex = Math.floor(Math.random() * currentIndex);
+                            currentIndex -= 1;
+
+                            // And swap it with the current element.
+                            temporaryValue = array[currentIndex];
+                            array[currentIndex] = array[randomIndex];
+                            array[randomIndex] = temporaryValue;
+                          }
+
+                          return array;
                         }
 
-                        return array;
-                      }
+                        shuffle(suggested_public_projects);
 
-                      shuffle(suggested_public_projects);
+                        var reverse_suggested_projects = suggested_public_projects.slice(0,9);
 
-                      var reverse_suggested_projects = suggested_public_projects.slice(0,9);
+                        var reverse_suggested_projects_num2 = suggested_public_projects.slice(10,19);
 
-                      var reverse_suggested_projects_num2 = suggested_public_projects.slice(10,19);
+                        var reverse_suggested_projects_num3 = suggested_public_projects.slice(20,29);
 
-                      var reverse_suggested_projects_num3 = suggested_public_projects.slice(20,29);
+                        User.find({ 'interests': { $in: req.user.interests} }, (err, suggested_profiles) => {
 
-                      User.find({ 'interests': { $in: req.user.interests} }, (err, suggested_profiles) => {
+                           shuffle(suggested_profiles);
 
-                         shuffle(suggested_profiles);
+                           var reverse_suggested_profiles = suggested_profiles.slice(0,9).reverse();
 
-                         var reverse_suggested_profiles = suggested_profiles.slice(0,9).reverse();
+                           var reverse_suggested_profiles_num2 = suggested_profiles.slice(10,19).reverse();
 
-                         var reverse_suggested_profiles_num2 = suggested_profiles.slice(10,19).reverse();
+                           var reverse_suggested_profiles_num3 = suggested_profiles.slice(20,29).reverse();
 
-                         var reverse_suggested_profiles_num3 = suggested_profiles.slice(20,29).reverse();
+                           Group.find({ 'group_categories': { $in: req.user.interests} }, (err, suggested_groups) => {
 
-                         Group.find({ 'group_categories': { $in: req.user.interests} }, (err, suggested_groups) => {
+                              if (suggested_groups.length < 1) {
+                                 Group.find({}, (err, suggested_groups) => {
 
-                            if (suggested_groups.length < 1) {
-                               Group.find({}, (err, suggested_groups) => {
+                                    shuffle(suggested_groups);
 
-                                  shuffle(suggested_groups);
+                                    var reverse_suggested_groups = suggested_groups.slice(0,3).reverse();
 
-                                  var reverse_suggested_groups = suggested_groups.slice(0,3).reverse();
+                                    var reverse_suggested_groups_num2 = suggested_groups.slice(4,6).reverse();
 
-                                  var reverse_suggested_groups_num2 = suggested_groups.slice(4,6).reverse();
+                                    var reverse_suggested_groups_num3 = suggested_groups.slice(7,10).reverse();
 
-                                  var reverse_suggested_groups_num3 = suggested_groups.slice(7,10).reverse();
+                                    res.render('index', {
+                                       page_title: 'Welcome',
+                                       greeting: greeting,
+                                       projects: all_public_projects.reverse(),
+                                       suggested_projects: reverse_suggested_projects,
+                                       suggested_profiles: reverse_suggested_profiles,
+                                       suggested_groups: reverse_suggested_groups,
+                                       suggested_projects_num2: reverse_suggested_projects_num2,
+                                       suggested_profiles_num2: reverse_suggested_profiles_num2,
+                                       suggested_groups_num2: reverse_suggested_groups_num2,
+                                       suggested_projects_num3: reverse_suggested_projects_num3,
+                                       suggested_profiles_num3: reverse_suggested_profiles_num3,
+                                       suggested_groups_num3: reverse_suggested_groups_num3,
+                                       profiles: profiles,
+                                       groups: groups,
+                                       explore_default: true,
+                                       index_active: true,
+                                       linear_feed: true,
+                                       main_page_nav: true
+                                    });
+                                 });
+                              } else {
 
-                                  res.render('index', {
-                                     page_title: 'Welcome',
-                                     greeting: greeting,
-                                     projects: all_public_projects.reverse(),
-                                     suggested_projects: reverse_suggested_projects,
-                                     suggested_profiles: reverse_suggested_profiles,
-                                     suggested_groups: reverse_suggested_groups,
-                                     suggested_projects_num2: reverse_suggested_projects_num2,
-                                     suggested_profiles_num2: reverse_suggested_profiles_num2,
-                                     suggested_groups_num2: reverse_suggested_groups_num2,
-                                     suggested_projects_num3: reverse_suggested_projects_num3,
-                                     suggested_profiles_num3: reverse_suggested_profiles_num3,
-                                     suggested_groups_num3: reverse_suggested_groups_num3,
-                                     profiles: profiles,
-                                     groups: groups,
-                                     explore_default: true,
-                                     index_active: true,
-                                     linear_feed: true,
-                                     main_page_nav: true
-                                  });
-                               });
-                            } else {
+                                shuffle(suggested_groups);
 
-                               shuffle(suggested_groups);
+                                var reverse_suggested_groups = suggested_groups.slice(0,3).reverse();
 
-                               var reverse_suggested_groups = suggested_groups.slice(0,3).reverse();
+                                var reverse_suggested_groups_num2 = suggested_groups.slice(4,6).reverse();
 
-                               res.render('index', {
-                                  page_title: 'Welcome',
-                                  greeting: greeting,
-                                  projects: all_public_projects.reverse(),
-                                  suggested_projects: reverse_suggested_projects,
-                                  suggested_profiles: reverse_suggested_profiles,
-                                  suggested_groups: reverse_suggested_groups,
-                                  profiles: profiles,
-                                  groups: groups,
-                                  explore_default: true,
-                                  index_active: true,
-                                  linear_feed: true,
-                                  main_page_nav: true
-                               });
-                            }
-                         });
+                                var reverse_suggested_groups_num3 = suggested_groups.slice(7,10).reverse();
+
+                                 res.render('index', {
+                                    page_title: 'Welcome',
+                                    greeting: greeting,
+                                    projects: all_public_projects.reverse(),
+                                    suggested_projects: reverse_suggested_projects,
+                                    suggested_profiles: reverse_suggested_profiles,
+                                    suggested_groups: reverse_suggested_groups,
+                                    suggested_projects_num2: reverse_suggested_projects_num2,
+                                    suggested_profiles_num2: reverse_suggested_profiles_num2,
+                                    suggested_groups_num2: reverse_suggested_groups_num2,
+                                    suggested_projects_num3: reverse_suggested_projects_num3,
+                                    suggested_profiles_num3: reverse_suggested_profiles_num3,
+                                    suggested_groups_num3: reverse_suggested_groups_num3,
+                                    profiles: profiles,
+                                    groups: groups,
+                                    explore_default: true,
+                                    index_active: true,
+                                    linear_feed: true,
+                                    main_page_nav: true
+                                 });
+                              }
+                           });
+                        });
+
                       });
                    });
 
