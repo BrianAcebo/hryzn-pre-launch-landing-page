@@ -7,8 +7,11 @@
 
    <section class="follower__profiles-section">
       {{#each existing_chats}}
-      <a href="/messages/{{this}}" class="follower__profile">
-         @{{this}}
+      <a href="/messages/{{this.username}}" class="follower__profile">
+         <div class="follower__profile-img-container">
+            <img class="profile__img" {{#if this.profileimage}}src="https://ik.imagekit.io/w07am55tja/{{this.profileimage}}?tr=w-100"{{else}}src="/img/site/hryzn-placeholder-01.jpg"{{/if}} />
+         </div>
+         @{{this.username}}
       </a>
       {{/each}}
    </section>
@@ -17,7 +20,7 @@
 
 {{#if following}}
 
-   <p class="top_results">Chat With Someone</p>
+   <p class="top_results">Chat With Others</p>
    <hr class="top_results_underline" />
 
    <section class="follower__profiles-section">

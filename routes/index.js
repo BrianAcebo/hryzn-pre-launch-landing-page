@@ -2116,15 +2116,25 @@ router.get('/messages', (req, res, next) => {
             });
          }
 
-         User.find({ 'username': { $in: req.user.following} }, (err, following) => {
+         followers_with_no_chat = req.user.following.filter(function(x) {
+           return existing_chats.indexOf(x) < 0;
+         });
+
+         User.find({ 'username': { $in: followers_with_no_chat} }, (err, following) => {
 
             if (err) throw err;
 
-            res.render('messages', {
-               page_title: 'Messages',
-               messages: messages,
-               following: following,
-               existing_chats: existing_chats
+            User.find({ 'username': { $in: existing_chats} }, (err, existing_chats) => {
+
+               if (err) throw err;
+
+               res.render('messages', {
+                  page_title: 'Messages',
+                  messages: messages,
+                  following: following,
+                  existing_chats: existing_chats
+               });
+
             });
 
          });
