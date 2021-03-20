@@ -83,7 +83,7 @@
 
   .direct_msg_container {
      width: 100%;
-     height: 100vh;
+     height: auto;
      max-width: 600px;
      margin: 50px auto 0 auto;
   }
