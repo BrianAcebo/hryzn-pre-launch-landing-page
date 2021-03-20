@@ -11,10 +11,11 @@ const request = require('request');
 const cheerio = require('cheerio');
 
 var current_date = new Date();
+var current_date_and_time = current_date.toLocaleString()
 var day = String(current_date.getDate()).padStart(2, '0');
 var month = String(current_date.getMonth() + 1).padStart(2, '0');
 var year = current_date.getFullYear();
-current_date = day + '/' + month + '/' + year;
+current_date = month + '/' + day + '/' + year;
 
 aws.config.update({
    secretAccessKey: keys.secretAccessKey,
@@ -2194,12 +2195,41 @@ router.get('/messages/chat/:messageId', (req, res, next) => {
 
          if (err) throw err;
 
-         res.render('messages/chat', {
-            page_title: 'Messages',
-            new_chat: false,
-            message: message,
-            chat: true
-         });
+         var chat_name = '';
+
+         message.users.forEach(function(user, key) {
+            if (user != req.user.username) {
+              chat_name = user;
+            }
+          });
+
+          if (message.last_sent_by != req.user._id) {
+            Message.findByIdAndUpdate(message._id, {was_viewed: true}, (err, msg) => {
+
+               if (err) throw err;
+
+               res.render('messages/chat', {
+                  page_title: chat_name,
+                  new_chat: false,
+                  message: message,
+                  chat: true,
+                  chat_name: chat_name
+               });
+
+            });
+
+            console.log('bum')
+          } else {
+            res.render('messages/chat', {
+               page_title: chat_name,
+               new_chat: false,
+               message: message,
+               chat: true,
+               chat_name: chat_name,
+               viewing_own_messages: true
+            });
+            console.log('shoe')
+          }
 
       });
 
@@ -2267,42 +2297,53 @@ router.post('/messages/chat/:messageId', verifyToken, (req, res, next) => {
                info['profileimage'] = 'hryzn-placeholder-01.jpg';
             }
             info['message'] = req.body.message.replace(/\r\n/g,'');
+            info['liked'] = false;
+            info['date_time'] = current_date_and_time;
 
             // Add message
             Message.addMessage(info, (err, message) => {
                if(err) throw err
 
-               Message.findOne({ '_id': { $in: req.params.messageId} }, (err, message) => {
-                  message.users.forEach(function(user, key) {
-                     if (user != req.user.username) {
-                        // Send notification to the user mentioned
-                        User.findOne({ 'username': { $in: user} }, (err, reciever) => {
-                           if (err) throw err;
+               Message.findByIdAndUpdate(req.params.messageId, {
+                 was_viewed: false,
+                 date_of_last_msg: current_date,
+                 last_sent_by: req.user._id
+               }, (err, msg) => {
 
-                           var newNotification = new Notification({
-                              sender: req.user._id,
-                              reciever: reciever._id,
-                              type: '@' + req.body.username + ' messaged you.',
-                              link: '/messages/chat/' + req.params.messageId,
-                              date_sent: current_date
-                           });
+                  if (err) throw err;
 
-                           // Create notification in database
-                           Notification.saveNotification(newNotification, (err, notification) => {
-                              if(err) throw err;
+                  Message.findOne({ '_id': { $in: req.params.messageId} }, (err, message) => {
+                     message.users.forEach(function(user, key) {
+                        if (user != req.user.username) {
+                           // Send notification to the user mentioned
+                           User.findOne({ 'username': { $in: user} }, (err, reciever) => {
+                              if (err) throw err;
 
-                              // Add Notification for User
-                              User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
-                                 if (err) throw err;
+                              var newNotification = new Notification({
+                                 sender: req.user._id,
+                                 reciever: reciever._id,
+                                 type: '@' + req.body.username + ' messaged you.',
+                                 link: '/messages/chat/' + req.params.messageId,
+                                 date_sent: current_date
+                              });
+
+                              // Create notification in database
+                              Notification.saveNotification(newNotification, (err, notification) => {
+                                 if(err) throw err;
+
+                                 // Add Notification for User
+                                 User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+                                    if (err) throw err;
+                                 });
                               });
                            });
-                        });
-                     }
+                        }
+                     });
                   });
-               });
 
-               req.flash('success_msg', "Message Sent");
-               res.redirect('/messages/chat/' + req.params.messageId);
+                  req.flash('success_msg', "Message Sent");
+                  res.redirect('/messages/chat/' + req.params.messageId);
+               });
             });
          }
       });
@@ -2363,8 +2404,12 @@ router.post('/messages/new/:username', verifyToken, (req, res, next) => {
                messages: {
                   username: sent_by,
                   profileimage: info['profileimage'],
-                  message: message
-               }
+                  message: message,
+                  liked: false,
+                  date_time: current_date_and_time
+               },
+               was_viewed: false,
+               date_of_last_msg: current_date
             });
 
             // Create message in database

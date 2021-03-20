@@ -1,42 +1,68 @@
 .direct_msg_container {
    width: 80%;
    max-width: 600px;
-   margin: 50px auto 150px auto;
+   margin: 50px auto 0 auto;
    display: flex;
    justify-content: flex-start;
    align-items: flex-start;
    flex-direction: column;
+   position: relative;
 }
 
 .msg_container {
    display: flex;
    flex-direction: row;
-   width: 90%;
-   max-width: 800px;
-   position: fixed;
-   bottom: 150px;
+   width: 100%;
+   bottom: 0;
    margin: 0 auto;
    left: 0;
    right: 0;
 }
 
+.all_msg_container {
+  height: 100%;
+  max-height: 450px;
+  width: 100%;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  overflow: auto;
+  padding: 35px;
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+}
+
+.chat_name {
+  width: 100%;
+  padding: 25px 0;
+  text-align: center;
+  font-weight: bold;
+  border: 1px solid #ccc;
+  position: relative;
+}
+
+.all_msg_container::-webkit-scrollbar {
+  display: none;
+}
+
+.direct_msg_container form {
+  width: 100%;
+}
+
 .msg_container .form__input {
-   border-top-left-radius: 35px;
-   border-bottom-left-radius: 35px;
    outline: none!important;
    text-indent: 25px;
    margin: 0!important;
+   border-radius: 0;
 }
 
 .msg_send {
    width: 30%;
    background: #31375A;
    border: 1px solid #31375A;
+   border-radius: 0;
    color: #fff;
    font-size: 12px;
    margin: 0!important;
-   border-top-right-radius: 35px;
-   border-bottom-right-radius: 35px;
    cursor: pointer;
    text-transform: uppercase;
    letter-spacing: 1px;
@@ -49,21 +75,34 @@
 
 .delete_chat {
    font-size: 14px;
-   font-weight: bold;
-   position: fixed;
-   bottom: 50px;
-   text-align: center;
-   width: 100%;
-   max-width: 300px;
-   margin: 0 auto;
-   left: 0;
-   right: 0;
+   margin: 0 0 0 50px;
    cursor: pointer;
 }
 
 @media screen and (max-width: 768px) {
+
+  .direct_msg_container {
+     width: 100%;
+     height: 100vh;
+     max-width: 600px;
+     margin: 50px auto 0 auto;
+  }
+
+  .chat_name {
+    display: none;
+  }
+
+  .all_msg_container {
+    height: 100%;
+    max-height: none;
+    width: 100%;
+    border-left: none;
+    border-right: none;
+  }
+
    .msg_container {
-      bottom: 150px;
+      bottom: 0;
+      position: fixed;
    }
 
    .delete_chat {
@@ -77,4 +116,151 @@
    .msg_send {
       font-size: 10px;
    }
+}
+
+.direct_msg_username {
+  font-size: 10px;
+  font-weight: normal;
+  color: #ccc;
+}
+
+.user_own_msg {
+  display: flex;
+  width: 100%;
+  justify-content: flex-end;
+  flex-direction: column;
+  text-align: right;
+}
+
+.user_own_msg .direct_msg_username {
+  align-self: flex-end;
+}
+
+.other_user_msg .direct_msg_username {
+  align-self: flex-start;
+}
+
+.msg_mid_dot {
+  margin: 0 5px;
+}
+
+.msg_date_time {
+  font-size: 10px;
+  color: #ccc;
+  font-weight: normal;
+}
+
+.other_user_msg {
+  display: flex;
+  width: 100%;
+  justify-content: flex-start;
+  flex-direction: column;
+  text-align: left;
+}
+
+.direct_msg_wrapper {
+  margin-top: 10px;
+}
+
+.user_own_msg .msg_user_container {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  align-self: flex-end;
+}
+
+.other_user_msg .msg_user_container {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  align-self: flex-start;
+}
+
+.msg_profile_img_container {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #394961;
+}
+
+.user_own_msg .msg_profile_img_container {
+  margin: 0 0 0 10px;
+}
+
+.other_user_msg .msg_profile_img_container {
+  margin: 0 10px 0 0;
+}
+
+.msg_profile_img {
+  position: absolute;
+  display: block;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  object-fit: cover;
+  top: 0;
+  left: 0;
+}
+
+.user_own_msg .direct_msg_self {
+  padding: 8px 15px;
+  background: #747eb4;
+  color: #fff;
+  font-size: 12px;
+  font-weight: bold;
+  align-self: flex-end;
+  margin-right: 35px;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  border-bottom-left-radius: 10px;
+}
+
+
+.other_user_msg .direct_msg_self {
+  padding: 8px 15px;
+  background: #f1f1f1;
+  font-size: 12px;
+  font-weight: bold;
+  align-self: flex-start;
+  margin-left: 35px;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+.chat_name_msg_settings_btn {
+  display: inline-block;
+  position: absolute;
+  right: 25px;
+  top: 40%;
+  align-self: center;
+  bottom: 0;
+}
+
+.msg_settings_btn {
+  display: none;
+}
+
+@media screen and (max-width: 992px) {
+  .chat_name_msg_settings_btn {
+    display: none;
+  }
+}
+
+#chatSettingsClose {
+   position: absolute;
+   top: 15px;
+   right: 15px;
+   font-size: 36px;
+   margin-left: 50px;
+   cursor: pointer;
+}
+
+#chatSettingsClose:hover {
+   color: #333;
 }

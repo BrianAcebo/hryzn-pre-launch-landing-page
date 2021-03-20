@@ -1081,4 +1081,43 @@ $indexFollowingBtn.click(function() {
 });
 /**********/
 
+
+// Message Settings Btn
+var $msgSettingsBtn = $('.msg_settings_btn');
+var $searchContainer = $('.search-container');
+var $windowWidth = $window.width();
+
+if ($windowWidth <= 992 && $msgSettingsBtn) {
+  $searchContainer.css({ "display": "none"});
+  $msgSettingsBtn.css({ "display": "block"});
+}
+
+// Open settings nav on click
+var $chatSettingsOpen = $('.chatSettingsBtn');
+var $chatSettingsClose = $('#chatSettingsClose');
+var $chatSideNav = $('#chatSettingsNav');
+var $siteBody = $('body');
+
+$chatSettingsOpen.each(function() {
+  $(this).click(function() {
+    if($window.width() <= 768) {
+      $chatSideNav.css({ "width": "100%", "box-shadow": "0 2px 4px 0 rgba(0,0,0,0.2)" });
+    } else {
+      $chatSideNav.css({ "width": "350" });
+    }
+  });
+});
+
+$chatSettingsClose.click(function() {
+   $chatSideNav.css({ "width": "0" });
+});
+
+$siteBody.on('click', function(e){
+   if( !$(e.target).is('.settings_content, .settings__header, .settings__underline, .profile__sidenav a, .chatSettingsBtn, #settingsBtn .mobile-nav__icon, #profileSideNav, #profileSideNav p') ) {
+      $chatSideNav.css({ "width": "0" });
+   }
+});
+/**********/
+/**********/
+
 });

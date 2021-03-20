@@ -16,6 +16,7 @@ mongoose.Promise = require('bluebird');
 const MongoStore = require('connect-mongo')(session);
 const jwt = require('jsonwebtoken');
 const helmet = require('helmet');
+const cors = require('cors')
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
@@ -27,6 +28,7 @@ const dashboardRouter = require('./routes/dashboard');
 const app = express();
 
 app.use(helmet());
+app.use(cors());
 
 const hbs = exphbs.create({});
 
@@ -128,9 +130,9 @@ app.use(session({
    rolling: true,
    cookie: {
       maxAge: 365 * 24 * 60 * 60 * 1000, // One Year
-      secure: true,//cookieSecure,//true,
-      httpOnly: true,//cookieHttp,//true,
-      domain: '.myhryzn.com',//cookieDomain,//'.myhryzn.com',
+      secure: cookieSecure,//true,
+      httpOnly: cookieHttp,//true,
+      domain: cookieDomain,//'.myhryzn.com',
       expires: 365 * 24 * 60 * 60 * 1000
    }
 }));
@@ -279,6 +281,7 @@ app.use(function (req, res, next) {
 app.use((req, res, next) => {
    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
    res.header('Access-Control-Allow-Headers', 'Authorization');
+   res.header('Access-Control-Allow-Origin', '*');
    next();
 });
 

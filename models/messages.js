@@ -16,8 +16,23 @@ const MessageSchema = mongoose.Schema({
       },
       message: {
          type: String
+      },
+      liked: {
+         type: String
+      },
+      date_time: {
+         type: String
       }
-   }]
+   }],
+   was_viewed: {
+      type: Boolean
+   },
+   date_of_last_msg: {
+      type: String
+   },
+   last_sent_by: {
+      type: String
+   }
 });
 
 const Message = module.exports = mongoose.model('Message', MessageSchema);
@@ -33,6 +48,8 @@ module.exports.addMessage = (info, callback) => {
    messageId = info['messageId'];
    profileimage = info['profileimage'];
    message = info['message'];
+   liked = info['liked'];
+   date_time = info['date_time'];
 
    const query = { _id: messageId };
 
@@ -41,7 +58,9 @@ module.exports.addMessage = (info, callback) => {
          $addToSet: {"messages": [{
             "username": username,
             "profileimage": profileimage,
-            "message": message
+            "message": message,
+            "liked": liked,
+            "date_time": date_time
          }]},
       },
       { safe: true, upsert: true },

@@ -16,47 +16,91 @@
 
 {{else}}
 
-<div class="direct_msg_container">
+<div class="direct_msg_container" id="messagePanel">
 
-   {{#each message.messages}}
+  <div class="chat_name">
+    {{chat_name}}
+    <img style="cursor: pointer" src="/icons/elipsis.png" class="chatSettingsBtn mobile-nav__icon chat_name_msg_settings_btn" />
+  </div>
 
-   <div class="direct_msg_wrapper">
-      <a href="/profile/{{this.username}}">
-         <div class="topnav__user">
-            <div class="topnav__profile-img-container">
-               <img class="profile__img comment_profileimage" src="https://ik.imagekit.io/w07am55tja/{{this.profileimage}}?tr=w-100">
-            </div>
-            <p class="direct_msg_username">@{{this.username}}</p>
-         </div>
-      </a>
-      <p class="comment_msg">{{this.message}}</p>
+  <div id="all_msg_container" class="all_msg_container">
+
+     {{#each message.messages}}
+
+     {{#ifEquals this.username ../user.username}}
+
+     <div class="direct_msg_wrapper user_own_msg">
+       <p class="direct_msg_self">{{this.message}}</p>
+        <a href="/profile/{{this.username}}" style="align-self: flex-end">
+           <div class="msg_user_container">
+              <p class="direct_msg_username">{{this.date_time}}</p>
+              <div class="msg_profile_img_container">
+                 <img class="msg_profile_img" src="https://ik.imagekit.io/w07am55tja/{{this.profileimage}}?tr=w-100">
+              </div>
+           </div>
+        </a>
+     </div>
+     {{else}}
+     <div class="direct_msg_wrapper other_user_msg">
+       <p class="direct_msg_self">{{this.message}}</p>
+        <a href="/profile/{{this.username}}" style="align-self: flex-start">
+           <div class="msg_user_container">
+              <div class="msg_profile_img_container">
+                 <img class="msg_profile_img" src="https://ik.imagekit.io/w07am55tja/{{this.profileimage}}?tr=w-100">
+              </div>
+              <p class="direct_msg_username">{{this.date_time}}</p>
+           </div>
+        </a>
+     </div>
+     {{/ifEquals}}
+
+     {{/each}}
+
+
+     {{#if viewing_own_messages}}
+     {{#if message.was_viewed}}
+     <p style="text-align: right" class="direct_msg_username">Seen</p>
+     {{else}}
+     <p style="text-align: right" class="direct_msg_username">Delivered</p>
+     {{/if}}
+     {{/if}}
 
    </div>
 
-   {{/each}}
-
-</div>
-
-<form method="post" action="/messages/chat/{{message.id}}">
    <div class="msg_container">
       <input type="hidden" name="_x_" value="$2a$10$BJn0b4OzBarDigcTUl0kejbffkejbfvxSI.JrlLKeSsOi8oKqBAK" />
       <input type="hidden" name="_c_" value="{{csrf_web_token}}" />
       <input type="hidden" name="orange_blossom" value="" />
-      <input type="hidden" name="username" value="{{user.username}}" />
-      <input type="hidden" name="profileimage" value="{{user.profileimage}}" />
-      <textarea oninput="auto_grow(this)" class="form__input" type="text" placeholder="Send a message" name="message" value="" required  autocapitalize="none"></textarea>
-      <button class="msg_send" name="submit" type="submit">Send</button>
+      <input id="msgUsername" type="hidden" name="username" value="{{user.username}}" />
+      <input id="msgImg" type="hidden" name="profileimage" value="{{user.profileimage}}" />
+      <textarea id="msgContent" oninput="auto_grow(this)" class="form__input" type="text" placeholder="Send a message" name="message" value="" required  autocapitalize="none"></textarea>
+      <button id="sendBtn" class="msg_send" name="submit" type="submit">Send</button>
    </div>
-</form>
+
+</div>
 
 <script>
 function auto_grow(element) {
     element.style.height = "5px";
     element.style.height = (element.scrollHeight)+"px";
 }
+
+var all_msg_container = document.getElementById("all_msg_container");
+all_msg_container.scrollTop = all_msg_container.scrollHeight;
+
 </script>
 
-<div class="modalBtn delete_chat">I would like to delete this chat</div>
+<!-- <div class="modalBtn delete_chat">I would like to delete this chat</div> -->
+
+{{! Chat Settings Nav}}
+<div id="chatSettingsNav" class="profile__sidenav">
+   <a href="javascript:void(0)" id="chatSettingsClose">&times;</a>
+   <div class="settings_content">
+      <h3 class="settings__header">Chat Settings</h3>
+      <hr class="settings__underline" />
+      <p class="modalBtn delete_chat">Delete Chat</>
+   </div>
+</div>
 
 {{! Hidden Delete Modal }}
 <div class="popModal modalBackground">
