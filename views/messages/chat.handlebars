@@ -67,15 +67,17 @@
 
    </div>
 
-   <div class="msg_container">
-      <input type="hidden" name="_x_" value="$2a$10$BJn0b4OzBarDigcTUl0kejbffkejbfvxSI.JrlLKeSsOi8oKqBAK" />
-      <input type="hidden" name="_c_" value="{{csrf_web_token}}" />
-      <input type="hidden" name="orange_blossom" value="" />
-      <input id="msgUsername" type="hidden" name="username" value="{{user.username}}" />
-      <input id="msgImg" type="hidden" name="profileimage" value="{{user.profileimage}}" />
-      <textarea id="msgContent" oninput="auto_grow(this)" class="form__input" type="text" placeholder="Send a message" name="message" value="" required  autocapitalize="none"></textarea>
-      <button id="sendBtn" class="msg_send" name="submit" type="submit">Send</button>
-   </div>
+   <form method="post" action="/messages/chat/{{message.id}}">
+      <div class="msg_container">
+         <input type="hidden" name="_x_" value="$2a$10$BJn0b4OzBarDigcTUl0kejbffkejbfvxSI.JrlLKeSsOi8oKqBAK" />
+         <input type="hidden" name="_c_" value="{{csrf_web_token}}" />
+         <input type="hidden" name="orange_blossom" value="" />
+         <input id="msgUsername" type="hidden" name="username" value="{{user.username}}" />
+         <input id="msgImg" type="hidden" name="profileimage" value="{{user.profileimage}}" />
+         <textarea id="msgContent" oninput="auto_grow(this)" class="form__input" type="text" placeholder="Send a message" name="message" value="" required  autocapitalize="none"></textarea>
+         <button id="sendBtn" class="msg_send" name="submit" type="submit">Send</button>
+      </div>
+   </form>
 
 </div>
 
