@@ -2218,7 +2218,6 @@ router.get('/messages/chat/:messageId', (req, res, next) => {
 
             });
 
-            console.log('bum')
           } else {
             res.render('messages/chat', {
                page_title: chat_name,
@@ -2228,7 +2227,6 @@ router.get('/messages/chat/:messageId', (req, res, next) => {
                chat_name: chat_name,
                viewing_own_messages: true
             });
-            console.log('shoe')
           }
 
       });
@@ -2299,6 +2297,7 @@ router.post('/messages/chat/:messageId', verifyToken, (req, res, next) => {
             info['message'] = req.body.message.replace(/\r\n/g,'');
             info['liked'] = false;
             info['date_time'] = current_date_and_time;
+            info['is_post_link'] = false;
 
             // Add message
             Message.addMessage(info, (err, message) => {
@@ -2456,6 +2455,237 @@ router.post('/messages/new/:username', verifyToken, (req, res, next) => {
          }
       });
 
+   } else {
+      res.redirect('/users/register');
+   }
+});
+
+
+// Send Post Message
+router.post('/messages/direct/sendpost', (req, res, next) => {
+   if(req.isAuthenticated()) {
+
+     var send_to_user = req.body.send_to_user.replace(/\r\n/g,'').trim();
+
+     User.findOne({ 'username': { $in: send_to_user} }, (err, receiving_user) => {
+
+        if (err) throw err;
+
+        if (receiving_user) {
+          if(req.user.followers.indexOf(receiving_user.username) === -1) {
+            res.redirect('/');
+          } else {
+            var chat_id;
+
+            receiving_user.messages.forEach(function(msg, key) {
+               req.user.messages.forEach(function(user_msg, key) {
+                  if (user_msg === msg) {
+                     chat_id = user_msg;
+                  }
+               });
+            });
+
+            Message.findOne({ '_id': { $in: chat_id } }, (err, message) => {
+
+               if (err) throw err;
+
+               if (message) {
+                  // Existing chat
+
+                  var chat_id = message._id;
+
+                  info = [];
+                  info['userUsername'] = req.user.username;
+                  info['messageId'] = chat_id;
+                  if (req.user.profileimage) {
+                     info['profileimage'] = req.user.profileimage;
+                  } else {
+                     info['profileimage'] = 'hryzn-placeholder-01.jpg';
+                  }
+                  info['message'] = req.body.message;
+                  info['liked'] = false;
+                  info['date_time'] = current_date_and_time;
+                  info['is_post_link'] = true;
+
+                  // Add message
+                  Message.addMessage(info, (err, message) => {
+                     if(err) throw err
+
+                     Message.findByIdAndUpdate(chat_id, {
+                       was_viewed: false,
+                       date_of_last_msg: current_date,
+                       last_sent_by: req.user._id
+                     }, (err, msg) => {
+
+                        if (err) throw err;
+
+                        message.users.forEach(function(user, key) {
+                           if (user != req.user.username) {
+                              // Send notification to the user mentioned
+                              User.findOne({ 'username': { $in: user} }, (err, reciever) => {
+                                 if (err) throw err;
+
+                                 var newNotification = new Notification({
+                                    sender: req.user._id,
+                                    reciever: reciever._id,
+                                    type: '@' + req.body.username + ' messaged you.',
+                                    link: '/messages/chat/' + req.params.messageId,
+                                    date_sent: current_date
+                                 });
+
+                                 // Create notification in database
+                                 Notification.saveNotification(newNotification, (err, notification) => {
+                                    if(err) throw err;
+
+                                    // Add Notification for User
+                                    User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+                                       if (err) throw err;
+                                    });
+                                 });
+                              });
+                           }
+                        });
+
+                        req.flash('success_msg', "Message Sent");
+                        res.redirect('/');
+                     });
+                  });
+               } else {
+                  // Create new chat
+
+                  var info = [];
+                  var users = [];
+                  users.push(req.user.username);
+                  users.push(receiving_user.username);
+
+                  var sent_by = req.user.username;
+                  if (req.user.profileimage) {
+                     info['profileimage'] = req.user.profileimage;
+                  } else {
+                     info['profileimage'] = 'hryzn-placeholder-01.jpg';
+                  }
+                  var message = req.body.message;
+
+                  var newMessage = new Message({
+                     users: users,
+                     messages: {
+                        username: sent_by,
+                        profileimage: info['profileimage'],
+                        message: message,
+                        liked: false,
+                        date_time: current_date_and_time,
+                        is_post_link: true
+                     },
+                     was_viewed: false,
+                     date_of_last_msg: current_date
+                  });
+
+                  // Create message in database
+                  Message.saveMessage(newMessage, (err, message) => {
+                     if(err) throw err;
+
+                     // Add chat for User
+                     users.forEach(function(user, key) {
+                        info = [];
+                        info['profileUsername'] = user;
+                        info['messageId'] = message._id.toString();
+
+                        User.addChat(info, (err, user) => {
+                           if(err) throw err;
+                        });
+                     });
+
+                     var newNotification = new Notification({
+                        sender: req.user._id,
+                        reciever: receiving_user._id,
+                        type: '@' + req.user.username + ' messaged you.',
+                        link: '/messages/chat/' + message._id,
+                        date_sent: current_date
+                     });
+
+                     // Create notification in database
+                     Notification.saveNotification(newNotification, (err, notification) => {
+                        if(err) throw err;
+
+                        // Add Notification for User
+                        User.findByIdAndUpdate(receiving_user._id, { has_notification: true }, (err, user) => {
+                           if (err) throw err;
+                        });
+                     });
+
+                     req.flash('success_msg', "Message was sent.");
+                     res.redirect('/');
+                  });
+               }
+
+            });
+          }
+        } else {
+          res.redirect('/');
+        }
+
+
+     });
+
+   } else {
+      res.redirect('/users/register');
+   }
+});
+
+
+// Direct message - like
+router.post('/messages/direct/like/', (req, res, next) => {
+   if(req.isAuthenticated()) {
+      info = [];
+      info['chatId'] = req.body.chatId;
+      info['messageId'] = req.body.messageId;
+
+      Message.findOne({ '_id': { $in: req.body.chatId} }, (err, chat) => {
+
+         if (err) throw err;
+
+         if (chat) {
+
+           // Remove save from project
+           Message.likeMessage(info, (err, msg) => {
+
+              if(err) throw err;
+
+               chat.users.forEach(function(user, key) {
+                  if (user != req.user.username) {
+                     // Send notification to the user mentioned
+                     User.findOne({ 'username': { $in: user} }, (err, reciever) => {
+                        if (err) throw err;
+
+                        var newNotification = new Notification({
+                           sender: req.user._id,
+                           reciever: reciever._id,
+                           type: '@' + req.user.username + ' liked your message.',
+                           link: '/messages/chat/' + req.body.chatId,
+                           date_sent: current_date
+                        });
+
+                        // Create notification in database
+                        Notification.saveNotification(newNotification, (err, notification) => {
+                           if(err) throw err;
+
+                           // Add Notification for User
+                           User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+                              if (err) throw err;
+
+                              req.flash('success_msg', "Message Liked");
+                              res.redirect('/messages/chat/' + req.body.chatId);
+                           });
+                        });
+                     });
+                  }
+               });
+           });
+
+         } else {
+            res.redirect('/');
+         }
+      });
    } else {
       res.redirect('/users/register');
    }

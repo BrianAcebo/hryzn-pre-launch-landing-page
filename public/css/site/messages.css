@@ -160,6 +160,34 @@
 
 .direct_msg_wrapper {
   margin-top: 10px;
+  cursor: pointer;
+  position: relative;
+}
+
+.other_user_msg .msg_post_liked {
+  position: absolute;
+  left: 30px;
+  top: 3px;
+  font-size: 15px;
+  text-shadow: 2px 2px #ccc;
+}
+
+.other_user_msg .msg_post_liked.msg_post_liked_post_link {
+  left: -7px;
+  top: 10px;
+}
+
+.user_own_msg .msg_post_liked {
+  position: absolute;
+  right: 27px;
+  top: 3px;
+  font-size: 15px;
+  text-shadow: 2px 2px #ccc;
+}
+
+.user_own_msg .msg_post_liked.msg_post_liked_post_link {
+  right: -7px;
+  top: 10px;
 }
 
 .user_own_msg .msg_user_container {
@@ -168,6 +196,7 @@
   justify-content: flex-end;
   align-items: center;
   align-self: flex-end;
+  margin-top: 10px;
 }
 
 .other_user_msg .msg_user_container {
@@ -175,6 +204,7 @@
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
+  margin-top: 10px;
   align-self: flex-start;
 }
 
@@ -205,6 +235,51 @@
   object-fit: cover;
   top: 0;
   left: 0;
+}
+
+.user_own_msg .msg_post_link {
+  align-self: flex-end;
+  padding: 15px;
+  text-align: left;
+  max-width: 300px;
+  border-radius: 10px;
+  background: #747eb4;
+}
+
+.other_user_msg .msg_post_link {
+  align-self: flex-start;
+  padding: 15px;
+  text-align: left;
+  max-width: 300px;
+  border-radius: 10px;
+  background: #f1f1f1;
+}
+
+.direct_msg_wrapper .msg_post_link .card_is_micro_image .micro_body,
+.direct_msg_wrapper .msg_post_link .card_is_micro_audio .micro_body,
+.direct_msg_wrapper .msg_post_link .card_is_micro_video .micro_body {
+   display: block;
+   display: -webkit-box;
+   -webkit-line-clamp: 3;
+   -webkit-box-orient: vertical!important;
+   /* autoprefixer: off */
+   overflow: hidden;
+}
+
+.user_own_msg .msg_post_link .micro_tag,
+.user_own_msg .msg_post_link .card_is_micro_image .micro_body,
+.user_own_msg .msg_post_link .card_is_micro_audio .micro_body,
+.user_own_msg .msg_post_link .card_is_micro_video .micro_body {
+  color: #fff;
+}
+
+.direct_msg_wrapper .msg_post_link .micropost_card {
+   background: transparent;
+}
+
+.direct_msg_wrapper .msg_post_link .micropost_card.card_is_micro_text {
+   background: #fff;
+   border: none;
 }
 
 .user_own_msg .direct_msg_self {

@@ -30,7 +30,15 @@
      {{#ifEquals this.username ../user.username}}
 
      <div class="direct_msg_wrapper user_own_msg">
-       <p class="direct_msg_self">{{this.message}}</p>
+       <input type="hidden" class="chat_id" value="{{../message._id}}">
+       <input type="hidden" class="message_id" value="{{this._id}}">
+       {{#if this.is_post_link}}
+       <div class="msg_post_link">
+         {{{this.message}}}
+       </div>
+       {{else}}
+       <p class="direct_msg_self">{{{this.message}}}</p>
+       {{/if}}
         <a href="/profile/{{this.username}}" style="align-self: flex-end">
            <div class="msg_user_container">
               <p class="direct_msg_username">{{this.date_time}}</p>
@@ -39,10 +47,22 @@
               </div>
            </div>
         </a>
+        {{#ifEquals this.liked "true"}}
+        <i style="font-weight: bold" class="fa fa-heart msg_post_liked {{#if this.is_post_link}}msg_post_liked_post_link{{/if}}"></i>
+        {{/ifEquals}}
      </div>
+     <!-- End of msg -->
      {{else}}
      <div class="direct_msg_wrapper other_user_msg">
-       <p class="direct_msg_self">{{this.message}}</p>
+       <input type="hidden" class="chat_id" value="{{../message._id}}">
+       <input type="hidden" class="message_id" value="{{this._id}}">
+       {{#if this.is_post_link}}
+       <div class="msg_post_link">
+         {{{this.message}}}
+       </div>
+       {{else}}
+       <p class="direct_msg_self">{{{this.message}}}</p>
+       {{/if}}
         <a href="/profile/{{this.username}}" style="align-self: flex-start">
            <div class="msg_user_container">
               <div class="msg_profile_img_container">
@@ -51,7 +71,11 @@
               <p class="direct_msg_username">{{this.date_time}}</p>
            </div>
         </a>
+        {{#ifEquals this.liked "true"}}
+        <i style="font-weight: bold" class="fa fa-heart msg_post_liked {{#if this.is_post_link}}msg_post_liked_post_link{{/if}}"></i>
+        {{/ifEquals}}
      </div>
+     <!-- End of msg -->
      {{/ifEquals}}
 
      {{/each}}

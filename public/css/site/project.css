@@ -795,7 +795,8 @@ section.project {
    position: relative;
 }
 
-#projectSettingsNav {
+#projectSettingsNav,
+#msgPop {
    border-radius: 35px;
    bottom: 50px;
    width: 90%;
@@ -807,10 +808,41 @@ section.project {
    padding: 0;
    right: 0;
    text-align: center;
+   -ms-overflow-style: none;
+   scrollbar-width: none;
+   overflow: auto;
 }
 
-#projectSettingsNav .project_settings_social a {
-   margin: 25px;
+.msgPop_wrapper {
+  padding: 50px 15px 25px 15px;
+  position: relative;
+}
+
+.msgPop_wrapper p {
+  text-align: center;
+  padding: 0 30px;
+  margin: 0 0 15px 0;
+  font-size: 14px;
+}
+
+#projectSettingsNav::-webkit-scrollbar,
+#msgPop::-webkit-scrollbar {
+  display: none;
+}
+
+#projectSettingsNav .project_settings_social a,
+#msgPop .project_settings_social a {
+   margin: 15px;
+}
+
+#msgPop {
+   bottom: 150px;
+}
+
+@media screen and (max-width: 768px) {
+  #msgPop {
+     bottom: 75px;
+  }
 }
 
 .project_bck_btn {
@@ -945,7 +977,8 @@ section.project {
 }
 
 #relatedClose,
-#projectSettingsClose {
+#projectSettingsClose,
+#msgPopClose {
    top: auto;
    right: 10px;
    bottom: 290px;
@@ -977,6 +1010,17 @@ section.project {
 }
 
 #projectSettingsClose {
+   right: 25px;
+   bottom: auto;
+   top: 15px;
+   position: absolute;
+   margin: 0;
+}
+
+#msgPopClose {
+   font-size: 25px;
+   height: 35px;
+   width: 35px;
    right: 25px;
    bottom: auto;
    top: 15px;

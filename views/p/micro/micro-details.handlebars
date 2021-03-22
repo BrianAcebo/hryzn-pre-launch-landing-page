@@ -120,6 +120,12 @@
                      </button>
 
                      {{/if}}
+
+                     <button class="project_action_btn" name="submit" type="submit">
+                        <a {{#if user}}class="msgModalBtn"{{/if}}>
+                           <i class="fa fa-paper-plane-o"></i>
+                        </a>
+                     </button>
                   </div>
                </div>
 
@@ -348,6 +354,145 @@
    </div>
 
 </div>
+
+{{! Message Post Modal }}
+<div id="msgPop" class="project__settingsNav">
+   <div class="msgPop_wrapper">
+      <a href="javascript:void(0)" id="msgPopClose">&times;</a>
+
+      <div class="project_settings_social">
+         <a target="_blank" href="http://www.facebook.com/sharer.php?u={{site_url}}/p/details/{{project._id}}/guest&amp;t={{project.project_title}}" title="Share on Facebook" class="facebook"><i class="fa fa-facebook"></i></a>
+         <a target="_blank" href="https://twitter.com/intent/tweet?original_referer=https%3A%2F%2Fmyhryzn%3A5000%2Fp%2Fdetails%2F{{project._id}}&ref_src=twsrc%5Etfw&text={{project.project_title}}&tw_p=tweetbutton&url=https%3A%2F%2Fwww.myhryzn.com%2Fp%2Fdetails%2F{{project._id}}%2Fguest&via=myHryzn" title="Share on Twitter" class="twitter"><i class="fa fa-twitter"></i></a>
+         <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+         <a class="check" class="copy-link" onclick="copyLink('{{site_url}}/p/details/{{project._id}}/guest')"><i class="fa fa-link"></i></a>
+      </div>
+
+      <form autocomplete="off" action="/messages/direct/sendpost" method="post">
+        <input id="msgContentInput" type="hidden" name="message" value=''>
+          <div class="user_autocomplete">
+          <input class="user_autocomplete_input" type="text" name="send_to_user" placeholder="Send to...">
+        </div>
+        <input type="submit" class="user_autocomplete_btn" value="Send">
+      </form>
+
+      <!-- {{#each user.followers}}
+      <a class="follower__profile user_autocomplete_self">
+         @{{this}}
+      </a>
+      {{/each}} -->
+      <input id="msgContentProjectValue" type="hidden" name="message" value='<div style="flex-direction: row; justify-content: space-between; align-items: flex-start;"><a class="micro_tag {{#if project.project_title}}micro_tag_w_title{{/if}}" href="/profile/{{project.project_owner}}">@{{project.project_owner}}</a></div><div class="micropost"><div class="micropost_card {{#if project.micro_image}}card_is_micro_image{{else}}{{#if project.micro_audio}}card_is_micro_audio{{else}}{{#if project.micro_video}}card_is_micro_video{{else}}card_is_micro_text{{/if}}{{/if}}{{/if}}"><a href="/p/micro/{{project._id}}" style="width: 100%;">{{#if project.project_title}}<p class="micro_title">{{project.project_title}}</p>{{/if}}{{#if project.micro_body}}<p class="micro_body">{{{project.micro_body}}}</p>{{/if}}  </a><a href="/p/micro/{{project._id}}" style="width: 100%;">{{#if project.micro_image}}<img src="https://ik.imagekit.io/w07am55tja/{{project.micro_image}}?tr=w-650" class="img-responsive" alt="{{project.micro_body}}" />{{/if}}{{#if project.micro_video}}<video  preload="auto" controls controlsList="nodownload" class="micro_video"><source src="https://ik.imagekit.io/w07am55tja/{{project.micro_video}}" type="video/mp4"><source src="https://ik.imagekit.io/w07am55tja/{{project.micro_video}}" type="video/ogg"><source src="https://ik.imagekit.io/w07am55tja/{{project.micro_video}}" type="video/webm">Your browser does not support the video tag.</video>{{/if}}{{#if project.micro_audio}}{{#if project.thumbnail_image}}<img src="https://ik.imagekit.io/w07am55tja/{{project.thumbnail_image}}?tr=w-650" class="img-responsive" alt="{{project.micro_body}}" />{{/if}}<audio controls controlsList="nodownload" class="micro_audio"><source src="https://ik.imagekit.io/w07am55tja/{{project.micro_audio}}" type="audio/ogg"><source src="https://ik.imagekit.io/w07am55tja/{{project.micro_audio}}" type="audio/mpeg"><source src="https://ik.imagekit.io/w07am55tja/{{project.micro_audio}}" type="audio/wav">Your browser does not support the audio element.</audio>{{/if}}</a></div></div>'>
+   </div>
+</div>
+
+<script>
+function user_autocomplete(inp, arr) {
+  /*the user_autocomplete function takes two arguments,
+  the text field element and an array of possible user_autocompleted values:*/
+  var currentFocus;
+  /*execute a function when someone writes in the text field:*/
+  inp.addEventListener("input", function(e) {
+      var a, b, i, val = this.value;
+      /*close any already open lists of autocompleted values*/
+      closeAllLists();
+      if (!val) { return false;}
+      currentFocus = -1;
+      /*create a DIV element that will contain the items (values):*/
+      a = document.createElement("DIV");
+      a.setAttribute("id", this.id + "user_autocomplete_list");
+      a.setAttribute("class", "user_autocomplete_items");
+      /*append the DIV element as a child of the user_autocomplete container:*/
+      this.parentNode.appendChild(a);
+      /*for each item in the array...*/
+      for (i = 0; i < arr.length; i++) {
+        /*check if the item starts with the same letters as the text field value:*/
+        if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase()) {
+          /*create a DIV element for each matching element:*/
+          b = document.createElement("DIV");
+          /*make the matching letters bold:*/
+          b.innerHTML = "<strong>" + arr[i].substr(0, val.length) + "</strong>";
+          b.innerHTML += arr[i].substr(val.length);
+          /*insert a input field that will hold the current array item's value:*/
+          b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
+          /*execute a function when someone clicks on the item value (DIV element):*/
+          b.addEventListener("click", function(e) {
+              /*insert the value for the user_autocomplete text field:*/
+              inp.value = this.getElementsByTagName("input")[0].value;
+              /*close the list of user_autocompleted values,
+              (or any other open lists of user_autocompleted values:*/
+              closeAllLists();
+          });
+          a.appendChild(b);
+        }
+      }
+  });
+  /*execute a function presses a key on the keyboard:*/
+  inp.addEventListener("keydown", function(e) {
+      var x = document.getElementById(this.id + "user_autocomplete_list");
+      if (x) x = x.getElementsByTagName("div");
+      if (e.keyCode == 40) {
+        /*If the arrow DOWN key is pressed,
+        increase the currentFocus variable:*/
+        currentFocus++;
+        /*and and make the current item more visible:*/
+        addActive(x);
+      } else if (e.keyCode == 38) { //up
+        /*If the arrow UP key is pressed,
+        decrease the currentFocus variable:*/
+        currentFocus--;
+        /*and and make the current item more visible:*/
+        addActive(x);
+      } else if (e.keyCode == 13) {
+        /*If the ENTER key is pressed, prevent the form from being submitted,*/
+        e.preventDefault();
+        if (currentFocus > -1) {
+          /*and simulate a click on the "active" item:*/
+          if (x) x[currentFocus].click();
+        }
+      }
+  });
+  function addActive(x) {
+    /*a function to classify an item as "active":*/
+    if (!x) return false;
+    /*start by removing the "active" class on all items:*/
+    removeActive(x);
+    if (currentFocus >= x.length) currentFocus = 0;
+    if (currentFocus < 0) currentFocus = (x.length - 1);
+    /*add class "user_autocomplete_active":*/
+    x[currentFocus].classList.add("user_autocomplete_active");
+  }
+  function removeActive(x) {
+    /*a function to remove the "active" class from all user_autocomplete items:*/
+    for (var i = 0; i < x.length; i++) {
+      x[i].classList.remove("user_autocomplete_active");
+    }
+  }
+  function closeAllLists(elmnt) {
+    /*close all user_autocomplete lists in the document,
+    except the one passed as an argument:*/
+    var x = document.getElementsByClassName("user_autocomplete_items");
+    for (var i = 0; i < x.length; i++) {
+      if (elmnt != x[i] && elmnt != inp) {
+        x[i].parentNode.removeChild(x[i]);
+      }
+    }
+  }
+  /*execute a function when someone clicks in the document:*/
+  document.addEventListener("click", function (e) {
+      closeAllLists(e.target);
+  });
+}
+
+var user_followers = [];
+
+{{#if user.followers}}
+{{#each user.followers}}
+user_followers.push(`{{{this}}}`)
+{{/each}}
+{{/if}}
+
+/*initiate the user_autocomplete function on the "user_autocomplete_input" element, and pass along the user_followers array as possible user_autocomplete values:*/
+user_autocomplete(document.getElementsByClassName("user_autocomplete_input")[0], user_followers);
+</script>
 
 {{#if is_admin_of_project}}
 {{! Hidden Delete Modal }}

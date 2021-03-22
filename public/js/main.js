@@ -1118,6 +1118,146 @@ $siteBody.on('click', function(e){
    }
 });
 /**********/
+
+
+// Modal pop up for messaging
+var $msgPop = $("#msgPop");
+var $msgModalBtn = $(".msgModalBtn");
+var $msgPopClose = $("#msgPopClose");
+var $msgContentInput = $("#msgContentInput");
+var $user_followers = $(".user_autocomplete_self");
+var $user_auto_input = $(".user_autocomplete_input");
+var $user_autocomplete = $(".user_autocomplete");
+
+var $msgContentProjectValue = $('#msgContentProjectValue');
+
+if ($msgContentProjectValue.length >= 1) {
+  $msgContentInput.val($msgContentProjectValue.val());
+  console.log($msgContentProjectValue);
+}
+
+var $all_followers = []
+
+$msgModalBtn.each(function() {
+   $(this).click(function() {
+
+     $msgPop.css({ "height": "275px", "box-shadow": "rgba(0,0,0,.1) 0 2px 10px 1px" });
+
+      $("body").css({ "overflow-y": "hidden" });
+      $(".following_index_feed").css({ "overflow-y": "hidden" });
+
+      if ($(this).parents(".project_content_right")) {
+        var $msgContent = $(this).parents(".project_content_right").html().toString();
+
+        var $indexToRemove = $msgContent.indexOf('<div class="micro_action_btns">');
+
+        $msgContent = $msgContent.slice(0, $indexToRemove);
+
+        $msgContent = $msgContent + '</div>';
+
+        $msgContentInput.val($msgContent);
+      }
+
+   });
+});
+
+$msgPopClose.click(function() {
+   $msgPop.css({ "height": "0" });
+   $user_auto_input.attr('value', '');
+   $user_auto_input.empty();
+   $("body").css({ "overflow-y": "scroll" });
+   $(".following_index_feed").css({ "overflow-y": "scroll" });
+});
+
+var $sendBtn = $(".user_autocomplete_btn");
+var $flashMsg = $('#flashMsg');
+var $flash = '<div class="success__msg"><p>Message was sent.</p><p class="error__exit">×</p></div>';
+
+$($sendBtn).on("click", function(e) {
+  e.preventDefault();
+
+  var $sendAction = '/messages/direct/sendpost';
+  var $msgVal = $msgContentInput.val();
+  var $userVal = $user_auto_input.val();
+
+  if ($msgVal != '' && $userVal != '' ) {
+    $.post($sendAction, {
+      send_to_user: $userVal,
+      message: $msgVal
+    }, function(data, status) {
+
+    });
+
+    $flashMsg.append($flash);
+    setTimeout(function() {
+       $($flashMsg).remove();
+    }, 3000);
+
+    $msgPop.css({ "height": "0" });
+    $user_auto_input.attr('value', '');
+    $user_auto_input.empty();
+    $("body").css({ "overflow-y": "scroll" });
+    $(".following_index_feed").css({ "overflow-y": "scroll" });
+  }
+});
+/**********/
+
+
+// Double click to like message
+var $msgLinks = $('.direct_msg_wrapper a');
+
+var firstClickTarget = null;
+
+var timer = 0;
+var delay = 200;
+var prevent = false;
+
+$(".direct_msg_wrapper").on("click", function(e) {
+
+  var $post_link = $(this).find('.micropost a').attr("href");
+
+  var $chatId = $(this).find('.chat_id').val();
+  var $msgId = $(this).find('.message_id').val();
+  var $msgAction = "/messages/direct/like/";
+  var $is_post_link = $(this).find('.msg_post_link');
+
+  e.preventDefault();
+
+  if (e.detail === 1) {
+
+    timer = setTimeout(function() {
+      if (!prevent) {
+        $(window).attr('location', $post_link)
+        console.log($post_link);
+      }
+      prevent = false;
+    }, delay);
+
+  } else if (e.detail === 2){
+
+    clearTimeout(timer);
+    prevent = true;
+
+    $.post($msgAction, {
+      chatId: $chatId,
+      messageId: $msgId
+    }, function(data, status) {
+
+    });
+
+    if ($is_post_link) {
+      $(this).append('<i style="font-weight: bold" class="fa fa-heart msg_post_liked msg_post_liked_post_link"></i>')
+    } else {
+      $(this).append('<i style="font-weight: bold" class="fa fa-heart msg_post_liked"></i>')
+    }
+
+    timer = setTimeout(function() {
+      prevent = false;
+    }, delay);
+
+  }
+
+});
 /**********/
 
 });

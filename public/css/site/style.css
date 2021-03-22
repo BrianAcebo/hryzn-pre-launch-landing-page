@@ -1503,3 +1503,71 @@ blockquote {
    border: none;
    padding: 12px 25px;
 }
+
+/* Auto complete for searching through users */
+.user_autocomplete {
+  position: relative;
+  display: inline-block;
+  width: 70%;
+}
+
+.user_autocomplete input {
+  border: none;
+  background: #f1f1f1;
+  font-size: 14px;
+  height: 50px;
+  padding: 12px 15px;
+}
+
+.user_autocomplete input[type=text] {
+  background: #f1f1f1;
+  width: 100%;
+  display: inline-block;
+  outline: none;
+  border-top-left-radius: 15px;
+  border-bottom-left-radius: 15px;
+}
+
+.user_autocomplete_btn {
+  background: #bfb1c4;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  border: none;
+  height: 50px;
+  outline: none;
+  border-top-right-radius: 15px;
+  border-bottom-right-radius: 15px;
+  padding: 12px 15px;
+}
+
+.user_autocomplete_items {
+  position: absolute;
+  border: 1px solid #d4d4d4;
+  border-bottom: none;
+  border-top: none;
+  z-index: 99;
+  top: 100%;
+  left: 0;
+  right: 0;
+}
+
+.user_autocomplete_items div {
+  padding: 10px;
+  cursor: pointer;
+  background-color: #fff;
+  border-bottom: 1px solid #d4d4d4;
+}
+
+.user_autocomplete_items div:hover {
+  background-color: #e9e9e9;
+}
+
+.user_autocomplete_active {
+  background-color: DodgerBlue !important;
+  color: #ffffff;
+}
+
+.user_autocomplete_self {
+  cursor: pointer;
+}
