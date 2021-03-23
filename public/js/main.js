@@ -1087,7 +1087,7 @@ var $msgSettingsBtn = $('.msg_settings_btn');
 var $searchContainer = $('.search-container');
 var $windowWidth = $window.width();
 
-if ($windowWidth <= 992 && $msgSettingsBtn) {
+if ($windowWidth <= 992 && $msgSettingsBtn.length >= 1) {
   $searchContainer.css({ "display": "none"});
   $msgSettingsBtn.css({ "display": "block"});
 }
