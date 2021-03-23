@@ -1803,6 +1803,7 @@ section.project {
    display: flex;
    flex-direction: row;
   align-self: flex-end;
+  margin-top: 10px;
 }
 
 #micropostPop .i_amounts {

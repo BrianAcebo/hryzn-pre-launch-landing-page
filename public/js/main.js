@@ -814,13 +814,13 @@ $(document).ready(function() {
 
    // Add flash message on project details link copied
    var $copy = $('.check');
-   var $flashMsg = $('#flashMsg');
-   var $flash = '<div class="success__msg"><p>Link was copied.</p><p class="error__exit">×</p></div>';
+   var $linkFlashMsg = $('#flashMsg');
+   var $linkFlash = '<div class="success__msg"><p>Link was copied.</p><p class="error__exit">×</p></div>';
 
    $copy.click(function() {
-      $flashMsg.append($flash);
+      $linkFlashMsg.append($linkFlash);
       setTimeout(function() {
-         $($flashMsg).remove();
+         $($linkFlashMsg).remove();
       }, 3000);
    });
 
@@ -1016,12 +1016,12 @@ $("#repostForm .repost_submit").click(function() {
 
    $(".detailsRepostModal").css({ "display": "none" });
 
-   var $flashMsg = $('#flashMsg');
-   var $flash = '<div class="success__msg"><p>Reposted project.</p><p class="error__exit">×</p></div>';
+   var $repostFlashMsg = $('#flashMsg');
+   var $repostFlash = '<div class="success__msg"><p>Reposted project.</p><p class="error__exit">×</p></div>';
 
-   $flashMsg.append($flash);
+   $repostFlashMsg.append($repostFlash);
    setTimeout(function() {
-      $($flashMsg).remove();
+      $($repostFlashMsg).remove();
    }, 3000);
 
    $.post($('#repostForm').attr('action'), {
@@ -1041,12 +1041,12 @@ $("#unrepostForm .unrepost_btn").click(function() {
 
       $(".detailsRepostModal").css({ "display": "none" });
 
-      var $flashMsg = $('#flashMsg');
-      var $flash = '<div class="success__msg"><p>Unreposted project.</p><p class="error__exit">×</p></div>';
+      var $unrepostFlashMsg = $('#flashMsg');
+      var $unrepostFlash = '<div class="success__msg"><p>Unreposted project.</p><p class="error__exit">×</p></div>';
 
-      $flashMsg.append($flash);
+      $unrepostFlashMsg.append($unrepostFlash);
       setTimeout(function() {
-         $($flashMsg).remove();
+         $($unrepostFlashMsg).remove();
       }, 3000);
 
       $.post($('#unrepostForm').attr('action'), {
@@ -1170,8 +1170,8 @@ $msgPopClose.click(function() {
 });
 
 var $sendBtn = $(".user_autocomplete_btn");
-var $flashMsg = $('#flashMsg');
-var $flash = '<div class="success__msg"><p>Message was sent.</p><p class="error__exit">×</p></div>';
+var $sendFlashMsg = $('#flashMsg');
+var $sendFlash = '<div class="success__msg"><p>Message was sent.</p><p class="error__exit">×</p></div>';
 
 $($sendBtn).on("click", function(e) {
   e.preventDefault();
@@ -1188,9 +1188,9 @@ $($sendBtn).on("click", function(e) {
 
     });
 
-    $flashMsg.append($flash);
+    $sendFlashMsg.append($sendFlash);
     setTimeout(function() {
-       $($flashMsg).remove();
+       $($sendFlashMsg).remove();
     }, 3000);
 
     $msgPop.css({ "height": "0" });
