@@ -1,15 +1,32 @@
 {{#if new_chat}}
 
-<form method="post" action="/messages/new/{{other_user}}">
-   <div class="msg_container">
-      <input type="hidden" name="users[]" value="{{other_user}}" />
-      <input type="hidden" name="users[]" value="{{user.username}}" />
-      <input type="hidden" name="sent_by" value="{{user.username}}" />
-      <input type="hidden" name="profileimage" value="{{user.profileimage}}" />
-      <input class="form__input" type="text" placeholder="Send a message" name="message" value="{{message}}" required  autocapitalize="none" />
-      <button class="msg_send" name="submit" type="submit">Send</button>
+<div class="direct_msg_container" id="messagePanel">
+
+  <div class="chat_name">
+    {{chat_name}}
+    <img style="cursor: pointer" src="/icons/elipsis.png" class="chatSettingsBtn mobile-nav__icon chat_name_msg_settings_btn" />
+  </div>
+
+  <div id="all_msg_container" class="all_msg_container">
+
+     <div class="spacer"></div>
+     <div class="spacer"></div>
+     <div class="spacer"></div>
+
    </div>
-</form>
+
+   <form method="post" action="/messages/new/{{other_user}}">
+      <div class="msg_container">
+         <input type="hidden" name="users[]" value="{{other_user}}" />
+         <input type="hidden" name="users[]" value="{{user.username}}" />
+         <input type="hidden" name="sent_by" value="{{user.username}}" />
+         <input type="hidden" name="profileimage" value="{{user.profileimage}}" />
+         <input class="form__input" type="text" placeholder="Send a message" name="message" value="{{message}}" required  autocapitalize="none" />
+         <button class="msg_send" name="submit" type="submit">Send</button>
+      </div>
+   </form>
+
+</div>
 
 {{else}}
 
