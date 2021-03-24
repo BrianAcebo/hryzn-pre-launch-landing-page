@@ -88,14 +88,14 @@
 
    </div>
 
-   <form>
+   <form method="post" action="/messages/chat/{{message._id}}">
       <div class="msg_container">
          <input id="msgUsername" type="hidden" name="username" value="{{user.username}}" />
          <input id="msgImg" type="hidden" name="profileimage" value="{{user.profileimage}}" />
-         <input id="chatId" type="hidden" name="chat_id" value="{{message.id}}" />
+         <input id="chatId" type="hidden" name="chat_id" value="{{message._id}}" />
         <input id="siteURL" type="hidden" name="siteURl" value="{{site_url}}" />
          <textarea id="msgContent" oninput="auto_grow(this)" class="form__input" type="text" placeholder="Send a message" name="message" value="" required  autocapitalize="none"></textarea>
-         <button id="sendBtn" class="msg_send" name="submit" type="submit">Send</button>
+         <button id="sendBtn_off" class="msg_send" name="submit" type="submit">Send</button>
       </div>
    </form>
 
