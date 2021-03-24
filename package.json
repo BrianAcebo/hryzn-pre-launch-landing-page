@@ -46,7 +46,7 @@
     "passport-local": "*",
     "request": "^2.88.2",
     "request-promise": "^4.2.6",
-    "socket.io": "^2.3.0",
+    "socket.io": "^2.4.1",
     "trumbowyg": "^2.15.2",
     "twilio": "^3.44.0",
     "unsplash-js": "^7.0.4"

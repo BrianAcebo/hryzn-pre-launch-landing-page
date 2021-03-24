@@ -833,6 +833,7 @@ section.project {
 #projectSettingsNav .project_settings_social a,
 #msgPop .project_settings_social a {
    margin: 15px;
+   cursor: pointer;
 }
 
 #msgPop {
@@ -1719,7 +1720,7 @@ section.project {
    color: #333;
    font-size: 18px;
    padding: 0;
-   margin: 50px 0 0 0;
+   margin: 35px 0 0 0;
    line-height: 25px;
 }
 
@@ -1800,10 +1801,10 @@ section.project {
 
 #micropostPop .micro_action_btns,
 #micropostPop .action_btns_social {
-   display: flex;
-   flex-direction: row;
+  display: flex;
+  flex-direction: row;
   align-self: flex-end;
-  margin-top: 10px;
+  margin-top: 15px;
 }
 
 #micropostPop .i_amounts {

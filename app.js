@@ -32,6 +32,13 @@ app.use(cors());
 
 const hbs = exphbs.create({});
 
+// const http = require('http').Server(app);
+// const io = require('socket.io')(http);
+//
+// io.on('connection', () =>{
+//  console.log('a user is connected')
+// })
+
 // View Engine
 app.set('views', path.join(__dirname, 'views'));
 app.engine('handlebars', exphbs({defaultLayout: 'layout'}));

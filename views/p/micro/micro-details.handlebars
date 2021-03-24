@@ -143,13 +143,6 @@
                {{/if}}
 
 
-               <div class="action_btns_social">
-                  <a target="_blank" href="http://www.facebook.com/sharer.php?u={{site_url}}/p/details/{{project._id}}/guest&amp;t={{#if project.project_title}}{{project.project_title}}{{else}}Explore On Hryzn{{/if}}" title="Share on Facebook" class="facebook"><i class="fa fa-facebook"></i></a>
-                  <a target="_blank" href="https://twitter.com/intent/tweet?original_referer=https%3A%2F%2Fmyhryzn%3A5000%2Fp%2Fdetails%2F{{project._id}}&ref_src=twsrc%5Etfw&text={{#if project.project_title}}{{project.project_title}}{{else}}Explore On Hryzn{{/if}}&tw_p=tweetbutton&url=https%3A%2F%2Fwww.myhryzn.com%2Fp%2Fdetails%2F{{project._id}}%2Fguest&via=myHryzn" title="Share on Twitter" class="twitter"><i class="fa fa-twitter"></i></a>
-                  <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-                  <a class="check" class="copy-link" onclick="copyLink('{{site_url}}/p/micro/{{project._id}}/guest')"><i class="fa fa-link"></i></a>
-               </div>
-
                {{#if is_admin_of_project}}
                <div class="micro_action_btns">
                   <div class="modalBtn admin_btn">Delete</div>
@@ -380,7 +373,7 @@
          @{{this}}
       </a>
       {{/each}} -->
-      <input id="msgContentProjectValue" type="hidden" name="message" value='<div style="flex-direction: row; justify-content: space-between; align-items: flex-start;"><a class="micro_tag {{#if project.project_title}}micro_tag_w_title{{/if}}" href="/profile/{{project.project_owner}}">@{{project.project_owner}}</a></div><div class="micropost"><div class="micropost_card {{#if project.micro_image}}card_is_micro_image{{else}}{{#if project.micro_audio}}card_is_micro_audio{{else}}{{#if project.micro_video}}card_is_micro_video{{else}}card_is_micro_text{{/if}}{{/if}}{{/if}}"><a href="/p/micro/{{project._id}}" style="width: 100%;">{{#if project.project_title}}<p class="micro_title">{{project.project_title}}</p>{{/if}}{{#if project.micro_body}}<p class="micro_body">{{{project.micro_body}}}</p>{{/if}}  </a><a href="/p/micro/{{project._id}}" style="width: 100%;">{{#if project.micro_image}}<img src="https://ik.imagekit.io/w07am55tja/{{project.micro_image}}?tr=w-650" class="img-responsive" alt="{{project.micro_body}}" />{{/if}}{{#if project.micro_video}}<video  preload="auto" controls controlsList="nodownload" class="micro_video"><source src="https://ik.imagekit.io/w07am55tja/{{project.micro_video}}" type="video/mp4"><source src="https://ik.imagekit.io/w07am55tja/{{project.micro_video}}" type="video/ogg"><source src="https://ik.imagekit.io/w07am55tja/{{project.micro_video}}" type="video/webm">Your browser does not support the video tag.</video>{{/if}}{{#if project.micro_audio}}{{#if project.thumbnail_image}}<img src="https://ik.imagekit.io/w07am55tja/{{project.thumbnail_image}}?tr=w-650" class="img-responsive" alt="{{project.micro_body}}" />{{/if}}<audio controls controlsList="nodownload" class="micro_audio"><source src="https://ik.imagekit.io/w07am55tja/{{project.micro_audio}}" type="audio/ogg"><source src="https://ik.imagekit.io/w07am55tja/{{project.micro_audio}}" type="audio/mpeg"><source src="https://ik.imagekit.io/w07am55tja/{{project.micro_audio}}" type="audio/wav">Your browser does not support the audio element.</audio>{{/if}}</a></div></div>'>
+      <input id="msgContentProjectValue" type="hidden" name="message" value=''>
    </div>
 </div>
 
@@ -492,6 +485,8 @@ user_followers.push(`{{{this}}}`)
 
 /*initiate the user_autocomplete function on the "user_autocomplete_input" element, and pass along the user_followers array as possible user_autocomplete values:*/
 user_autocomplete(document.getElementsByClassName("user_autocomplete_input")[0], user_followers);
+
+document.getElementById("msgContentInput").value = `<div style="flex-direction: row; justify-content: space-between; align-items: flex-start;"><a class="micro_tag {{#if project.project_title}}micro_tag_w_title{{/if}}" href="/profile/{{project.project_owner}}">@{{project.project_owner}}</a></div><div class="micropost"><div class="micropost_card {{#if project.micro_image}}card_is_micro_image{{else}}{{#if project.micro_audio}}card_is_micro_audio{{else}}{{#if project.micro_video}}card_is_micro_video{{else}}card_is_micro_text{{/if}}{{/if}}{{/if}}"><a href="/p/micro/{{project._id}}" style="width: 100%;">{{#if project.project_title}}<p class="micro_title">{{project.project_title}}</p>{{/if}}{{#if project.micro_body}}<p class="micro_body">{{{project.micro_body}}}</p>{{/if}}  </a><a href="/p/micro/{{project._id}}" style="width: 100%;">{{#if project.micro_image}}<img src="https://ik.imagekit.io/w07am55tja/{{project.micro_image}}?tr=w-650" class="img-responsive" alt="{{project.micro_body}}" />{{/if}}{{#if project.micro_video}}<video  preload="auto" controls controlsList="nodownload" class="micro_video"><source src="https://ik.imagekit.io/w07am55tja/{{project.micro_video}}" type="video/mp4"><source src="https://ik.imagekit.io/w07am55tja/{{project.micro_video}}" type="video/ogg"><source src="https://ik.imagekit.io/w07am55tja/{{project.micro_video}}" type="video/webm">Your browser does not support the video tag.</video>{{/if}}{{#if project.micro_audio}}{{#if project.thumbnail_image}}<img src="https://ik.imagekit.io/w07am55tja/{{project.thumbnail_image}}?tr=w-650" class="img-responsive" alt="{{project.micro_body}}" />{{/if}}<audio controls controlsList="nodownload" class="micro_audio"><source src="https://ik.imagekit.io/w07am55tja/{{project.micro_audio}}" type="audio/ogg"><source src="https://ik.imagekit.io/w07am55tja/{{project.micro_audio}}" type="audio/mpeg"><source src="https://ik.imagekit.io/w07am55tja/{{project.micro_audio}}" type="audio/wav">Your browser does not support the audio element.</audio>{{/if}}</a></div></div>`;
 </script>
 
 {{#if is_admin_of_project}}

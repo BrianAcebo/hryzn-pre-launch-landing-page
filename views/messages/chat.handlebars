@@ -2,9 +2,6 @@
 
 <form method="post" action="/messages/new/{{other_user}}">
    <div class="msg_container">
-      <input type="hidden" name="_x_" value="$2a$10$BJn0b4OzBarDigcTUl0kejbffkejbfvxSI.JrlLKeSsOi8oKqBAK" />
-      <input type="hidden" name="_c_" value="{{csrf_web_token}}" />
-      <input type="hidden" name="orange_blossom" value="" />
       <input type="hidden" name="users[]" value="{{other_user}}" />
       <input type="hidden" name="users[]" value="{{user.username}}" />
       <input type="hidden" name="sent_by" value="{{user.username}}" />
@@ -91,13 +88,12 @@
 
    </div>
 
-   <form method="post" action="/messages/chat/{{message.id}}">
+   <form>
       <div class="msg_container">
-         <input type="hidden" name="_x_" value="$2a$10$BJn0b4OzBarDigcTUl0kejbffkejbfvxSI.JrlLKeSsOi8oKqBAK" />
-         <input type="hidden" name="_c_" value="{{csrf_web_token}}" />
-         <input type="hidden" name="orange_blossom" value="" />
          <input id="msgUsername" type="hidden" name="username" value="{{user.username}}" />
          <input id="msgImg" type="hidden" name="profileimage" value="{{user.profileimage}}" />
+         <input id="chatId" type="hidden" name="chat_id" value="{{message.id}}" />
+        <input id="siteURL" type="hidden" name="siteURl" value="{{site_url}}" />
          <textarea id="msgContent" oninput="auto_grow(this)" class="form__input" type="text" placeholder="Send a message" name="message" value="" required  autocapitalize="none"></textarea>
          <button id="sendBtn" class="msg_send" name="submit" type="submit">Send</button>
       </div>
@@ -151,3 +147,13 @@ all_msg_container.scrollTop = all_msg_container.scrollHeight;
 </div>
 
 {{/if}}
+
+{{!
+<script src=”/scripts//socket.io/socket.io.js”></script>
+
+<script>
+var socket = io();
+
+socket.on('message', addMessages)
+</script>
+}}

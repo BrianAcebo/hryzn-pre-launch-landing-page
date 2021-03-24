@@ -815,12 +815,22 @@ $(document).ready(function() {
    // Add flash message on project details link copied
    var $copy = $('.check');
    var $linkFlashMsg = $('#flashMsg');
-   var $linkFlash = '<div class="success__msg"><p>Link was copied.</p><p class="error__exit">×</p></div>';
 
    $copy.click(function() {
+      if($window.scrollTop() >= 50){
+        if ($window.width() > 992) {
+          var $linkFlash = '<div><div class="success__msg" style="top:75px"><p>Link was copied.</p><p class="error__exit">×</p></div></div>';
+        } else {
+          var $linkFlash = '<div><div class="success__msg"><p>Link was copied.</p><p class="error__exit">×</p></div></div>';
+        }
+      } else {
+        var $linkFlash = '<div><div class="success__msg"><p>Link was copied.</p><p class="error__exit">×</p></div></div>';
+      }
+
       $linkFlashMsg.append($linkFlash);
       setTimeout(function() {
-         $($linkFlashMsg).remove();
+        $('.success__msg').parent().remove();
+        console.log('yee');
       }, 3000);
    });
 
@@ -1021,7 +1031,7 @@ $("#repostForm .repost_submit").click(function() {
 
    $repostFlashMsg.append($repostFlash);
    setTimeout(function() {
-      $($repostFlashMsg).remove();
+      $('.success__msg').parent().remove();
    }, 3000);
 
    $.post($('#repostForm').attr('action'), {
@@ -1042,11 +1052,11 @@ $("#unrepostForm .unrepost_btn").click(function() {
       $(".detailsRepostModal").css({ "display": "none" });
 
       var $unrepostFlashMsg = $('#flashMsg');
-      var $unrepostFlash = '<div class="success__msg"><p>Unreposted project.</p><p class="error__exit">×</p></div>';
+      var $unrepostFlash = '<div><div class="success__msg"><p>Unreposted project.</p><p class="error__exit">×</p></div></div>';
 
       $unrepostFlashMsg.append($unrepostFlash);
       setTimeout(function() {
-         $($unrepostFlashMsg).remove();
+         $('.success__msg').parent().remove();
       }, 3000);
 
       $.post($('#unrepostForm').attr('action'), {
@@ -1131,10 +1141,9 @@ var $user_autocomplete = $(".user_autocomplete");
 
 var $msgContentProjectValue = $('#msgContentProjectValue');
 
-if ($msgContentProjectValue.length >= 1) {
-  $msgContentInput.val($msgContentProjectValue.val());
-  console.log($msgContentProjectValue);
-}
+// if ($msgContentProjectValue.length >= 1) {
+//   $msgContentInput.val($msgContentProjectValue.val());
+// }
 
 var $all_followers = []
 
@@ -1146,7 +1155,7 @@ $msgModalBtn.each(function() {
       $("body").css({ "overflow-y": "hidden" });
       $(".following_index_feed").css({ "overflow-y": "hidden" });
 
-      if ($(this).parents(".project_content_right")) {
+      if ($(this).parents(".project_content_right").length >= 1) {
         var $msgContent = $(this).parents(".project_content_right").html().toString();
 
         var $indexToRemove = $msgContent.indexOf('<div class="micro_action_btns">');
@@ -1171,7 +1180,7 @@ $msgPopClose.click(function() {
 
 var $sendBtn = $(".user_autocomplete_btn");
 var $sendFlashMsg = $('#flashMsg');
-var $sendFlash = '<div class="success__msg"><p>Message was sent.</p><p class="error__exit">×</p></div>';
+var $sendFlash = '<div><div class="success__msg"><p>Message was sent.</p><p class="error__exit">×</p></div></div>';
 
 $($sendBtn).on("click", function(e) {
   e.preventDefault();
@@ -1190,7 +1199,7 @@ $($sendBtn).on("click", function(e) {
 
     $sendFlashMsg.append($sendFlash);
     setTimeout(function() {
-       $($sendFlashMsg).remove();
+       $('.success__msg').parent().remove();
     }, 3000);
 
     $msgPop.css({ "height": "0" });
@@ -1258,6 +1267,49 @@ $(".direct_msg_wrapper").on("click", function(e) {
   }
 
 });
+/**********/
+
+
+// // Direct Message Ajax
+// var $chatId = $("#chatId").val();
+// var $siteURL = $("#siteURL").val();
+// var $sendFlashMsg = $('#flashMsg');
+// var $sendFlash = '<div><div class="success__msg"><p>Message was sent.</p><p class="error__exit">×</p></div></div>';
+//
+// $("#sendBtn").click(function() {
+//
+//   var $msgContent = $("#msgContent").val();
+//
+//   sendMessage({
+//     username: $("#msgUsername").val(),
+//     message: $("#msgContent").val(),
+//     profileimage: $("#msgImg").val(),
+//   });
+//
+//   //getMessages()
+//
+// });
+//
+// function addMessages(message) {
+//   $('#all_msg_container').append(`<div class="direct_msg_wrapper user_own_msg"><p class="direct_msg_self">${message.message}</p><a href="/profile/${message.username}" style="align-self: flex-end"><div class="msg_user_container"><p class="direct_msg_username">${message.username}</p><div class="msg_profile_img_container"><img class="msg_profile_img" src="https://ik.imagekit.io/w07am55tja/${message.profileimage}?tr=w-100"></div></div></a></div>`)
+// }
+//
+// function getMessages() {
+//   // $.get($siteURL, (data) => {
+//   //   data.forEach(addMessages);
+//   // })
+// }
+//
+// function sendMessage(message){
+//   // $.post($siteURL, message)
+//
+//   console.log(message);
+//
+//   $sendFlashMsg.append($sendFlash);
+//   setTimeout(function() {
+//      $('.success__msg').parent().remove();
+//   }, 3000);
+// }
 /**********/
 
 });

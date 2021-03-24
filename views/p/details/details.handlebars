@@ -583,7 +583,7 @@
       </div>
 
       <form autocomplete="off">
-        <input id="msgContentInput" type="hidden" name="message" value='<div class="project_card"><a href="/p/details/{{project._id}}" class="project_link"><img src="https://ik.imagekit.io/w07am55tja/{{#if project.thumbnail_image}}{{project.thumbnail_image}}{{else}}{{project.project_image}}{{/if}}?tr=w-650" class="img-responsive" alt="{{project.project_title}}" /></a><div class="project_card_bottom"><div class="project_bottom_wrapper"><div class="bg_overlay"></div><div class="project_bottom_details"><a href="/profile/{{project.project_owner}}"><p class="project_owner">@{{project.project_owner}}</p></a><a href="/p/details/{{project._id}}" class="project_link"><p class="project_card_title">{{project.project_title}}</p></a></div></div></div></div>'>
+        <input id="msgContentInput" type="hidden" name="message" value=''>
 
         <div class="user_autocomplete">
           <input class="user_autocomplete_input" type="text" name="send_to_user" placeholder="Send to...">
@@ -707,6 +707,8 @@ user_followers.push(`{{{this}}}`)
 
 /*initiate the user_autocomplete function on the "user_autocomplete_input" element, and pass along the user_followers array as possible user_autocomplete values:*/
 user_autocomplete(document.getElementsByClassName("user_autocomplete_input")[0], user_followers);
+
+document.getElementById("msgContentInput").value = `<div class="project_card"><a href="/p/details/{{project._id}}" class="project_link"><img src="https://ik.imagekit.io/w07am55tja/{{#if project.thumbnail_image}}{{project.thumbnail_image}}{{else}}{{project.project_image}}{{/if}}?tr=w-650" class="img-responsive" alt="{{project.project_title}}" /></a><div class="project_card_bottom"><div class="project_bottom_wrapper"><div class="bg_overlay"></div><div class="project_bottom_details"><a href="/profile/{{project.project_owner}}"><p class="project_owner">@{{project.project_owner}}</p></a><a href="/p/details/{{project._id}}" class="project_link"><p class="project_card_title">{{project.project_title}}</p></a></div></div></div></div>`;
 </script>
 
 <div class="detailsRepostModal modalBackground">

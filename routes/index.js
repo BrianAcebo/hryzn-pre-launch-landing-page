@@ -2195,39 +2195,43 @@ router.get('/messages/chat/:messageId', (req, res, next) => {
 
          if (err) throw err;
 
-         var chat_name = '';
+         if (message) {
+           var chat_name = '';
 
-         message.users.forEach(function(user, key) {
-            if (user != req.user.username) {
-              chat_name = user;
+           message.users.forEach(function(user, key) {
+              if (user != req.user.username) {
+                chat_name = user;
+              }
+            });
+
+            if (message.last_sent_by != req.user._id) {
+              Message.findByIdAndUpdate(message._id, {was_viewed: true}, (err, msg) => {
+
+                 if (err) throw err;
+
+                 res.render('messages/chat', {
+                    page_title: chat_name,
+                    new_chat: false,
+                    message: message,
+                    chat: true,
+                    chat_name: chat_name
+                 });
+
+              });
+
+            } else {
+              res.render('messages/chat', {
+                 page_title: chat_name,
+                 new_chat: false,
+                 message: message,
+                 chat: true,
+                 chat_name: chat_name,
+                 viewing_own_messages: true
+              });
             }
-          });
-
-          if (message.last_sent_by != req.user._id) {
-            Message.findByIdAndUpdate(message._id, {was_viewed: true}, (err, msg) => {
-
-               if (err) throw err;
-
-               res.render('messages/chat', {
-                  page_title: chat_name,
-                  new_chat: false,
-                  message: message,
-                  chat: true,
-                  chat_name: chat_name
-               });
-
-            });
-
-          } else {
-            res.render('messages/chat', {
-               page_title: chat_name,
-               new_chat: false,
-               message: message,
-               chat: true,
-               chat_name: chat_name,
-               viewing_own_messages: true
-            });
-          }
+         } else {
+           res.redirect('/');
+         }
 
       });
 
@@ -2339,6 +2343,8 @@ router.post('/messages/chat/:messageId', verifyToken, (req, res, next) => {
                         }
                      });
                   });
+
+                  io.emit('message', req.body);
 
                   req.flash('success_msg', "Message Sent");
                   res.redirect('/messages/chat/' + req.params.messageId);

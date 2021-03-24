@@ -324,7 +324,7 @@ blockquote {
    position: fixed;
    align-items: center;
    top: 0;
-   z-index: 88888;
+   z-index: 888888;
 }
 
 .error__exit {
@@ -348,7 +348,7 @@ blockquote {
    align-items: center;
    border-top: 3px solid #5eb484;
    top: 100px;
-   z-index: 88888;
+   z-index: 888888;
 }
 
 @media screen and (max-width: 992px) {
