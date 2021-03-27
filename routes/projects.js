@@ -1539,16 +1539,6 @@ router.get('/details/:id/guest', (req, res, next) => {
                   var enough_likes = false;
                }
 
-               // If the project has any comments
-               if (project.comments.length > 0) {
-                  var comment_amount = project.comments.length
-                  var enough_comments = true;
-               } else {
-                  // Project has no comments
-                  var comment_amount = 0;
-                  var enough_comments = false;
-               }
-
 
                // If the project has any reposts
                if (project.reposts.length > 0) {
@@ -2090,16 +2080,6 @@ router.get('/micro/:id/guest', (req, res, next) => {
                var user_liked = false;
                var likes_amount = 0;
                var enough_likes = false;
-            }
-
-            // If the project has any comments
-            if (project.comments.length > 0) {
-               var comment_amount = project.comments.length
-               var enough_comments = true;
-            } else {
-               // Project has no comments
-               var comment_amount = 0;
-               var enough_comments = false;
             }
 
 
@@ -3588,6 +3568,14 @@ router.get('/details/delete/:id', (req, res, next) => {
                      if(err) throw err;
                   });
                }
+            }
+
+
+            // If the project has any comments
+            if (project.comments_id != '' || typeof project.comments_id != 'undefined') {
+              Comment.findByIdAndRemove(project.comments_id, (err) => {
+                if (err) throw err;
+              });
             }
 
             // Delete project image
