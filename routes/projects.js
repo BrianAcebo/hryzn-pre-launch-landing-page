@@ -43,6 +43,7 @@ const Notification = require('../models/notifications');
 const Group = require('../models/groups');
 const Collection = require('../models/collections');
 const Category = require('../models/categories');
+const Comment = require('../models/comments');
 
 
 // GET Create Project
@@ -1176,7 +1177,7 @@ router.get('/details/:id', (req, res, next) => {
                } else {
 
                   // If the project has any saves
-                  if (project.saves.length  > 0) {
+                  if (project.saves != '' || typeof project.saves != 'undefined') {
                      var saves_amount = project.saves.length;
                      var enough_saves = true;
                      // If the person viewing saved the project
@@ -1191,7 +1192,7 @@ router.get('/details/:id', (req, res, next) => {
                   }
 
                   // If the project has any likes
-                  if (project.likes.length > 0) {
+                  if (project.likes != '' || typeof project.likes != 'undefined') {
                      var likes_amount = project.likes.length;
                      var enough_likes = true;
                      // If the person viewing liked the project
@@ -1206,8 +1207,7 @@ router.get('/details/:id', (req, res, next) => {
                   }
 
                   // If the project has any comments
-                  if (project.comments.length > 0) {
-                     var comment_amount = project.comments.length
+                  if (project.comments_id != '' || typeof project.comments_id != 'undefined') {
                      var enough_comments = true;
                   } else {
                      // Project has no comments
@@ -1217,7 +1217,7 @@ router.get('/details/:id', (req, res, next) => {
 
 
                   // If the project has any reposts
-                  if (project.reposts.length > 0) {
+                  if (project.reposts != '' || typeof project.reposts != 'undefined') {
                      var repost_amount = project.reposts.length;
                      var enough_reposts = true;
                      // If the person viewing reposted the project
@@ -1284,6 +1284,15 @@ router.get('/details/:id', (req, res, next) => {
 
                   if (good_project) {
 
+                    Comment.findOne({ '_id': { $in: project.comments_id} }, (err, comments) => {
+
+                      if (comments) {
+                        var comments = comments;
+                      } else {
+                        var comments;
+                      }
+
+
                      Project.find({$text: { $search: search_notes }}, {score: { $meta: "textScore" }}, (err, related_projects) => {
                         if (err) throw err;
 
@@ -1340,7 +1349,8 @@ router.get('/details/:id', (req, res, next) => {
                               enough_reposts: enough_reposts,
                               repost_amount: repost_amount,
                               user_reposted: user_reposted,
-                              admin_amount: admin_amount
+                              admin_amount: admin_amount,
+                              comments: comments
                            });
                         } else {
                            if (project.categories.length > 4) {
@@ -1398,7 +1408,8 @@ router.get('/details/:id', (req, res, next) => {
                                     enough_reposts: enough_reposts,
                                     repost_amount: repost_amount,
                                     user_reposted: user_reposted,
-                                    admin_amount: admin_amount
+                                    admin_amount: admin_amount,
+                                    comments: comments
                                  });
                               });
                            } else {
@@ -1456,13 +1467,15 @@ router.get('/details/:id', (req, res, next) => {
                                     enough_reposts: enough_reposts,
                                     repost_amount: repost_amount,
                                     user_reposted: user_reposted,
-                                    admin_amount: admin_amount
+                                    admin_amount: admin_amount,
+                                    comments: comments
                                  });
                               });
                            }
                         }
 
                      }).sort({score: { $meta: "textScore" }});
+                     });
                   } else {
                      res.redirect('/');
                   }
@@ -1756,8 +1769,7 @@ router.get('/micro/:id', (req, res, next) => {
                }
 
                // If the project has any comments
-               if (project.comments.length > 0) {
-                  var comment_amount = project.comments.length
+               if (project.comments_id != '' || typeof project.comments_id != 'undefined') {
                   var enough_comments = true;
                } else {
                   // Project has no comments
@@ -1833,184 +1845,196 @@ router.get('/micro/:id', (req, res, next) => {
 
                if (good_project) {
 
-                  Project.find({$text: { $search: project.micro_body }}, {score: { $meta: "textScore" }}, (err, related_projects) => {
-                     if (err) throw err;
+                 Comment.findOne({ '_id': { $in: project.comments_id} }, (err, comments) => {
 
-                     var all_public_projects = [];
+                   if (comments) {
+                     var comments = comments;
+                   } else {
+                     var comments;
+                   }
 
-                     related_projects.forEach(function(project, key) {
+                    Project.find({$text: { $search: project.micro_body }}, {score: { $meta: "textScore" }}, (err, related_projects) => {
+                       if (err) throw err;
 
-                        // Scan through every project
+                       var all_public_projects = [];
 
-                        if(project.posted_to_collection) {
-                           if (project.posted_to_collection.length > 0) {
+                       related_projects.forEach(function(project, key) {
 
-                              // See if project has any collections
+                          // Scan through every project
 
-                              project.posted_to_collection.forEach(function(project_collection, key) {
+                          if(project.posted_to_collection) {
+                             if (project.posted_to_collection.length > 0) {
 
-                                 if (project_collection.collection_is_private) {
+                                // See if project has any collections
 
-                                    // If collection was private skip project
+                                project.posted_to_collection.forEach(function(project_collection, key) {
 
-                                 } else {
-                                    // If collection was public mark that we scanned collection
-                                    all_public_projects.push(project);
-                                 }
-                              });
-                           } else {
-                              // No collections so we mark that we scanned project
-                              all_public_projects.push(project);
-                           }
-                        } else {
-                           // No collections so we mark that we scanned project
-                           all_public_projects.push(project);
-                        }
-                     });
+                                   if (project_collection.collection_is_private) {
 
-                     var reverse_projects = all_public_projects.slice(0,14).reverse();
+                                      // If collection was private skip project
 
-                     if (related_projects.length > 4) {
-                        res.render('p/micro/micro-details', {
-                           project: project,
-                           related_projects: reverse_projects,
-                           projects: reverse_projects, // masonry related projects
-                           page_title: page_title,
-                           is_admin_of_project: is_admin_of_project,
-                           comment_amount: comment_amount,
-                           enough_comments: enough_comments,
-                           enough_saves: enough_saves,
-                           saves_amount: saves_amount,
-                           enough_likes: enough_likes,
-                           likes_amount: likes_amount,
-                           user_saved: user_saved,
-                           user_liked: user_liked,
-                           enough_reposts: enough_reposts,
-                           repost_amount: repost_amount,
-                           user_reposted: user_reposted,
-                           admin_amount: admin_amount
-                        });
-                     } else {
-                        if (project.categories.length > 4) {
-                           Project.find({ 'categories': { $in: project.categories} }, (err, related_projects) => {
-                              if (err) throw err;
+                                   } else {
+                                      // If collection was public mark that we scanned collection
+                                      all_public_projects.push(project);
+                                   }
+                                });
+                             } else {
+                                // No collections so we mark that we scanned project
+                                all_public_projects.push(project);
+                             }
+                          } else {
+                             // No collections so we mark that we scanned project
+                             all_public_projects.push(project);
+                          }
+                       });
 
-                              var all_public_projects = [];
+                       var reverse_projects = all_public_projects.slice(0,14).reverse();
 
-                              related_projects.forEach(function(project, key) {
+                       if (related_projects.length > 4) {
+                          res.render('p/micro/micro-details', {
+                             project: project,
+                             related_projects: reverse_projects,
+                             projects: reverse_projects, // masonry related projects
+                             page_title: page_title,
+                             is_admin_of_project: is_admin_of_project,
+                             comment_amount: comment_amount,
+                             enough_comments: enough_comments,
+                             enough_saves: enough_saves,
+                             saves_amount: saves_amount,
+                             enough_likes: enough_likes,
+                             likes_amount: likes_amount,
+                             user_saved: user_saved,
+                             user_liked: user_liked,
+                             enough_reposts: enough_reposts,
+                             repost_amount: repost_amount,
+                             user_reposted: user_reposted,
+                             admin_amount: admin_amount,
+                             comments: comments
+                          });
+                       } else {
+                          if (project.categories.length > 4) {
+                             Project.find({ 'categories': { $in: project.categories} }, (err, related_projects) => {
+                                if (err) throw err;
 
-                                 // Scan through every project
+                                var all_public_projects = [];
 
-                                 if(project.posted_to_collection) {
-                                    if (project.posted_to_collection.length > 0) {
+                                related_projects.forEach(function(project, key) {
 
-                                       // See if project has any collections
+                                   // Scan through every project
 
-                                       project.posted_to_collection.forEach(function(project_collection, key) {
+                                   if(project.posted_to_collection) {
+                                      if (project.posted_to_collection.length > 0) {
 
-                                          if (project_collection.collection_is_private) {
+                                         // See if project has any collections
 
-                                             // If collection was private skip project
+                                         project.posted_to_collection.forEach(function(project_collection, key) {
 
-                                          } else {
-                                             // If collection was public mark that we scanned collection
-                                             all_public_projects.push(project);
-                                          }
-                                       });
-                                    } else {
-                                       // No collections so we mark that we scanned project
-                                       all_public_projects.push(project);
-                                    }
-                                 } else {
-                                    // No collections so we mark that we scanned project
-                                    all_public_projects.push(project);
-                                 }
-                              });
+                                            if (project_collection.collection_is_private) {
 
-                              var reverse_projects = all_public_projects.slice(0,14).reverse();
+                                               // If collection was private skip project
 
-                              res.render('p/micro/micro-details', {
-                                 project: project,
-                                 related_projects: reverse_projects,
-                                 projects: reverse_projects, // masonry related projects
-                                 page_title: page_title,
-                                 is_admin_of_project: is_admin_of_project,
-                                 comment_amount: comment_amount,
-                                 enough_comments: enough_comments,
-                                 enough_saves: enough_saves,
-                                 saves_amount: saves_amount,
-                                 enough_likes: enough_likes,
-                                 likes_amount: likes_amount,
-                                 user_saved: user_saved,
-                                 user_liked: user_liked,
-                                 enough_reposts: enough_reposts,
-                                 repost_amount: repost_amount,
-                                 user_reposted: user_reposted,
-                                 admin_amount: admin_amount
-                              });
-                           });
-                        } else {
-                           Project.find({}, (err, related_projects) => {
-                              if (err) throw err;
+                                            } else {
+                                               // If collection was public mark that we scanned collection
+                                               all_public_projects.push(project);
+                                            }
+                                         });
+                                      } else {
+                                         // No collections so we mark that we scanned project
+                                         all_public_projects.push(project);
+                                      }
+                                   } else {
+                                      // No collections so we mark that we scanned project
+                                      all_public_projects.push(project);
+                                   }
+                                });
 
-                              var all_public_projects = [];
+                                var reverse_projects = all_public_projects.slice(0,14).reverse();
 
-                              related_projects.forEach(function(project, key) {
+                                res.render('p/micro/micro-details', {
+                                   project: project,
+                                   related_projects: reverse_projects,
+                                   projects: reverse_projects, // masonry related projects
+                                   page_title: page_title,
+                                   is_admin_of_project: is_admin_of_project,
+                                   comment_amount: comment_amount,
+                                   enough_comments: enough_comments,
+                                   enough_saves: enough_saves,
+                                   saves_amount: saves_amount,
+                                   enough_likes: enough_likes,
+                                   likes_amount: likes_amount,
+                                   user_saved: user_saved,
+                                   user_liked: user_liked,
+                                   enough_reposts: enough_reposts,
+                                   repost_amount: repost_amount,
+                                   user_reposted: user_reposted,
+                                   admin_amount: admin_amount,
+                                   comments: comments
+                                });
+                             });
+                          } else {
+                             Project.find({}, (err, related_projects) => {
+                                if (err) throw err;
 
-                                 // Scan through every project
+                                var all_public_projects = [];
 
-                                 if(project.posted_to_collection) {
-                                    if (project.posted_to_collection.length > 0) {
+                                related_projects.forEach(function(project, key) {
 
-                                       // See if project has any collections
+                                   // Scan through every project
 
-                                       project.posted_to_collection.forEach(function(project_collection, key) {
+                                   if(project.posted_to_collection) {
+                                      if (project.posted_to_collection.length > 0) {
 
-                                          if (project_collection.collection_is_private) {
+                                         // See if project has any collections
 
-                                             // If collection was private check skip project
+                                         project.posted_to_collection.forEach(function(project_collection, key) {
 
-                                          } else {
-                                             // If collection was public mark that we scanned collection
-                                             all_public_projects.push(project);
-                                          }
-                                       });
-                                    } else {
-                                       // No collections so we mark that we scanned project
-                                       all_public_projects.push(project);
-                                    }
-                                 } else {
-                                    // No collections so we mark that we scanned project
-                                    all_public_projects.push(project);
-                                 }
-                              });
+                                            if (project_collection.collection_is_private) {
 
-                              var reverse_projects = all_public_projects.slice(0,14).reverse();
+                                               // If collection was private check skip project
 
-                              res.render('p/micro/micro-details', {
-                                 project: project,
-                                 related_projects: reverse_projects,
-                                 projects: reverse_projects, // masonry related projects
-                                 page_title: page_title,
-                                 is_admin_of_project: is_admin_of_project,
-                                 comment_amount: comment_amount,
-                                 enough_comments: enough_comments,
-                                 enough_saves: enough_saves,
-                                 saves_amount: saves_amount,
-                                 enough_likes: enough_likes,
-                                 likes_amount: likes_amount,
-                                 user_saved: user_saved,
-                                 user_liked: user_liked,
-                                 enough_reposts: enough_reposts,
-                                 repost_amount: repost_amount,
-                                 user_reposted: user_reposted,
-                                 admin_amount: admin_amount
-                              });
-                           });
-                        }
-                     }
+                                            } else {
+                                               // If collection was public mark that we scanned collection
+                                               all_public_projects.push(project);
+                                            }
+                                         });
+                                      } else {
+                                         // No collections so we mark that we scanned project
+                                         all_public_projects.push(project);
+                                      }
+                                   } else {
+                                      // No collections so we mark that we scanned project
+                                      all_public_projects.push(project);
+                                   }
+                                });
 
-                  }).sort({score: { $meta: "textScore" }});
+                                var reverse_projects = all_public_projects.slice(0,14).reverse();
+
+                                res.render('p/micro/micro-details', {
+                                   project: project,
+                                   related_projects: reverse_projects,
+                                   projects: reverse_projects, // masonry related projects
+                                   page_title: page_title,
+                                   is_admin_of_project: is_admin_of_project,
+                                   comment_amount: comment_amount,
+                                   enough_comments: enough_comments,
+                                   enough_saves: enough_saves,
+                                   saves_amount: saves_amount,
+                                   enough_likes: enough_likes,
+                                   likes_amount: likes_amount,
+                                   user_saved: user_saved,
+                                   user_liked: user_liked,
+                                   enough_reposts: enough_reposts,
+                                   repost_amount: repost_amount,
+                                   user_reposted: user_reposted,
+                                   admin_amount: admin_amount,
+                                   comments: comments
+                                });
+                             });
+                          }
+                       }
+
+                    }).sort({score: { $meta: "textScore" }});
+                  });
                } else {
                   res.redirect('/');
                }
@@ -3113,25 +3137,26 @@ router.post('/details/micro/like/:id', (req, res, next) => {
 
 
 // Post Project Detail - Comment
-router.post('/details/comment/:id', (req, res, next) => {
+router.post('/details/comment/:projectId', (req, res, next) => {
    if(req.isAuthenticated()) {
 
+     var project_id = req.params.projectId;
       var project_owner = req.body.project_owner;
 
       if (typeof req.body.og_path != 'undefined') {
          var path = req.body.og_path;
-         var notifPath = '/p/micro/' + req.params.id;
+         var notifPath = '/p/micro/' + req.params.projectId;
       } else {
-         var path = '/p/details/' + req.params.id
-         var notifPath = '/p/details/' + req.params.id
+         var path = '/p/details/' + req.params.projectId;
+         var notifPath = '/p/details/' + req.params.projectId;
       }
 
 
       info = [];
       info['profileUsername'] = req.user.username;
-      info['projectId'] = req.body.project_id;
-      if (req.body.profileimage) {
-         info['profileimage'] = req.body.profileimage;
+      info['projectId'] = project_id;
+      if (req.user.profileimage) {
+         info['profileimage'] = req.user.profileimage;
       } else {
          info['profileimage'] = 'hryzn-placeholder-01.jpg';
       }
@@ -3190,38 +3215,196 @@ router.post('/details/comment/:id', (req, res, next) => {
          }
       });
 
-      info['comment'] = comment_notes;
+      info['comment_content'] = comment_notes;
+      info['likes'] = [];
+      info['replies'] = [];
 
-      // Add save to project
-      Project.addComment(info, (err, user) => {
-         if(err) throw err;
+      Project.findOne({ '_id': { $in: project_id} }, (err, project) => {
 
-         // Send notification to the user mentioned
-         User.findOne({ 'username': { $in: project_owner} }, (err, reciever) => {
-            if (err) throw err;
+        if (err) throw err;
 
-            var newNotification = new Notification({
-               sender: req.user._id,
-               reciever: reciever._id,
-               type: '@' + req.user.username + ' commented on your post.',
-               link: notifPath,
-               date_sent: current_date
-            });
+        Comment.findOne({ '_id': { $in: project.comments_id } }, (err, comments) => {
 
-            // Create notification in database
-            Notification.saveNotification(newNotification, (err, notification) => {
+          if (comments) {
+
+            info['commentId'] = comments._id;
+
+            // Comments exist
+
+            // Add comment
+              Comment.addComment(info, (err, comment) => {
                if(err) throw err;
 
-               // Add Notification for User
-               User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+               // Send notification to the user mentioned
+               User.findOne({ 'username': { $in: project_owner} }, (err, reciever) => {
                   if (err) throw err;
 
-                  req.flash('success_msg', "Added Comment");
-                  res.redirect(path);
+                  var newNotification = new Notification({
+                     sender: req.user._id,
+                     reciever: reciever._id,
+                     type: '@' + req.user.username + ' commented on your post.',
+                     link: notifPath,
+                     date_sent: current_date
+                  });
+
+                  // Create notification in database
+                  Notification.saveNotification(newNotification, (err, notification) => {
+                     if(err) throw err;
+
+                     // Add Notification for User
+                     User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+                        if (err) throw err;
+
+                        req.flash('success_msg', "Added Comment");
+                        res.redirect(path);
+                     });
+                  });
+               });
+
+            });
+
+          } else {
+
+            // Comments don't exist
+
+            // Create new comment
+
+            var newComment = new Comment({
+               project_id: project_id,
+               comments: {
+                  username: info['profileUsername'],
+                  profileimage: info['profileimage'],
+                  comment_content: info['comment_content'],
+                  likes: [],
+                  replies: []
+               }
+            });
+
+            // Create comment in database
+            Comment.saveComment(newComment, (err, comment) => {
+               if(err) throw err;
+
+               // Add comment to project
+              Project.findByIdAndUpdate(project_id, { comments_id: comment._id }, (err, project) => {
+                  if(err) throw err;
+
+                  // Send notification to the user mentioned
+                  User.findOne({ 'username': { $in: project_owner} }, (err, reciever) => {
+                     if (err) throw err;
+
+                     var newNotification = new Notification({
+                        sender: req.user._id,
+                        reciever: reciever._id,
+                        type: '@' + req.user.username + ' commented on your post.',
+                        link: notifPath,
+                        date_sent: current_date
+                     });
+
+                     // Create notification in database
+                     Notification.saveNotification(newNotification, (err, notification) => {
+                        if(err) throw err;
+
+                        // Add Notification for User
+                        User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+                           if (err) throw err;
+
+                           req.flash('success_msg', "Added Comment");
+                           res.redirect(path);
+                        });
+                     });
+                  });
+
                });
             });
-         });
 
+          }
+        });
+
+      });
+
+   } else {
+      res.redirect('/users/register');
+   }
+});
+
+
+// Post Project Detail - Like comment
+router.post('/details/comment/like/:commentId', (req, res, next) => {
+   if(req.isAuthenticated()) {
+      info = [];
+      info['commentId'] = req.params.commentId;
+      info['commentContentId'] = req.body.commentContentId;
+      info['username'] = req.user.username;
+
+      var og_path = req.body.og_path;
+
+      Comment.findOne({ '_id': { $in: req.params.commentId } }, (err, comment) => {
+
+         if (err) throw err;
+
+         if (comment) {
+
+           comment.comments.forEach(function(comments, key) {
+
+             if (comments._id = req.body.commentContentId) {
+
+               if (comments.likes.indexOf(req.user.username) > -1) {
+                 // user already liked
+
+                 // Remove like from comment
+                 Comment.removeLikeComment(info, (err, comment) => {
+
+                    if(err) throw err;
+
+                    req.flash('success_msg', "Comment Liked");
+                    res.redirect(og_path);
+
+                 });
+
+               } else {
+                 //user is liking for the first time
+
+                 // Like comment
+                 Comment.likeComment(info, (err, comment) => {
+
+                    if(err) throw err;
+
+                    // Send notification to the user mentioned
+                    User.findOne({ 'username': { $in: comments.username } }, (err, reciever) => {
+                       if (err) throw err;
+
+                       var newNotification = new Notification({
+                          sender: req.user._id,
+                          reciever: reciever._id,
+                          type: '@' + req.user.username + ' liked your comment.',
+                          link: og_path,
+                          date_sent: current_date
+                       });
+
+                       // Create notification in database
+                       Notification.saveNotification(newNotification, (err, notification) => {
+                          if(err) throw err;
+
+                          // Add Notification for User
+                          User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+                             if (err) throw err;
+
+                               req.flash('success_msg', "Comment Liked");
+                             res.redirect(og_path);
+                          });
+                       });
+                    });
+
+                 });
+
+               }
+
+             }
+           });
+
+         } else {
+            res.redirect('/');
+         }
       });
    } else {
       res.redirect('/users/register');
@@ -3230,24 +3413,125 @@ router.post('/details/comment/:id', (req, res, next) => {
 
 
 // Post Project Detail - Uncomment
-router.post('/details/uncomment/:id', (req, res, next) => {
+router.post('/details/uncomment/:commentId', (req, res, next) => {
    if(req.isAuthenticated()) {
 
       if (typeof req.body.og_path != 'undefined') {
          var path = req.body.og_path;
       } else {
-         var path = '/p/details/' + req.params.id
+         var path = '/p/details/' + req.body.project_id;
       }
 
       info = [];
-      info['profileUsername'] = req.user.username;
-      info['projectId'] = req.params.id;
-      info['commentId'] = req.body.comment_id;
+      info['commentId'] = req.params.commentId;
+      info['commentContentId'] = mongoose.Types.ObjectId(req.body.comment_content_id)
 
-      // Add save to project
-      Project.removeComment(info, (err, user) => {
+      // Remove comment
+      Comment.removeComment(info, (err, comment) => {
          if(err) throw err;
+         console.log(comment);
          req.flash('success_msg', "Removed Comment");
+         res.redirect(path);
+      });
+   } else {
+      res.redirect('/users/register');
+   }
+});
+
+
+// Post Project Detail - Reply to comment
+router.post('/details/comment/reply/:commentId', (req, res, next) => {
+   if(req.isAuthenticated()) {
+      info = [];
+      info['commentId'] = req.params.commentId;
+      info['commentContentId'] = req.body.commentContentId;
+      info['commentReply'] = req.body.reply.replace(/\r\n/g,'');
+      info['username'] = req.user.username;
+
+      if (req.user.profileimage) {
+         info['profileimage'] = req.user.profileimage;
+      } else {
+         info['profileimage'] = 'hryzn-placeholder-01.jpg';
+      }
+
+      var og_path = req.body.og_path;
+
+      Comment.findOne({ '_id': { $in: req.params.commentId } }, (err, comment) => {
+
+         if (err) throw err;
+
+         if (comment) {
+
+           comment.comments.forEach(function(comments, key) {
+
+             if (comments._id == req.body.commentContentId) {
+
+               // Like comment
+               Comment.replyToComment(info, (err, comment) => {
+
+                  if(err) throw err;
+
+                  // Send notification to the user mentioned
+                  User.findOne({ 'username': { $in: comments.username } }, (err, reciever) => {
+                     if (err) throw err;
+
+                     var newNotification = new Notification({
+                        sender: req.user._id,
+                        reciever: reciever._id,
+                        type: '@' + req.user.username + ' replied to your comment.',
+                        link: og_path,
+                        date_sent: current_date
+                     });
+
+                     // Create notification in database
+                     Notification.saveNotification(newNotification, (err, notification) => {
+                        if(err) throw err;
+
+                        // Add Notification for User
+                        User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+                           if (err) throw err;
+
+                             req.flash('success_msg', "Replied to comment.");
+                             res.redirect(og_path);
+                        });
+                     });
+                  });
+
+               });
+
+             }
+           });
+
+         } else {
+            res.redirect('/');
+         }
+      });
+   } else {
+      res.redirect('/users/register');
+   }
+});
+
+
+// Post Project Detail - unreply
+router.post('/details/unreply/:commentId', (req, res, next) => {
+   if(req.isAuthenticated()) {
+
+      if (typeof req.body.og_path != 'undefined') {
+         var path = req.body.og_path;
+      } else {
+         var path = '/p/details/' + req.body.project_id;
+      }
+
+      info = [];
+      info['commentId'] = req.params.commentId;
+      info['commentContentId'] = mongoose.Types.ObjectId(req.body.comment_content_id);
+      info['commentReplyId'] = mongoose.Types.ObjectId(req.body.comment_reply_id);
+
+      // Remove reply
+      Comment.removeReply(info, (err, comment) => {
+         if(err) throw err;
+
+         req.flash('success_msg', "Removed Reply");
          res.redirect(path);
       });
    } else {

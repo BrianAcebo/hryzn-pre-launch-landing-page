@@ -281,6 +281,7 @@ app.use(function (req, res, next) {
    res.locals.error_msg = req.flash('error_msg');
    res.locals.error = req.flash('error');
    res.locals.site_url = req.get('host');
+   res.locals.path = req.path;
 
    next();
 });

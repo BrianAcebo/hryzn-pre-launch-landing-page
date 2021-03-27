@@ -748,6 +748,17 @@ section.project {
    color: #333;
 }
 
+ #relatedSideNav  {
+  height: 100%;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  overflow: auto;
+}
+
+ #relatedSideNav::-webkit-scrollbar {
+  display: none;
+}
+
 @media screen and (max-width: 992px) {
    #relatedSideNav {
       overflow: scroll;
@@ -1342,11 +1353,27 @@ section.project {
    margin-top: 35px;
 }
 
+.comment_box {
+  position: relative;
+}
+
 .comment_msg {
    font-size: 14px;
    padding: 0 0 0 50px;
    border-left: 1px solid #ccc;
    margin: 0 0 0 15px;
+}
+
+.comments_wrapper {
+  height: 100%;
+  max-height: 800px;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  overflow: auto;
+}
+
+.comments_wrapper::-webkit-scrollbar {
+  display: none;
 }
 
 .comment_form {
@@ -1355,8 +1382,10 @@ section.project {
    align-items: center;
    flex-direction: column;
    max-width: 600px;
+   background: #fff;
+   bottom: 0;
    width: 100%;
-   margin: 100px auto;
+   margin: 100px auto 0 auto;
 }
 
 .comment_form textarea {
@@ -1382,6 +1411,137 @@ section.project {
    color: #fff;
    border-radius: 35px;
    margin-top: 25px;
+}
+
+.comment_box .project_comment {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.comment_box .project_comment_left {
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+}
+
+.comment_box .project_comment_left .follower__profile {
+  margin: 0;
+  display: flex;
+  flex-direction: row;
+  border: none;
+  padding: 0;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.comment_box .project_comment_left .follower__profile .follower__profile-img-container {
+  width: 25px;
+  height: 25px;
+  margin-right: 6px;
+}
+
+.comment_box .project_comment_left .comment_msg {
+    padding: 0;
+    border: none;
+    margin: 0;
+}
+
+.comment_box .project_comment {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.comment_box .del_box .project_action_btn,
+.comment_box .reply_del_box .project_action_btn {
+  margin: 5px 0 0 0;
+}
+
+.comment_box .del_box img,
+.comment_box .reply_del_box img {
+  max-width: 16px;
+}
+
+.comment_box .reply_del_box {
+  margin: 2px 0 0 35px;
+}
+
+.comment_lower_container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: row;
+  margin-left: 35px;
+  max-width: 70px;
+}
+
+.comment_box .commentLikeBtn {
+  cursor: pointer;
+}
+
+.comment_box .commentReplyBtn {
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 12px;
+  color: #ccc;
+  margin: 0;
+}
+
+.comment_box .replying_to_container {
+  width: 100%;
+  font-size: 12px;
+  padding: 5px 15px;
+  background: #f1f1f1;
+  line-height: 18px;
+  margin: 0 0 -25px 0;
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.comment_box .replying_to_container .replyCancelBtn {
+  right: 35px;
+  position: absolute;
+  cursor: pointer;
+}
+
+.comment_box .viewRepliesBtn {
+  font-size: 12px;
+  color: #ccc;
+  font-weight: bold;
+  margin-left: 35px;
+  cursor: pointer;
+}
+
+.comment_box .replies_container {
+  height: auto;
+  width: 100%;
+  transition: 0.3s;
+  padding-left: 35px;
+  display: none;
+  flex-direction: column;
+}
+
+.comment_box .reply_wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+#relatedSideNav .comment_box .commentReplyBtn,
+#relatedSideNav .comment_box .commentLikeBtn,
+#relatedSideNav .comment_box .project_comment_left .comment_msg,
+#relatedSideNav .comment_box .project_comment_left .follower__profile {
+  margin: 0;
+}
+
+#relatedSideNav .comment_box .project_comment_left .comment_msg {
+  margin-left: 35px;
 }
 
 .project_url {
@@ -1687,7 +1847,7 @@ section.project {
    margin: 0 auto;
    position: relative;
    background: #fff;
-   padding: 50px;
+   padding: 50px 0;
    box-shadow: rgba(0, 0, 0, 0.10) 0px 2px 10px 1px;
    border-radius: 35px;
 }
@@ -1763,14 +1923,14 @@ section.project {
    }
 }
 
-#micropostPop .comment_box_comments {
-   max-height: 300px;
+#micropostPop .all_comments_container {
+   max-height: 600px;
    overflow: scroll;
    -ms-overflow-style: none;
    scrollbar-width: none;
 }
 
-#micropostPop .comment_box_comments::-webkit-scrollbar {
+#micropostPop .all_comments_container::-webkit-scrollbar {
   display: none;
 }
 
@@ -1790,6 +1950,10 @@ section.project {
 #micropostPop .comment_box .comment_username,
 #micropostPop .comment_box .comment_msg {
    font-size: 12px;
+}
+
+#micropostPop .comment_box .comment_msg {
+   margin-left: 35px;
 }
 
 #micropostPop .micro_top_action {

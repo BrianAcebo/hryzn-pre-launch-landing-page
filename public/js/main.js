@@ -678,31 +678,6 @@ $(document).ready(function() {
    /**********/
 
 
-   // Remove comments
-   var $commentUsername = $(".comment_username");
-   var $currentUser = $("#current_user").text();
-   var $projAdmins = $("#current_admin").text();
-   var $projectId = $("#current_project").text();
-
-   $commentUsername.each(function() {
-
-      var $commentId = $(this).next().next().text();
-      var $username = $(this).text();
-
-      if ($currentUser === $projAdmins) {
-         if ($(this).next().hasClass('del_box')) {
-            $(this).next().append('<form method="post" class="uncomment_form_btn" action="/p/details/uncomment/' + $projectId + '"><input type="hidden" name="comment_id" value="' + $commentId + '"><input type="hidden" name="project_id" value="' + $projectId + '"><button class="project_action_btn" name="submit" type="submit"><img src="/icons/delete-ticket-item.png" class="main-topnav__icon" /></button></form>')
-         }
-      } else if ($username === $currentUser) {
-         if ($(this).next().hasClass('del_box')) {
-            $(this).next().append('<form method="post" class="uncomment_form_btn" action="/p/details/uncomment/' + $projectId + '"><input type="hidden" name="comment_id" value="' + $commentId + '"><input type="hidden" name="project_id" value="' + $projectId + '"><button class="project_action_btn" name="submit" type="submit"><img src="/icons/delete-ticket-item.png" class="main-topnav__icon" /></button></form>')
-         }
-      }
-
-   });
-   /**********/
-
-
    // Open related projects nav on click
    var $relatedOpen = $('.relatedBtn');
    var $relatedClose = $('#relatedClose');
@@ -1310,6 +1285,111 @@ $(".direct_msg_wrapper").on("click", function(e) {
 //      $('.success__msg').parent().remove();
 //   }, 3000);
 // }
+/**********/
+
+
+// Ajax like comment
+var $commentLikeBtn = $(".commentLikeBtn");
+var $likeCommentFlashMsg = $('#flashMsg');
+var $likeCommentFlash = '<div><div class="success__msg"><p>Comment was liked.</p><p class="error__exit">×</p></div></div>';
+var $likeUnCommentFlash = '<div><div class="success__msg"><p>Comment like was removed.</p><p class="error__exit">×</p></div></div>';
+
+$commentLikeBtn.each(function() {
+  $(this).click(function() {
+    var $commentId = $(this).children('.likeCommentId').val();
+    var $commentContentId = $(this).children('.likeCommentContentId').val();
+    var $og_path = $(this).children('.og_path').val();
+    var $likeCommentAction = '/p/details/comment/like/' + $commentId;
+    var $likeIcon = $(this).children('i');
+
+    $.post($likeCommentAction, {
+      commentContentId: $commentContentId,
+      og_path: $og_path
+    }, function(data, status) {
+
+    });
+
+    if ($likeIcon.hasClass('commentNotLiked')) {
+      $likeIcon.removeClass('fa-heart-o commentNotLiked');
+      $likeIcon.addClass('fa-heart commentLiked');
+
+      $likeCommentFlashMsg.append($likeCommentFlash);
+      setTimeout(function() {
+         $('.success__msg').parent().remove();
+      }, 3000);
+    } else {
+      $likeIcon.removeClass('fa-heart commentLiked');
+      $likeIcon.addClass('fa-heart-o commentNotLiked');
+
+      $likeCommentFlashMsg.append($likeUnCommentFlash);
+      setTimeout(function() {
+         $('.success__msg').parent().remove();
+      }, 3000);
+    }
+
+  });
+});
+/**********/
+
+
+// Reply to comment
+var $sendCommentForm = $("form#comment");
+var $commentReplyBtn = $(".commentReplyBtn");
+var $likeCommentFlashMsg = $('#flashMsg');
+var $likeCommentFlash = '<div><div class="success__msg"><p>Comment was liked.</p><p class="error__exit">×</p></div></div>';
+
+$commentReplyBtn.each(function() {
+  $(this).click(function() {
+
+    var $commentId = $(this).prev().children('.likeCommentId').val();
+    var $commentContentId = $(this).prev().children('.likeCommentContentId').val();
+    var $commentOwner = $(this).prev().children('.commentOwner').val();
+    var $og_path = $(this).prev().children('.og_path').val();
+
+    $sendCommentForm.css({ "display": "none" });
+    $(this).parent().parent().append('<form id="replyComment" method="post" class="replyComment comment_form" action="/p/details/comment/reply/' + $commentId + '"><div class="replying_to_container">Replying to @' + $commentOwner + ' <i class="fa fa-times replyCancelBtn"></i></div><input type="hidden" name="og_path" value="' + $og_path + '"><input type="hidden" name="commentContentId" value="' + $commentContentId + '"><textarea type="text" name="reply" required></textarea><button class="comment_btn" name="submit" type="submit">Send Reply</button></form>')
+
+    checkReplyCancelBtn()
+
+  });
+});
+
+function checkReplyCancelBtn() {
+
+  var $replyCancelBtn = $(".replyCancelBtn");
+
+  $replyCancelBtn.each(function() {
+    $(this).click(function() {
+
+      $sendCommentForm.css({ "display": "flex" });
+      $(this).parent().parent().remove();
+
+    });
+  });
+}
+
+
+var $viewRepliesBtn = $(".viewRepliesBtn");
+
+$viewRepliesBtn.each(function() {
+  $(this).click(function() {
+
+    if ($(this).hasClass('openReplies')) {
+
+      $(this).next().css({ "display": "none" });
+      $(this).removeClass('openReplies');
+      $(this).text('- View Replies')
+
+    } else {
+
+      $(this).next().css({ "display": "flex" });
+      $(this).addClass('openReplies');
+      $(this).text('- Hide Replies');
+
+    }
+
+  });
+});
 /**********/
 
 });

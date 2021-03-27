@@ -155,26 +155,153 @@
             <div class="comment_box">
 
                <div class="comment_box_comments">
-               {{#if project.comments}}
-               {{#each project.comments}}
-               <div class="project_comment">
-                  <a href="/profile/{{this.username}}">
-                     <div class="topnav__user">
-                        <div class="topnav__profile-img-container">
-                           <img class="profile__img comment_profileimage" src="https://ik.imagekit.io/w07am55tja/{{this.profileimage}}?tr=w-75">
+                 {{#if comments}}
+                 <div class="all_comments_container">
+                   {{#each comments.comments}}
+                   <div class="project_comment">
+
+                      <div class="project_comment_left">
+
+                        <a href="/profile/{{this.username}}" class="follower__profile">
+                           <div class="follower__profile-img-container">
+                              <img class="profile__img" {{#if this.profileimage}}src="https://ik.imagekit.io/w07am55tja/{{this.profileimage}}?tr=w-75"{{else}}src="/img/site/hryzn-placeholder-01.jpg"{{/if}} />
+                           </div>
+                           @{{this.username}}
+                        </a>
+
+                        <p class="comment_msg">{{{this.comment_content}}}</p>
+
+                        <div class="comment_lower_container">
+                          <a class="commentLikeBtn">
+                            <input class="likeCommentId" type="hidden" value="{{../comments._id}}">
+                            <input class="likeCommentContentId" type="hidden" value="{{this._id}}">
+                            <input class="commentOwner" type="hidden" value="{{this.username}}">
+                            <input class="og_path" type="hidden" value="{{../path}}">
+
+                            {{#if this.likes}}
+                            {{#each this.likes}}
+                              {{#ifEquals this ../../user.username}}
+                              <i style="font-weight: bold" class="fa fa-heart commentLiked"></i>
+                              {{else}}
+                              <i style="font-weight: bold" class="fa fa-heart-o commentNotLiked"></i>
+                              {{/ifEquals}}
+                            {{/each}}
+                            {{else}}
+                            <i style="font-weight: bold" class="fa fa-heart-o"></i>
+                            {{/if}}
+                          </a>
+                          <a class="commentReplyBtn">Reply</a>
                         </div>
-                        <p class="comment_username">{{this.username}}</p>
-                        <div class="{{#if ../user}}del_box{{else}}del_box_off{{/if}}"></div>
-                        <p style="display:none" class="comment_id">{{this._id}}</p>
-                     </div>
-                  </a>
-                  <p class="comment_msg">{{{this.message}}}</p>
-               </div>
-               {{/each}}
-               {{else}}
-               <p style="text-align: center">There are no comments.</p>
-               {{/if}}
-               </div>
+
+                        {{#if this.replies}}
+                        <div class="reply_container">
+                          <p class="viewRepliesBtn">- View Replies</p>
+                          <div class="replies_container">
+                            {{#each this.replies}}
+                            <div class="reply_wrapper">
+                              <div class="reply_left">
+                                <a href="/profile/{{this.username}}" class="follower__profile">
+                                   <div class="follower__profile-img-container">
+                                      <img class="profile__img" {{#if this.profileimage}}src="https://ik.imagekit.io/w07am55tja/{{this.profileimage}}?tr=w-75"{{else}}src="/img/site/hryzn-placeholder-01.jpg"{{/if}} />
+                                   </div>
+                                   @{{this.username}}
+                                </a>
+                                <p class="comment_msg">{{{this.reply_content}}}</p>
+                              </div>
+                              {{#ifEquals this.username ../../user.username}}
+                              <div class="reply_del_box">
+                                <form method="post" class="unreply_form_btn" action="/p/details/unreply/{{../../comments._id}}">
+                                  <input type="hidden" name="comment_reply_id" value="{{this._id}}">
+                                  <input type="hidden" name="comment_content_id" value="{{../this._id}}">
+                                  <input type="hidden" name="project_id" value="{{../../project._id}}">
+                                  <input type="hidden" name="og_path" value="{{../../path}}">
+                                  <button class="project_action_btn" name="submit" type="submit">
+                                    <img src="/icons/delete-ticket-item.png" class="main-topnav__icon" />
+                                  </button>
+                                </form>
+                              </div>
+                              {{else}}
+                                {{#ifEquals this.username ../../project.project_owner}}
+                                <div class="reply_del_box">
+                                  <form method="post" class="unreply_form_btn" action="/p/details/unreply/{{../../comments._id}}">
+                                    <input type="hidden" name="comment_reply_id" value="{{this._id}}">
+                                    <input type="hidden" name="comment_content_id" value="{{../this._id}}">
+                                    <input type="hidden" name="project_id" value="{{../../project._id}}">
+                                    <input type="hidden" name="og_path" value="{{../../path}}">
+                                    <button class="project_action_btn" name="submit" type="submit">
+                                      <img src="/icons/delete-ticket-item.png" class="main-topnav__icon" />
+                                    </button>
+                                  </form>
+                                </div>
+                                {{else}}
+                                {{#ifEquals this.username "hryzn"}}
+                                <div class="reply_del_box">
+                                  <form method="post" class="unreply_form_btn" action="/p/details/unreply/{{../../comments._id}}">
+                                    <input type="hidden" name="comment_reply_id" value="{{this._id}}">
+                                    <input type="hidden" name="comment_content_id" value="{{../this._id}}">
+                                    <input type="hidden" name="project_id" value="{{../../project._id}}">
+                                    <input type="hidden" name="og_path" value="{{../../path}}">
+                                    <button class="project_action_btn" name="submit" type="submit">
+                                      <img src="/icons/delete-ticket-item.png" class="main-topnav__icon" />
+                                    </button>
+                                  </form>
+                                </div>
+                                {{/ifEquals}}
+                                {{/ifEquals}}
+                              {{/ifEquals}}
+                              </div>
+                            {{/each}}
+                          </div>
+                        </div>
+                        {{/if}}
+
+                      </div>
+
+                      {{#ifEquals this.username ../user.username}}
+                      <div class="del_box">
+                        <form method="post" class="uncomment_form_btn" action="/p/details/uncomment/{{../comments._id}}">
+                          <input type="hidden" name="comment_content_id" value="{{this._id}}">
+                          <input type="hidden" name="project_id" value="{{../project._id}}">
+                          <input type="hidden" name="og_path" value="{{../path}}">
+                          <button class="project_action_btn" name="submit" type="submit">
+                            <img src="/icons/delete-ticket-item.png" class="main-topnav__icon" />
+                          </button>
+                        </form>
+                      </div>
+                      {{else}}
+                        {{#ifEquals this.username ../project.project_owner}}
+                        <div class="del_box">
+                          <form method="post" class="uncomment_form_btn" action="/p/details/uncomment/{{../comments._id}}">
+                            <input type="hidden" name="comment_content_id" value="{{this._id}}">
+                            <input type="hidden" name="project_id" value="{{../project._id}}">
+                            <input type="hidden" name="og_path" value="{{../path}}">
+                            <button class="project_action_btn" name="submit" type="submit">
+                              <img src="/icons/delete-ticket-item.png" class="main-topnav__icon" />
+                            </button>
+                          </form>
+                        </div>
+                        {{else}}
+                        {{#ifEquals this.username "hryzn"}}
+                        <div class="del_box">
+                          <form method="post" class="uncomment_form_btn" action="/p/details/uncomment/{{../comments._id}}">
+                            <input type="hidden" name="comment_content_id" value="{{this._id}}">
+                            <input type="hidden" name="project_id" value="{{../project._id}}">
+                            <input type="hidden" name="og_path" value="{{../path}}">
+                            <button class="project_action_btn" name="submit" type="submit">
+                              <img src="/icons/delete-ticket-item.png" class="main-topnav__icon" />
+                            </button>
+                          </form>
+                        </div>
+                        {{/ifEquals}}
+                        {{/ifEquals}}
+                      {{/ifEquals}}
+
+                   </div>
+                   {{/each}}
+                 </div>
+                 {{else}}
+                 <p style="text-align: center">There are no comments.</p>
+                 {{/if}}
 
                {{#if user}}
 
