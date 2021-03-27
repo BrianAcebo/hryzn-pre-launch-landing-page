@@ -395,7 +395,7 @@
       {{/if}}
 
       {{! Errors styling }}
-      <main {{#if user}}{{#if dashboard}}id="mainDash"{{else}}id="mainBody{{#if index_active}}Index{{/if}}"{{/if}}{{else}}{{#if project}}id="mainProject"{{else}}{{#if welcomePage}}{{else}}id="mainWelcome"{{/if}}{{/if}}{{/if}}>
+      <main {{#if user}}{{#if dashboard}}id="mainDash"{{else}}id="mainBody{{#if index_active}}Index{{/if}}"{{/if}}{{else}}{{#if project}}id="mainProject"{{#if user}}class="mainGuestProject"{{/if}}{{else}}{{#if welcomePage}}{{else}}id="mainWelcome"{{/if}}{{/if}}{{/if}}>
          {{#if user}}
             {{#if error_msg}}
             <div class="error__msg-3">

@@ -1230,6 +1230,12 @@ router.get('/details/:id', (req, res, next) => {
                      var enough_reposts = false;
                   }
 
+                  if (typeof project.project_title == 'undefined' || project.project_title.length === 0) {
+                     var page_title = '@' + project.project_owner + ' on Hryzn';
+                  } else {
+                     var page_title = project.project_title;
+                  }
+
 
                   var good_project = false;
 
@@ -1336,7 +1342,7 @@ router.get('/details/:id', (req, res, next) => {
                               project: project,
                               related_projects: reverse_projects,
                               projects: reverse_projects, // masonry related projects
-                              page_title: project.project_title,
+                              page_title: page_title,
                               is_admin_of_project: is_admin_of_project,
                               comment_amount: comment_amount,
                               enough_comments: enough_comments,
@@ -1395,7 +1401,7 @@ router.get('/details/:id', (req, res, next) => {
                                     project: project,
                                     related_projects: reverse_projects,
                                     projects: reverse_projects, // masonry related projects
-                                    page_title: project.project_title,
+                                    page_title: page_title,
                                     is_admin_of_project: is_admin_of_project,
                                     comment_amount: comment_amount,
                                     enough_comments: enough_comments,
@@ -1454,7 +1460,7 @@ router.get('/details/:id', (req, res, next) => {
                                     project: project,
                                     related_projects: reverse_projects,
                                     projects: reverse_projects, // masonry related projects
-                                    page_title: project.project_title,
+                                    page_title: page_title,
                                     is_admin_of_project: is_admin_of_project,
                                     comment_amount: comment_amount,
                                     enough_comments: enough_comments,
@@ -1553,6 +1559,12 @@ router.get('/details/:id/guest', (req, res, next) => {
 
                var admin_amount = project.admins.length;
 
+               if (typeof project.project_title == 'undefined' || project.project_title.length === 0) {
+                  var page_title = '@' + project.project_owner + ' on Hryzn';
+               } else {
+                  var page_title = project.project_title;
+               }
+
                if (project.categories.length > 0) {
                   Project.find({ 'categories': { $in: project.categories} }, (err, related_projects) => {
                      if (err) throw err;
@@ -1609,9 +1621,8 @@ router.get('/details/:id/guest', (req, res, next) => {
                         project: project,
                         related_projects: reverse_projects,
                         projects: reverse_projects,
-                        page_title: project.project_title,
+                        page_title: page_title,
                         is_admin_of_project: false,
-                        comment_amount: comment_amount,
                         enough_comments: enough_comments,
                         enough_saves: enough_saves,
                         saves_amount: saves_amount,
@@ -1681,9 +1692,8 @@ router.get('/details/:id/guest', (req, res, next) => {
                         project: project,
                         related_projects: reverse_projects,
                         projects: reverse_projects,
-                        page_title: project.project_title,
+                        page_title: page_title,
                         is_admin_of_project: false,
-                        comment_amount: comment_amount,
                         enough_saves: enough_saves,
                         saves_amount: saves_amount,
                         enough_likes: enough_likes,

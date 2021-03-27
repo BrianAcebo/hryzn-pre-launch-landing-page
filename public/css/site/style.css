@@ -453,6 +453,10 @@ blockquote {
    padding: 50px 0 0 0;
 }
 
+#mainProject.mainGuestProject {
+   padding: 0;
+}
+
 #mainDash {
    padding: 0;
 }
@@ -464,8 +468,8 @@ blockquote {
       transition: 0.3s;
    }
 
-   #mainProject {
-      padding: 50px 0 100px 0;
+   #mainProject.mainGuestProject {
+      padding: 0 0 100px 0;
    }
 }
 
