@@ -1356,7 +1356,8 @@ router.get('/details/:id', (req, res, next) => {
                               repost_amount: repost_amount,
                               user_reposted: user_reposted,
                               admin_amount: admin_amount,
-                              comments: comments
+                              comments: comments,
+                              blog_post_project: true
                            });
                         } else {
                            if (project.categories.length > 4) {
@@ -1415,7 +1416,8 @@ router.get('/details/:id', (req, res, next) => {
                                     repost_amount: repost_amount,
                                     user_reposted: user_reposted,
                                     admin_amount: admin_amount,
-                                    comments: comments
+                                    comments: comments,
+                                    blog_post_project: true
                                  });
                               });
                            } else {
@@ -1474,7 +1476,8 @@ router.get('/details/:id', (req, res, next) => {
                                     repost_amount: repost_amount,
                                     user_reposted: user_reposted,
                                     admin_amount: admin_amount,
-                                    comments: comments
+                                    comments: comments,
+                                    blog_post_project: true
                                  });
                               });
                            }
@@ -1632,7 +1635,8 @@ router.get('/details/:id/guest', (req, res, next) => {
                         user_saved: false,
                         user_liked: false,
                         admin_amount: admin_amount,
-                        user_is_guest: true
+                        user_is_guest: true,
+                        blog_post_project: true
                      });
                   });
                } else {
@@ -1702,7 +1706,8 @@ router.get('/details/:id/guest', (req, res, next) => {
                         user_saved: false,
                         user_liked: false,
                         admin_amount: admin_amount,
-                        user_is_guest: true
+                        user_is_guest: true,
+                        blog_post_project: true
                      });
                   });
                }

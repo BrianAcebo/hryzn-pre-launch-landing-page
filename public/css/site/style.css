@@ -450,10 +450,10 @@ blockquote {
 }
 
 #mainProject {
-   padding: 50px 0 0 0;
+   padding: 50px 15px;
 }
 
-#mainProject.mainGuestProject {
+#mainProject.mainBlogProject {
    padding: 0;
 }
 
@@ -468,7 +468,7 @@ blockquote {
       transition: 0.3s;
    }
 
-   #mainProject.mainGuestProject {
+   #mainProject.mainBlogProject {
       padding: 0 0 100px 0;
    }
 }

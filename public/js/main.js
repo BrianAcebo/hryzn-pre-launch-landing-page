@@ -1116,9 +1116,9 @@ var $user_autocomplete = $(".user_autocomplete");
 
 var $msgContentProjectValue = $('#msgContentProjectValue');
 
-// if ($msgContentProjectValue.length >= 1) {
-//   $msgContentInput.val($msgContentProjectValue.val());
-// }
+if ($msgContentProjectValue.length >= 1) {
+  $msgContentInput.val($msgContentProjectValue.val());
+}
 
 var $all_followers = []
 
