@@ -4315,158 +4315,164 @@ router.get('/collection/delete/:id/:deleteAll', (req, res, next) => {
       Collection.findById(req.params.id, (err, collection) => {
          if(err) throw err;
 
-         if (collection.collection_owner === req.user.username || req.user.username === 'hryzn') {
+         if (collection) {
 
-            if (collection.is_private && deleteProjects) {
+           if (collection.collection_owner === req.user.username || req.user.username === 'hryzn') {
 
-               // Delete Everything
+              if (collection.is_private && deleteProjects) {
 
-               if(collection.projects.length) {
+                 // Delete Everything
 
-                  collection.projects.forEach(function(proj, key) {
-                     // Find project to delete
-                     Project.findById(proj, (err, project) => {
-                        if(err) throw err;
+                 if(collection.projects.length) {
 
-                        // If project has saves
-                        if(project.saves.length) {
+                    collection.projects.forEach(function(proj, key) {
+                       // Find project to delete
+                       Project.findById(proj, (err, project) => {
+                          if(err) throw err;
 
-                           for (var i = 0, len = project.saves.length; i < len; i++) {
-                              info['profileUsername'] = project.saves[i];
-                              info['projectId'] = project._id;
+                          // If project has saves
+                          if(project.saves.length) {
 
-                              User.unsaveToProfile(info, (err, user) => {
-                                 if(err) throw err;
-                              });
-                           }
+                             for (var i = 0, len = project.saves.length; i < len; i++) {
+                                info['profileUsername'] = project.saves[i];
+                                info['projectId'] = project._id;
 
-                        }
+                                User.unsaveToProfile(info, (err, user) => {
+                                   if(err) throw err;
+                                });
+                             }
 
-                        // If project has admins
-                        if(project.project_owner.length) {
-                           info['profileUsername'] = project.project_owner;
-                           info['projectId'] = project._id;
+                          }
 
-                           console.log(info['projectId']);
+                          // If project has admins
+                          if(project.project_owner.length) {
+                             info['profileUsername'] = project.project_owner;
+                             info['projectId'] = project._id;
 
-                           User.deleteFromProfile(info, (err, user) => {
-                              if(err) throw err;
+                             console.log(info['projectId']);
 
-                              console.log(user);
-                           });
-                        }
+                             User.deleteFromProfile(info, (err, user) => {
+                                if(err) throw err;
 
-                        // If project has reposts
-                        if(project.reposts.length) {
-                           for (var i = 0, len = project.reposts.length; i < len; i++) {
-                              info['profileUsername'] = project.reposts[i];
-                              info['projectId'] = project._id;
+                                console.log(user);
+                             });
+                          }
 
-                              User.unrepostProject(info, (err, user) => {
-                                 if(err) throw err;
-                              });
-                           }
-                        }
+                          // If project has reposts
+                          if(project.reposts.length) {
+                             for (var i = 0, len = project.reposts.length; i < len; i++) {
+                                info['profileUsername'] = project.reposts[i];
+                                info['projectId'] = project._id;
 
-                        // Delete project image
-                        var s3_instance = new aws.S3();
-                        var s3_params = {
-                           Bucket: 'hryzn-app-static-assets',
-                           Key: project.project_image
-                        };
-                        s3_instance.deleteObject(s3_params, (err, data) => {
-                           if(data) {
-                              console.log("File deleted");
-                           }
-                           else {
-                              console.log("No delete : " + err);
-                           }
-                        });
+                                User.unrepostProject(info, (err, user) => {
+                                   if(err) throw err;
+                                });
+                             }
+                          }
 
-                        // Delete the project
-                        Project.findByIdAndRemove(project._id, (err) => {
-                          if (err) throw err;
-                        });
+                          // Delete project image
+                          var s3_instance = new aws.S3();
+                          var s3_params = {
+                             Bucket: 'hryzn-app-static-assets',
+                             Key: project.project_image
+                          };
+                          s3_instance.deleteObject(s3_params, (err, data) => {
+                             if(data) {
+                                console.log("File deleted");
+                             }
+                             else {
+                                console.log("No delete : " + err);
+                             }
+                          });
 
-                     });
-                  });
+                          // Delete the project
+                          Project.findByIdAndRemove(project._id, (err) => {
+                            if (err) throw err;
+                          });
 
-               }
+                       });
+                    });
 
-               // Delete from owner
-               info['profileUsername'] = req.user.username;
-               info['collectionId'] = req.params.id;
+                 }
 
-               User.removeCollection(info, (err, user) => {
-                  if(err) throw err;
-               });
+                 // Delete from owner
+                 info['profileUsername'] = req.user.username;
+                 info['collectionId'] = req.params.id;
 
-               // Delete the collection
-               Collection.findByIdAndRemove(req.params.id, (err) => {
-                 if (err) throw err;
-                 req.flash('success_msg', "Destroyed From Existence...");
-                 res.redirect('/profile/' + req.user.username);
-               });
+                 User.removeCollection(info, (err, user) => {
+                    if(err) throw err;
+                 });
 
-            } else {
+                 // Delete the collection
+                 Collection.findByIdAndRemove(req.params.id, (err) => {
+                   if (err) throw err;
+                   req.flash('success_msg', "Destroyed From Existence...");
+                   res.redirect('/profile/' + req.user.username);
+                 });
 
-               // Keep Projects
+              } else {
 
-               if(collection.projects.length) {
+                 // Keep Projects
 
-                  collection.projects.forEach(function(proj, key) {
-                     var info = [];
-                     info['projectId'] = proj;
-                     info['collectionId'] = req.params.id;
+                 if(collection.projects.length) {
 
-                     Project.findOne({ '_id': { $in: proj } }, (err, project) => {
-                        if (project) {
+                    collection.projects.forEach(function(proj, key) {
+                       var info = [];
+                       info['projectId'] = proj;
+                       info['collectionId'] = req.params.id;
 
-                           project.toObject();
+                       Project.findOne({ '_id': { $in: proj } }, (err, project) => {
+                          if (project) {
 
-                           var new_collection_array = [];
+                             project.toObject();
 
-                           project.posted_to_collection.forEach(function(project_collection, key) {
-                              if (project_collection.collection_id != req.params.id) {
-                                 new_collection_array.push(project_collection);
-                              }
-                           });
+                             var new_collection_array = [];
 
-                           Project.findByIdAndUpdate(proj, {
-                              posted_to_collection: new_collection_array,
-                           }, (err, project) => {
-                              if (err) throw err;
-                           });
-                        }
-                     });
+                             project.posted_to_collection.forEach(function(project_collection, key) {
+                                if (project_collection.collection_id != req.params.id) {
+                                   new_collection_array.push(project_collection);
+                                }
+                             });
 
-                     // Project.removeCollection(info, (err, project) => {
-                     //    if(err) throw err;
-                     // });
+                             Project.findByIdAndUpdate(proj, {
+                                posted_to_collection: new_collection_array,
+                             }, (err, project) => {
+                                if (err) throw err;
+                             });
+                          }
+                       });
 
-                  });
+                       // Project.removeCollection(info, (err, project) => {
+                       //    if(err) throw err;
+                       // });
 
-               }
+                    });
 
-               // Delete from owner
-               info['profileUsername'] = req.user.username;
-               info['collectionId'] = req.params.id;
+                 }
 
-               User.removeCollection(info, (err, user) => {
-                  if(err) throw err;
-               });
+                 // Delete from owner
+                 info['profileUsername'] = req.user.username;
+                 info['collectionId'] = req.params.id;
 
-               // Delete the Collection
-               Collection.findByIdAndRemove(req.params.id, (err) => {
-                 if (err) throw err;
-                 req.flash('success_msg', "Destroyed From Existence...");
-                 res.redirect('/profile/' + req.user.username);
-               });
+                 User.removeCollection(info, (err, user) => {
+                    if(err) throw err;
+                 });
 
-            }
+                 // Delete the Collection
+                 Collection.findByIdAndRemove(req.params.id, (err) => {
+                   if (err) throw err;
+                   req.flash('success_msg', "Destroyed From Existence...");
+                   res.redirect('/profile/' + req.user.username);
+                 });
+
+              }
+
+           } else {
+              res.redirect('/profile/' + req.user.username);
+           }
 
          } else {
-            res.redirect('/profile/' + req.user.username);
+            res.redirect('/');
          }
       });
    } else {

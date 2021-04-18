@@ -62,6 +62,14 @@
          {{#if user.music_link}}{{else}}<a href="/settings"><div class="profile_missing_info_wrapper"><div class="missing_info_btn"><img class="topnav__icon" src="/icons/add-white.png" /></div><p class="profile_missing_info">Missing favorite song</p></div></a>{{/if}}
       </div>
 
+      <!-- {{#if user.interests}}
+      <div class="profile_index_interests_container">
+         {{#each user.interests}}
+         <a href="/explore/{{this}}">{{this}}</a>
+         {{/each}}
+      </div>
+      {{/if}} -->
+
       <div class="profile_index_sub_info_container">
          <a href="/p/create-project" class="profile_index_link"><img class="topnav__icon" src="/icons/create-icon.png" />Create</a>
          <a href="/explore" class="profile_index_link"><img class="topnav__icon" src="/icons/explore-black.png" />Explore</a>
