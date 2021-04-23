@@ -959,6 +959,43 @@
 
 </div>
 
+{{#if user}}
+{{else}}
+
+{{! End of guestScroll }}
+<div class="guestScroll">
+</div>
+
+{{! Sign up pop up for users without an account }}
+<div class="signUpModal modalBackground">
+   <div class="modal-content">
+
+      <div class="form-container-2">
+         <div class="modal-header">
+            <a href="/" class="topnav__logo"><img src="/img/logos/hryzn-logo-v2-color-256x256.png" /></a>
+            <p>Please login in to continue viewing.</p>
+         </div>
+
+         <form method="post" action="/users/login">
+            <div class="container">
+              <input class="form__input" type="text" placeholder="Enter username" name="username" value="{{username}}" required autocapitalize="none" />
+              <input class="form__input" type="password" placeholder="Enter password" name="password" value="{{password}}" required  autocapitalize="none" />
+              <button class="form_submit_btn" name="submit" type="submit">Login</button>
+           </div>
+         </form>
+
+         <div class="form__href-container">
+            <a class ="form__href" href="/users/register">
+               Don't have an account? Click here to sign up.
+            </a>
+         </div>
+      </div>
+
+   </div>
+</div>
+
+{{/if}}
+
 <script>
 // Script to open and close sidebar
 function w3_open() {

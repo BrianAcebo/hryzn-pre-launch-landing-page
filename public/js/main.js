@@ -390,16 +390,20 @@ $(document).ready(function() {
    var $modalSignUp = $(".signUpModal");
    var $noScroll = $("div").hasClass("guestScroll");
    var $guestScroll = $(".guestScroll");
+   var $micropost_pop_wrapper = $(".micropostPop_wrapper");
+   var $profile_page = $(".profile_page");
 
    if($noScroll) {
 
       $window.on('scroll touchmove mousewheel', function(e) {
          if($window.innerWidth > 768) {
             // Stop scrolling and ask for sign up on desktops
-            if($window.scrollTop() >= 1000) {
+            if($window.scrollTop() >= 800) {
                $modalSignUp.css({ "display": "block" });
                $body.css({ "overflow": "hidden" });
                $guestScroll.css({ "filter": " blur(10px)" });
+               $micropost_pop_wrapper.css({ "filter": " blur(10px)" });
+               $profile_page.css({ "filter": " blur(10px)" });
 
                e.preventDefault();
                e.stopPropagation();
@@ -407,10 +411,12 @@ $(document).ready(function() {
       		}
          } else {
             // Stop scrolling and ask for sign up on mobile
-            if($window.scrollTop() >= 750) {
+            if($window.scrollTop() >= 650) {
                $modalSignUp.css({ "display": "block" });
                $body.css({ "overflow": "hidden" });
                $guestScroll.css({ "filter": " blur(10px)" });
+               $micropost_pop_wrapper.css({ "filter": " blur(10px)" });
+               $profile_page.css({ "filter": " blur(10px)" });
 
                e.preventDefault();
                e.stopPropagation();

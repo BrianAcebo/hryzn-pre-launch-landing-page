@@ -84,37 +84,7 @@ router.post('/register', upload.single('profileimage'), (req, res, next) => {
 
    var profile_dob = dob_day + '/' + dob_month + '/' + dob_year;
 
-   // var promo_code; req.body.promo_code.replace(/\r\n/g,'').trim();
-
-   // if (promo_code != '') {
-   //    if (promo_code === 'deathB4DECAF') {
-   //       // Gmail Credentials
-   //       var transporter = nodemailer.createTransport({
-   //          service: 'Gmail',
-   //          auth: {
-   //             user: 'hello@myhryzn.com',
-   //             pass: '+ar+oo-55'
-   //          }
-   //       });
-   //
-   //       // Mail Body
-   //       var mailOptions = {
-   //          from: '"Hryzn" <hello@myhryzn.com>',
-   //          to: 'hello@myhryzn.com',
-   //          subject: 'User Registered With Free Website Promo Code!',
-   //          text: username + ' created an account and used the promo_code for a free website.'
-   //       }
-   //
-   //       transporter.sendMail(mailOptions, (error, info) => {
-   //       });
-   //    } else {
-   //       var promo_error = [{
-   //          param: 'promo_error',
-   //          msg: "Sorry, we couldn't recognize that promotional code. Please try again.",
-   //          value: ''
-   //       }]
-   //    }
-   // }
+   var access_code = req.body.access_code.replace(/\r\n/g,'').trim();
 
    var firstname = "";
    var lastname = "";
@@ -138,178 +108,214 @@ router.post('/register', upload.single('profileimage'), (req, res, next) => {
    //    }
    // }
 
-   if(errors || dob_error) {
-      if (errors) {
-         res.render('users/register', {
-            errors: errors,
-            firstname: firstname,
-            lastname: lastname,
-            username: username,
-            email: email,
-            password: password,
-            inviteAllowed: true,
-            page_title: 'Register Your Account',
-            notLoginPage: false
-         });
-      } else {
-         res.render('users/register', {
-            error_msg: 'Sorry, you are not old enough.',
-            firstname: firstname,
-            lastname: lastname,
-            username: username,
-            email: email,
-            password: password,
-            inviteAllowed: true,
-            page_title: 'Register Your Account',
-            notLoginPage: false
-         });
-      }
+   if (access_code != '') {
+      if (access_code === 'HryznIsAwesome') {
+
+       if(errors || dob_error) {
+          if (errors) {
+             res.render('users/register', {
+                errors: errors,
+                firstname: firstname,
+                lastname: lastname,
+                username: username,
+                email: email,
+                password: password,
+                inviteAllowed: true,
+                page_title: 'Register Your Account',
+                notLoginPage: false
+             });
+          } else {
+             res.render('users/register', {
+                error_msg: 'Sorry, you are not old enough.',
+                firstname: firstname,
+                lastname: lastname,
+                username: username,
+                email: email,
+                password: password,
+                inviteAllowed: true,
+                page_title: 'Register Your Account',
+                notLoginPage: false
+             });
+          }
+       } else {
+          User.getUserByUsername(username, (err, user) => {
+             if(err) throw err;
+             if(!user) {
+                User.getUserByEmail(email, (err, user) => {
+                   if(err) throw err;
+
+                   if(!user || email === bypassEmail) {
+
+                      if(req.file) {
+                         var ext = path.extname(req.file.originalname);
+                         if(ext !== '.png' && ext !== '.PNG' && ext !== '.jpg' && ext !== '.JPG' && ext !== '.gif' && ext !== '.GIF' && ext !== '.jpeg' && ext !== '.JPEG') {
+                            res.render('users/register', {
+                               error_msg: 'Uploaded File Must End With .jpg .jpeg .png .gif',
+                               firstname: firstname,
+                               lastname: lastname,
+                               username: username,
+                               password: password,
+                               email: email,
+                               inviteAllowed: true,
+                               page_title: 'Register Your Account',
+                               notLoginPage: false
+                            });
+                         } else {
+
+                            //var fileExt = req.file.originalname.split('.').pop();
+
+                            var filename = dateNow + req.file.originalname;
+                            filename = filename.replace(/[^a-zA-Z0-9]/g, '').toLowerCase(); // replace everything except letters and numbers
+
+                            var profileimage = filename;
+
+                            var hex = 'H'+(Math.random()*0xFFFFFF<<0).toString(16);
+                            var verify_code = hex + '$21B3';
+
+                            // Verification email //
+                            // Gmail Credentials
+                            var transporter = nodemailer.createTransport({
+                               service: 'Gmail',
+                               auth: {
+                                  user: 'hello@myhryzn.com',
+                                  pass: '+ar+oo-55'
+                               }
+                            });
+
+                            // Mail Body
+                            var mailOptions = {
+                               from: '"Hryzn" <hello@myhryzn.com>',
+                               to: email,
+                               subject: 'Verify Your Account',
+                               html: '<p>Hi there, your verification code: ' + hex + '</p><br /><p>If this was not you, please <a href="https://www.myhryzn.com/welcome#contact">contact us</a></p>',
+                            }
+
+                            transporter.sendMail(mailOptions, (error, info) => {
+                               if(!error) {
+                               }
+                            });
+
+                            res.render('users/register-next', {
+                               firstname: firstname,
+                               lastname: lastname,
+                               username: username,
+                               email: email,
+                               password: password,
+                               profile_dob: profile_dob,
+                               profileimage: profileimage,
+                               inviteAllowed: true,
+                               verify_code: verify_code,
+                               verify_through_email: true,
+                               page_title: 'Verify Your Account',
+                               notLoginPage: false
+                            });
+
+                         }
+                      } else {
+
+                         var hex = 'H'+(Math.random()*0xFFFFFF<<0).toString(16);
+                         var verify_code = hex + '$21B3';
+
+                         // Verification email //
+                         // Gmail Credentials
+                         var transporter = nodemailer.createTransport({
+                            service: 'Gmail',
+                            auth: {
+                               user: 'hello@myhryzn.com',
+                               pass: '+ar+oo-55'
+                            }
+                         });
+
+                         // Mail Body
+                         var mailOptions = {
+                            from: '"Hryzn" <hello@myhryzn.com>',
+                            to: email,
+                            subject: 'Verify Your Account',
+                            html: '<p>Hi there, your verification code: ' + hex + '</p><br /><p>If this was not you, please <a href="https://www.myhryzn.com/welcome#contact">contact us</a></p>',
+                         }
+
+                         transporter.sendMail(mailOptions, (error, info) => {
+                            if(!error) {
+                            }
+                         });
+
+                         res.render('users/register-next', {
+                            firstname: firstname,
+                            lastname: lastname,
+                            username: username,
+                            email: email,
+                            password: password,
+                            profile_dob: profile_dob,
+                            inviteAllowed: true,
+                            verify_code: verify_code,
+                            verify_through_email: true,
+                            page_title: 'Verify Your Account',
+                            notLoginPage: false
+                         });
+
+                      }
+
+                   } else {
+                      // Email address is taken
+                      res.render('users/register', {
+                         error_msg: 'Sorry That Email Address Is Taken',
+                         firstname: firstname,
+                         lastname: lastname,
+                         username: username,
+                         password: password,
+                         inviteAllowed: true,
+                         page_title: 'Register Your Account',
+                         notLoginPage: false
+                      });
+                   }
+                });
+             } else {
+                // Username is taken
+                res.render('users/register', {
+                   error_msg: 'Sorry That Username Is Taken',
+                   firstname: firstname,
+                   lastname: lastname,
+                   email: email,
+                   password: password,
+                   inviteAllowed: true,
+                   page_title: 'Register Your Account',
+                   notLoginPage: false
+                });
+             }
+          });
+       }
+     } else {
+
+        console.log('no');
+        console.log(access_code);
+
+        res.render('users/register', {
+           error_msg: "Sorry, we couldn't recognize that invitation code. Please try again.",
+           firstname: firstname,
+           lastname: lastname,
+           username: username,
+           email: email,
+           password: password,
+           inviteAllowed: true,
+           page_title: 'Register Your Account',
+           notLoginPage: false
+        });
+     }
    } else {
-      User.getUserByUsername(username, (err, user) => {
-         if(err) throw err;
-         if(!user) {
-            User.getUserByEmail(email, (err, user) => {
-               if(err) throw err;
 
-               if(!user || email === bypassEmail) {
+     console.log('yes');
 
-                  if(req.file) {
-                     var ext = path.extname(req.file.originalname);
-                     if(ext !== '.png' && ext !== '.PNG' && ext !== '.jpg' && ext !== '.JPG' && ext !== '.gif' && ext !== '.GIF' && ext !== '.jpeg' && ext !== '.JPEG') {
-                        res.render('users/register', {
-                           error_msg: 'Uploaded File Must End With .jpg .jpeg .png .gif',
-                           firstname: firstname,
-                           lastname: lastname,
-                           username: username,
-                           password: password,
-                           email: email,
-                           inviteAllowed: true,
-                           page_title: 'Register Your Account',
-                           notLoginPage: false
-                        });
-                     } else {
-
-                        //var fileExt = req.file.originalname.split('.').pop();
-
-                        var filename = dateNow + req.file.originalname;
-                        filename = filename.replace(/[^a-zA-Z0-9]/g, '').toLowerCase(); // replace everything except letters and numbers
-
-                        var profileimage = filename;
-
-                        var hex = 'H'+(Math.random()*0xFFFFFF<<0).toString(16);
-                        var verify_code = hex + '$21B3';
-
-                        // Verification email //
-                        // Gmail Credentials
-                        var transporter = nodemailer.createTransport({
-                           service: 'Gmail',
-                           auth: {
-                              user: 'hello@myhryzn.com',
-                              pass: '+ar+oo-55'
-                           }
-                        });
-
-                        // Mail Body
-                        var mailOptions = {
-                           from: '"Hryzn" <hello@myhryzn.com>',
-                           to: email,
-                           subject: 'Verify Your Account',
-                           html: '<p>Hi there, your verification code: ' + hex + '</p><br /><p>If this was not you, please <a href="https://www.myhryzn.com/welcome#contact">contact us</a></p>',
-                        }
-
-                        transporter.sendMail(mailOptions, (error, info) => {
-                           if(!error) {
-                           }
-                        });
-
-                        res.render('users/register-next', {
-                           firstname: firstname,
-                           lastname: lastname,
-                           username: username,
-                           email: email,
-                           password: password,
-                           profile_dob: profile_dob,
-                           profileimage: profileimage,
-                           inviteAllowed: true,
-                           verify_code: verify_code,
-                           verify_through_email: true,
-                           page_title: 'Verify Your Account',
-                           notLoginPage: false
-                        });
-
-                     }
-                  } else {
-
-                     var hex = 'H'+(Math.random()*0xFFFFFF<<0).toString(16);
-                     var verify_code = hex + '$21B3';
-
-                     // Verification email //
-                     // Gmail Credentials
-                     var transporter = nodemailer.createTransport({
-                        service: 'Gmail',
-                        auth: {
-                           user: 'hello@myhryzn.com',
-                           pass: '+ar+oo-55'
-                        }
-                     });
-
-                     // Mail Body
-                     var mailOptions = {
-                        from: '"Hryzn" <hello@myhryzn.com>',
-                        to: email,
-                        subject: 'Verify Your Account',
-                        html: '<p>Hi there, your verification code: ' + hex + '</p><br /><p>If this was not you, please <a href="https://www.myhryzn.com/welcome#contact">contact us</a></p>',
-                     }
-
-                     transporter.sendMail(mailOptions, (error, info) => {
-                        if(!error) {
-                        }
-                     });
-
-                     res.render('users/register-next', {
-                        firstname: firstname,
-                        lastname: lastname,
-                        username: username,
-                        email: email,
-                        password: password,
-                        profile_dob: profile_dob,
-                        inviteAllowed: true,
-                        verify_code: verify_code,
-                        verify_through_email: true,
-                        page_title: 'Verify Your Account',
-                        notLoginPage: false
-                     });
-
-                  }
-
-               } else {
-                  // Email address is taken
-                  res.render('users/register', {
-                     error_msg: 'Sorry That Email Address Is Taken',
-                     firstname: firstname,
-                     lastname: lastname,
-                     username: username,
-                     password: password,
-                     inviteAllowed: true,
-                     page_title: 'Register Your Account',
-                     notLoginPage: false
-                  });
-               }
-            });
-         } else {
-            // Username is taken
-            res.render('users/register', {
-               error_msg: 'Sorry That Username Is Taken',
-               firstname: firstname,
-               lastname: lastname,
-               email: email,
-               password: password,
-               inviteAllowed: true,
-               page_title: 'Register Your Account',
-               notLoginPage: false
-            });
-         }
-      });
+     res.render('users/register', {
+        error_msg: "Sorry, we couldn't recognize that invitation code. Please try again.",
+        firstname: firstname,
+        lastname: lastname,
+        username: username,
+        email: email,
+        password: password,
+        inviteAllowed: true,
+        page_title: 'Register Your Account',
+        notLoginPage: false
+     });
    }
 });
 

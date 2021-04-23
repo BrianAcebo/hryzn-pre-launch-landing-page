@@ -477,3 +477,24 @@ button {
 .small_tos a {
    color: #2196F3;
 }
+
+.signUpModal .modal-header img {
+  width: 75px;
+  height: 75px;
+}
+
+.signUpModal .form_submit_btn {
+  max-width: 300px;
+  margin: 25px auto;
+  border-radius: 35px;
+}
+
+.signUpModal .form__href {
+  font-size: 14px;
+}
+
+.signUpModal .modal-header p {
+    font-size: 20px;
+    margin: 15px 0;
+    font-weight: 500;
+}

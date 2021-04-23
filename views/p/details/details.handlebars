@@ -10,7 +10,7 @@
 <p id="current_project" style="display: none;">{{project.id}}</p>
 <p id="current_admin" style="display: none;">{{#each project.admins}}{{this}}{{/each}}</p>
 {{else}}
-<div {{! Commenting out for now class="guestScroll" }}>
+<div class="guestScroll">
 {{/if}}
 
 
@@ -677,7 +677,8 @@
 
       <div class="form-container-2">
          <div class="modal-header">
-            <a href="/" class="topnav__logo">HRYZN</a>
+            <a href="/" class="topnav__logo"><img src="/img/logos/hryzn-logo-v2-color-256x256.png" /></a>
+            <p>Please login in to continue viewing.</p>
          </div>
 
          <form method="post" action="/users/login">
@@ -690,7 +691,7 @@
 
          <div class="form__href-container">
             <a class ="form__href" href="/users/register">
-               Don't have an account? Sign Up
+               Don't have an account? Click here to sign up.
             </a>
          </div>
       </div>
