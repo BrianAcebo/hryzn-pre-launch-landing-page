@@ -392,6 +392,7 @@ $(document).ready(function() {
    var $guestScroll = $(".guestScroll");
    var $micropost_pop_wrapper = $(".micropostPop_wrapper");
    var $profile_page = $(".profile_page");
+   var $explore_main = $(".explore_main");
 
    if($noScroll) {
 
@@ -404,6 +405,7 @@ $(document).ready(function() {
                $guestScroll.css({ "filter": " blur(10px)" });
                $micropost_pop_wrapper.css({ "filter": " blur(10px)" });
                $profile_page.css({ "filter": " blur(10px)" });
+               $explore_main.css({ "filter": " blur(10px)" });
 
                e.preventDefault();
                e.stopPropagation();
@@ -417,6 +419,7 @@ $(document).ready(function() {
                $guestScroll.css({ "filter": " blur(10px)" });
                $micropost_pop_wrapper.css({ "filter": " blur(10px)" });
                $profile_page.css({ "filter": " blur(10px)" });
+               $explore_main.css({ "filter": " blur(10px)" });
 
                e.preventDefault();
                e.stopPropagation();
