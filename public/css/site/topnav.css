@@ -427,6 +427,10 @@ nav.item-list {
     font-weight: bold;
     line-height: 30px;
     font-size: 14px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    max-width: 300px;
   }
    .topnav .search-container {
       width: 0;
