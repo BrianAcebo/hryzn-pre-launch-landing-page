@@ -43,7 +43,7 @@ router.get('/creator-setup-success', (req, res, next) => {
 
   if(req.isAuthenticated()) {
 
-    var priceId = req.query.priceId;
+    var priceId = req.query.price_id;
 
     if (priceId == 'price_1Ir6YODPMngAtAXMx120sOr3') {
       var checkoutPurchase = 1;
@@ -57,14 +57,12 @@ router.get('/creator-setup-success', (req, res, next) => {
       var checkoutPurchase = 3;
     }
 
-    console.log(priceId + '\n' + checkoutPurchase);
-
-    // User.findByIdAndUpdate(req.user._id, {
-    //    premium_creator_account: checkoutPurchase
-    // }, (err, user) => {
-    //    if (err) throw err;
-    //    res.redirect('/dashboard');
-    // });
+    User.findByIdAndUpdate(req.user._id, {
+       premium_creator_account: checkoutPurchase
+    }, (err, user) => {
+       if (err) throw err;
+       res.redirect('/dashboard');
+    });
 
   } else {
     res.redirect('/');
@@ -95,8 +93,6 @@ router.post('/create-creator-checkout-session', async (req, res) => {
 
   // See https://stripe.com/docs/api/checkout/sessions/create
   // for additional parameters to pass.
-
-  console.log(priceId);
 
   try {
     const session = await stripe.checkout.sessions.create({
