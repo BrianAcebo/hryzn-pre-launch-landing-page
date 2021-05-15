@@ -313,6 +313,12 @@ router.get('/', (req, res, next) => {
                                var pageRender = 'profile-themes/' + profile.profile_theme;
                             }
 
+                            if (profile.premium_creator_account == 1 || profile.premium_creator_account == 2 || profile.premium_creator_account == 3) {
+                               var premium_creator_account = true;
+                            } else {
+                              var premium_creator_account = false;
+                            }
+
                             res.render(pageRender, {
                                page_title: '@' + profile.username,
                                page_description: profile.bio,
@@ -331,6 +337,7 @@ router.get('/', (req, res, next) => {
                                profile_active: true,
                                profilePage: true,
                                followers: followers,
+                               premium_creator_account: premium_creator_account,
                                main_page_nav: true
                             });
                          });
@@ -784,19 +791,24 @@ router.get('/welcome', (req, res, next) => {
    res.redirect('/');
 });
 
+
 // Get Creatives
 router.get('/creatives', (req, res, next) => {
-   if(req.isAuthenticated()) {
-      res.redirect('/');
-   } else {
+  if(req.isAuthenticated()) {
+    if (req.user.premium_creator_account == 1 || req.user.premium_creator_account == 2 || req.user.premium_creator_account == 3) {
+       var premium_creator_account = true;
+    } else {
+      var premium_creator_account = false;
+    }
+  }
 
-      res.render('creatives', {
-        page_title: 'Creatives',
-        notLoginPage: false,
-        creativesPage: true
-      });
-
-   }
+  res.render('creatives', {
+    page_title: 'Creatives',
+    notLoginPage: false,
+    creativesPage: true,
+    creatorSetup: true,
+    premium_creator_account: premium_creator_account
+  });
 });
 
 
@@ -830,7 +842,8 @@ router.post('/creatives/early', (req, res, next) => {
         page_title: 'Creatives',
         notLoginPage: false,
         creativesPage: true,
-        errors: errors
+        errors: errors,
+        creatorSetup: true
       });
    } else {
 
@@ -844,7 +857,8 @@ router.post('/creatives/early', (req, res, next) => {
               page_title: 'Creatives',
               notLoginPage: false,
               creativesPage: true,
-              error_msg: 'Sorry that email is already in use.'
+              error_msg: 'Sorry that email is already in use.',
+              creatorSetup: true
             });
 
          } else {
@@ -860,6 +874,7 @@ router.post('/creatives/early', (req, res, next) => {
                  page_title: 'Creatives',
                  notLoginPage: false,
                  creativesPage: true,
+                 creatorSetup: true,
                  thanks: true
                });
             });
@@ -1143,7 +1158,12 @@ router.post('/walkthrough', (req, res, next) => {
          if (err) throw err;
       });
 
-      res.redirect('/');
+      if (req.user.premium_creator_account == 4) {
+        res.redirect('/creatives');
+      } else {
+        res.redirect('/');
+      }
+
    } else {
       res.redirect('/');
    }
@@ -2971,6 +2991,12 @@ router.get('/profile/:username', (req, res, next) => {
                               var pageRender = 'profile-themes/' + profile.profile_theme;
                            }
 
+                           if (profile.premium_creator_account == 1 || profile.premium_creator_account == 2 || profile.premium_creator_account == 3) {
+                             var premium_creator_account = true;
+                           } else {
+                             var premium_creator_account = false;
+                           }
+
                            res.render(pageRender, {
                               page_title: '@' + profile.username,
                               page_description: profile.bio,
@@ -2989,6 +3015,7 @@ router.get('/profile/:username', (req, res, next) => {
                               profile_active: true,
                               profilePage: true,
                               followers: followers,
+                              premium_creator_account: premium_creator_account,
                               main_page_nav: true
                            });
                         });

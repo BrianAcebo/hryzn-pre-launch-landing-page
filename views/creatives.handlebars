@@ -17,22 +17,32 @@
              </div>
 
              <!--Call to Action-->
-             {{#if errors}}
-                {{#each errors}}
-                      <p style="color: #EB3656; font-weight: bold;">{{msg}}</p>
-                {{/each}}
+             {{#if user}}
+
+             <a href="#pricing" class="setup_btn">Become A Creator</a>
+
              {{else}}
-             {{#if error_msg}}
-             <p style="color: #EB3656; font-weight: bold;">{{error_msg}}</p>
-             {{/if}}
-             {{/if}}
-             {{#if thanks}}
-             <h2 class="section-title">Thank you!</h2>
-            {{else}}
-             <form method="post" action="/creatives/early">
-                <input type="email" name="top_email" class="banner-input" placeholder="Enter your email for early insider access." required/>
-                 <input type="submit" class="button" value="ENTER"/>
-             </form>
+
+             <a href="#pricing" class="setup_btn">Become A Creator</a>
+
+               <!-- {{#if errors}}
+                  {{#each errors}}
+                        <p style="color: #EB3656; font-weight: bold;">{{msg}}</p>
+                  {{/each}}
+               {{else}}
+               {{#if error_msg}}
+               <p style="color: #EB3656; font-weight: bold;">{{error_msg}}</p>
+               {{/if}}
+               {{/if}}
+               {{#if thanks}}
+               <h2 class="section-title">Thank you!</h2>
+              {{else}}
+               <form method="post" action="/creatives/early">
+                  <input type="email" name="top_email" class="banner-input" placeholder="Enter your email for early insider access." required/>
+                   <input type="submit" class="button" value="ENTER"/>
+               </form>
+               {{/if}} -->
+
              {{/if}}
              <!--End Call to Action-->
 
@@ -145,9 +155,15 @@
                      </p>
                  </div>
 
+                 {{#if user}}
+                 <a href="#pricing" class="smoothscroll button">
+                     START CREATING
+                 </a>
+                 {{else}}
                  <a href="#email" class="smoothscroll button">
                      START CREATING
                  </a>
+                 {{/if}}
              </div>
              <!--End Content Right Side-->
 
@@ -274,12 +290,23 @@
                      <div class="pricing">
                          <div class="price"><span>%</span>5</div>
                          <p>For those who want a little extra.</p>
+                         <p style="font-size: 12px;">Of monthly income</p>
                      </div>
                      <ul>
                          <li>Collect ad revenue</li>
                          <li>Recieve tips</li>
                      </ul>
-                     <a class="button">COMING SOON</a>
+                     {{#if premium_creator_account}}
+                     <a class="button" href="/dashboard">Go To Dashboard</a>
+                     {{else}}
+                     <a class="button" {{#if user}}id="checkout-1"{{else}}href="/users/register?creator=true"{{/if}}>Start Today</a>
+                     {{/if}}
+                     {{#if user}}
+                     <p style="font-size: 12px; line-height: 15px;">
+                       &#42; This is an entirely free membership to upgrade to a creator personal account. It is necessary for us to
+                       collect card information in order to payout what is owed to you.
+                     </p>
+                     {{/if}}
                  </div>
              </div>
              <!--End Pricing Block-->
@@ -292,6 +319,7 @@
                      <div class="pricing">
                          <div class="price"><span>$</span>10 + 3%</div>
                          <p>For those serious about their craft.</p>
+                         <p style="font-size: 12px;">Of monthly income</p>
                      </div>
                      <ul>
                         <li><strong>Everything in personal and...</strong></li>
@@ -300,7 +328,11 @@
                         <li>Offer recurring subscription</li>
                         <li>Basic website and domain</li>
                      </ul>
-                     <a class="button">COMING SOON</a>
+                     {{#if premium_creator_account}}
+                     <a class="button" href="/dashboard">Go To Dashboard</a>
+                     {{else}}
+                     <a class="button" {{#if user}}id="checkout-2"{{else}}href="/users/register?creator=true"{{/if}}>Start Today</a>
+                     {{/if}}
                  </div>
              </div>
              <!--End Pricing Block-->
@@ -312,14 +344,19 @@
                      <p class="pricing-sub">Your future is in your hands</p>
                      <div class="pricing">
                          <div class="price"><span>$</span>20</div>
-                         <p>For those who aren't look back.</p>
+                         <p>For those who aren't looking back.</p>
+                         <p style="font-size: 12px;">Monthly</p>
                      </div>
                      <ul>
                         <li><strong>Everything in hobby and...</strong></li>
                         <li>Advanced website and domain</li>
                         <li>Influencer database</li>
                      </ul>
-                     <a class="button">COMING SOON</a>
+                     {{#if premium_creator_account}}
+                     <a class="button" href="/dashboard">Go To Dashboard</a>
+                     {{else}}
+                     <a class="button" {{#if user}}id="checkout-3"{{else}}href="/users/register?creator=true"{{/if}}>Start Today</a>
+                     {{/if}}
                  </div>
              </div>
              <!--End Pricing Block-->
@@ -330,15 +367,25 @@
 
      <!--Call to Action-->
      <div id="email" class="bottom-cta">
-       <h2 class="section-title">Get early insider access and additional benefits</h2>
-       {{#if thanks}}
-        <h2 class="section-title">Thank you!</h2>
+       {{#if user}}
+
+       <h2 class="section-title">Make money doing what you love today!</h2>
+
        {{else}}
-        <form method="post" action="/creatives/early">
-          <input name="bottom_email" type="email" class="banner-input" placeholder="Enter your email for early insider access." required/>
-          <input type="submit" class="button" value="ENTER" style="margin-top: 25px;" />
-       </form>
-       {{/if}}
+
+       <h2 class="section-title">Make money doing what you love today!</h2>
+
+         <!-- <h2 class="section-title">Get early insider access and additional benefits</h2>
+         {{#if thanks}}
+          <h2 class="section-title">Thank you!</h2>
+         {{else}}
+          <form method="post" action="/creatives/early">
+            <input name="bottom_email" type="email" class="banner-input" placeholder="Enter your email for early insider access." required/>
+            <input type="submit" class="button" value="ENTER" style="margin-top: 25px;" />
+         </form>
+         {{/if}} -->
+
+        {{/if}}
      </div>
      <!--End Call to Action-->
 

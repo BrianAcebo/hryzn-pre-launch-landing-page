@@ -18,12 +18,15 @@ const jwt = require('jsonwebtoken');
 const helmet = require('helmet');
 const cors = require('cors')
 
-const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/users');
-const projectsRouter = require('./routes/projects');
-const aboutRouter = require('./routes/about');
-const blogRouter = require('./routes/blog');
-const dashboardRouter = require('./routes/dashboard');
+
+const indexRouter = require('./routes/index'); // General site usage
+const usersRouter = require('./routes/users'); // Registering / Logging in users
+const projectsRouter = require('./routes/projects'); // Projects / Microposts
+const aboutRouter = require('./routes/about'); // Site when not logged in
+const blogRouter = require('./routes/blog'); // Main Hryzn Blog
+const dashboardRouter = require('./routes/dashboard'); // Premium creator account dashboard
+const creatorsRouter = require('./routes/creators'); // Checkout for creator subscriptions with Stripe
+
 
 const app = express();
 
@@ -293,12 +296,15 @@ app.use((req, res, next) => {
    next();
 });
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use('/p', projectsRouter);
-app.use('/about', aboutRouter);
-app.use('/blog', blogRouter);
-app.use('/dashboard', dashboardRouter);
+
+app.use('/', indexRouter); // General site usage
+app.use('/users', usersRouter); // Registering / Logging in users
+app.use('/p', projectsRouter); // Projects / Microposts
+app.use('/about', aboutRouter); // Site when not logged in
+app.use('/blog', blogRouter); // Main Hryzn Blog
+app.use('/dashboard', dashboardRouter); // Premium creator account dashboard
+app.use('/creators', creatorsRouter); // Checkout for creator subscriptions with Stripe
+
 
 // Catch 404
 app.use( function(req, res, next) {

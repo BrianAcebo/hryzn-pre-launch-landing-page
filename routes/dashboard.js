@@ -39,12 +39,18 @@ const Group = require('../models/groups');
 // Get Dashboard
 router.get('/', (req, res, next) => {
    if(req.isAuthenticated()) {
-      res.render('dashboard/overview', {
-        page_title: 'Dashboard Overview',
-        notLoginPage: false,
-        welcomePage: false,
-        dashboard: true
-      });
+
+     if (req.user.premium_creator_account == 1 || req.user.premium_creator_account == 2 || req.user.premium_creator_account == 3) {
+       res.render('dashboard/overview', {
+         page_title: 'Dashboard Overview',
+         notLoginPage: false,
+         welcomePage: false,
+         dashboard: true
+       });
+     } else {
+       res.redirect('/');
+     }
+
    } else {
       res.redirect('/');
    }

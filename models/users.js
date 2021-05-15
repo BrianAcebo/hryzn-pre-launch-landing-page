@@ -122,6 +122,9 @@ const UserSchema = mongoose.Schema({
    },
    date_of_birth: {
       type: String
+   },
+   premium_creator_account: {
+      type: Number
    }
 });
 

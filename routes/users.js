@@ -42,9 +42,17 @@ const User = require('../models/users');
 
 // GET Register
 router.get('/register', (req, res, next) => {
+
+  if (req.query.creator) {
+    var creator_account = true;
+  } else {
+    var creator_account;
+  }
+
    res.render('users/register', {
      page_title: 'Register Your Account',
-     notLoginPage: false
+     notLoginPage: false,
+     creator_account: creator_account
    });
 });
 
@@ -59,6 +67,7 @@ router.post('/register', upload.single('profileimage'), (req, res, next) => {
    var email = req.body.email.replace(/\r\n/g,'').trim();
    var password = req.body.password.replace(/\r\n/g,'').trim();
    var password2 = req.body.password2.replace(/\r\n/g,'').trim();
+   var creator_account = req.body.creator_account;
    var bypassEmail = 'brian@bypassEmail.com';
 
    var dob_day = req.body.dob_day.replace(/\r\n/g,'').trim();
@@ -120,6 +129,7 @@ router.post('/register', upload.single('profileimage'), (req, res, next) => {
                 username: username,
                 email: email,
                 password: password,
+                creator_account: creator_account,
                 inviteAllowed: true,
                 page_title: 'Register Your Account',
                 notLoginPage: false
@@ -132,6 +142,7 @@ router.post('/register', upload.single('profileimage'), (req, res, next) => {
                 username: username,
                 email: email,
                 password: password,
+                creator_account: creator_account,
                 inviteAllowed: true,
                 page_title: 'Register Your Account',
                 notLoginPage: false
@@ -155,6 +166,7 @@ router.post('/register', upload.single('profileimage'), (req, res, next) => {
                                lastname: lastname,
                                username: username,
                                password: password,
+                               creator_account: creator_account,
                                email: email,
                                inviteAllowed: true,
                                page_title: 'Register Your Account',
@@ -201,6 +213,7 @@ router.post('/register', upload.single('profileimage'), (req, res, next) => {
                                username: username,
                                email: email,
                                password: password,
+                               creator_account: creator_account,
                                profile_dob: profile_dob,
                                profileimage: profileimage,
                                inviteAllowed: true,
@@ -245,6 +258,7 @@ router.post('/register', upload.single('profileimage'), (req, res, next) => {
                             username: username,
                             email: email,
                             password: password,
+                            creator_account: creator_account,
                             profile_dob: profile_dob,
                             inviteAllowed: true,
                             verify_code: verify_code,
@@ -263,6 +277,7 @@ router.post('/register', upload.single('profileimage'), (req, res, next) => {
                          lastname: lastname,
                          username: username,
                          password: password,
+                         creator_account: creator_account,
                          inviteAllowed: true,
                          page_title: 'Register Your Account',
                          notLoginPage: false
@@ -277,6 +292,7 @@ router.post('/register', upload.single('profileimage'), (req, res, next) => {
                    lastname: lastname,
                    email: email,
                    password: password,
+                   creator_account: creator_account,
                    inviteAllowed: true,
                    page_title: 'Register Your Account',
                    notLoginPage: false
@@ -286,9 +302,6 @@ router.post('/register', upload.single('profileimage'), (req, res, next) => {
        }
      } else {
 
-        console.log('no');
-        console.log(access_code);
-
         res.render('users/register', {
            error_msg: "Sorry, we couldn't recognize that invitation code. Please try again.",
            firstname: firstname,
@@ -296,14 +309,13 @@ router.post('/register', upload.single('profileimage'), (req, res, next) => {
            username: username,
            email: email,
            password: password,
+           creator_account: creator_account,
            inviteAllowed: true,
            page_title: 'Register Your Account',
            notLoginPage: false
         });
      }
    } else {
-
-     console.log('yes');
 
      res.render('users/register', {
         error_msg: "Sorry, we couldn't recognize that invitation code. Please try again.",
@@ -312,6 +324,7 @@ router.post('/register', upload.single('profileimage'), (req, res, next) => {
         username: username,
         email: email,
         password: password,
+        creator_account: creator_account,
         inviteAllowed: true,
         page_title: 'Register Your Account',
         notLoginPage: false
@@ -327,6 +340,7 @@ router.post('/register-next', (req, res, next) => {
    var password = req.body.password.replace(/\r\n/g,'').trim();
    var user_code = req.body.user_code.replace(/\r\n/g,'').trim();
    var profile_dob = req.body.profile_dob.replace(/\r\n/g,'').trim();
+   var creator_account = req.body.creator_account;
 
    var verify_code = req.body.verify_code.split('$21B3')[0];
 
@@ -345,7 +359,8 @@ router.post('/register-next', (req, res, next) => {
             completed_interest_onboarding: false,
             completed_modal_walkthrough: false,
             completed_profile_setup: false,
-            date_of_birth: profile_dob
+            date_of_birth: profile_dob,
+            premium_creator_account: 4
          });
 
          // Create user in database
@@ -456,7 +471,8 @@ router.post('/register-next', (req, res, next) => {
             completed_interest_onboarding: false,
             completed_modal_walkthrough: false,
             completed_profile_setup: false,
-            date_of_birth: profile_dob
+            date_of_birth: profile_dob,
+            premium_creator_account: 4
          });
 
          // Create user in database
@@ -572,7 +588,8 @@ router.post('/register-next', (req, res, next) => {
          page_title: 'Verify Your Account',
          notLoginPage: false,
          profileimage: req.body.profileimage,
-         verify_code: verify_code
+         verify_code: verify_code,
+         creator_account: creator_account
       });
    }
 });
@@ -587,6 +604,7 @@ router.post('/register-next/text', (req, res, next) => {
    var profile_dob = req.body.profile_dob.replace(/\r\n/g,'').trim();
    var profileimage = req.body.profileimage;
    var verify_code = req.body.verify_code.split('$21B3')[0];
+   var creator_account = req.body.creator_account;
 
    client.messages
      .create({
@@ -603,6 +621,7 @@ router.post('/register-next/text', (req, res, next) => {
       profile_dob: profile_dob,
       phone: phone,
       profileimage: profileimage,
+      creator_account: creator_account,
       inviteAllowed: true,
       verify_code: req.body.verify_code,
       page_title: 'Verify Your Account',
@@ -620,6 +639,7 @@ router.post('/register-next/text/1', (req, res, next) => {
    var password = req.body.password.replace(/\r\n/g,'').trim();
    var profile_dob = req.body.profile_dob.replace(/\r\n/g,'').trim();
    var profileimage = req.body.profileimage;
+   var creator_account = req.body.creator_account;
 
    var user_code = req.body.user_code.replace(/\r\n/g,'').trim();
 
@@ -683,7 +703,8 @@ router.post('/register-next/text/1', (req, res, next) => {
             completed_interest_onboarding: false,
             completed_modal_walkthrough: false,
             completed_profile_setup: false,
-            date_of_birth: profile_dob
+            date_of_birth: profile_dob,
+            premium_creator_account: 4
          });
 
          // Create user in database
@@ -789,7 +810,8 @@ router.post('/register-next/text/1', (req, res, next) => {
             completed_interest_onboarding: false,
             completed_modal_walkthrough: false,
             completed_profile_setup: false,
-            date_of_birth: profile_dob
+            date_of_birth: profile_dob,
+            premium_creator_account: 4
          });
 
          // Create user in database
@@ -870,6 +892,7 @@ passport.deserializeUser( (id, done) => {
 // POST Login
 router.post('/login', passport.authenticate('local-login', { failureRedirect:'/users/login', failureFlash: true }), (req, res, next) => {
    // Logged In successfully
+
    if (req.user.completed_profile_setup) {
       if (req.user.completed_interest_onboarding) {
          if (req.user.completed_modal_walkthrough) {
@@ -883,6 +906,7 @@ router.post('/login', passport.authenticate('local-login', { failureRedirect:'/u
    } else {
       res.redirect('/setup-profile');
    }
+
 });
 
 passport.use('local-login', new LocalStrategy( (username, password, done) => {

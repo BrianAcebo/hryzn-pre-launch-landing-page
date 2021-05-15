@@ -4,10 +4,11 @@
   width: 250px;
   position: fixed;
   height: 100%;
-  border-right: 1px solid #ccc;
+  border-right: 1px solid #f1f1f1;
   overflow: auto;
   transition: 0.5s;
   background: #fff;
+  box-shadow: 0px 4px 8px 0px rgb(0 0 0 / 20%);
   z-index: 999998;
 }
 
@@ -29,8 +30,9 @@
    display: none;
    position: absolute;
    right: 25px;
-   top: 25px;
+   top: 35px;
    z-index: 999999;
+   cursor: pointer;
 }
 
 #dashClose {
@@ -65,6 +67,10 @@
    font-family: 'Montserrat', sans-serif;
    color: #31375A;
    margin-right: 10px;
+}
+
+.dash_logo .dash_logo_img {
+   max-width: 50px;
 }
 
 .dash_nav {
@@ -118,6 +124,12 @@ div.dash_content {
    padding: 100px;
 }
 
+@media screen and (max-width: 992px) {
+  .dash_nav {
+    margin-top: 135px;
+  }
+}
+
 @media screen and (max-width: 768px) {
    .dash_menu_btn {
       display: flex;
@@ -138,4 +150,31 @@ div.dash_content {
     text-align: center;
     float: none;
   }
+}
+
+.creator_canceled_img {
+  max-width: 250px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.creator_canceled_info {
+  font-size: 14px;
+}
+
+.creator_canceled_link {
+  display: inline-block;
+  padding: 8px 25px;
+  margin: 15px 25px;
+}
+
+.creator_canceled_done {
+  text-decoration: underline!important;
+}
+
+.creator_canceled_retry {
+  background: #31375A;
+  font-weight: bold;
+  color: #fff;
+  border-radius: 35px;
 }

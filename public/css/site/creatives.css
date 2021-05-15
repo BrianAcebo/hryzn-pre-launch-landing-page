@@ -24,12 +24,17 @@
     font-size: 14px;
 }
 
-.creatives input[type="submit"] {
+.creatives input[type="submit"],
+.creatives .setup_btn {
     cursor: pointer;
     border: 2px solid #000;
     height: 55px;
     background: transparent;
     padding: 0 25px;
+}
+
+.creatives .setup_btn {
+    padding: 15px 25px;
 }
 
 /* Rows and Columns */
@@ -1444,6 +1449,10 @@ blockquote {
     margin:0 0 25px 0;
 }
 
+.pricing-block .button {
+    cursor: pointer;
+}
+
 /*Price*/
 
 .pricing {
@@ -1466,7 +1475,7 @@ blockquote {
     font-size: 22px;
 }
 
-.pricing  p {
+.pricing p {
     font-style:italic;
     color:#b4b4b4;
     line-height:auto;

@@ -61,6 +61,11 @@
       src="https://www.facebook.com/tr?id=462012631558038&ev=PageView&noscript=1"
       /></noscript>
 
+      <!-- Stripe Checkout -->
+      {{#if creatorSetup}}
+      <script src="https://js.stripe.com/v3/"></script>
+      {{/if}}
+
       <!-- Fonts -->
       <link href="https://fonts.googleapis.com/css?family=Karla:400,400i,700,700i" rel="stylesheet">
       <link rel="stylesheet" href="https://use.typekit.net/ppc1ait.css">
@@ -176,6 +181,35 @@
       {{#if user}}
 
          {{#if dashboard}}
+
+         <div id="dashSideNav" class="dash_sidebar">
+            <a href="/profile/{{user.username}}" class="dash_logo">
+               <div class="dash_back"><img src="/icons/left-arrow-black.png" class="mobile-nav__icon"/></div>
+               <img class="dash_logo_img" src="/img/logos/hryzn-logo-v2-color-256x256.png" />
+            </a>
+
+            <div class="dash_nav">
+               <a class="dash_active" href="/dashboard">Overview</a>
+               <a href="/dashboard/build">Build</a>
+               <a href="/dashboard/manage">Manage</a>
+               <a href="/dashboard/marketing">Marketing</a>
+               <a href="/dashboard/monetize">Monetize</a>
+               <a href="/dashboard/analytics">Analytics</a>
+            </div>
+
+            <a href="#settings" class="dash_settings"><img src="/icons/settings-black.png" class="mobile-nav__icon"/>Settings</a>
+         </div>
+
+         <div id="dashBtn" class="dash_menu_btn">
+            <div class="dashOpen_container">
+               <div class="dash_dashes"></div>
+               <div class="dash_dashes"></div>
+               <div class="dash_dashes"></div>
+            </div>
+
+            <a href="javascript:void(0)" id="dashClose">&times;</a>
+         </div>
+
          {{else}}
             <!-- Main Nav -->
             <header class="topnav mobile_topnav">
@@ -969,7 +1003,12 @@
 
    </script>
 
-   {{! For DEV
+   <!-- Stripe Checkout -->
+   {{#if creatorSetup}}
+   <script src="/js/stripe-checkout.js"></script>
+   {{/if}}
+
+   {{! For DEV 
    <script src="/js/main.js" type="text/javascript"></script>
   }}
 
