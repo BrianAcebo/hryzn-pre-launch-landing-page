@@ -10,7 +10,7 @@ const jwt = require('jsonwebtoken');
 const bodyParser = require('body-parser');
 
 const stripe = require('stripe')(keys.stripeAPIKey);
-const webhookSecret = require('stripe')(keys.stripeWebhookSecret);
+const webhookSecret = keys.stripeWebhookSecret;
 
 aws.config.update({
    secretAccessKey: keys.secretAccessKey,
