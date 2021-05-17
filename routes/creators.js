@@ -10,6 +10,7 @@ const jwt = require('jsonwebtoken');
 const bodyParser = require('body-parser');
 
 const stripe = require('stripe')(keys.stripeAPIKey);
+const webhookSecret = require('stripe')(keys.stripeWebhookSecret);
 
 aws.config.update({
    secretAccessKey: keys.secretAccessKey,
@@ -133,7 +134,6 @@ router.post("/webhook", async (req, res) => {
   let data;
   let eventType;
   // Check if webhook signing is configured.
-  const webhookSecret = 'whsec_h7rjN2NWHuJuo19xeGJO9TnkpBZBAXOf';
   if (webhookSecret) {
     // Retrieve the event by verifying the signature using the raw body and secret.
     let event;
