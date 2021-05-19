@@ -147,8 +147,8 @@ router.post("/webhook", async (req, res) => {
       );
     } catch (err) {
       console.log(`⚠️  Webhook signature verification failed.`);
-      console.log(err + '\n' + 'End err');
-      console.log('Req.body: ' + req.body + '\n' + signature + '\n' + webhookSecret);
+      // console.log(err + '\n' + 'End err');
+      // console.log('Req.body: ' + req.body + '\n' + signature + '\n' + webhookSecret);
       return res.sendStatus(400);
     }
     // Extract the object from the event.
@@ -165,6 +165,7 @@ router.post("/webhook", async (req, res) => {
       case 'checkout.session.completed':
         // Payment is successful and the subscription is created.
         // You should provision the subscription and save the customer ID to your database.
+        console.log(data.object);
         break;
       case 'invoice.paid':
         // Continue to provision the subscription as payments continue to be made.
