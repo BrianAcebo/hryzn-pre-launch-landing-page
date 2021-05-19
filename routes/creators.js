@@ -112,7 +112,7 @@ router.post('/create-creator-checkout-session', async (req, res) => {
       // is redirected to the success page.
       success_url: 'https://myhryzn.com/creators/creator-setup-success?session_id={CHECKOUT_SESSION_ID}&price_id=' + priceId,
       cancel_url: 'https://myhryzn.com/creators/creator-canceled',
-      metadata: req.user._id
+      metadata: 'lol'//
     });
 
     res.send({
