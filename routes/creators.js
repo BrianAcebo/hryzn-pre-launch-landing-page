@@ -165,7 +165,13 @@ router.post("/webhook", async (req, res) => {
       case 'checkout.session.completed':
         // Payment is successful and the subscription is created.
         // You should provision the subscription and save the customer ID to your database.
-        console.log(data.object);
+
+        User.findByIdAndUpdate(req.user._id, {
+           stripe_customer_id: data.object.customer
+        }, (err, user) => {
+           if (err) throw err;
+        });
+
         break;
       case 'invoice.paid':
         // Continue to provision the subscription as payments continue to be made.
