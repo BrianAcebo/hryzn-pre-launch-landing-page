@@ -6,5 +6,5 @@ module.exports = {
    accessKeyId: 'AKIAIEWS4E3JR3BNVDVQ ',
    region: 'us-east-1',
    stripeAPIKey: 'sk_test_51IqjT1DPMngAtAXMstfVzoYdBi2805kLP4FDEQrPA2qhnC7FsPGODK1mjqhD0jvptyIMT8sCwwxKgNuVSSCmBxfj003qIzGKyg',
-   stripeWebhookSecret: 'whsec_h7rjN2NWHuJuo19xeGJO9TnkpBZBAXOf'
+   stripeWebhookSecret: 'whsec_RH8J6vq5gYCTscOZgZMsdXov5xVApyfg'
 };
