@@ -141,14 +141,14 @@ router.post("/webhook", async (req, res) => {
 
     try {
       event = stripe.webhooks.constructEvent(
-        req.body,
+        req.rawBody,
         signature,
         webhookSecret
       );
     } catch (err) {
       console.log(`⚠️  Webhook signature verification failed.`);
       console.log(err);
-      console.log(req.body + '\n' + signature + '\n' + webhookSecret);
+      console.log(req.rawBody + '\n' + signature + '\n' + webhookSecret);
       return res.sendStatus(400);
     }
     // Extract the object from the event.

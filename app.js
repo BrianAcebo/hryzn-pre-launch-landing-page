@@ -50,8 +50,16 @@ app.set('view engine', 'handlebars');
 app.use('/scripts', express.static(__dirname + '/node_modules/'));
 
 app.use(logger('dev'));
-app.use('/creators/webhook', bodyParser.raw({type: "*/*"}))
-app.use(bodyParser.json());
+// app.use('/creators/webhook', bodyParser.raw({type: "*/*"}))
+// app.use(bodyParser.json());
+app.use(bodyParser.json({
+  verify: function (req, res, buf) {
+    var url = req.originalUrl;
+    if (url.startsWith('/creators/webhook')) {
+       req.rawBody = buf.toString();
+    }
+  }
+}));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
