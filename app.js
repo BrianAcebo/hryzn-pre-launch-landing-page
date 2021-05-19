@@ -50,7 +50,7 @@ app.set('view engine', 'handlebars');
 app.use('/scripts', express.static(__dirname + '/node_modules/'));
 
 app.use(logger('dev'));
-app.use('/creators/webhook', bodyParser.raw({type: "*/*"}))
+// app.use('/creators/webhook', bodyParser.raw({type: "*/*"}))
 app.use(bodyParser.json());
 // app.use(bodyParser.json({
 //   verify: function (req, res, buf) {
