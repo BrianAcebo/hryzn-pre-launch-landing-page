@@ -147,8 +147,8 @@ router.post("/webhook", async (req, res) => {
       );
     } catch (err) {
       console.log(`⚠️  Webhook signature verification failed.`);
-      console.log(err);
-      console.log(req.body + '\n' + signature + '\n' + webhookSecret);
+      // console.log(err);
+      // console.log(req.body + '\n' + signature + '\n' + webhookSecret);
       return res.sendStatus(400);
     }
     // Extract the object from the event.
