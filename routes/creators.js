@@ -114,6 +114,12 @@ router.post('/create-creator-checkout-session', async (req, res) => {
       cancel_url: 'https://myhryzn.com/creators/creator-canceled'
     });
 
+    User.findByIdAndUpdate(req.user._id, {
+       stripe_customer_id: session.customer
+    }, (err, user) => {
+       if (err) throw err;
+    });
+
     res.send({
       sessionId: session.id,
     });
@@ -165,13 +171,6 @@ router.post("/webhook", async (req, res) => {
       case 'checkout.session.completed':
         // Payment is successful and the subscription is created.
         // You should provision the subscription and save the customer ID to your database.
-
-        User.findByIdAndUpdate(req.user._id, {
-           stripe_customer_id: data.object.customer
-        }, (err, user) => {
-           if (err) throw err;
-        });
-
         break;
       case 'invoice.paid':
         // Continue to provision the subscription as payments continue to be made.
