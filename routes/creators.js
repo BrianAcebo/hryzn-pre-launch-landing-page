@@ -165,6 +165,7 @@ router.post("/webhook", async (req, res) => {
       case 'checkout.session.completed':
         // Payment is successful and the subscription is created.
         // You should provision the subscription and save the customer ID to your database.
+        console.log(data);
         break;
       case 'invoice.paid':
         // Continue to provision the subscription as payments continue to be made.

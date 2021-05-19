@@ -125,6 +125,9 @@ const UserSchema = mongoose.Schema({
    },
    premium_creator_account: {
       type: Number
+   },
+   stripe_customer_id: {
+      type: String
    }
 });
 
