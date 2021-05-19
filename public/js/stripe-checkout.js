@@ -38,12 +38,12 @@ var handleResult = function(result) {
     showErrorMessage(result.error.message);
   }
 };
-
-var showErrorMessage = function(message) {
-  var errorEl = document.getElementById("error-message")
-  errorEl.textContent = message;
-  errorEl.style.display = "block";
-};
+// 
+// var showErrorMessage = function(message) {
+//   var errorEl = document.getElementById("error-message")
+//   errorEl.textContent = message;
+//   errorEl.style.display = "block";
+// };
 
 var stripe = Stripe(publishableKey);
 // Setup event handler to create a Checkout Session when button is clicked
