@@ -167,7 +167,6 @@ router.post("/webhook", async (req, res) => {
       case 'checkout.session.completed':
         // Payment is successful and the subscription is created.
         // You should provision the subscription and save the customer ID to your database.
-        console.log(data.object)
 
         var hryzn_user_id = data.object.metadata.user_id;
         var stripe_customer_id = data.object.customer;
@@ -188,12 +187,48 @@ router.post("/webhook", async (req, res) => {
         // The payment failed or the customer does not have a valid payment method.
         // The subscription becomes past_due. Notify your customer and send them to the
         // customer portal to update their payment information.
+
+        var stripe_customer_id = data.object.customer;
+
+        User.findOne({ 'stripe_customer_id': { $in: stripe_customer_id} }, (err, user) => {
+
+           if(err) throw err;
+
+           if (user) {
+
+             User.findByIdAndUpdate(user._id, {
+                premium_creator_account: 0
+             }, (err, user) => {
+                if (err) throw err;
+             });
+           }
+
+        });
+
         break;
       default:
       // Unhandled event type
     }
 
   res.sendStatus(200);
+});
+
+
+// Stripe customer portal
+router.post('/customer-portal', async (req, res) => {
+  // This is the url to which the customer will be redirected when they are done
+  // managing their billing with the portal.
+  const returnUrl = 'https://myhryzn.com/dashboard';
+  var customer_id = req.user.stripe_customer_id;
+
+  const portalsession = await stripe.billingPortal.sessions.create({
+    customer: customer_id,
+    return_url: returnUrl,
+  });
+
+  res.send({
+    url: portalsession.url,
+  });
 });
 
 
