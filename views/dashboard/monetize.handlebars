@@ -1,3 +1,5 @@
+{{#if subscription_active}}
+
 <div class="dash_content">
    <h3>Coming Soon...</h3>
    <p>
@@ -9,3 +11,15 @@
       <strong>Creating a business is hard, but we'll make it easy for you.</strong>
    </p>
 </div>
+
+{{else}}
+
+<div class="dash_content">
+   <h3>Subscription is no longer active.</h3>
+   <p>
+      We're sorry but this subscription is no longer active. This issue can arise due to a failed payment, or a paused/canceled subscription.
+      If you're looking to renew your subscription, go to the customer portal located in dashboard settings.
+   </p>
+</div>
+
+{{/if}}

@@ -40,13 +40,21 @@ const Group = require('../models/groups');
 router.get('/', (req, res, next) => {
    if(req.isAuthenticated()) {
 
-     if (req.user.premium_creator_account == 1 || req.user.premium_creator_account == 2 || req.user.premium_creator_account == 3) {
+     if (req.user.premium_creator_account == 0 || req.user.premium_creator_account == 1 || req.user.premium_creator_account == 2 || req.user.premium_creator_account == 3) {
+       if (req.user.premium_creator_account == 0) {
+         var subscription_active = false;
+       } else {
+         var subscription_active = true;
+       }
+
        res.render('dashboard/overview', {
          page_title: 'Dashboard Overview',
          notLoginPage: false,
          welcomePage: false,
-         dashboard: true
+         dashboard: true,
+         subscription_active: subscription_active
        });
+
      } else {
        res.redirect('/');
      }
@@ -60,12 +68,26 @@ router.get('/', (req, res, next) => {
 // Get Dashboard Build
 router.get('/build', (req, res, next) => {
    if(req.isAuthenticated()) {
-      res.render('dashboard/build', {
-        page_title: 'Dashboard Build',
-        notLoginPage: false,
-        welcomePage: false,
-        dashboard: true
-      });
+
+     if (req.user.premium_creator_account == 0 || req.user.premium_creator_account == 1 || req.user.premium_creator_account == 2 || req.user.premium_creator_account == 3) {
+       if (req.user.premium_creator_account == 0) {
+         var subscription_active = false;
+       } else {
+         var subscription_active = true;
+       }
+
+       res.render('dashboard/build', {
+         page_title: 'Dashboard Build',
+         notLoginPage: false,
+         welcomePage: false,
+         dashboard: true,
+         subscription_active: subscription_active
+       });
+
+     } else {
+       res.redirect('/');
+     }
+
    } else {
       res.redirect('/');
    }
@@ -75,12 +97,26 @@ router.get('/build', (req, res, next) => {
 // Get Dashboard Manage
 router.get('/manage', (req, res, next) => {
    if(req.isAuthenticated()) {
-      res.render('dashboard/manage', {
-        page_title: 'Dashboard Manage',
-        notLoginPage: false,
-        welcomePage: false,
-        dashboard: true
-      });
+
+     if (req.user.premium_creator_account == 0 || req.user.premium_creator_account == 1 || req.user.premium_creator_account == 2 || req.user.premium_creator_account == 3) {
+       if (req.user.premium_creator_account == 0) {
+         var subscription_active = false;
+       } else {
+         var subscription_active = true;
+       }
+
+       res.render('dashboard/manage', {
+         page_title: 'Dashboard Manage',
+         notLoginPage: false,
+         welcomePage: false,
+         dashboard: true,
+         subscription_active: subscription_active
+       });
+
+     } else {
+       res.redirect('/');
+     }
+
    } else {
       res.redirect('/');
    }
@@ -90,12 +126,26 @@ router.get('/manage', (req, res, next) => {
 // Get Dashboard Marketing
 router.get('/marketing', (req, res, next) => {
    if(req.isAuthenticated()) {
-      res.render('dashboard/marketing', {
-        page_title: 'Dashboard Marketing',
-        notLoginPage: false,
-        welcomePage: false,
-        dashboard: true
-      });
+
+     if (req.user.premium_creator_account == 0 || req.user.premium_creator_account == 1 || req.user.premium_creator_account == 2 || req.user.premium_creator_account == 3) {
+       if (req.user.premium_creator_account == 0) {
+         var subscription_active = false;
+       } else {
+         var subscription_active = true;
+       }
+
+       res.render('dashboard/marketing', {
+         page_title: 'Dashboard Marketing',
+         notLoginPage: false,
+         welcomePage: false,
+         dashboard: true,
+         subscription_active: subscription_active
+       });
+
+     } else {
+       res.redirect('/');
+     }
+
    } else {
       res.redirect('/');
    }
@@ -105,12 +155,26 @@ router.get('/marketing', (req, res, next) => {
 // Get Dashboard Monetize
 router.get('/monetize', (req, res, next) => {
    if(req.isAuthenticated()) {
-      res.render('dashboard/monetize', {
-        page_title: 'Dashboard Monetize',
-        notLoginPage: false,
-        welcomePage: false,
-        dashboard: true
-      });
+
+     if (req.user.premium_creator_account == 0 || req.user.premium_creator_account == 1 || req.user.premium_creator_account == 2 || req.user.premium_creator_account == 3) {
+       if (req.user.premium_creator_account == 0) {
+         var subscription_active = false;
+       } else {
+         var subscription_active = true;
+       }
+
+       res.render('dashboard/monetize', {
+         page_title: 'Dashboard Monetize',
+         notLoginPage: false,
+         welcomePage: false,
+         dashboard: true,
+         subscription_active: subscription_active
+       });
+
+     } else {
+       res.redirect('/');
+     }
+
    } else {
       res.redirect('/');
    }
@@ -120,12 +184,26 @@ router.get('/monetize', (req, res, next) => {
 // Get Dashboard Analytics
 router.get('/analytics', (req, res, next) => {
    if(req.isAuthenticated()) {
-      res.render('dashboard/analytics', {
-        page_title: 'Dashboard Analytics',
-        notLoginPage: false,
-        welcomePage: false,
-        dashboard: true
-      });
+
+     if (req.user.premium_creator_account == 0 || req.user.premium_creator_account == 1 || req.user.premium_creator_account == 2 || req.user.premium_creator_account == 3) {
+       if (req.user.premium_creator_account == 0) {
+         var subscription_active = false;
+       } else {
+         var subscription_active = true;
+       }
+
+       res.render('dashboard/analytics', {
+         page_title: 'Dashboard Analytics',
+         notLoginPage: false,
+         welcomePage: false,
+         dashboard: true,
+         subscription_active: subscription_active
+       });
+
+     } else {
+       res.redirect('/');
+     }
+
    } else {
       res.redirect('/');
    }

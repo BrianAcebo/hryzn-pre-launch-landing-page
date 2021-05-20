@@ -206,6 +206,48 @@ router.post("/webhook", async (req, res) => {
         });
 
         break;
+      case 'customer.subscription.canceled':
+        // The customer canceled their subscription.
+
+        var stripe_customer_id = data.object.customer;
+
+        User.findOne({ 'stripe_customer_id': { $in: stripe_customer_id} }, (err, user) => {
+
+           if(err) throw err;
+
+           if (user) {
+
+             User.findByIdAndUpdate(user._id, {
+                premium_creator_account: 0
+             }, (err, user) => {
+                if (err) throw err;
+             });
+           }
+
+        });
+
+        break;
+      case 'customer.subscription.paused':
+        // The customer paused their subscription.
+
+        var stripe_customer_id = data.object.customer;
+
+        User.findOne({ 'stripe_customer_id': { $in: stripe_customer_id} }, (err, user) => {
+
+           if(err) throw err;
+
+           if (user) {
+
+             User.findByIdAndUpdate(user._id, {
+                premium_creator_account: 0
+             }, (err, user) => {
+                if (err) throw err;
+             });
+           }
+
+        });
+
+        break;
       default:
       // Unhandled event type
     }

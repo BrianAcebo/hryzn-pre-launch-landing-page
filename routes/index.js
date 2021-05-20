@@ -313,7 +313,7 @@ router.get('/', (req, res, next) => {
                                var pageRender = 'profile-themes/' + profile.profile_theme;
                             }
 
-                            if (profile.premium_creator_account == 1 || profile.premium_creator_account == 2 || profile.premium_creator_account == 3) {
+                            if (profile.premium_creator_account == 0 || profile.premium_creator_account == 1 || profile.premium_creator_account == 2 || profile.premium_creator_account == 3) {
                                var premium_creator_account = true;
                             } else {
                               var premium_creator_account = false;
@@ -795,7 +795,7 @@ router.get('/welcome', (req, res, next) => {
 // Get Creatives
 router.get('/creatives', (req, res, next) => {
   if(req.isAuthenticated()) {
-    if (req.user.premium_creator_account == 1 || req.user.premium_creator_account == 2 || req.user.premium_creator_account == 3) {
+    if (req.user.premium_creator_account == 0 || req.user.premium_creator_account == 1 || req.user.premium_creator_account == 2 || req.user.premium_creator_account == 3) {
        var premium_creator_account = true;
     } else {
       var premium_creator_account = false;
@@ -2991,7 +2991,7 @@ router.get('/profile/:username', (req, res, next) => {
                               var pageRender = 'profile-themes/' + profile.profile_theme;
                            }
 
-                           if (profile.premium_creator_account == 1 || profile.premium_creator_account == 2 || profile.premium_creator_account == 3) {
+                           if (profile.premium_creator_account == 0 || profile.premium_creator_account == 1 || profile.premium_creator_account == 2 || profile.premium_creator_account == 3) {
                              var premium_creator_account = true;
                            } else {
                              var premium_creator_account = false;
