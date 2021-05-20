@@ -170,9 +170,10 @@ router.post("/webhook", async (req, res) => {
         console.log(data.object)
 
         var hryzn_user_id = data.object.metadata.user_id;
+        var stripe_customer_id = data.object.customer;
 
         User.findByIdAndUpdate(hryzn_user_id, {
-           stripe_customer_id: hryzn_user_id
+           stripe_customer_id: stripe_customer_id
         }, (err, user) => {
            if (err) throw err;
         });
