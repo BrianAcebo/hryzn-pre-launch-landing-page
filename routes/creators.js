@@ -92,6 +92,7 @@ router.get('/creator-canceled', (req, res, next) => {
 router.post('/create-creator-checkout-session', async (req, res) => {
 
   const { priceId } = req.body;
+  var user_id = req.user._id.toString()
 
   // See https://stripe.com/docs/api/checkout/sessions/create
   // for additional parameters to pass.
@@ -112,7 +113,7 @@ router.post('/create-creator-checkout-session', async (req, res) => {
       // is redirected to the success page.
       success_url: 'https://myhryzn.com/creators/creator-setup-success?session_id={CHECKOUT_SESSION_ID}&price_id=' + priceId,
       cancel_url: 'https://myhryzn.com/creators/creator-canceled',
-      metadata: req.user._id.toString()
+      metadata: { user_id: user_id }
     });
 
     res.send({
@@ -168,8 +169,10 @@ router.post("/webhook", async (req, res) => {
         // You should provision the subscription and save the customer ID to your database.
         console.log(data.object)
 
-        User.findByIdAndUpdate(data.object.metadata, {
-           stripe_customer_id: data.object.metadata
+        var hryzn_user_id = data.object.metadata.user_id;
+
+        User.findByIdAndUpdate(hryzn_user_id, {
+           stripe_customer_id: hryzn_user_id
         }, (err, user) => {
            if (err) throw err;
         });
