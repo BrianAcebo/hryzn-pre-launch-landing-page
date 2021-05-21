@@ -212,17 +212,17 @@ router.post("/webhook", async (req, res) => {
         console.log(data.object.items.data);
 
         var stripe_customer_id = data.object.customer;
-        var price_id = data.object.items.data[0].price;
+        var price_id = data.object.items.data[0].price.id;
 
-        if (priceId == 'price_1Ir6YODPMngAtAXMx120sOr3') {
+        if (price_id == 'price_1Ir6YODPMngAtAXMx120sOr3') {
           var product_number = 1;
         }
 
-        if (priceId == 'price_1IqjWQDPMngAtAXMkE3SfI6W') {
+        if (price_id == 'price_1IqjWQDPMngAtAXMkE3SfI6W') {
           var product_number = 2;
         }
 
-        if (priceId == 'price_1IqkrvDPMngAtAXMQPTTUlwx') {
+        if (price_id == 'price_1IqkrvDPMngAtAXMQPTTUlwx') {
           var product_number = 3;
         }
 
