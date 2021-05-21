@@ -209,10 +209,10 @@ router.post("/webhook", async (req, res) => {
       case 'customer.subscription.updated':
         // The customer canceled their subscription.
 
-        console.log(data);
+        console.log(data.object.items.data);
 
         var stripe_customer_id = data.object.customer;
-        var price_id = data.object.subscription.items.data[0].price;
+        var price_id = data.object.items.data[0].price;
 
         if (priceId == 'price_1Ir6YODPMngAtAXMx120sOr3') {
           var product_number = 1;
