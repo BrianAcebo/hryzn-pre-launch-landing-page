@@ -182,6 +182,40 @@ router.post("/webhook", async (req, res) => {
         // Continue to provision the subscription as payments continue to be made.
         // Store the status in your database and check when a user accesses your service.
         // This approach helps you avoid hitting rate limits.
+
+        console.log(data.object.items.data[0].plan.id);
+
+        var stripe_customer_id = data.object.customer;
+
+        User.findOne({ 'stripe_customer_id': { $in: stripe_customer_id} }, (err, user) => {
+
+           if(err) throw err;
+
+           if (user && user.premium_creator_account == 0) {
+
+             var plan_id = data.object.items.data[0].plan.id;
+
+             if (plan_id == 'price_1Ir6YODPMngAtAXMx120sOr3') {
+               var product_number = 1;
+             }
+
+             if (plan_id == 'price_1IqjWQDPMngAtAXMkE3SfI6W') {
+               var product_number = 2;
+             }
+
+             if (plan_id == 'price_1IqkrvDPMngAtAXMQPTTUlwx') {
+               var product_number = 3;
+             }
+
+             User.findByIdAndUpdate(user._id, {
+                premium_creator_account: product_number
+             }, (err, user) => {
+                if (err) throw err;
+             });
+           }
+
+        });
+
         break;
       case 'invoice.payment_failed':
         // The payment failed or the customer does not have a valid payment method.
@@ -208,8 +242,6 @@ router.post("/webhook", async (req, res) => {
         break;
       case 'customer.subscription.updated':
         // The customer canceled their subscription.
-
-        console.log(data.object.items.data);
 
         var stripe_customer_id = data.object.customer;
         var price_id = data.object.items.data[0].price.id;
@@ -254,7 +286,7 @@ router.post("/webhook", async (req, res) => {
            if (user) {
 
              User.findByIdAndUpdate(user._id, {
-                premium_creator_account: 0
+                premium_creator_account: 5
              }, (err, user) => {
                 if (err) throw err;
              });
