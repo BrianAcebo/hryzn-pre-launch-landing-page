@@ -206,7 +206,41 @@ router.post("/webhook", async (req, res) => {
         });
 
         break;
-      case 'customer.subscription.canceled':
+      case 'customer.subscription.updated':
+        // The customer canceled their subscription.
+
+        var stripe_customer_id = data.object.customer;
+        var price_id = data.object.subscription.items.data[0].price;
+
+        if (priceId == 'price_1Ir6YODPMngAtAXMx120sOr3') {
+          var product_number = 1;
+        }
+
+        if (priceId == 'price_1IqjWQDPMngAtAXMkE3SfI6W') {
+          var product_number = 2;
+        }
+
+        if (priceId == 'price_1IqkrvDPMngAtAXMQPTTUlwx') {
+          var product_number = 3;
+        }
+
+        User.findOne({ 'stripe_customer_id': { $in: stripe_customer_id} }, (err, user) => {
+
+           if(err) throw err;
+
+           if (user) {
+
+             User.findByIdAndUpdate(user._id, {
+                premium_creator_account: product_number
+             }, (err, user) => {
+                if (err) throw err;
+             });
+           }
+
+        });
+
+        break;
+      case 'customer.subscription.deleted':
         // The customer canceled their subscription.
 
         var stripe_customer_id = data.object.customer;
