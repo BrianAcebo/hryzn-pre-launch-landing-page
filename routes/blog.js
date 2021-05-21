@@ -60,10 +60,8 @@ router.get('/', (req, res, next) => {
       if(req.isAuthenticated()) {
          if (req.user.username === 'hryzn') {
             var hryznAdmin = true;
-            console.log('yes')
          } else {
             var hryznAdmin = false;
-            console.log('noe')
          }
       }
 
@@ -84,8 +82,6 @@ router.get('/category/:category', (req, res, next) => {
       if (err) throw err;
 
       var reversed_posts = posts.reverse();
-
-      console.log(posts);
 
       if(req.isAuthenticated()) {
          if (req.user.username === 'hryzn') {
@@ -302,7 +298,6 @@ router.get('/:title', (req, res, next) => {
          });
 
       } else {
-         console.log(req.params.title + '\n lol');
          res.redirect('/');
       }
    });
@@ -372,8 +367,6 @@ router.post('/edit-post/:id', upload.single('post_image'), (req, res, next) => {
       errors = req.validationErrors();
 
       if(errors) {
-
-         console.log(errors);
 
          User.findById(id, (err, user) => {
             if(err) throw err;

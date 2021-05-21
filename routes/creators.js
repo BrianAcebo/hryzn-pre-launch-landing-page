@@ -163,6 +163,8 @@ router.post("/webhook", async (req, res) => {
     eventType = req.body.type;
   }
 
+  console.log(eventType);
+
   switch (eventType) {
       case 'checkout.session.completed':
         // Payment is successful and the subscription is created.
@@ -241,7 +243,7 @@ router.post("/webhook", async (req, res) => {
 
         break;
       case 'customer.subscription.updated':
-        // The customer canceled their subscription.
+        // The customer updated their subscription.
 
         var stripe_customer_id = data.object.customer;
         var price_id = data.object.items.data[0].price.id;
@@ -289,27 +291,6 @@ router.post("/webhook", async (req, res) => {
 
              User.findByIdAndUpdate(user._id, {
                 premium_creator_account: 5
-             }, (err, user) => {
-                if (err) throw err;
-             });
-           }
-
-        });
-
-        break;
-      case 'customer.subscription.paused':
-        // The customer paused their subscription.
-
-        var stripe_customer_id = data.object.customer;
-
-        User.findOne({ 'stripe_customer_id': { $in: stripe_customer_id} }, (err, user) => {
-
-           if(err) throw err;
-
-           if (user) {
-
-             User.findByIdAndUpdate(user._id, {
-                premium_creator_account: 0
              }, (err, user) => {
                 if (err) throw err;
              });
