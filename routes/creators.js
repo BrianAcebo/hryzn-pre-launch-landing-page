@@ -277,6 +277,8 @@ router.post("/webhook", async (req, res) => {
       case 'customer.subscription.deleted':
         // The customer canceled their subscription.
 
+        console.log(data.object);
+
         var stripe_customer_id = data.object.customer;
 
         User.findOne({ 'stripe_customer_id': { $in: stripe_customer_id} }, (err, user) => {
