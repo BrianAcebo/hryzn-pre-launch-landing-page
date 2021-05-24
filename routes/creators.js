@@ -190,6 +190,7 @@ router.post("/webhook", async (req, res) => {
         var stripe_customer_id = data.object.customer;
 
         console.log('1');
+        console.log(data);
 
         User.findOne({ 'stripe_customer_id': { $in: stripe_customer_id} }, (err, user) => {
 
