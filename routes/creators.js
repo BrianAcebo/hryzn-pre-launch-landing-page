@@ -204,7 +204,8 @@ router.post("/webhook", async (req, res) => {
                 if (err) throw err;
              });
            } else {
-             console.log('not finding');
+             console.log(user);
+             console.log(user.inactive_premium_creator_plan);
            }
 
         });
