@@ -199,7 +199,7 @@ router.post("/webhook", async (req, res) => {
            if (user && user.inactive_premium_creator_plan > 0) {
 
              User.findByIdAndUpdate(user._id, {
-                premium_creator_account: product_number
+                premium_creator_account: user.inactive_premium_creator_plan
              }, (err, user) => {
                 if (err) throw err;
              });
