@@ -60,7 +60,7 @@ router.get('/creator-setup-success', (req, res, next) => {
     }
 
     User.findByIdAndUpdate(req.user._id, {
-       premium_creator_account: checkoutPurchase
+       //premium_creator_account: checkoutPurchase
     }, (err, user) => {
        if (err) throw err;
        res.redirect('/dashboard');
@@ -174,7 +174,7 @@ router.post("/webhook", async (req, res) => {
         var stripe_customer_id = data.object.customer;
 
         User.findByIdAndUpdate(hryzn_user_id, {
-           stripe_customer_id: stripe_customer_id
+           //stripe_customer_id: stripe_customer_id
         }, (err, user) => {
            if (err) throw err;
         });
