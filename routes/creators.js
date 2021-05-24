@@ -239,32 +239,34 @@ router.post("/webhook", async (req, res) => {
         var stripe_customer_id = data.object.customer;
         var price_id = data.object.items.data[0].price.id;
 
-        if (price_id == 'price_1Ir6YODPMngAtAXMx120sOr3') {
-          var product_number = 1;
-        }
+        console.log(data);
 
-        if (price_id == 'price_1IqjWQDPMngAtAXMkE3SfI6W') {
-          var product_number = 2;
-        }
+        // if (price_id == 'price_1Ir6YODPMngAtAXMx120sOr3') {
+        //   var product_number = 1;
+        // }
+        //
+        // if (price_id == 'price_1IqjWQDPMngAtAXMkE3SfI6W') {
+        //   var product_number = 2;
+        // }
+        //
+        // if (price_id == 'price_1IqkrvDPMngAtAXMQPTTUlwx') {
+        //   var product_number = 3;
+        // }
 
-        if (price_id == 'price_1IqkrvDPMngAtAXMQPTTUlwx') {
-          var product_number = 3;
-        }
-
-        User.findOne({ 'stripe_customer_id': { $in: stripe_customer_id} }, (err, user) => {
-
-           if(err) throw err;
-
-           if (user) {
-
-             User.findByIdAndUpdate(user._id, {
-                premium_creator_account: product_number
-             }, (err, user) => {
-                if (err) throw err;
-             });
-           }
-
-        });
+        // User.findOne({ 'stripe_customer_id': { $in: stripe_customer_id} }, (err, user) => {
+        //
+        //    if(err) throw err;
+        //
+        //    if (user) {
+        //
+        //      User.findByIdAndUpdate(user._id, {
+        //         premium_creator_account: product_number
+        //      }, (err, user) => {
+        //         if (err) throw err;
+        //      });
+        //    }
+        //
+        // });
 
         break;
       case 'customer.subscription.deleted':
