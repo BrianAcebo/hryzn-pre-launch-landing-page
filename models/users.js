@@ -128,6 +128,9 @@ const UserSchema = mongoose.Schema({
    },
    stripe_customer_id: {
       type: String
+   },
+   inactive_premium_creator_plan: {
+      type: Number
    }
 });
 
