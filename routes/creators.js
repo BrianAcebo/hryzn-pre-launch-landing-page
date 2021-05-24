@@ -60,7 +60,7 @@ router.get('/creator-setup-success', (req, res, next) => {
     }
 
     User.findByIdAndUpdate(req.user._id, {
-       //premium_creator_account: checkoutPurchase
+       premium_creator_account: checkoutPurchase
     }, (err, user) => {
        if (err) throw err;
        res.redirect('/dashboard');
@@ -173,10 +173,8 @@ router.post("/webhook", async (req, res) => {
         var hryzn_user_id = data.object.metadata.user_id;
         var stripe_customer_id = data.object.customer;
 
-        console.log('2');
-
         User.findByIdAndUpdate(hryzn_user_id, {
-           //stripe_customer_id: stripe_customer_id
+           stripe_customer_id: stripe_customer_id
         }, (err, user) => {
            if (err) throw err;
         });
@@ -187,7 +185,7 @@ router.post("/webhook", async (req, res) => {
         // Store the status in your database and check when a user accesses your service.
         // This approach helps you avoid hitting rate limits.
 
-        var stripe_customer_id ='cus_JWiUXV9HjwdYHf'; //data.object.customer;
+        var stripe_customer_id = data.object.customer;
 
         User.findOne({ 'stripe_customer_id': { $in: stripe_customer_id} }, (err, user) => {
 
