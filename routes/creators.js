@@ -173,6 +173,8 @@ router.post("/webhook", async (req, res) => {
         var hryzn_user_id = data.object.metadata.user_id;
         var stripe_customer_id = data.object.customer;
 
+        console.log('2');
+
         User.findByIdAndUpdate(hryzn_user_id, {
            //stripe_customer_id: stripe_customer_id
         }, (err, user) => {
@@ -186,6 +188,8 @@ router.post("/webhook", async (req, res) => {
         // This approach helps you avoid hitting rate limits.
 
         var stripe_customer_id = data.object.customer;
+
+        console.log('1');
 
         User.findOne({ 'stripe_customer_id': { $in: stripe_customer_id} }, (err, user) => {
 
