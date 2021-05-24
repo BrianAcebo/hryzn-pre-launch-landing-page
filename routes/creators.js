@@ -240,8 +240,6 @@ router.post("/webhook", async (req, res) => {
 
         var stripe_customer_id = data.object.customer;
 
-        console.log(data.object.pause_collection);
-
         if (data.object.pause_collection == null || typeof data.object.pause_collection == 'undefined') {
 
           // Pause subscription object empty so product was change
