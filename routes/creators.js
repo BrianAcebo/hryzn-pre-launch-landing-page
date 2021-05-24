@@ -187,10 +187,7 @@ router.post("/webhook", async (req, res) => {
         // Store the status in your database and check when a user accesses your service.
         // This approach helps you avoid hitting rate limits.
 
-        var stripe_customer_id = data.object.customer;
-
-        console.log('1');
-        console.log(data);
+        var stripe_customer_id ='cus_JWiUXV9HjwdYHf'; //data.object.customer;
 
         User.findOne({ 'stripe_customer_id': { $in: stripe_customer_id} }, (err, user) => {
 
@@ -204,9 +201,6 @@ router.post("/webhook", async (req, res) => {
              }, (err, user) => {
                 if (err) throw err;
              });
-           } else {
-             console.log(user);
-             console.log(user.inactive_premium_creator_plan);
            }
 
         });
