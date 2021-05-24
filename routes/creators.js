@@ -236,37 +236,75 @@ router.post("/webhook", async (req, res) => {
       case 'customer.subscription.updated':
         // The customer updated their subscription.
 
+        // Either subscription paused or product changed
+
         var stripe_customer_id = data.object.customer;
-        var price_id = data.object.items.data[0].price.id;
 
-        console.log(data);
+        if (Object.keys(data.object.pause_collection).length === 0) {
 
-        // if (price_id == 'price_1Ir6YODPMngAtAXMx120sOr3') {
-        //   var product_number = 1;
-        // }
-        //
-        // if (price_id == 'price_1IqjWQDPMngAtAXMkE3SfI6W') {
-        //   var product_number = 2;
-        // }
-        //
-        // if (price_id == 'price_1IqkrvDPMngAtAXMQPTTUlwx') {
-        //   var product_number = 3;
-        // }
+          // Pause subscription object empty so product was change
 
-        // User.findOne({ 'stripe_customer_id': { $in: stripe_customer_id} }, (err, user) => {
-        //
-        //    if(err) throw err;
-        //
-        //    if (user) {
-        //
-        //      User.findByIdAndUpdate(user._id, {
-        //         premium_creator_account: product_number
-        //      }, (err, user) => {
-        //         if (err) throw err;
-        //      });
-        //    }
-        //
-        // });
+          var price_id = data.object.items.data[0].price.id;
+
+          if (price_id == 'price_1Ir6YODPMngAtAXMx120sOr3') {
+            var product_number = 1;
+          }
+
+          if (price_id == 'price_1IqjWQDPMngAtAXMkE3SfI6W') {
+            var product_number = 2;
+          }
+
+          if (price_id == 'price_1IqkrvDPMngAtAXMQPTTUlwx') {
+            var product_number = 3;
+          }
+
+          User.findOne({ 'stripe_customer_id': { $in: stripe_customer_id} }, (err, user) => {
+
+             if(err) throw err;
+
+             if (user) {
+
+               if (user.inactive_premium_creator_plan > 0) {
+
+                 User.findByIdAndUpdate(user._id, {
+                    premium_creator_account: user.inactive_premium_creator_plan,
+                    inactive_premium_creator_plan: 0
+                 }, (err, user) => {
+                    if (err) throw err;
+                 });
+               } else {
+
+                 User.findByIdAndUpdate(user._id, {
+                    premium_creator_account: product_number
+                 }, (err, user) => {
+                    if (err) throw err;
+                 });
+
+               }
+             }
+
+          });
+
+        } else {
+
+          // Pause subscription object has data
+
+          User.findOne({ 'stripe_customer_id': { $in: stripe_customer_id} }, (err, user) => {
+
+             if(err) throw err;
+
+             if (user) {
+
+               User.findByIdAndUpdate(user._id, {
+                 premium_creator_account: 0,
+                 inactive_premium_creator_plan: user.premium_creator_account
+               }, (err, user) => {
+                  if (err) throw err;
+               });
+             }
+
+          });
+        }
 
         break;
       case 'customer.subscription.deleted':
