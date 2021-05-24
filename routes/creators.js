@@ -242,7 +242,7 @@ router.post("/webhook", async (req, res) => {
 
         console.log(data.object.pause_collection);
 
-        if (data.object.pause_collection != null || typeof data.object.pause_collection != 'undefined') {
+        if (data.object.pause_collection == null || typeof data.object.pause_collection == 'undefined') {
 
           // Pause subscription object empty so product was change
 
