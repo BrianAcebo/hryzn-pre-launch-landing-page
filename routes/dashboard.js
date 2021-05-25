@@ -243,6 +243,9 @@ function check_creator_plan(user_plan_data) {
       }
       break;
     default:
+      var creator_plan = {
+        has_creator_plan: false
+      }
   }
 
   return creator_plan;
