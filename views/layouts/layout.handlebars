@@ -189,12 +189,12 @@
             </a>
 
             <div class="dash_nav">
-               <a class="dash_active" href="/dashboard">Overview</a>
-               <a href="/dashboard/build">Build</a>
-               <a href="/dashboard/manage">Manage</a>
-               <a href="/dashboard/marketing">Marketing</a>
-               <a href="/dashboard/monetize">Monetize</a>
-               <a href="/dashboard/analytics">Analytics</a>
+               <a {{#if dash_nav_overview}}class="dash_active"{{/if}} href="/dashboard">Overview</a>
+               <a {{#if dash_nav_build}}class="dash_active"{{/if}} href="/dashboard/build">Build</a>
+               <a {{#if dash_nav_manage}}class="dash_active"{{/if}} href="/dashboard/manage">Manage</a>
+               <a {{#if dash_nav_marketing}}class="dash_active"{{/if}} href="/dashboard/marketing">Marketing</a>
+               <a {{#if dash_nav_monetize}}class="dash_active"{{/if}} href="/dashboard/monetize">Monetize</a>
+               <a {{#if dash_nav_analytics}}class="dash_active"{{/if}} href="/dashboard/analytics">Analytics</a>
             </div>
 
             <a id="manage-billing-form" class="dash_settings"><img src="/icons/settings-black.png" class="mobile-nav__icon"/>Settings</a>

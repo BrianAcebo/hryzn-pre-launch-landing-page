@@ -38,30 +38,30 @@ const Group = require('../models/groups');
 
 // Get Dashboard
 router.get('/', (req, res, next) => {
-   if(req.isAuthenticated()) {
+  if(req.isAuthenticated()) {
 
-     if (req.user.premium_creator_account == 0 || req.user.premium_creator_account == 1 || req.user.premium_creator_account == 2 || req.user.premium_creator_account == 3) {
-       if (req.user.premium_creator_account == 0) {
-         var subscription_active = false;
-       } else {
-         var subscription_active = true;
-       }
+    // Check to see if they have a plan and what plan it is
+    var creator_plan = check_creator_plan(req.user.premium_creator_account);
+    var page_title = 'Creators Account: ' + creator_plan.creator_plan_name + ' - Overview';
 
-       res.render('dashboard/overview', {
-         page_title: 'Dashboard Overview',
-         notLoginPage: false,
-         welcomePage: false,
-         dashboard: true,
-         subscription_active: subscription_active
-       });
-
-     } else {
-       res.redirect('/');
-     }
-
-   } else {
+    if (creator_plan.has_creator_plan) {
+      res.render('dashboard/overview', {
+        page_title: page_title,
+        notLoginPage: false,
+        welcomePage: false,
+        dashboard: true,
+        dash_nav_overview: true,
+        dashboard_page_name: 'Overview',
+        subscription_active: creator_plan.subscription_active,
+        creator_plan: creator_plan.creator_plan_name,
+      });
+    } else {
       res.redirect('/');
-   }
+    }
+
+  } else {
+    res.redirect('/');
+  }
 });
 
 
@@ -69,21 +69,21 @@ router.get('/', (req, res, next) => {
 router.get('/build', (req, res, next) => {
    if(req.isAuthenticated()) {
 
-     if (req.user.premium_creator_account == 0 || req.user.premium_creator_account == 1 || req.user.premium_creator_account == 2 || req.user.premium_creator_account == 3) {
-       if (req.user.premium_creator_account == 0) {
-         var subscription_active = false;
-       } else {
-         var subscription_active = true;
-       }
+     // Check to see if they have a plan and what plan it is
+     var creator_plan = check_creator_plan(req.user.premium_creator_account);
+     var page_title = 'Creators Account: ' + creator_plan.creator_plan_name + ' - Build';
 
+     if (creator_plan.has_creator_plan) {
        res.render('dashboard/build', {
-         page_title: 'Dashboard Build',
+         page_title: page_title,
          notLoginPage: false,
          welcomePage: false,
          dashboard: true,
-         subscription_active: subscription_active
+         dash_nav_build: true,
+         dashboard_page_name: 'Build',
+         subscription_active: creator_plan.subscription_active,
+         creator_plan: creator_plan.creator_plan_name
        });
-
      } else {
        res.redirect('/');
      }
@@ -98,21 +98,21 @@ router.get('/build', (req, res, next) => {
 router.get('/manage', (req, res, next) => {
    if(req.isAuthenticated()) {
 
-     if (req.user.premium_creator_account == 0 || req.user.premium_creator_account == 1 || req.user.premium_creator_account == 2 || req.user.premium_creator_account == 3) {
-       if (req.user.premium_creator_account == 0) {
-         var subscription_active = false;
-       } else {
-         var subscription_active = true;
-       }
+     // Check to see if they have a plan and what plan it is
+     var creator_plan = check_creator_plan(req.user.premium_creator_account);
+     var page_title = 'Creators Account: ' + creator_plan.creator_plan_name + ' - Manage';
 
+     if (creator_plan.has_creator_plan) {
        res.render('dashboard/manage', {
-         page_title: 'Dashboard Manage',
+         page_title: page_title,
          notLoginPage: false,
          welcomePage: false,
          dashboard: true,
-         subscription_active: subscription_active
+         dash_nav_manage: true,
+         dashboard_page_name: 'Manage',
+         subscription_active: creator_plan.subscription_active,
+         creator_plan: creator_plan.creator_plan_name
        });
-
      } else {
        res.redirect('/');
      }
@@ -127,21 +127,21 @@ router.get('/manage', (req, res, next) => {
 router.get('/marketing', (req, res, next) => {
    if(req.isAuthenticated()) {
 
-     if (req.user.premium_creator_account == 0 || req.user.premium_creator_account == 1 || req.user.premium_creator_account == 2 || req.user.premium_creator_account == 3) {
-       if (req.user.premium_creator_account == 0) {
-         var subscription_active = false;
-       } else {
-         var subscription_active = true;
-       }
+     // Check to see if they have a plan and what plan it is
+     var creator_plan = check_creator_plan(req.user.premium_creator_account);
+     var page_title = 'Creators Account: ' + creator_plan.creator_plan_name + ' - Marketing';
 
+     if (creator_plan.has_creator_plan) {
        res.render('dashboard/marketing', {
-         page_title: 'Dashboard Marketing',
+         page_title: page_title,
          notLoginPage: false,
          welcomePage: false,
          dashboard: true,
-         subscription_active: subscription_active
+         dash_nav_marketing: true,
+         dashboard_page_name: 'Marketing',
+         subscription_active: creator_plan.subscription_active,
+         creator_plan: creator_plan.creator_plan_name
        });
-
      } else {
        res.redirect('/');
      }
@@ -156,21 +156,21 @@ router.get('/marketing', (req, res, next) => {
 router.get('/monetize', (req, res, next) => {
    if(req.isAuthenticated()) {
 
-     if (req.user.premium_creator_account == 0 || req.user.premium_creator_account == 1 || req.user.premium_creator_account == 2 || req.user.premium_creator_account == 3) {
-       if (req.user.premium_creator_account == 0) {
-         var subscription_active = false;
-       } else {
-         var subscription_active = true;
-       }
+     // Check to see if they have a plan and what plan it is
+     var creator_plan = check_creator_plan(req.user.premium_creator_account);
+     var page_title = 'Creators Account: ' + creator_plan.creator_plan_name + ' - Monetize';
 
+     if (creator_plan.has_creator_plan) {
        res.render('dashboard/monetize', {
-         page_title: 'Dashboard Monetize',
+         page_title: page_title,
          notLoginPage: false,
          welcomePage: false,
          dashboard: true,
-         subscription_active: subscription_active
+         dash_nav_monetize: true,
+         dashboard_page_name: 'Monetize',
+         subscription_active: creator_plan.subscription_active,
+         creator_plan: creator_plan.creator_plan_name
        });
-
      } else {
        res.redirect('/');
      }
@@ -185,21 +185,21 @@ router.get('/monetize', (req, res, next) => {
 router.get('/analytics', (req, res, next) => {
    if(req.isAuthenticated()) {
 
-     if (req.user.premium_creator_account == 0 || req.user.premium_creator_account == 1 || req.user.premium_creator_account == 2 || req.user.premium_creator_account == 3) {
-       if (req.user.premium_creator_account == 0) {
-         var subscription_active = false;
-       } else {
-         var subscription_active = true;
-       }
+     // Check to see if they have a plan and what plan it is
+     var creator_plan = check_creator_plan(req.user.premium_creator_account);
+     var page_title = 'Creators Account: ' + creator_plan.creator_plan_name + ' - Analytics';
 
+     if (creator_plan.has_creator_plan) {
        res.render('dashboard/analytics', {
-         page_title: 'Dashboard Analytics',
+         page_title: page_title,
          notLoginPage: false,
          welcomePage: false,
          dashboard: true,
-         subscription_active: subscription_active
+         dash_nav_analytics: true,
+         dashboard_page_name: 'Analytics',
+         subscription_active: creator_plan.subscription_active,
+         creator_plan: creator_plan.creator_plan_name
        });
-
      } else {
        res.redirect('/');
      }
@@ -209,6 +209,45 @@ router.get('/analytics', (req, res, next) => {
    }
 });
 
+
+// Check if they have creator plan and what plan it is
+function check_creator_plan(user_plan_data) {
+
+  switch (user_plan_data) {
+    case 0:
+      var creator_plan = {
+        has_creator_plan: true,
+        subscription_active: false,
+        creator_plan_name: 'Inactive'
+      }
+      break;
+    case 1:
+      var creator_plan = {
+        has_creator_plan: true,
+        subscription_active: true,
+        creator_plan_name: 'Personal'
+      }
+      break;
+    case 2:
+      var creator_plan = {
+        has_creator_plan: true,
+        subscription_active: true,
+        creator_plan_name: 'Hobby'
+      }
+      break;
+    case 3:
+      var creator_plan = {
+        has_creator_plan: true,
+        subscription_active: true,
+        creator_plan_name: 'Business'
+      }
+      break;
+    default:
+  }
+
+  return creator_plan;
+
+}
 
 // Verify JS Web Token
 function verifyToken(req, res, next) {

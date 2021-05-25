@@ -170,6 +170,12 @@ router.post("/webhook", async (req, res) => {
         // Payment is successful and the subscription is created.
         // You should provision the subscription and save the customer ID to your database.
 
+        // const account = await stripe.accounts.create({
+        //   type: 'express',
+        // });
+
+        console.log(data);
+
         var hryzn_user_id = data.object.metadata.user_id;
         var stripe_customer_id = data.object.customer;
 
