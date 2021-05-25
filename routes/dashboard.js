@@ -8,6 +8,8 @@ const multerS3 = require('multer-s3');
 const dateNow = Date.now().toString();
 const jwt = require('jsonwebtoken');
 
+const stripe = require('stripe')(keys.stripeAPIKey);
+
 aws.config.update({
    secretAccessKey: keys.secretAccessKey,
    accessKeyId: keys.accessKeyId,
