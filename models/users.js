@@ -131,6 +131,9 @@ const UserSchema = mongoose.Schema({
    },
    inactive_premium_creator_plan: {
       type: Number
+   },
+   completed_onboard_payouts: {
+      type: Boolean
    }
 });
 

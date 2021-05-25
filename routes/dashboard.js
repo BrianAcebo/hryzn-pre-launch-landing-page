@@ -36,6 +36,68 @@ const Notification = require('../models/notifications');
 const Group = require('../models/groups');
 
 
+// Onboard creators to setup payouts
+router.post("/onboard-payouts", async (req, res) => {
+  try {
+    const account = await stripe.accounts.create({type: "express"});
+    req.session.accountID = account.id;
+
+    const origin = `${req.headers.origin}`;
+    const accountLinkURL = await generateAccountLink(account.id, origin);
+    res.send({url: accountLinkURL});
+  } catch (err) {
+    res.status(500).send({
+      error: err.message
+    });
+  }
+});
+
+router.get("/onboard-payouts/refresh", async (req, res) => {
+  if (!req.session.accountID) {
+    res.redirect("/");
+    return;
+  }
+  try {
+    const {accountID} = req.session;
+    const origin = `${req.secure ? "https://" : "https://"}${req.headers.host}`;
+
+    const accountLinkURL = await generateAccountLink(accountID, origin)
+    res.redirect(accountLinkURL);
+  } catch (err) {
+    res.status(500).send({
+      error: err.message
+    });
+  }
+});
+
+// Get checkout success
+router.get('/onboard-payouts/success', (req, res, next) => {
+
+  if(req.isAuthenticated()) {
+
+    User.findByIdAndUpdate(req.user._id, {
+       completed_onboard_payouts: true
+    }, (err, user) => {
+       if (err) throw err;
+       res.redirect('/dashboard');
+    });
+
+  } else {
+    res.redirect('/');
+  }
+
+});
+
+function generateAccountLink(accountID, origin) {
+  return stripe.accountLinks.create({
+    type: "account_onboarding",
+    account: accountID,
+    refresh_url: `${origin}/dashboard/onboard-payouts/refresh`,
+    return_url: `${origin}/dashboard/onboard-payouts/success`,
+  }).then((link) => link.url);
+}
+
+
 // Get Dashboard
 router.get('/', (req, res, next) => {
   if(req.isAuthenticated()) {

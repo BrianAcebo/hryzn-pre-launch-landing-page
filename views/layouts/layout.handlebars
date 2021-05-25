@@ -1013,6 +1013,13 @@
    <script src="/js/stripe-customer-portal.js"></script>
    {{/if}}
 
+   {{#if dash_nav_monetize}}
+   {{#if user.completed_onboard_payouts}}
+   {{else}}
+   <script src="/js/stripe-onboard-payouts.js"></script>
+   {{/if}}
+   {{/if}}
+
    {{! For DEV
    <script src="/js/main.js" type="text/javascript"></script>
   }}
