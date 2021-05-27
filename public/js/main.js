@@ -868,11 +868,7 @@ $(document).ready(function() {
    var $window = $(window);
 
    $dashesContainer.click(function() {
-      if($window.width() <= 595) {
-         $dashNav.css({ "width": "100%", "box-shadow": "0 2px 4px 0 rgba(0,0,0,0.2)" });
-      } else {
-         $dashNav.css({ "width": "250" });
-      }
+      $dashNav.css({ "width": "100%", "box-shadow": "0 2px 4px 0 rgba(0,0,0,0.2)" });
 
       $dashesContainer.css({ "display": "none" });
       $dashClose.css({ "display": "block" });
@@ -1399,6 +1395,28 @@ $viewRepliesBtn.each(function() {
 
   });
 });
+/**********/
+
+// Settings nav in creator dashboard
+var $dashSettings = $("#dashSettings");
+var $dashSettingsContent = $(".dash_settings_content");
+
+if ($dashSettings.length >= 1) {
+
+  $dashSettings.on('click', function(e) {
+    if ($dashSettingsContent.hasClass('dash_settings_content_open')) {
+      $dashSettingsContent.removeClass('dash_settings_content_open')
+    } else {
+      $dashSettingsContent.addClass('dash_settings_content_open')
+    }
+  });
+
+  $('body').on('click', function(e) {
+     if( !$(e.target).is('#dashSettings, .dash_settings_nav, .dash_settings_content .dash_settings_content a') ) {
+        $dashSettingsContent.removeClass('dash_settings_content_open');
+     }
+  });
+}
 /**********/
 
 });

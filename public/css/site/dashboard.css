@@ -5,7 +5,6 @@
   position: fixed;
   height: 100%;
   border-right: 1px solid #f1f1f1;
-  overflow: auto;
   transition: 0.5s;
   background: #fff;
   box-shadow: 0px 4px 8px 0px rgb(0 0 0 / 20%);
@@ -75,6 +74,7 @@
 
 .dash_nav {
    margin-top: 200px;
+   overflow: auto;
 }
 
 .dash_nav a {
@@ -120,6 +120,49 @@
    margin-right: 15px;
 }
 
+.dash_settings_nav {
+  font-size: 16px;
+  border: none;
+  outline: none;
+  color: #333;
+  padding: 0;
+  background-color: inherit;
+  font-family: inherit;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.dash_settings_content {
+  display: none;
+  position: absolute;
+  min-width: 140px;
+  background: #fff;
+  transition: 0.3s;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  border-radius: 15px;
+  left: 125px;
+  z-index: 1;
+}
+
+.dash_settings_content a {
+  float: none;
+  padding: 8px 12px;
+  text-decoration: none;
+  display: block;
+  transition: 0.3s;
+  text-align: left;
+}
+
+.dash_settings_content.dash_settings_content_open {
+  display: block;
+}
+
+.dash_settings_content a:hover {
+  font-weight: bold;
+}
+
 div.dash_content {
    margin-left: 250px;
    padding: 100px;
@@ -138,6 +181,7 @@ div.dash_content {
 
    .dash_sidebar {
       width: 0;
+      overflow: auto;
    }
 
    div.dash_content {
@@ -178,4 +222,16 @@ div.dash_content {
   font-weight: bold;
   color: #fff;
   border-radius: 35px;
+}
+
+#onboardPayouts {
+  background: #5469d4;
+  color: #fff;
+  font-weight: bold;
+  font-size: 16px;
+  padding: 8px 12px;
+  border-radius: 35px;
+  max-width: 300px;
+  margin: 0 auto;
+  cursor: pointer;
 }

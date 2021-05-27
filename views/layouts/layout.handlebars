@@ -197,7 +197,16 @@
                <a {{#if dash_nav_analytics}}class="dash_active"{{/if}} href="/dashboard/analytics">Analytics</a>
             </div>
 
-            <a id="manage-billing-form" class="dash_settings"><img src="/icons/settings-black.png" class="mobile-nav__icon"/>Settings</a>
+            <div class="dash_settings" id="dashSettings">
+              <button class="dash_settings_nav">
+                <img src="/icons/settings-black.png" class="mobile-nav__icon"/>
+                Settings
+              </button>
+              <div class="dash_settings_content">
+                <a id="manage-billing-form">Manage Billing</a>
+              </div>
+            </div>
+
          </div>
 
          <div id="dashBtn" class="dash_menu_btn">
@@ -1020,12 +1029,12 @@
    {{/if}}
    {{/if}}
 
-   {{! For DEV
+   {{! For DEV }}
    <script src="/js/main.js" type="text/javascript"></script>
-  }}
 
-   {{! For PROD }}
+   {{! For PROD
   <script src="/dist/js/main.min.js" type="text/javascript"></script>
+}}
 
 </html>
 {{/if}}
