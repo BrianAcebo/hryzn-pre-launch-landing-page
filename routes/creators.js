@@ -321,7 +321,8 @@ router.post("/webhook", async (req, res) => {
            if (user) {
 
              User.findByIdAndUpdate(user._id, {
-                premium_creator_account: 5
+                premium_creator_account: 5,
+                completed_onboard_payouts: false
              }, (err, user) => {
                 if (err) throw err;
              });
