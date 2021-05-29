@@ -134,6 +134,9 @@ const UserSchema = mongoose.Schema({
    },
    completed_onboard_payouts: {
       type: Boolean
+   },
+   stripe_connected_account_id: {
+     type: String
    }
 });
 

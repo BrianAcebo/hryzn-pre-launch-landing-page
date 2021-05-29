@@ -73,12 +73,15 @@ router.get("/onboard-payouts/refresh", async (req, res) => {
 });
 
 // Get checkout success
-router.get('/onboard-payouts/success', (req, res, next) => {
+router.get('/onboard-payouts/success/:accountID', (req, res, next) => {
 
   if(req.isAuthenticated()) {
 
+    var accountID = req.params.accountID;
+
     User.findByIdAndUpdate(req.user._id, {
-       completed_onboard_payouts: true
+       completed_onboard_payouts: true,
+       stripe_connected_account_id: accountID
     }, (err, user) => {
        if (err) throw err;
        res.redirect('/dashboard');
@@ -95,7 +98,7 @@ function generateAccountLink(accountID, origin) {
     type: "account_onboarding",
     account: accountID,
     refresh_url: `${origin}/dashboard/onboard-payouts/refresh`,
-    return_url: `${origin}/dashboard/onboard-payouts/success`,
+    return_url: `${origin}/dashboard/onboard-payouts/success/` + accountID,
   }).then((link) => link.url);
 }
 

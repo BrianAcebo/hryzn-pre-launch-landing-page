@@ -276,3 +276,22 @@
    border: 3px solid #2FBCDF;
    box-shadow: 1px 1px 5px #2FBCDF;
 }
+
+.send_tip_btn {
+  padding: 20px 15px;
+  font-weight: bold;
+  text-align: center;
+  font-size: 14px;
+  border: none;
+  line-height: 18px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+  .send_tip_btn {
+    font-size: 12px;
+    padding: 12px 15px;
+  }
+}

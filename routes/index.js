@@ -17,6 +17,8 @@ var month = String(current_date.getMonth() + 1).padStart(2, '0');
 var year = current_date.getFullYear();
 current_date = month + '/' + day + '/' + year;
 
+const stripe = require('stripe')(keys.stripeAPIKey);
+
 aws.config.update({
    secretAccessKey: keys.secretAccessKey,
    accessKeyId: keys.accessKeyId,
@@ -4505,6 +4507,43 @@ router.get('/collection/delete/:id/:deleteAll', (req, res, next) => {
    } else {
       res.redirect('/users/register');
    }
+});
+
+
+
+const calculateOrderAmount = (items) => {
+    // Replace this constant with a calculation of the order's amount
+    // Calculate the order total on the server to prevent
+    // people from directly manipulating the amount on the client
+    return 1400
+}
+
+const calculateApplicationFeeAmount = (amount) => .1 * amount;
+
+router.post('/create-payment-intent', async (req, res) => {
+
+    const data = req.body;
+    const amount = calculateOrderAmount(data.items)
+
+    await stripe.paymentIntents.create({
+      amount: amount,
+      currency: data.currency,
+      application_fee_amount: calculateApplicationFeeAmount(amount),
+      transfer_data: {
+        destination: data.account,
+      },
+    }).then(function(paymentIntent) {
+      try {
+        return res.send({
+          publishableKey: process.env.STRIPE_PUBLISHABLE_KEY,
+          clientSecret: paymentIntent.client_secret
+        });
+      } catch (err) {
+        return res.status(500).send({
+          error: err.message
+        });
+      }
+    });
 });
 
 

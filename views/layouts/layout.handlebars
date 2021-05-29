@@ -61,11 +61,6 @@
       src="https://www.facebook.com/tr?id=462012631558038&ev=PageView&noscript=1"
       /></noscript>
 
-      <!-- Stripe Checkout -->
-      {{#if creatorSetup}}
-      <script src="https://js.stripe.com/v3/"></script>
-      {{/if}}
-
       <!-- Fonts -->
       <link href="https://fonts.googleapis.com/css?family=Karla:400,400i,700,700i" rel="stylesheet">
       <link rel="stylesheet" href="https://use.typekit.net/ppc1ait.css">
@@ -140,7 +135,7 @@
       <!-- /Profile Theme Fonts -->
       {{/if}}
 
-      {{! For DEV
+      {{! For DEV }}
       <link rel="stylesheet" type="text/css" href="/css/site/style.css" />
       <link rel="stylesheet" type="text/css" href="/css/site/topnav.css" />
       <link rel="stylesheet" type="text/css" href="/css/site/forms.css" />
@@ -158,10 +153,11 @@
       <link rel="stylesheet" type="text/css" href="/css/site/trumbowyg.min.css" />
       <link rel="stylesheet" type="text/css" href="/css/site/profile.css" />
       <link rel="stylesheet" type="text/css" href="/css/site/setup-profile.css" />
-      }}
+      <link rel="stylesheet" type="text/css" href="/css/site/stripe-payment-elements.css" />
 
-      {{! For PROD }}
+      {{! For PROD
       <link rel="stylesheet" type="text/css" href="/dist/css/style.min.css" />
+      }}
 
       <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
@@ -1012,6 +1008,9 @@
 
    </script>
 
+   <!-- Stripe V3 -->
+   <script src="https://js.stripe.com/v3/"></script>
+
    <!-- Stripe Checkout -->
    {{#if creatorSetup}}
    <script src="/js/stripe-checkout.js"></script>
@@ -1022,12 +1021,16 @@
    <script src="/js/stripe-customer-portal.js"></script>
    {{/if}}
 
+   <!-- Stripe Onboard Payouts -->
    {{#if dash_nav_monetize}}
    {{#if user.completed_onboard_payouts}}
    {{else}}
    <script src="/js/stripe-onboard-payouts.js"></script>
    {{/if}}
    {{/if}}
+
+   <!-- Stripe Payment Intent -->
+   <script src="/js/stripe-payment-intent.js"></script>
 
    {{! For DEV }}
    <script src="/js/main.js" type="text/javascript"></script>
