@@ -104,7 +104,7 @@ function generateAccountLink(accountID, origin) {
 
 
 // Get Dashboard
-router.get('/', (req, res, next) => {
+router.get('/', async (req, res, next) => {
   if(req.isAuthenticated()) {
 
     // Check to see if they have a plan and what plan it is
@@ -112,6 +112,11 @@ router.get('/', (req, res, next) => {
     var page_title = 'Creators Account: ' + creator_plan.creator_plan_name + ' - Overview';
 
     if (creator_plan.has_creator_plan) {
+
+      var stripe_connected_account_id = req.user.stripe_connected_account_id;
+
+      const stripe_connected_account_link = await stripe.accounts.createLoginLink(stripe_connected_account_id);
+
       res.render('dashboard/overview', {
         page_title: page_title,
         notLoginPage: false,
@@ -121,6 +126,7 @@ router.get('/', (req, res, next) => {
         dashboard_page_name: 'Overview',
         subscription_active: creator_plan.subscription_active,
         creator_plan: creator_plan.creator_plan_name,
+        stripe_connected_account_link: stripe_connected_account_link.url
       });
     } else {
       res.redirect('/');

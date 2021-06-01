@@ -224,7 +224,8 @@ div.dash_content {
   border-radius: 35px;
 }
 
-#onboardPayouts {
+#onboardPayouts,
+.dash_stripe_btn {
   background: #5469d4;
   color: #fff;
   font-weight: bold;

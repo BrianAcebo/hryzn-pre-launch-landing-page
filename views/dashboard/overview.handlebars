@@ -10,6 +10,9 @@
       <br />
       <strong>Creating a business is hard, but we'll make it easy for you.</strong>
    </p>
+   {{#if stripe_connected_account_link}}
+   <a style="margin: 25px 0; display: inline-block; font-size: 14px;" class="dash_stripe_btn" href="{{stripe_connected_account_link}}">View Stripe Account Dashboard</a>
+   {{/if}}
 </div>
 
 {{else}}
