@@ -1422,6 +1422,8 @@ if ($dashSettings.length >= 1) {
 // Modal pop up for payments
 var $modalPayments = $(".paymentsModal");
 var $modalBtnPayments = $(".payments_modal_btn");
+var $stripeForm = $(".stripe_form");
+var $stripeResult = $(".stripe_result");
 var $closeBtnPayments = $(".closeModalPayments");
 
 $modalBtnPayments.each(function() {
@@ -1432,6 +1434,8 @@ $modalBtnPayments.each(function() {
 
 $closeBtnPayments.click(function() {
    $modalPayments.css({ "display": "none" });
+   $stripeForm.removeClass('stripe_hidden');
+   $stripeResult.addClass('stripe_hidden');
 });
 
 $("input[data-type='currency']").on({

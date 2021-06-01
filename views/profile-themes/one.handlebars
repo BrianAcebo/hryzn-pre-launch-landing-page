@@ -197,9 +197,12 @@
 
          {{#if premium_creator_account}}
          {{#if profile.completed_onboard_payouts}}
-         <!-- <a class="payments_modal_btn">
+         {{#ifEquals profile.premium_creator_account '0'}}
+         {{else}}
+         <a class="payments_modal_btn">
             <div class="profile_btn profile_btns_rounding profile_secondary_accent_color profile_secondary_font send_tip_btn">Send A Tip</div>
-         </a> -->
+         </a>
+         {{/ifEquals}}
          {{/if}}
          {{/if}}
 
@@ -989,6 +992,10 @@
    </div>
 </div>
 
+{{#if premium_creator_account}}
+{{#if profile.completed_onboard_payouts}}
+{{#ifEquals profile.premium_creator_account '0'}}
+{{else}}
 {{! Pop up modal for payments }}
 <div class="paymentsModal modalBackground">
   <div class="modal-content">
@@ -996,18 +1003,31 @@
 
     <div class="form-container-2">
       <div class="stripe_form_wrapper">
+
         <form id="payment-form" class="stripe_form">
-          <input class="tip_amount_input" type="hidden" name="connected_id" id="connected_id" value="">
-          <input class="tip_amount_input" type="text" name="currency-field" id="currency-field" pattern="" value="" data-type="currency" placeholder="$ Amount" required>
+          <input type="hidden" name="connected_id" id="connected_id" value="{{profile.stripe_connected_account_id}}">
+          <input class="tip_amount_input" type="text" name="currency-field" id="currency-field" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" value="" data-type="currency" placeholder="$ Amount" required>
           <div id="card-element"></div>
           <div id="card-errors" role="alert"></div>
-          <button id="submit" class="btn-Stripe">Pay</button>
+          <button id="submit" class="btn-Stripe">
+            <div class="stripe_spinner stripe_hidden" id="spinner"></div>
+            <span id="stripe_button-text">Pay</span>
+          </button>
         </form>
+
+        <div class="stripe_result stripe_hidden">
+          <p>Payment Sent<br /></p>
+          <img src="/icons/checked-data.png" class="stripe_checkmark" />
+        </div>
+
       </div>
     </div>
 
   </div>
 </div>
+{{/ifEquals}}
+{{/if}}
+{{/if}}
 
 </div>
 <!-- END profile_page -->

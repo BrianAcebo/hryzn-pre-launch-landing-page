@@ -4515,27 +4515,59 @@ const calculateOrderAmount = (items) => {
     // Replace this constant with a calculation of the order's amount
     // Calculate the order total on the server to prevent
     // people from directly manipulating the amount on the client
-    return 1400
+
+    var total_amount = 0;
+
+    items.forEach(function(item, key) {
+      if (item.id == 'tip') {
+        total_amount = item.amount;
+      }
+    });
+
+    return total_amount * 100;
 }
 
-const calculateApplicationFeeAmount = (amount) => .1 * amount;
+const calculateApplicationFeeAmount = (amount, connected_id) => {
+
+  User.findOne({ 'stripe_connected_account_id': { $in: connected_id} }, (err, connected_account) => {
+
+    if (connected_account) {
+      switch (connected_account.premium_creator_account) {
+        case 1:
+          var percentage = .05 * amount;
+          break;
+        case 2:
+          var percentage = .03 * amount;
+          break;
+        case 3:
+          var percentage = 0;
+          break;
+        default:
+      }
+
+      return percentage
+    }
+
+  });
+
+}
 
 router.post('/create-payment-intent', async (req, res) => {
 
     const data = req.body;
-    const amount = calculateOrderAmount(data.items)
+    var amount = data.amount.replace("$", "");;//calculateOrderAmount(data.amount)
+    amount = parseFloat(amount) * 100;
 
     await stripe.paymentIntents.create({
       amount: amount,
       currency: data.currency,
-      application_fee_amount: calculateApplicationFeeAmount(amount),
+      application_fee_amount: calculateApplicationFeeAmount(amount, data.account),
       transfer_data: {
         destination: data.account,
       },
     }).then(function(paymentIntent) {
       try {
         return res.send({
-          publishableKey: process.env.STRIPE_PUBLISHABLE_KEY,
           clientSecret: paymentIntent.client_secret
         });
       } catch (err) {
