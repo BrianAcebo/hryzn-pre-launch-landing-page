@@ -3990,37 +3990,59 @@ router.post('/settings', upload.fields([{name: 'profile_project_backgroundimage'
 
                        var project_counter = 0;
 
-                       req.user.own_projects.forEach(function(proj, key) {
-                         Project.findByIdAndUpdate(mongoose.Types.ObjectId(proj), {
-                           project_owner_has_private_profile: true
-                         }, (err, project) => {
-                            if (err) throw err;
+                       if (typeof req.user.own_projects != "undefined") {
 
-                            project_counter += 1;
+                         if (req.user.own_projects.legnth > 0) {
 
-                            if (project_counter == req.user.own_projects.length) {
-                              res.redirect('/profile/' + req.user.username);
-                            }
-                         });
-                       });
+                           req.user.own_projects.forEach(function(proj, key) {
+                             Project.findByIdAndUpdate(mongoose.Types.ObjectId(proj), {
+                               project_owner_has_private_profile: true
+                             }, (err, project) => {
+                                if (err) throw err;
+
+                                project_counter += 1;
+
+                                if (project_counter == req.user.own_projects.length) {
+                                  res.redirect('/profile/' + req.user.username);
+                                }
+                             });
+                           });
+
+                         } else {
+                           res.redirect('/profile/' + req.user.username);
+                         }
+                       } else {
+                         res.redirect('/profile/' + req.user.username);
+                       }
 
                      } else {
 
                        var project_counter = 0;
 
-                       req.user.own_projects.forEach(function(proj, key) {
-                         Project.findByIdAndUpdate(mongoose.Types.ObjectId(proj), {
-                           project_owner_has_private_profile: false
-                         }, (err, project) => {
-                            if (err) throw err;
+                       if (typeof req.user.own_projects != "undefined") {
 
-                            project_counter += 1;
+                         if (req.user.own_projects.legnth > 0) {
 
-                            if (project_counter == req.user.own_projects.length) {
-                              res.redirect('/profile/' + req.user.username);
-                            }
-                         });
-                       });
+                           req.user.own_projects.forEach(function(proj, key) {
+                             Project.findByIdAndUpdate(mongoose.Types.ObjectId(proj), {
+                               project_owner_has_private_profile: false
+                             }, (err, project) => {
+                                if (err) throw err;
+
+                                project_counter += 1;
+
+                                if (project_counter == req.user.own_projects.length) {
+                                  res.redirect('/profile/' + req.user.username);
+                                }
+                             });
+                           });
+
+                         } else {
+                           res.redirect('/profile/' + req.user.username);
+                         }
+                       } else {
+                         res.redirect('/profile/' + req.user.username);
+                       }
 
                      }
 
@@ -4036,7 +4058,6 @@ router.post('/settings', upload.fields([{name: 'profile_project_backgroundimage'
                   } else {
                      if (req.body.color_was_chosen) {
                         var profile_project_background_color = req.body.profile_project_background_color;
-                        console.log('lol');
                      } else {
                         var profile_project_background_color = req.user.profile_project_background_color;
                         var profile_project_backgroundimage = req.user.profile_project_backgroundimage;
@@ -4074,37 +4095,63 @@ router.post('/settings', upload.fields([{name: 'profile_project_backgroundimage'
 
                        var project_counter = 0;
 
-                       req.user.own_projects.forEach(function(proj, key) {
-                         Project.findByIdAndUpdate(mongoose.Types.ObjectId(proj), {
-                           project_owner_has_private_profile: true
-                         }, (err, project) => {
-                            if (err) throw err;
+                       if (typeof req.user.own_projects != "undefined") {
 
-                            project_counter += 1;
+                         if (req.user.own_projects.legnth > 0) {
 
-                            if (project_counter == req.user.own_projects.length) {
-                              res.redirect('/profile/' + req.user.username);
-                            }
-                         });
-                       });
+                           req.user.own_projects.forEach(function(proj, key) {
+
+                             Project.findByIdAndUpdate(mongoose.Types.ObjectId(proj), {
+                               project_owner_has_private_profile: true
+                             }, (err, project) => {
+                                if (err) throw err;
+
+                                project_counter += 1;
+
+                                console.log(project_counter + ' ' + req.user.own_projects.length);
+
+                                if (project_counter == req.user.own_projects.length) {
+                                  res.redirect('/profile/' + req.user.username);
+                                }
+                             });
+                           });
+
+                         } else {
+                           res.redirect('/profile/' + req.user.username);
+                         }
+
+                       } else {
+                         res.redirect('/profile/' + req.user.username);
+                       }
 
                      } else {
 
                        var project_counter = 0;
 
-                       req.user.own_projects.forEach(function(proj, key) {
-                         Project.findByIdAndUpdate(mongoose.Types.ObjectId(proj), {
-                           project_owner_has_private_profile: false
-                         }, (err, project) => {
-                            if (err) throw err;
+                       if (typeof req.user.own_projects != "undefined") {
 
-                            project_counter += 1;
+                         if (req.user.own_projects.legnth > 0) {
 
-                            if (project_counter == req.user.own_projects.length) {
-                              res.redirect('/profile/' + req.user.username);
-                            }
-                         });
-                       });
+                           req.user.own_projects.forEach(function(proj, key) {
+                             Project.findByIdAndUpdate(mongoose.Types.ObjectId(proj), {
+                               project_owner_has_private_profile: false
+                             }, (err, project) => {
+                                if (err) throw err;
+
+                                project_counter += 1;
+
+                                if (project_counter == req.user.own_projects.length) {
+                                  res.redirect('/profile/' + req.user.username);
+                                }
+                             });
+                           });
+
+                         } else {
+                           res.redirect('/profile/' + req.user.username);
+                         }
+                       } else {
+                         res.redirect('/profile/' + req.user.username);
+                       }
 
                      }
                   });

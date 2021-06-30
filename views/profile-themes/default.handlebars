@@ -176,7 +176,7 @@
          </div>
 
          <div class="name_container">
-            <p id="firstChar" class="profile__name profile_secondary_font">{{#if profile.firstname}}{{profile.firstname}} {{profile.lastname}}{{else}}Hryzn was here...{{/if}}</p>
+            <p id="firstChar" class="profile__name profile_secondary_font">{{#if profile.firstname}}{{profile.firstname}} {{profile.lastname}}{{else}}{{/if}}</p>
             <h3 class="profile__username profile_main_font">@{{profile.username}}</h3>
             {{#if profile.bio}}
             <p class="profile_bio profile_secondary_font">{{profile.bio}}</p>
@@ -277,7 +277,19 @@
                  <form method="post" action="{{#if on_wildcard_profile}}https://www.myhryzn.com{{/if}}/profile/follow/{{profile._id}}">
                     <input type="hidden" name="user_username" value="{{user.username}}">
                     <input type="hidden" name="profile_username" value="{{profile.username}}">
-                    <button class="profile__follow profile_main_accent_color profile_btns_rounding profile_main_font" name="submit" type="submit">Follow</button>
+                    <button class="profile__follow profile_main_accent_color profile_btns_rounding profile_main_font" name="submit" type="submit">
+                      Follow
+                      {{#if premium_creator_account}}
+                      {{#if profile.completed_onboard_payouts}}
+                      {{#ifEquals profile.premium_creator_account '0'}}
+                      {{else}}
+                      {{#if profile.creator_subscription.is_active}}
+                      <span class="creator_sub_btn"> for {{profile.creator_subscription.current_price}}</span>
+                      {{/if}}
+                      {{/ifEquals}}
+                      {{/if}}
+                      {{/if}}
+                    </button>
                  </form>
 
                  {{/if}}
