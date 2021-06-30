@@ -287,6 +287,8 @@ router.post("/webhook", async (req, res) => {
 
                         console.log('followers ' + followers);
 
+                        var follower_count = 0;
+
                         // Iterate through each of the user's followers
                         for (let i = 0; i < followers.length; i++) {
 
