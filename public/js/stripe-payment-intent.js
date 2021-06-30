@@ -1,8 +1,12 @@
+// Payment for Tips
+
 // Create a Stripe client
 var stripe = Stripe('pk_test_51IqjT1DPMngAtAXMpqjXaGTX1AHlNB3Shk6ZmYtBqRGutydaHTkNW6gLld1LQvt4iI2nztJF7EBhxtCy5R55bxRu00huxmxMST');
 var paymentIntentClientSecret = null; // Client Secret from the server, which we'll overwrite each time we create a new payment intent.
-var paymentForm = document.getElementById("payment-form");
-var connectedID = document.querySelector("#connected_id")
+var tipForm = document.getElementById("tip-form");
+var connectedID = document.querySelector("#connected_id");
+var paymentIntentData;
+var payment_notification_data;
 
 // Set up Stripe.js and Elements to use in checkout form
 var elements = stripe.elements();
@@ -12,11 +16,11 @@ var style = {
   }
 };
 
-var card = elements.create("card", { style: style });
-card.mount("#card-element");
+var tip_card = elements.create("card", { style: style });
+tip_card.mount("#card-element");
 
 // Handle real-time validation errors from the card Element.
-card.addEventListener('change', function(event) {
+tip_card.addEventListener('change', function(event) {
   var displayError = document.getElementById('card-errors');
   if (event.error) {
     displayError.textContent = event.error.message;
@@ -24,66 +28,41 @@ card.addEventListener('change', function(event) {
     displayError.textContent = '';
   }
 });
-//
+
 // Handle form submission
-var form = document.getElementById('payment-form');
-form.addEventListener('submit', function(event) {
+var tip_was_clicked;
+var tip_form = document.getElementById('tip-form');
+tip_form.addEventListener('submit', function(event) {
   event.preventDefault();
 
-  updatePaymentIntent(connectedID.value);
+  tip_was_clicked = true;
 
-  // stripe.createToken(card).then(function(result) {
-  //   if (result.error) {
-  //     // Inform the user if there was an error
-  //     var errorElement = document.getElementById('card-errors');
-  //     errorElement.textContent = result.error.message;
-  //   } else {
-  //     // Send the token to your server
-  //     stripeTokenHandler(result.token);
-  //   }
-  // });
+  var paymentAmount = document.getElementById("currency-field");
+
+  paymentIntentData = {
+    // You might send a list of items the customer is purchasing so that you can compute
+    // the price on the server.
+    items: {
+      id: "tip",
+      amount: paymentAmount.value
+    },
+    currency: "usd",
+    account: connectedID.value,
+    amount: paymentAmount.value
+  };
+
+  payment_notification_data = {
+    reciever_id: connectedID.value,
+    amount: paymentAmount.value,
+    payment_id: 'tip'
+  };
+
+  updatePaymentIntent(connectedID.value);
 });
 
 
-// Set up Stripe.js and Elements to use in checkout form
-// var setupElements = function(data) {
-//   stripe = Stripe('pk_test_51IqjT1DPMngAtAXMpqjXaGTX1AHlNB3Shk6ZmYtBqRGutydaHTkNW6gLld1LQvt4iI2nztJF7EBhxtCy5R55bxRu00huxmxMST');
-//   var elements = stripe.elements();
-//   var style = {
-//     base: {
-//       color: "#32325d",
-//       fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
-//       fontSmoothing: "antialiased",
-//       fontSize: "16px",
-//       "::placeholder": {
-//         color: "#aab7c4"
-//       }
-//     },
-//     invalid: {
-//       color: "#fa755a",
-//       iconColor: "#fa755a"
-//     }
-//   };
-//
-//   var card = elements.create("card", { style: style });
-//   card.mount("#card-element");
-//
-//   // Handle form submission.
-//   // paymentForm.addEventListener("submit", function(event) {
-//   //   event.preventDefault();
-//   //   // Initiate payment when the submit button is clicked
-//   //   pay(stripe, card, paymentIntentClientSecret);
-//   // });
-// };
-
-/*
-  * Calls stripe.confirmCardPayment which creates a pop-up modal to
-  * prompt the user to enter extra authentication details without leaving your page
-  */
 var pay = function(stripe, card, clientSecret) {
   changeLoadingState(true);
-
-  console.log('pay');
 
   // Initiate the payment.
   // If authentication is required, confirmCardPayment will automatically display a modal
@@ -91,7 +70,8 @@ var pay = function(stripe, card, clientSecret) {
     .confirmCardPayment(clientSecret, {
       payment_method: {
         card: card
-      }
+      },
+      setup_future_usage: 'off_session'
     })
     .then(function(result) {
       if (result.error) {
@@ -107,24 +87,11 @@ var pay = function(stripe, card, clientSecret) {
 
 const updatePaymentIntent = (account) => {
   // Disable the button while we fetch the payment intent.
-  paymentForm.querySelector("button").disabled = true;
+  subForm.querySelector("button").disabled = true;
+  tipForm.querySelector("button").disabled = true;
 
   // The account will be used as the transfer_data[destination] parameter when creating the
   // PaymentIntent on the server side.
-
-  var paymentAmount = document.getElementById("currency-field");
-
-  var paymentIntentData = {
-    // You might send a list of items the customer is purchasing so that you can compute
-    // the price on the server.
-    items: [{
-      id: "tip",
-      amount: paymentAmount.value
-    }],
-    currency: "usd",
-    account: connectedID.value,
-    amount: paymentAmount.value
-  };
 
   fetch("/create-payment-intent", {
     method: "POST",
@@ -138,8 +105,17 @@ const updatePaymentIntent = (account) => {
     })
     .then(function(data) {
 			paymentIntentClientSecret = data.clientSecret;
-      pay(stripe, card, paymentIntentClientSecret);
-			paymentForm.querySelector("button").disabled = false;
+
+      if (tip_was_clicked) {
+        pay(stripe, tip_card, paymentIntentClientSecret);
+      }
+
+      if (sub_was_clicked) {
+        pay(stripe, sub_card, paymentIntentClientSecret);
+      }
+
+      subForm.querySelector("button").disabled = false;
+      tipForm.querySelector("button").disabled = false;
     });
 }
 
@@ -147,32 +123,141 @@ const updatePaymentIntent = (account) => {
 
 /* Shows a success / error message when the payment is complete */
 var orderComplete = function(clientSecret) {
-  // Just for the purpose of the sample, show the PaymentIntent response object
-  stripe.retrievePaymentIntent(clientSecret).then(function(result) {
-    var paymentIntent = result.paymentIntent;
-    var paymentIntentJson = JSON.stringify(paymentIntent, null, 2);
 
-    document.querySelector(".stripe_form").classList.add("stripe_hidden");
-    //document.querySelector(".stripe_result pre").textContent = paymentIntentJson;
+  fetch("/payment-success", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(payment_notification_data)
+  })
+    .then(function(result) {
+      return result.json();
+    })
+    .then(function(data) {
 
-    document.querySelector(".stripe_result").classList.remove("stripe_hidden");
-    setTimeout(function() {
-      document.querySelector(".stripe_result").classList.add("stripe_expand");
-    }, 200);
+      if (data.subscription_success) {
 
-    changeLoadingState(false);
-  });
+        document.querySelector(".stripe_form").classList.add("stripe_hidden");
+
+        document.querySelector(".stripe_result").classList.remove("stripe_hidden");
+
+        setTimeout(function() {
+          window.location.reload(true)
+        }, 3000);
+
+      }
+
+      if (data.tip_success) {
+
+        // Just for the purpose of the sample, show the PaymentIntent response object
+        stripe.retrievePaymentIntent(clientSecret).then(function(result) {
+          var paymentIntent = result.paymentIntent;
+          var paymentIntentJson = JSON.stringify(paymentIntent, null, 2);
+
+          document.querySelector(".stripe_form").classList.add("stripe_hidden");
+          //document.querySelector(".stripe_result pre").textContent = paymentIntentJson;
+
+          document.querySelector(".stripe_result").classList.remove("stripe_hidden");
+
+          setTimeout(function() {
+            document.querySelector(".stripe_result").classList.add("stripe_expand");
+          }, 200);
+
+          changeLoadingState(false);
+        });
+
+      }
+
+    })
 };
 
 // Show a spinner on payment submission
 var changeLoadingState = function(isLoading) {
+
   if (isLoading) {
-    document.querySelector("#payment-form button").disabled = true;
-    //document.querySelector(".stripe_spinner").classList.remove("stripe_hidden");
-    document.querySelector("#stripe_button-text").textContent = 'One moment...'
+
+    if (tip_was_clicked) {
+      document.querySelector("#tip-form button").disabled = true;
+      //document.querySelector(".stripe_spinner").classList.remove("stripe_hidden");
+      document.querySelector("#stripe_button-text").textContent = 'One moment...'
+    }
+
+    if (sub_was_clicked) {
+      document.querySelector("#subscription-form button").disabled = true;
+      //document.querySelector(".stripe_spinner").classList.remove("stripe_hidden");
+      document.querySelector("#stripe_button-text_sub").textContent = 'One moment...'
+    }
+
   } else {
-    document.querySelector("#payment-form button").disabled = false;
-    //document.querySelector(".stripe_spinner").classList.add("stripe_hidden");
-    document.querySelector("#stripe_button-text").textContent = 'Pay'
+
+    if (tip_was_clicked) {
+      document.querySelector("#tip-form button").disabled = false;
+      //document.querySelector(".stripe_spinner").classList.add("stripe_hidden");
+      document.querySelector("#stripe_button-text").textContent = 'Send Tip'
+    }
+
+    if (sub_was_clicked) {
+      document.querySelector("#subscription-form button").disabled = false;
+      //document.querySelector(".stripe_spinner").classList.add("stripe_hidden");
+      document.querySelector("#stripe_button-text_sub").textContent = 'Follow'
+    }
+
+  }
+
+};
+/**********/
+
+// Payment for Subscriptions
+
+// Create a Stripe client
+var paymentIntentClientSecret = null; // Client Secret from the server, which we'll overwrite each time we create a new payment intent.
+var subForm = document.getElementById("subscription-form");
+
+// Set up Stripe.js and Elements to use in checkout form
+var elements = stripe.elements();
+var style = {
+  base: {
+    color: "#32325d",
   }
 };
+
+var sub_card = elements.create("card", { style: style });
+sub_card.mount("#card-element_sub");
+
+// Handle real-time validation errors from the card Element.
+sub_card.addEventListener('change', function(event) {
+  var displayError = document.getElementById('card-errors_sub');
+  if (event.error) {
+    displayError.textContent = event.error.message;
+  } else {
+    displayError.textContent = '';
+  }
+});
+
+// Handle form submission
+var sub_was_clicked;
+var sub_form = document.getElementById('subscription-form');
+sub_form.addEventListener('submit', function(event) {
+  event.preventDefault();
+
+  sub_was_clicked = true;
+
+  paymentIntentData = {
+    // You might send a list of items the customer is purchasing so that you can compute
+    // the price on the server.
+    items: {
+      id: "subscription"
+    },
+    currency: "usd",
+    account: connectedID.value,
+  };
+
+  payment_notification_data = {
+    reciever_id: connectedID.value,
+    payment_id: 'subscription'
+  };
+
+  updatePaymentIntent(connectedID.value);
+});
+/**********/

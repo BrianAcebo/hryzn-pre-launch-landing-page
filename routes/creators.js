@@ -278,6 +278,70 @@ router.post("/webhook", async (req, res) => {
                     premium_creator_account: product_number
                  }, (err, user) => {
                     if (err) throw err;
+
+                    if (product_number == 1) {
+
+                      User.find({ 'username': { $in: user.followers } }, (err, followers) => {
+
+                        // Iterate through each of the user's followers
+                        for (let i = 0; i < followers.length; i++) {
+
+                          follower_count += 1;
+                          var follower = followers[i];
+
+
+                          // Check if the followers have subscriptions
+                          if (typeof follower.following_subscriptions != 'undefined') {
+
+                            if (follower.following_subscriptions.length >= 1) {
+
+
+                              // Iterate through a follower's subscriptions
+                              for (let f = 0; f < follower.following_subscriptions.length; f++) {
+
+                                var sub = follower.following_subscriptions[f];
+
+
+                                // Check if the subscription is the same as the current user's
+                                if (sub.user_following === user._id.toString()) {
+
+                                  info = [];
+                                  info['profileId'] = user._id;
+                                  info['userId'] = follower._id;
+                                  info['subId'] = sub.subcription_id;
+
+                                  (async function() {
+
+                                    await stripe.subscriptions.del(sub.subcription_id).then(function() {
+                                      try {
+
+                                        User.removeSubscription(info, (err, user) => {
+                                          if(err) throw err;
+
+                                        });
+
+                                      } catch {
+                                        return res.status(500).send({
+                                          error: err.message
+                                        });
+                                      }
+                                    });
+
+                                  })();
+
+                                }
+
+                              }
+                            }
+
+                          }
+
+                        }
+
+                      });
+
+                    }
+
                  });
 
                }
@@ -320,12 +384,16 @@ router.post("/webhook", async (req, res) => {
 
            if (user) {
 
-             User.findByIdAndUpdate(user._id, {
-                premium_creator_account: 5,
-                completed_onboard_payouts: false
-             }, (err, user) => {
-                if (err) throw err;
-             });
+             if (user.premium_creator_account >=  0 || typeof user.premium_creator_account != 'undefined') {
+
+               User.findByIdAndUpdate(user._id, {
+                  premium_creator_account: 5,
+                  completed_onboard_payouts: false
+               }, (err, user) => {
+                  if (err) throw err;
+               });
+
+             }
            }
 
         });

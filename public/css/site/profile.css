@@ -295,3 +295,25 @@
     padding: 12px 15px;
   }
 }
+
+.private_profile_container {
+  text-align: center;
+  padding: 50px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.private_profile_text {
+  font-weight: bold;
+  color: #fff;
+  text-align: center;
+}
+
+.private_profile_icon {
+  max-width: 100px;
+  margin: 25px auto;
+}
+
+.sub_modal_btn {
+  cursor: pointer;
+}

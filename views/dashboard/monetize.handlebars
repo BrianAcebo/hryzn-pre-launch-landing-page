@@ -7,14 +7,100 @@
 
     <h3>{{dashboard_page_name}}</h3>
 
-    <p>
-       Our goal is to provide content creators with a platform that helps eliminate the difficulty of making a business through content.
-       We are currently working on creating systems that build you websites, manage all forms of content, and automate your marketing.
-       We'll have monetization options as well such as selling or affiliating products, recieving ad revenue, and membership abilities.
-       <br />
-       <br />
-       <strong>Creating a business is hard, but we'll make it easy for you.</strong>
-    </p>
+    <strong class="strong_title">Subscription To Your Profile</strong>
+      {{#if user.creator_subscription.is_active}}
+      <div class="monetize_options_wrapper sub_options_wrapper">
+        <div class="monetize_sub_item">
+          <p class="sub_title">Current Price</p>
+          <p class="sub_header">{{user.creator_subscription.current_price}}</p>
+          <p class="sub_small">per month</p>
+        </div>
+
+        <div class="monetize_sub_item">
+          <p class="sub_title">Followers</p>
+          <p class="sub_header">{{user.followers.length}}</p>
+          <p class="sub_small">subscribed</p>
+        </div>
+      </div>
+
+      <div class="change_sub monetizeChangeSub">Change Price</div>
+
+      <div class="monetize_edit_price">
+        <form id="monetize_edit_price_form" method="post" action="/dashboard/creator-subscription">
+          <input type="hidden" name="sender_id" id="sender_id" value="{{user._id}}">
+          <input type="hidden" name="connected_id" id="connected_id" value="{{user.stripe_connected_account_id}}">
+          <input type="hidden" name="change_price" id="change_price" value="">
+          <input class="amount_input" type="text" name="amount" id="currency-field" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" value="" data-type="currency" placeholder="$ Amount" required>
+
+          <br>
+
+          <input type="radio" name="is_adult_content" value="true">
+          <label for="is_adult_content">Does this contain adult content?</label>
+          <p class="edit_price_small">
+            This information helps ensure that Hryzn can provide a safe, age-appropriate experience for the Hryzn community.
+          </p>
+          <br>
+
+          <div class="monetize_edit_price_btm">
+            <div class="change_sub sub_edit_cancel">Cancel</div>
+            <input class="change_sub" type="submit" value="Submit">
+          </div>
+
+        </form>
+      </div>
+      {{else}}
+
+      <div class="mini-spacer"></div>
+
+      <p>
+        <em>You do not have subscriptions activated.</em>
+        <br>
+        <br>
+        You currently have {{user.followers.length}} follower(s). These existing followers will
+        continue following you, and will not be charged. Any new followers beyond this point will be asked for payment in order to subscribe to your profile.
+      </p>
+
+      <div class="mini-spacer"></div>
+
+      <div class="change_sub monetizeChangeSub">Create Subscription</div>
+
+      <div class="monetize_edit_price">
+
+        <form method="post" action="/dashboard/creator-subscription">
+          <input type="hidden" name="sender_id" id="sender_id" value="{{user._id}}">
+          <input type="hidden" name="connected_id" id="connected_id" value="{{user.stripe_connected_account_id}}">
+          <input class="amount_input" type="text" name="amount" id="currency-field" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" value="" data-type="currency" placeholder="$ Amount" required>
+
+          <br>
+
+          <input type="radio" name="is_adult_content" value="true">
+          <label for="is_adult_content">Does this contain adult content?</label>
+          <p class="edit_price_small">
+            This information helps ensure that Hryzn can provide a safe, age-appropriate experience for the Hryzn community.
+          </p>
+          <br>
+
+          <div class="monetize_edit_price_btm">
+            <div class="change_sub sub_edit_cancel">Cancel</div>
+            <input class="change_sub" type="submit" value="Submit">
+          </div>
+
+        </form>
+
+      </div>
+
+      {{/if}}
+
+      <div class="spacer"></div>
+
+    <strong class="strong_title">Products (Coming Soon)</strong>
+    <div class="monetize_options_wrapper">
+      {{#if user.creator_products.is_active}}
+
+      {{else}}
+        You do not have any products.
+      {{/if}}
+    </div>
 
   </div>
 

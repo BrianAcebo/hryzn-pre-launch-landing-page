@@ -89,6 +89,9 @@ const ProjectSchema = mongoose.Schema({
    }],
    project_slug: {
       type: String
+   },
+   project_owner_has_private_profile: {
+     type: Boolean
    }
 });
 

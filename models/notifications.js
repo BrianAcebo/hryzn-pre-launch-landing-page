@@ -20,6 +20,9 @@ const NotificationSchema = mongoose.Schema({
    },
    date_sent: {
       type: String
+   },
+   is_friend_request: {
+     type: Boolean
    }
 });
 

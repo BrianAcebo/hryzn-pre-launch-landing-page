@@ -192,16 +192,35 @@
       </div>
       {{else}}
       <div class="template_two_btn_wrapper template_two_main_btns">
-         <a href="/messages/{{profile.username}}">
+
+        {{#if profile.is_private_profile}}
+          {{#if user_follows_profile}}
+          <a href="/messages/{{profile.username}}">
+             <div class="msg_btn profile_btns_rounding profile_main_accent_color profile_secondary_font">Message</div>
+          </a>
+         {{else}}
+         <a>
             <div class="msg_btn profile_btns_rounding profile_main_accent_color profile_secondary_font">Message</div>
          </a>
+          {{/if}}
+        {{else}}
+        <a href="/messages/{{profile.username}}">
+           <div class="msg_btn profile_btns_rounding profile_main_accent_color profile_secondary_font">Message</div>
+        </a>
+         {{/if}}
 
          {{#if user_follows_profile}}
-         <form method="post" action="{{#if on_wildcard_profile}}https://www.myhryzn.com{{/if}}/profile/unfollow/{{profile._id}}">
-            <input type="hidden" name="user_username" value="{{user.username}}">
-            <input type="hidden" name="profile_username" value="{{profile.username}}">
-            <button class="profile__unfollow profile_btn profile_btns_rounding profile_secondary_accent_color profile_secondary_font" name="submit" type="submit">Unfollow</button>
-         </form>
+         <a class="modalBtn">
+            <div class="profile__unfollow profile_btn profile_btns_rounding profile_secondary_accent_color profile_secondary_font">Unfollow</div>
+         </a>
+
+         {{else}}
+
+         {{#if viewer_has_pending_request}}
+
+         <a>
+            <div class="profile__follow profile_btn profile_btns_rounding profile_secondary_accent_color profile_secondary_font">Requested</div>
+         </a>
 
          {{else}}
 
@@ -210,8 +229,22 @@
             <input type="hidden" name="profile_username" value="{{profile.username}}">
             <button class="profile__follow profile_btn profile_btns_rounding profile_secondary_accent_color profile_secondary_font" name="submit" type="submit">Follow</button>
          </form>
+
+         {{/if}}
+
          {{/if}}
       </div>
+      {{/if}}
+
+      {{#if premium_creator_account}}
+      {{#if profile.completed_onboard_payouts}}
+      {{#ifEquals profile.premium_creator_account '0'}}
+      {{else}}
+      <a class="payments_modal_btn">
+         <div class="profile_btn profile_btns_rounding profile_secondary_accent_color profile_secondary_font send_tip_btn">Send A Tip</div>
+      </a>
+      {{/ifEquals}}
+      {{/if}}
       {{/if}}
 
       {{#if viewing_own_profile}}
@@ -224,6 +257,34 @@
    </div>
 
   <div class="profile_project_backgroundimage">
+
+    {{#if unable_to_view_private_profile}}
+
+      <div class="private_profile_container">
+
+      <p class="private_profile_text">Sorry, this profile is private.</p>
+
+      {{#if profile.profile_project_background_color}}
+
+      <img src="/icons/private-white.png" class="private_profile_icon" />
+
+      {{else}}
+
+      {{#if profile.profile_project_backgroundimage}}
+
+      <img src="/icons/private-white.png" class="private_profile_icon" />
+
+      {{else}}
+
+      <img src="/icons/private-black.png" class="private_profile_icon" />
+
+      {{/if}}
+
+      {{/if}}
+
+    </div>
+
+    {{else}}
 
      {{#if collections}}
      <div class="collections_dropdown">
@@ -812,6 +873,9 @@
      </div>
      <!--/masonryContainer -->
 
+     {{/if}}
+     <!--/if private profile-->
+
    </div>
    <!--/ profile project bg
 
@@ -958,6 +1022,100 @@
       </div>
    </form>
 
+   </div>
+</div>
+
+{{#if premium_creator_account}}
+{{#if profile.completed_onboard_payouts}}
+{{#ifEquals profile.premium_creator_account '0'}}
+{{else}}
+{{! Pop up modal for payments }}
+<div class="paymentsModal modalBackground">
+  <div class="modal-content">
+    <span class="closeModalPayments payments_close_btn">&times;</span>
+
+    <div class="form-container-2">
+      <div class="stripe_form_wrapper">
+
+        <form id="tip-form" class="stripe_form">
+          <input type="hidden" name="sender_id" id="sender_id" value="{{user._id}}">
+          <input type="hidden" name="connected_id" id="connected_id" value="{{profile.stripe_connected_account_id}}">
+          <input class="amount_input" type="text" name="currency-field" id="currency-field" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" value="" data-type="currency" placeholder="$ Amount" required>
+          <div id="card-element"></div>
+          <div id="card-errors" role="alert"></div>
+          <button id="submit" class="btn-Stripe">
+            <div class="stripe_spinner stripe_hidden" id="spinner"></div>
+            <span id="stripe_button-text">Pay</span>
+          </button>
+        </form>
+
+        <div class="stripe_result stripe_hidden">
+          <p>Payment Sent<br /></p>
+          <img src="/icons/checked-data.png" class="stripe_checkmark" />
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+{{! Pop up modal for subscriptions }}
+<div class="subModal modalBackground">
+  <div class="modal-content">
+    <span class="closeModalSub payments_close_btn">&times;</span>
+
+    <div class="form-container-2">
+      <div class="stripe_form_wrapper">
+
+        <form id="subscription-form" class="stripe_form">
+          <input type="hidden" name="sender_id" id="sender_id" value="{{user._id}}">
+          <input type="hidden" name="connected_id" id="connected_id" value="{{profile.stripe_connected_account_id}}">
+          <div id="card-element_sub"></div>
+          <div id="card-errors_sub" role="alert"></div>
+          <button id="submit" class="btn-Stripe">
+            <div class="stripe_spinner stripe_hidden" id="spinner"></div>
+            <span id="stripe_button-text_sub">Follow</span>
+          </button>
+        </form>
+
+        <div class="stripe_result stripe_hidden">
+          <p>Followed @{{profile.username}}<br /></p>
+          <img src="/icons/checked-data.png" class="stripe_checkmark" />
+        </div>
+
+      </div>
+    </div>
+
+    <div class="modal-body">
+       <small> Subscriptions occur on a monthly basis.</small>
+    </div>
+
+  </div>
+</div>
+{{/ifEquals}}
+{{/if}}
+{{/if}}
+
+<!-- Hidden Delete Modal -->
+<div class="popModal modalBackground">
+   <div class="modal-content">
+     <div class="modal-header">
+       <p>Are You Sure?</p>
+     </div>
+     <div class="modal-body">
+       <p>Unfollowing will remove you from this user's profile.</p>
+        <small> Subscriptions will be deleted, and payment will be required again.</small></p>
+     </div>
+     <div class="modal-footer">
+       <form method="post" action="{{#if on_wildcard_profile}}https://www.myhryzn.com{{/if}}/profile/unfollow/{{profile._id}}">
+          <input type="hidden" name="user_username" value="{{user.username}}">
+          <input type="hidden" name="profile_username" value="{{profile.username}}">
+          <button style="padding: 8px 35px; line-height: 35px;" class="btn__secondary" name="submit" type="submit">Yes, Unfollow</button>
+       </form>
+
+       <span class="closeModal btn__primary">Cancel</span>
+     </div>
    </div>
 </div>
 

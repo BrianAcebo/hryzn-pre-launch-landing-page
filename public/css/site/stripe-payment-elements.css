@@ -14,7 +14,8 @@
   margin-bottom: 8px;
 }
 
-.stripe_form #card-errors {
+.stripe_form #card-errors,
+.stripe_form #card-errors_sub {
   padding: 4px 0;
   color: #fa755a;
   font-size: 12px;
@@ -62,7 +63,8 @@
   float: left;
 }
 
-.stripe_form #card-element {
+.stripe_form #card-element,
+.stripe_form #card-element_sub {
   background-color: white;
   width: 100%;
   padding: 15px;
@@ -103,15 +105,18 @@
   background-color: #43458b;
 }
 
-.stripe_form #card-element--focus {
+.stripe_form #card-element--focus,
+.stripe_form #card-element_sub--focus {
   box-shadow: 0 1px 3px 0 #cfd7df;
 }
 
-.stripe_form #card-element--invalid {
+.stripe_form #card-element--invalid,
+.stripe_form #card-element_sub--invalid {
   border-color: #fa755a;
 }
 
-.stripe_form #card-element--webkit-autofill {
+.stripe_form #card-element--webkit-autofill,
+.stripe_form #card-element_sub--webkit-autofill {
   background-color: #fefde5 !important;
 }
 
@@ -124,7 +129,7 @@
   cursor: pointer;
 }
 
-.tip_amount_input {
+.amount_input {
   width: 150px;
   padding: 12px 15px;
   margin: 0 auto 25px auto;

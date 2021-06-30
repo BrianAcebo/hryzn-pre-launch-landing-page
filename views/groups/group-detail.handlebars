@@ -101,48 +101,56 @@
             {{! Check if the project is a private project, we do not want to show private projects }}
             {{else}}
 
-            {{#if is_micro_post}}
-            <div class="masonryItem ownProject" title="{{project_title}}">
-               <a href="/p/micro/{{_id}}">
-                  <div class="micropost">
-                     <div class="micropost_card {{#if micro_image}}card_is_micro_image{{else}}{{#if micro_audio}}card_is_micro_audio{{else}}{{#if micro_video}}card_is_micro_video{{else}}card_is_micro_text{{/if}}{{/if}}{{/if}}">
-                        {{#if micro_image}}<img src="https://ik.imagekit.io/w07am55tja/{{micro_image}}?tr=w-450" class="img-responsive" alt="{{micro_body}}" />{{/if}}
-                        {{#if thumbnail_image}}<img src="https://ik.imagekit.io/w07am55tja/{{thumbnail_image}}?tr=w-450" class="img-responsive" alt="{{micro_body}}" />{{/if}}
-                        {{#if micro_video}}<div class="micro_play_btn"><img class="topnav__icon" src="/icons/play-button-white.png" /></div>{{/if}}
-                        {{#if micro_audio}}<div class="micro_play_btn"><img class="topnav__icon" src="/icons/audio-button-white.png" /></div>{{/if}}
-                        {{#if project_title}}<p class="micro_title">{{project_title}}</p>{{/if}}
-                        <p class="micro_body">
-                           {{{micro_body}}}
-                        </p>
-                     </div>
-                     <a class="micro_tag {{#if project_title}}micro_tag_w_title{{/if}}" href="/profile/{{project_owner}}">@{{project_owner}}</a>
-                  </div>
-               </a>
-            </div>
-            {{else}}
+              {{#if project_owner_has_private_profile}}
+              {{! Can't show private projects to people other than followers }}
+              {{else}}
 
-            <div class="masonryItem" title="{{project_title}}">
-               <div class="project_card">
-                  <a href="/p/details/{{id}}" class="project_link group_project" value="{{_id}}">
-                     <img src="https://ik.imagekit.io/w07am55tja/{{#if thumbnail_image}}{{thumbnail_image}}{{else}}{{project_image}}{{/if}}?tr=w-450" class="img-responsive" alt="{{project_title}}" />
-                  </a>
-                  <div class="project_card_bottom">
-                     <div class="project_bottom_wrapper">
-                        <div class="bg_overlay"></div>
-                        <div class="project_bottom_details">
-                           <a href="/profile/{{project_owner}}"><p class="project_owner">@{{project_owner}}</p></a>
-                           <a href="/p/details/{{id}}" class="project_link">
-                              <p class="project_card_title">{{project_title}}</p>
-                           </a>
-                        </div>
-                     </div>
-                  </div>
-               </div>
-            </div>
+                {{#if is_micro_post}}
+                <div class="masonryItem ownProject" title="{{project_title}}">
+                   <a href="/p/micro/{{_id}}">
+                      <div class="micropost">
+                         <div class="micropost_card {{#if micro_image}}card_is_micro_image{{else}}{{#if micro_audio}}card_is_micro_audio{{else}}{{#if micro_video}}card_is_micro_video{{else}}card_is_micro_text{{/if}}{{/if}}{{/if}}">
+                            {{#if micro_image}}<img src="https://ik.imagekit.io/w07am55tja/{{micro_image}}?tr=w-450" class="img-responsive" alt="{{micro_body}}" />{{/if}}
+                            {{#if thumbnail_image}}<img src="https://ik.imagekit.io/w07am55tja/{{thumbnail_image}}?tr=w-450" class="img-responsive" alt="{{micro_body}}" />{{/if}}
+                            {{#if micro_video}}<div class="micro_play_btn"><img class="topnav__icon" src="/icons/play-button-white.png" /></div>{{/if}}
+                            {{#if micro_audio}}<div class="micro_play_btn"><img class="topnav__icon" src="/icons/audio-button-white.png" /></div>{{/if}}
+                            {{#if project_title}}<p class="micro_title">{{project_title}}</p>{{/if}}
+                            <p class="micro_body">
+                               {{{micro_body}}}
+                            </p>
+                         </div>
+                         <a class="micro_tag {{#if project_title}}micro_tag_w_title{{/if}}" href="/profile/{{project_owner}}">@{{project_owner}}</a>
+                      </div>
+                   </a>
+                </div>
+                {{else}}
+
+                <div class="masonryItem" title="{{project_title}}">
+                   <div class="project_card">
+                      <a href="/p/details/{{id}}" class="project_link group_project" value="{{_id}}">
+                         <img src="https://ik.imagekit.io/w07am55tja/{{#if thumbnail_image}}{{thumbnail_image}}{{else}}{{project_image}}{{/if}}?tr=w-450" class="img-responsive" alt="{{project_title}}" />
+                      </a>
+                      <div class="project_card_bottom">
+                         <div class="project_bottom_wrapper">
+                            <div class="bg_overlay"></div>
+                            <div class="project_bottom_details">
+                               <a href="/profile/{{project_owner}}"><p class="project_owner">@{{project_owner}}</p></a>
+                               <a href="/p/details/{{id}}" class="project_link">
+                                  <p class="project_card_title">{{project_title}}</p>
+                               </a>
+                            </div>
+                         </div>
+                      </div>
+                   </div>
+                </div>
+
+                {{/if}}
+
+              {{/if}}
+              <!--/if profile is private -->
 
             {{/if}}
-
-            {{/if}}
+            <!--/if private-->
 
          {{/each}}
 

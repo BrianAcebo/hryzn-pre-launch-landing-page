@@ -123,6 +123,9 @@ const UserSchema = mongoose.Schema({
    date_of_birth: {
       type: String
    },
+   is_private_profile: {
+     type: Boolean
+   },
    premium_creator_account: {
       type: Number
    },
@@ -137,7 +140,33 @@ const UserSchema = mongoose.Schema({
    },
    stripe_connected_account_id: {
      type: String
-   }
+   },
+   pending_friend_requests: [],
+   creator_subscription: {
+     stripe_product_id: {
+       type: String
+     },
+     stripe_price_id: {
+       type: String
+     },
+     current_price: {
+       type: String
+     },
+     is_active: {
+       type: Boolean
+     },
+     is_adult_content: {
+       type: Boolean
+     }
+   },
+   following_subscriptions: [{
+     user_following: {
+       type: String
+     },
+     subscription_id: {
+       type: String
+     }
+   }]
 });
 
 const User = module.exports = mongoose.model('User', UserSchema);
@@ -516,6 +545,74 @@ module.exports.updateCollection = (info, callback) => {
          },
       },
       { safe: true, upsert: true },
+      callback
+   );
+}
+
+
+// Add Pending Request
+module.exports.addRequest = (info, callback) => {
+   userId_of_profile = info['profileId'];
+   userId_to_add = info['userId'];
+
+   const query = { _id: userId_of_profile };
+
+   User.findOneAndUpdate(query,
+      {
+         $addToSet: {"pending_friend_requests": [userId_to_add]},
+      },
+      { safe: true, upsert: true },
+      callback
+   );
+}
+
+// Remove Pending Request
+module.exports.removeRequest = (info, callback) => {
+   userId_to_remove = info['userId'];
+   profileId = info['profileId'];
+
+   const query = { _id: profileId };
+
+   User.findOneAndUpdate(query,
+      { $pull: { pending_friend_requests: userId_to_remove } },
+      { multi: true },
+      callback
+   );
+}
+
+// Add Subscription
+module.exports.addSubscription = (info, callback) => {
+   subId = info['subId'];
+   userId = info['userId'];
+   profileId = info['profileId'];
+
+   const query = { _id: userId };
+
+   User.findOneAndUpdate(query,
+      {
+         $addToSet: {
+            "following_subscriptions": {
+               "user_following": profileId,
+               "subscription_id": subId
+            }
+         },
+      },
+      { safe: true, upsert: true },
+      callback
+   );
+}
+
+// Remove Subscription
+module.exports.removeSubscription = (info, callback) => {
+  subId = info['subId'];
+  userId = info['userId'];
+  profileId = info['profileId'];
+
+   const query = { _id: userId };
+
+   User.findOneAndUpdate(query,
+      { $pull: { following_subscriptions: { 'subscription_id': subId } } },
+      { multi: true },
       callback
    );
 }

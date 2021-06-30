@@ -9,6 +9,7 @@ const dateNow = Date.now().toString();
 const jwt = require('jsonwebtoken');
 const request = require('request');
 const cheerio = require('cheerio');
+const mongoose = require('mongoose');
 
 var current_date = new Date();
 var current_date_and_time = current_date.toLocaleString()
@@ -112,6 +113,27 @@ router.get('/', (req, res, next) => {
              } else {
                 var hryznAdmin = false;
              }
+
+             var is_following = false;
+
+             profile.followers.forEach(function(follower, key) {
+               if (follower === req.user.username) {
+                 is_following = true;
+               }
+             });
+
+             if (profile.is_private_profile && viewing_own_profile) {
+               var unable_to_view_private_profile = false;
+             } else if (profile.is_private_profile && hryznAdmin) {
+               var unable_to_view_private_profile = false;
+             } else if (profile.is_private_profile && is_following) {
+               var unable_to_view_private_profile = false;
+             } else if (profile.is_private_profile) {
+               var unable_to_view_private_profile = true;
+             } else {
+               var unable_to_view_private_profile = false;
+             }
+
           } else {
              var viewing_own_profile = false;
           }
@@ -152,6 +174,15 @@ router.get('/', (req, res, next) => {
           } else {
              var amount_of_projects = 0;
           }
+
+
+          var viewer_has_pending_request;
+
+          profile.pending_friend_requests.forEach(function(request, key) {
+            if (request == req.user._id.toString()) {
+              viewer_has_pending_request = true;
+            }
+          });
 
 
           if (profile.collections) {
@@ -340,7 +371,9 @@ router.get('/', (req, res, next) => {
                                profilePage: true,
                                followers: followers,
                                premium_creator_account: premium_creator_account,
-                               main_page_nav: true
+                               main_page_nav: true,
+                               unable_to_view_private_profile: unable_to_view_private_profile,
+                               viewer_has_pending_request: viewer_has_pending_request
                             });
                          });
 
@@ -383,6 +416,12 @@ router.get('/', (req, res, next) => {
                          var pageRender = 'profile-themes/' + profile.profile_theme;
                       }
 
+                      if (profile.premium_creator_account == 0 || profile.premium_creator_account == 1 || profile.premium_creator_account == 2 || profile.premium_creator_account == 3) {
+                        var premium_creator_account = true;
+                      } else {
+                        var premium_creator_account = false;
+                      }
+
                       res.render(pageRender, {
                          page_title: '@' + profile.username,
                          page_description: profile.bio,
@@ -400,7 +439,10 @@ router.get('/', (req, res, next) => {
                          profile_active: true,
                          profilePage: true,
                          noCollections: noCollections,
-                         main_page_nav: true
+                         premium_creator_account: premium_creator_account,
+                         main_page_nav: true,
+                         unable_to_view_private_profile: unable_to_view_private_profile,
+                         viewer_has_pending_request: viewer_has_pending_request
                       });
                    });
                 });
@@ -2761,6 +2803,22 @@ router.post('/notifications/remove/:id', (req, res, next) => {
    }
 });
 
+// Get Notifications - Delete
+router.get('/notifications/remove/:id', (req, res, next) => {
+   if(req.isAuthenticated()) {
+
+      Notification.findByIdAndRemove(req.params.id, (err) => {
+         if (err) throw err;
+
+         req.flash('success_msg', "Notification was deleted.");
+         res.redirect('/notifications');
+      });
+
+   } else {
+      res.redirect('/users/register');
+   }
+});
+
 
 // GET Profile
 router.get('/profile/:username', (req, res, next) => {
@@ -2790,6 +2848,27 @@ router.get('/profile/:username', (req, res, next) => {
             } else {
                var hryznAdmin = false;
             }
+
+            var is_following = false;
+
+            profile.followers.forEach(function(follower, key) {
+              if (follower === req.user.username) {
+                is_following = true;
+              }
+            });
+
+            if (profile.is_private_profile && viewing_own_profile) {
+              var unable_to_view_private_profile = false;
+            } else if (profile.is_private_profile && hryznAdmin) {
+              var unable_to_view_private_profile = false;
+            } else if (profile.is_private_profile && is_following) {
+              var unable_to_view_private_profile = false;
+            } else if (profile.is_private_profile) {
+              var unable_to_view_private_profile = true;
+            } else {
+              var unable_to_view_private_profile = false;
+            }
+
          } else {
             var viewing_own_profile = false;
          }
@@ -2830,6 +2909,14 @@ router.get('/profile/:username', (req, res, next) => {
          } else {
             var amount_of_projects = 0;
          }
+
+         var viewer_has_pending_request;
+
+         profile.pending_friend_requests.forEach(function(request, key) {
+           if (request == req.user._id.toString()) {
+             viewer_has_pending_request = true;
+           }
+         });
 
 
          if (profile.collections) {
@@ -3018,7 +3105,9 @@ router.get('/profile/:username', (req, res, next) => {
                               profilePage: true,
                               followers: followers,
                               premium_creator_account: premium_creator_account,
-                              main_page_nav: true
+                              main_page_nav: true,
+                              unable_to_view_private_profile: unable_to_view_private_profile,
+                              viewer_has_pending_request: viewer_has_pending_request
                            });
                         });
 
@@ -3061,6 +3150,12 @@ router.get('/profile/:username', (req, res, next) => {
                         var pageRender = 'profile-themes/' + profile.profile_theme;
                      }
 
+                     if (profile.premium_creator_account == 0 || profile.premium_creator_account == 1 || profile.premium_creator_account == 2 || profile.premium_creator_account == 3) {
+                       var premium_creator_account = true;
+                     } else {
+                       var premium_creator_account = false;
+                     }
+
                      res.render(pageRender, {
                         page_title: '@' + profile.username,
                         page_description: profile.bio,
@@ -3078,7 +3173,10 @@ router.get('/profile/:username', (req, res, next) => {
                         profile_active: true,
                         profilePage: true,
                         noCollections: noCollections,
-                        main_page_nav: true
+                        premium_creator_account: premium_creator_account,
+                        main_page_nav: true,
+                        unable_to_view_private_profile: unable_to_view_private_profile,
+                        viewer_has_pending_request: viewer_has_pending_request
                      });
                   });
                });
@@ -3095,51 +3193,107 @@ router.get('/profile/:username', (req, res, next) => {
 
 // Post Profile - Follow
 router.post('/profile/follow/:id', (req, res, next) => {
-   if(req.isAuthenticated()) {
-      info = [];
-      info['userUsername'] = req.user.username;
-      info['profileId'] = req.params.id;
-      info['profileUsername'] = req.body.profile_username;
-      info['userId'] = req.user._id;
+  if(req.isAuthenticated()) {
+    info = [];
+    info['userUsername'] = req.user.username;
+    info['profileId'] = req.params.id;
+    info['profileUsername'] = req.body.profile_username;
+    info['userId'] = req.user._id;
 
-      // Update following for User
-      User.addFollowing(info, (err, user) => {
-         if(err) throw err;
+    // Send notification to the user mentioned
+    User.findOne({ 'username': { $in: req.body.profile_username } }, (err, reciever) => {
+      if (err) throw err;
+
+      var is_following = false;
+
+      reciever.followers.forEach(function(follower, key) {
+        if (follower === req.user.username) {
+          is_following = true;
+        }
       });
 
-      // Add followers to profile
-      User.addFollowers(info, (err, user) => {
-         if(err) throw err;
+      if (req.user.username === reciever.username) {
+        is_following = true;
+      }
 
-         // Send notification to the user mentioned
-         User.findOne({ 'username': { $in: req.body.profile_username } }, (err, reciever) => {
-            if (err) throw err;
+      if (is_following) {
+        res.redirect('/profile/' + req.body.profile_username);
+      } else {
+
+        if (reciever.is_private_profile) {
+
+          // Update following for User
+          User.addRequest(info, (err, user) => {
+            if(err) throw err;
 
             var newNotification = new Notification({
-               sender: req.user._id,
-               reciever: reciever._id,
-               type: '@' + req.user.username + ' started following you.',
-               link: '/profile/' + req.user.username,
-               date_sent: current_date
+              sender: req.user._id,
+              reciever: reciever._id,
+              type: '@' + req.user.username + ' requested to follow you.',
+              link: '/profile/' + req.user.username,
+              date_sent: current_date,
+              is_friend_request: true
             });
 
             // Create notification in database
             Notification.saveNotification(newNotification, (err, notification) => {
-               if(err) throw err;
+              if(err) throw err;
 
-               // Add Notification for User
-               User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
-                  if (err) throw err;
-               });
+              // Add Notification for User
+              User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+                if (err) throw err;
+
+                req.flash('success_msg', "Friend Request Sent");
+                res.redirect('/profile/' + info['profileUsername']);
+              });
+
             });
-         });
 
-         req.flash('success_msg', "Following " + info['profileUsername']);
-         res.redirect('/profile/' + info['profileUsername']);
-      });
-   } else {
-      res.redirect('/users/register');
-   }
+          });
+
+        } else {
+
+          // Add followers to profile
+          User.addFollowers(info, (err, user) => {
+            if(err) throw err;
+
+            // Update following for User
+            User.addFollowing(info, (err, user) => {
+              if(err) throw err;
+
+              var newNotification = new Notification({
+                sender: req.user._id,
+                reciever: reciever._id,
+                type: '@' + req.user.username + ' started following you.',
+                link: '/profile/' + req.user.username,
+                date_sent: current_date
+              });
+
+              // Create notification in database
+              Notification.saveNotification(newNotification, (err, notification) => {
+                if(err) throw err;
+
+                // Add Notification for User
+                User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+                  if (err) throw err;
+
+                  req.flash('success_msg', "Following @" + info['profileUsername']);
+                  res.redirect('/profile/' + info['profileUsername']);
+                });
+
+              });
+
+            });
+
+          });
+
+        }
+
+      }
+    });
+  } else {
+    res.redirect('/users/register');
+  }
 });
 
 // Post Profile - Unfollow
@@ -3151,17 +3305,110 @@ router.post('/profile/unfollow/:id', (req, res, next) => {
       info['profileUsername'] = req.body.profile_username;
       info['userId'] = req.user._id;
 
-      // Update following for User
-      User.removeFollowing(info, (err, user) => {
-         if(err) throw err;
+      User.findOne({ '_id': { $in: req.user._id } }, async (err, user) => {
+        if (err) throw err;
+
+        var sub_id;
+        var sub_count = 0;
+
+        if (typeof user.following_subscriptions != 'undefined') {
+
+          if (user.following_subscriptions.length > 0) {
+
+            console.log(user.following_subscriptions)
+
+            user.following_subscriptions.forEach(async function(sub, key) {
+
+              sub_count += 1;
+
+              if (sub.user_following == req.params.id.toString()) {
+                sub_id = sub.subscription_id;
+              }
+
+              if (sub_count == user.following_subscriptions.length) {
+
+                if (sub_id) {
+
+                  info['subId'] = sub_id;
+
+                  await stripe.subscriptions.del(
+                    sub_id
+                  ).then(function() {
+                    try {
+
+                      User.removeSubscription(info, (err, user) => {
+                        if(err) throw err;
+
+                        // Update following for User
+                        User.removeFollowing(info, (err, user) => {
+                           if(err) throw err;
+
+                           // Remove followers from profile
+                           User.removeFollowers(info, (err, user) => {
+                              if(err) throw err;
+
+                              req.flash('success_msg', "Unfollowed @" + info['profileUsername']);
+                              res.redirect('/profile/' + info['profileUsername']);
+                           });
+
+                        });
+
+                      });
+
+                    } catch {
+                      return res.status(500).send({
+                        error: err.message
+                      });
+                    }
+                  });
+
+                }
+
+              }
+            });
+
+          } else {
+
+            console.log('yeah')
+
+            // Update following for User
+            User.removeFollowing(info, (err, user) => {
+               if(err) throw err;
+
+               // Remove followers from profile
+               User.removeFollowers(info, (err, user) => {
+                  if(err) throw err;
+
+                  req.flash('success_msg', "Unfollowed @" + info['profileUsername']);
+                  res.redirect('/profile/' + info['profileUsername']);
+               });
+
+            });
+
+          }
+
+        } else {
+
+          console.log('yeah 2')
+
+          // Update following for User
+          User.removeFollowing(info, (err, user) => {
+             if(err) throw err;
+
+             // Remove followers from profile
+             User.removeFollowers(info, (err, user) => {
+                if(err) throw err;
+
+                req.flash('success_msg', "Unfollowed @" + info['profileUsername']);
+                res.redirect('/profile/' + info['profileUsername']);
+             });
+
+          });
+
+        }
+
       });
 
-      // Remove followers from profile
-      User.removeFollowers(info, (err, user) => {
-         if(err) throw err;
-         req.flash('success_msg', "Unfollowed " + info['profileUsername']);
-         res.redirect('/profile/' + info['profileUsername']);
-      });
    } else {
       res.redirect('/users/register');
    }
@@ -3184,6 +3431,118 @@ router.get('/profile/:username/followers', (req, res, next) => {
    } else {
       res.redirect('/users/register');
    }
+});
+
+// Pending Request - Follow
+router.get('/pending-request/:id/:answer/:notification_id', (req, res, next) => {
+  if(req.isAuthenticated()) {
+
+    // Send notification to the user mentioned
+    User.findOne({ '_id': { $in: req.params.id } }, (err, reciever) => {
+      if (err) throw err;
+
+      // Profile is the profile being followed
+      // User is the user that originally made the request
+
+      if (reciever) {
+
+        info = [];
+        info['profileId'] = req.user._id;
+        info['userId'] = reciever._id;
+        info['userUsername'] = reciever.username;
+        info['profileUsername'] = req.user.username;
+
+        var notification_id = req.params.notification_id;
+
+        if (req.params.answer === 'true') {
+          var request_answer = true;
+        } else {
+          var request_answer = false;
+        }
+
+        if (request_answer) {
+
+          // Add followers to profile
+          User.addFollowers(info, (err, user) => {
+            if(err) throw err;
+
+            // Update following for User
+            User.addFollowing(info, (err, user) => {
+              if(err) throw err;
+
+              // Update request for User
+              User.removeRequest(info, (err, user) => {
+                if(err) throw err;
+
+                var newNotification = new Notification({
+                  sender: reciever._id,
+                  reciever: req.user._id,
+                  type: '@' + reciever.username + ' started following you.',
+                  link: '/profile/' + reciever.username,
+                  date_sent: current_date
+                });
+
+                // Create notification in database
+                Notification.saveNotification(newNotification, (err, notification) => {
+                  if(err) throw err;
+
+                  // Add Notification for User
+                  User.findByIdAndUpdate(req.user._id, { has_notification: true }, (err, user) => {
+                    if (err) throw err;
+
+                    var newNotification = new Notification({
+                      sender: req.user._id,
+                      reciever: reciever._id,
+                      type: '@' + req.user.username + ' accepted your friend request.',
+                      link: '/profile/' + req.user.username,
+                      date_sent: current_date
+                    });
+
+                    // Create notification in database
+                    Notification.saveNotification(newNotification, (err, notification) => {
+                      if(err) throw err;
+
+                      // Add Notification for User
+                      User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+                        if (err) throw err;
+
+                        req.flash('success_msg', "Accepted " + reciever.username);
+                        res.redirect('/notifications/remove/' + notification_id);
+                      });
+
+                    });
+
+                  });
+
+                });
+
+              });
+
+            });
+
+          });
+
+        } else {
+
+          // Update request for User
+          User.removeRequest(info, (err, user) => {
+            if(err) throw err;
+
+            req.flash('success_msg', "Declined " + reciever.username);
+            res.redirect('/notifications/remove/' + notification_id);
+
+          });
+
+        }
+
+      } else {
+        res.redirect('/notifications');
+      }
+
+    });
+  } else {
+    res.redirect('/users/register');
+  }
 });
 
 // GET Profile Following
@@ -3240,6 +3599,14 @@ router.post('/settings', upload.fields([{name: 'profile_project_backgroundimage'
       var facebook_link = req.body.facebook_link.replace(/\r\n/g,'');
       var id = req.body.id;
       var user = req.body.user;
+
+      if (req.body.make_profile_private === "true") {
+         var is_private_profile = true;
+      } else if (req.body.make_profile_public === "true") {
+        var is_private_profile = false;
+      } else {
+         var is_private_profile = req.user.is_private_profile;
+      }
 
       if(req.body.firstname === "") {
          var firstname = "";
@@ -3614,14 +3981,54 @@ router.post('/settings', upload.fields([{name: 'profile_project_backgroundimage'
                      profile_btns_rounding: profile_btns_rounding,
                      profile_main_font: profile_main_font,
                      profile_secondary_font: profile_secondary_font,
-                     profile_project_background_color: profile_project_background_color
+                     profile_project_background_color: profile_project_background_color,
+                     is_private_profile: is_private_profile
                   }, (err, user) => {
                      if (err) throw err;
+
+                     if (is_private_profile) {
+
+                       var project_counter = 0;
+
+                       req.user.own_projects.forEach(function(proj, key) {
+                         Project.findByIdAndUpdate(mongoose.Types.ObjectId(proj), {
+                           project_owner_has_private_profile: true
+                         }, (err, project) => {
+                            if (err) throw err;
+
+                            project_counter += 1;
+
+                            if (project_counter == req.user.own_projects.length) {
+                              res.redirect('/profile/' + req.user.username);
+                            }
+                         });
+                       });
+
+                     } else {
+
+                       var project_counter = 0;
+
+                       req.user.own_projects.forEach(function(proj, key) {
+                         Project.findByIdAndUpdate(mongoose.Types.ObjectId(proj), {
+                           project_owner_has_private_profile: false
+                         }, (err, project) => {
+                            if (err) throw err;
+
+                            project_counter += 1;
+
+                            if (project_counter == req.user.own_projects.length) {
+                              res.redirect('/profile/' + req.user.username);
+                            }
+                         });
+                       });
+
+                     }
+
                   });
 
-                  res.redirect('/profile/' + req.user.username);
-
                } else {
+
+                  // User didn't upload images
 
                   if (typeof req.body.remove_profile_project_bg != 'undefined') {
                      var profile_project_backgroundimage;
@@ -3636,8 +4043,6 @@ router.post('/settings', upload.fields([{name: 'profile_project_backgroundimage'
                      }
                   }
 
-
-                  // User didn't upload images
 
                   User.findByIdAndUpdate(id, {
                      firstname: firstname,
@@ -3660,12 +4065,50 @@ router.post('/settings', upload.fields([{name: 'profile_project_backgroundimage'
                      profile_main_font: profile_main_font,
                      profile_secondary_font: profile_secondary_font,
                      profile_project_backgroundimage: profile_project_backgroundimage,
-                     profile_project_background_color: profile_project_background_color
+                     profile_project_background_color: profile_project_background_color,
+                     is_private_profile: is_private_profile
                   }, (err, user) => {
                      if (err) throw err;
+
+                     if (is_private_profile) {
+
+                       var project_counter = 0;
+
+                       req.user.own_projects.forEach(function(proj, key) {
+                         Project.findByIdAndUpdate(mongoose.Types.ObjectId(proj), {
+                           project_owner_has_private_profile: true
+                         }, (err, project) => {
+                            if (err) throw err;
+
+                            project_counter += 1;
+
+                            if (project_counter == req.user.own_projects.length) {
+                              res.redirect('/profile/' + req.user.username);
+                            }
+                         });
+                       });
+
+                     } else {
+
+                       var project_counter = 0;
+
+                       req.user.own_projects.forEach(function(proj, key) {
+                         Project.findByIdAndUpdate(mongoose.Types.ObjectId(proj), {
+                           project_owner_has_private_profile: false
+                         }, (err, project) => {
+                            if (err) throw err;
+
+                            project_counter += 1;
+
+                            if (project_counter == req.user.own_projects.length) {
+                              res.redirect('/profile/' + req.user.username);
+                            }
+                         });
+                       });
+
+                     }
                   });
 
-                  res.redirect('/profile/' + req.user.username);
                }
 
             } else {
@@ -4511,71 +4954,478 @@ router.get('/collection/delete/:id/:deleteAll', (req, res, next) => {
 
 
 
-const calculateOrderAmount = (items) => {
-    // Replace this constant with a calculation of the order's amount
-    // Calculate the order total on the server to prevent
-    // people from directly manipulating the amount on the client
+const calculateOrderAmount = (items, connected_id) => {
 
-    var total_amount = 0;
+  User.findOne({ 'stripe_connected_account_id': { $in: connected_id } }, (err, connected_account) => {
 
-    items.forEach(function(item, key) {
-      if (item.id == 'tip') {
-        total_amount = item.amount;
+    if (err) throw err;
+
+    if (connected_account) {
+
+      if (items.id === 'tip') {
+        var amount = items.amount.replace("$", "");
+        amount = parseFloat(amount) * 100;
       }
-    });
 
-    return total_amount * 100;
+      if (items.id === 'subscription') {
+        var amount = connected_account.creator_subscription.current_price;
+        amount = amount.replace("$", "");
+        amount = parseFloat(amount) * 100;
+
+        console.log('calculating order amount ' + amount);
+      }
+
+      return amount
+    }
+
+  });
 }
 
-const calculateApplicationFeeAmount = (amount, connected_id) => {
+const calculateApplicationFeeAmount = (amount, connected_id, calculateOrderAmount) => {
 
   User.findOne({ 'stripe_connected_account_id': { $in: connected_id} }, (err, connected_account) => {
 
-    if (connected_account) {
-      switch (connected_account.premium_creator_account) {
-        case 1:
-          var percentage = .05 * amount;
-          break;
-        case 2:
-          var percentage = .03 * amount;
-          break;
-        case 3:
-          var percentage = 0;
-          break;
-        default:
+    if (err) throw err;
+
+    if (amount === 'subscription') {
+
+      var items = {
+        id: 'subscription'
       }
 
-      return percentage
+      console.log('calculating app fee amount ' + amount);
+
+      return calculateOrderAmount(items, connected_id);
+
+    } else {
+
+      if (connected_account) {
+        switch (connected_account.premium_creator_account) {
+          case 1:
+            var percentage = .1 * amount;
+            break;
+          case 2:
+            var percentage = .07 * amount;
+            break;
+          case 3:
+            var percentage = .04 * amount;
+            break;
+          default:
+        }
+
+        return percentage
+      }
+
     }
 
   });
 
 }
 
+const createCustomerSubscription = async (amount, connected_account) => {
+
+  // if (req.user.stripe_customer_id != 'undefined') {
+  //
+  //   const subscription = await stripe.subscriptions.create({
+  //     customer: req.user.stripe_customer_id,
+  //     items: [
+  //       {
+  //         price: connected_account.creator_subscription.stripe_price_id,
+  //       },
+  //     ],
+  //     expand: ["latest_invoice.payment_intent"],
+  //     application_fee_percent: calculateApplicationFeeAmount(amount, connected_account.stripe_connected_account_id),
+  //     transfer_data: {
+  //       destination: connected_account.stripe_connected_account_id
+  //     }
+  //   });
+  //
+  // } else {
+  //
+  //   const customer = await stripe.customers.create({
+  //     email: req.user.email
+  //   });
+  //
+  //   const subscription = await stripe.subscriptions.create({
+  //     customer: customer.id,
+  //     items: [
+  //       {
+  //         price: connected_account.creator_subscription.stripe_price_id,
+  //       },
+  //     ],
+  //     expand: ["latest_invoice.payment_intent"],
+  //     application_fee_percent: calculateApplicationFeeAmount(amount, connected_account.stripe_connected_account_id),
+  //     transfer_data: {
+  //       destination: connected_account.stripe_connected_account_id
+  //     }
+  //   });
+  //
+  // }
+
+}
+
 router.post('/create-payment-intent', async (req, res) => {
 
     const data = req.body;
-    var amount = data.amount.replace("$", "");;//calculateOrderAmount(data.amount)
-    amount = parseFloat(amount) * 100;
 
-    await stripe.paymentIntents.create({
-      amount: amount,
-      currency: data.currency,
-      application_fee_amount: calculateApplicationFeeAmount(amount, data.account),
-      transfer_data: {
-        destination: data.account,
-      },
-    }).then(function(paymentIntent) {
-      try {
-        return res.send({
-          clientSecret: paymentIntent.client_secret
+    if (data.items.id === 'tip') {
+
+      User.findOne({ 'stripe_connected_account_id': { $in: data.account } }, async (err, connected_account) => {
+
+        if (err) throw err;
+
+        if (connected_account) {
+
+          var amount = data.amount.replace("$", "");
+          amount = parseFloat(amount) * 100;
+
+          switch (connected_account.premium_creator_account) {
+            case 1:
+              var percentage = .1 * amount;
+              break;
+            case 2:
+              var percentage = .07 * amount;
+              break;
+            case 3:
+              var percentage = .04 * amount;
+              break;
+            default:
+          }
+
+          await stripe.paymentIntents.create({
+            amount: amount,
+            currency: data.currency,
+            application_fee_amount: percentage,
+            transfer_data: {
+              destination: data.account,
+            },
+          }).then(function(paymentIntent) {
+            try {
+              return res.send({
+                clientSecret: paymentIntent.client_secret
+              });
+            } catch (err) {
+              return res.status(500).send({
+                error: err.message
+              });
+            }
+          });
+
+        }
+
+      });
+
+    }
+
+    if (data.items.id === 'subscription') {
+
+      var amount = 'subscription';
+
+      if (typeof req.user.stripe_customer_id != 'undefined') {
+
+        User.findOne({ 'stripe_connected_account_id': { $in: data.account } }, async (err, connected_account) => {
+
+          if (err) throw err;
+
+          if (connected_account) {
+
+            var amount = connected_account.creator_subscription.current_price;
+            amount = amount.replace("$", "");
+            amount = parseFloat(amount) * 100;
+
+            switch (connected_account.premium_creator_account) {
+              case 1:
+                var percentage = .1 * amount;
+                break;
+              case 2:
+                var percentage = .07 * amount;
+                break;
+              case 3:
+                var percentage = .04 * amount;
+                break;
+              default:
+            }
+
+            await stripe.paymentIntents.create({
+              amount: amount,
+              currency: data.currency,
+              customer: req.user.stripe_customer_id,
+              application_fee_amount: percentage,
+              transfer_data: {
+                destination: data.account,
+              },
+            }).then(function(paymentIntent) {
+              try {
+                return res.send({
+                  clientSecret: paymentIntent.client_secret
+                });
+              } catch (err) {
+                return res.status(500).send({
+                  error: err.message
+                });
+              }
+            });
+          }
+
         });
-      } catch (err) {
-        return res.status(500).send({
-          error: err.message
+
+      } else {
+
+        User.findOne({ 'stripe_connected_account_id': { $in: data.account } }, async (err, connected_account) => {
+
+          if (err) throw err;
+
+          if (connected_account) {
+
+            const customer = await stripe.customers.create({
+              email: req.user.email
+            });
+
+            User.findByIdAndUpdate(req.user._id, { stripe_customer_id: customer.id }, async (err, user) => {
+               if (err) throw err;
+
+               var amount = connected_account.creator_subscription.current_price;
+               amount = amount.replace("$", "");
+               amount = parseFloat(amount) * 100;
+
+               switch (connected_account.premium_creator_account) {
+                 case 1:
+                   var percentage = .1 * amount;
+                   break;
+                 case 2:
+                   var percentage = .07 * amount;
+                   break;
+                 case 3:
+                   var percentage = .04 * amount;
+                   break;
+                 default:
+               }
+
+               await stripe.paymentIntents.create({
+                 amount: amount,
+                 currency: data.currency,
+                 customer: customer.id,
+                 application_fee_amount: percentage,
+                 transfer_data: {
+                   destination: data.account,
+                 },
+               }).then(function(paymentIntent) {
+                 try {
+                   return res.send({
+                     clientSecret: paymentIntent.client_secret
+                   });
+                 } catch (err) {
+                   return res.status(500).send({
+                     error: err.message
+                   });
+                 }
+               });
+            });
+
+          }
+
         });
+
       }
+
+    }
+
+});
+
+
+router.post('/find-connected-account', (req, res) => {
+
+    const data = req.body;
+
+    User.findOne({ 'stripe_connected_account_id': { $in: data.account } }, (err, connected_account) => {
+
+      if (err) throw err;
+
+      if (connected_account) {
+
+        res.send({
+          connected_account: connected_account
+        });
+
+      }
+
     });
+
+});
+
+
+router.post('/payment-success', (req, res) => {
+
+    const data = req.body;
+    var reciever_id = data.reciever_id;
+    var amount = data.amount;
+    var payment_id = data.payment_id;
+
+    // Tips
+    if (payment_id === 'tip') {
+
+      // Send notification to the user mentioned
+      User.findOne({ 'stripe_connected_account_id': { $in: reciever_id} }, (err, reciever) => {
+         if (err) throw err;
+
+         var newNotification = new Notification({
+            sender: req.user._id,
+            reciever: reciever._id,
+            type: '@' + req.user.username + ' sent you a ' + amount + ' tip.',
+            link: '/dashboard',
+            date_sent: current_date
+         });
+
+         // Create notification in database
+         Notification.saveNotification(newNotification, (err, notification) => {
+            if(err) throw err;
+
+            // Add Notification for User
+            User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+               if (err) throw err;
+
+               return res.send({
+                 tip_success: true
+               });
+            });
+         });
+      });
+
+    }
+
+    // Subscriptions
+    if (payment_id === 'subscription') {
+
+      // Send notification to the user mentioned
+      User.findOne({ 'stripe_connected_account_id': { $in: reciever_id } }, (err, reciever) => {
+        if (err) throw err;
+
+        var amount = reciever.creator_subscription.current_price;
+        amount = amount.replace("$", "");
+        amount = parseFloat(amount) * 100;
+
+        switch (reciever.premium_creator_account) {
+          case 1:
+            var percentage = 10;
+            break;
+          case 2:
+            var percentage = 7;
+            break;
+          case 3:
+            var percentage = 4;
+            break;
+          default:
+        }
+
+        info = [];
+        info['userUsername'] = req.user.username;
+        info['profileId'] = reciever._id;
+        info['profileUsername'] = reciever.username;
+        info['userId'] = req.user._id;
+
+        var is_following = false;
+
+        reciever.followers.forEach(function(follower, key) {
+          if (follower === req.user.username) {
+            is_following = true;
+          }
+        });
+
+        if (req.user.username === reciever.username) {
+          is_following = true;
+        }
+
+        if (is_following) {
+          res.redirect('/profile/' + req.body.profile_username);
+        } else {
+
+          // Add followers to profile
+          User.addFollowers(info, (err, user) => {
+            if(err) throw err;
+
+            // Update following for User
+            User.addFollowing(info, (err, user) => {
+              if(err) throw err;
+
+              var newNotification = new Notification({
+                sender: req.user._id,
+                reciever: reciever._id,
+                type: '@' + req.user.username + ' started following you.',
+                link: '/profile/' + req.user.username,
+                date_sent: current_date
+              });
+
+              // Create notification in database
+              Notification.saveNotification(newNotification, (err, notification) => {
+                if(err) throw err;
+
+                // Add Notification for User
+                User.findByIdAndUpdate(reciever._id, { has_notification: true }, async (err, user) => {
+                  if (err) throw err;
+
+                  // Find the payment method listed with the customer
+                  const paymentMethods = await stripe.paymentMethods.list({
+                    customer: req.user.stripe_customer_id,
+                    type: 'card',
+                  });
+
+                  var pm_id = paymentMethods.data[0].id;
+
+                  // Attach the payment method to be the default for the customer
+                  // Needed for subscriptions
+                  await stripe.customers.update(
+                    req.user.stripe_customer_id,
+                    { invoice_settings: { default_payment_method: pm_id } }
+                  ).then(async function() {
+
+                    try {
+
+                      // Create the subscription for the customer
+                      const subscription = await stripe.subscriptions.create({
+                        customer: req.user.stripe_customer_id,
+                        items: [{
+                          price: reciever.creator_subscription.stripe_price_id,
+                        }],
+                        expand: ["latest_invoice.payment_intent"],
+                        application_fee_percent: percentage,
+                        transfer_data: {
+                          destination: reciever.stripe_connected_account_id
+                        },
+                        trial_period_days: 30,
+                        proration_behavior: "none"
+                      });
+
+                      info['subId'] = subscription.id;
+
+                      User.addSubscription(info, (err, user) => {
+                        if(err) throw err;
+
+                        return res.send({
+                          subscription_success: true
+                        });
+                      });
+
+                    } catch (err) {
+                      console.log(err)
+                      return res.status(500).send({
+                        error: err.message
+                      });
+                    }
+                  });
+
+                });
+
+              });
+
+            });
+
+          });
+
+        }
+      });
+
+    }
+
 });
 
 

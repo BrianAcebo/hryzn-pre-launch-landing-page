@@ -1522,4 +1522,62 @@ function formatCurrency(input, blur) {
 }
 /**********/
 
+
+// Modal pop up for subscription payments
+var $modalSub = $(".subModal");
+var $modalBtnSub = $(".sub_modal_btn");
+var $stripeForm = $(".stripe_form");
+var $stripeResult = $(".stripe_result");
+var $closeBtnSub = $(".closeModalSub");
+var $subBtn = $(".creator_sub_btn");
+
+if ($subBtn.length > 0) {
+  $subBtn.each(function() {
+    $(this).parent().click(function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+
+      $modalSub.css({ "display": "block" });
+    });
+  });
+}
+
+$modalBtnSub.each(function() {
+   $(this).click(function() {
+      $modalSub.css({ "display": "block" });
+   });
+});
+
+$closeBtnSub.click(function() {
+   $modalSub.css({ "display": "none" });
+   $stripeForm.removeClass('stripe_hidden');
+   $stripeResult.addClass('stripe_hidden');
+});
+/**********/
+
+
+// Dashboard edit subscription price
+var $changeSubBtn = $(".monetizeChangeSub");
+var $changePriceContainer = $(".monetize_edit_price");
+var $closeSubBtn = $(".sub_edit_cancel");
+var $subOptions = $(".sub_options_wrapper");
+var $changePriceBool = $("#monetize_edit_price_form #change_price");
+
+$changeSubBtn.click(function() {
+   $changePriceContainer.css({ "display": "block" });
+   $closeSubBtn.css({ "display": "block" });
+   $changePriceBool.val('true');
+   $changeSubBtn.css({ "display": "none" });
+   $subOptions.css({ "display": "none" });
+});
+
+$closeSubBtn.click(function() {
+   $changePriceContainer.css({ "display": "none" });
+   $closeSubBtn.css({ "display": "none" });
+   $changePriceBool.val('false');
+   $changeSubBtn.css({ "display": "block" });
+   $subOptions.css({ "display": "flex" });
+});
+/**********/
+
 });

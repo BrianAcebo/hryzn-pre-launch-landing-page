@@ -4,16 +4,28 @@
 
    {{#if notifications}}
    {{#each notifications}}
-   <div class="notification_wrapper">
-      <a class="notification" href="{{this.link}}">{{this.type}}</a>
-      <form method="post" class="" action="/notifications/remove/{{this._id}}">
-         <input type="hidden" name="notification_id" value="{{this._id}}">
-         <button class="project_action_btn" name="submit" type="submit">
-            <img src="/icons/delete-ticket-item.png" class="main-topnav__icon">
-         </button>
-      </form>
-   </div>
-   <span class="notif_date">{{this.date_sent}}</span>
+     {{#if this.is_friend_request}}
+     <div class="notification_wrapper">
+        <a class="notification">{{this.type}}</a>
+        <a class="notif_request_profile"href="{{this.link}}">View</a>
+     </div>
+     <div class="notif_btm_wrapper">
+       <span class="notif_date">{{this.date_sent}}</span>
+       <a class="notif_request_btn" href="/pending-request/{{this.sender}}/true/{{this._id}}">Accept</a>
+       <a class="notif_request_btn decline" href="/pending-request/{{this.sender}}/false/{{this._id}}">Decline</a>
+     </div>
+     {{else}}
+       <div class="notification_wrapper">
+          <a class="notification" href="{{this.link}}">{{this.type}}</a>
+          <form method="post" class="" action="/notifications/remove/{{this._id}}">
+             <input type="hidden" name="notification_id" value="{{this._id}}">
+             <button class="project_action_btn" name="submit" type="submit">
+                <img src="/icons/delete-ticket-item.png" class="main-topnav__icon">
+             </button>
+          </form>
+       </div>
+       <span class="notif_date">{{this.date_sent}}</span>
+     {{/if}}
    {{/each}}
 
    {{else}}

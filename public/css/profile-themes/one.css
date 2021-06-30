@@ -123,6 +123,14 @@
    cursor: pointer;
 }
 
+.template_one_btn_wrapper .profile_btn span {
+   font-size: 14px;
+   font-weight: bold;
+   line-height: 20px;
+   text-transform: uppercase;
+   letter-spacing: 2px;
+}
+
 .template_one_btn_wrapper .msg_btn {
    margin-right: 25px;
 }
