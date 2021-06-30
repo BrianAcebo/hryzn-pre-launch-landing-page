@@ -281,11 +281,7 @@ router.post("/webhook", async (req, res) => {
 
                     if (product_number == 1) {
 
-                      console.log('oui');
-
                       User.find({ 'username': { $in: user.followers } }, (err, followers) => {
-
-                        console.log('followers ' + followers);
 
                         var follower_count = 0;
 
@@ -294,8 +290,6 @@ router.post("/webhook", async (req, res) => {
 
                           follower_count += 1;
                           var follower = followers[i];
-
-                          console.log('follower ' + follower);
 
 
                           // Check if the followers have subscriptions
@@ -309,8 +303,6 @@ router.post("/webhook", async (req, res) => {
 
                                 var sub = follower.following_subscriptions[f];
 
-                                console.log('sub ' + sub)
-
 
                                 // Check if the subscription is the same as the current user's
                                 if (sub.user_following === user._id.toString()) {
@@ -318,11 +310,11 @@ router.post("/webhook", async (req, res) => {
                                   info = [];
                                   info['profileId'] = user._id;
                                   info['userId'] = follower._id;
-                                  info['subId'] = sub.subcription_id;
+                                  info['subId'] = sub.subscription_id;
 
                                   (async function() {
 
-                                    await stripe.subscriptions.del(sub.subcription_id).then(function() {
+                                    await stripe.subscriptions.del(sub.subscription_id).then(function() {
                                       try {
 
                                         User.removeSubscription(info, (err, user) => {
@@ -342,20 +334,14 @@ router.post("/webhook", async (req, res) => {
                                 }
 
                               }
-                            } else {
-                              console.log('no sub lnegth');
                             }
 
-                          } else {
-                            console.log('no sub undefined');
                           }
 
                         }
 
                       });
 
-                    } else {
-                      console.log('non');
                     }
 
                  });
