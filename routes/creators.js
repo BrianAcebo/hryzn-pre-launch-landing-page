@@ -281,13 +281,19 @@ router.post("/webhook", async (req, res) => {
 
                     if (product_number == 1) {
 
+                      console.log('oui');
+
                       User.find({ 'username': { $in: user.followers } }, (err, followers) => {
+
+                        console.log('followers ' + followers);
 
                         // Iterate through each of the user's followers
                         for (let i = 0; i < followers.length; i++) {
 
                           follower_count += 1;
                           var follower = followers[i];
+
+                          console.log('follower ' + follower);
 
 
                           // Check if the followers have subscriptions
@@ -300,6 +306,8 @@ router.post("/webhook", async (req, res) => {
                               for (let f = 0; f < follower.following_subscriptions.length; f++) {
 
                                 var sub = follower.following_subscriptions[f];
+
+                                console.log('sub ' + sub)
 
 
                                 // Check if the subscription is the same as the current user's
@@ -332,14 +340,20 @@ router.post("/webhook", async (req, res) => {
                                 }
 
                               }
+                            } else {
+                              console.log('no sub lnegth');
                             }
 
+                          } else {
+                            console.log('no sub undefined');
                           }
 
                         }
 
                       });
 
+                    } else {
+                      console.log('non');
                     }
 
                  });
