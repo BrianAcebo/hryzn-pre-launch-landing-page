@@ -490,7 +490,7 @@ router.post('/delete-subscription', (req, res) => {
 
     User.find({ 'username': { $in: req.user.followers } }, (err, followers) => {
 
-      var follower_count = 0;
+      var follower_count = 1;
 
       // Iterate through each of the user's followers
       for (let i = 0; i < followers.length; i++) {
