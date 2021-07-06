@@ -224,11 +224,24 @@
 
          {{else}}
 
+         {{#if can_view_adult_content}}
          <form method="post" action="{{#if on_wildcard_profile}}https://www.myhryzn.com{{/if}}/profile/follow/{{profile._id}}">
             <input type="hidden" name="user_username" value="{{user.username}}">
             <input type="hidden" name="profile_username" value="{{profile.username}}">
-            <button class="profile__follow profile_btn profile_btns_rounding profile_secondary_accent_color profile_secondary_font" name="submit" type="submit">Follow</button>
+            <button class="profile__follow profile_btn profile_btns_rounding profile_secondary_accent_color profile_secondary_font" name="submit" type="submit">
+              Follow
+              {{#if premium_creator_account}}
+              {{#if profile.completed_onboard_payouts}}
+              {{#ifEquals profile.premium_creator_account '3'}}
+              {{#if profile.creator_subscription.is_active}}
+              <span class="creator_sub_btn"> for {{profile.creator_subscription.current_price}}</span>
+              {{/if}}
+              {{/ifEquals}}
+              {{/if}}
+              {{/if}}
+            </button>
          </form>
+         {{/if}}
 
          {{/if}}
 
@@ -260,9 +273,19 @@
 
     {{#if unable_to_view_private_profile}}
 
-      <div class="private_profile_container">
+      <div class="private_profile_container {{#if can_view_adult_content}}sub_modal_btn{{/if}}">
 
-      <p class="private_profile_text">Sorry, this profile is private.</p>
+      <p class="private_profile_text">
+        {{#if can_view_adult_content}}
+          Sorry, this profile is private.
+          {{#if profile.creator_subscription.is_active}}
+          <br>
+          It can be unlocked for {{profile.creator_subscription.current_price}} a month.
+          {{/if}}
+        {{else}}
+          Sorry, this profile is private and you must be 18 years or older to view.
+        {{/if}}
+      </p>
 
       {{#if profile.profile_project_background_color}}
 
@@ -1043,7 +1066,7 @@
           <input class="amount_input" type="text" name="currency-field" id="currency-field" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" value="" data-type="currency" placeholder="$ Amount" required>
           <div id="card-element"></div>
           <div id="card-errors" role="alert"></div>
-          <button id="submit" class="btn-Stripe">
+          <button type="submit" class="btn-Stripe">
             <div class="stripe_spinner stripe_hidden" id="spinner"></div>
             <span id="stripe_button-text">Pay</span>
           </button>
@@ -1060,6 +1083,7 @@
   </div>
 </div>
 
+{{#if can_view_adult_content}}
 {{! Pop up modal for subscriptions }}
 <div class="subModal modalBackground">
   <div class="modal-content">
@@ -1069,8 +1093,6 @@
       <div class="stripe_form_wrapper">
 
         <form id="subscription-form" class="stripe_form">
-          <input type="hidden" name="sender_id" id="sender_id" value="{{user._id}}">
-          <input type="hidden" name="connected_id" id="connected_id" value="{{profile.stripe_connected_account_id}}">
           <div id="card-element_sub"></div>
           <div id="card-errors_sub" role="alert"></div>
           <button id="submit" class="btn-Stripe">
@@ -1093,6 +1115,7 @@
 
   </div>
 </div>
+{{/if}}
 {{/ifEquals}}
 {{/if}}
 {{/if}}

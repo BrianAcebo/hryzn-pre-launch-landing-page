@@ -1504,7 +1504,16 @@ function formatCurrency(input, blur) {
     // add commas to number
     // remove all non-digits
     input_val = formatNumber(input_val);
-    input_val = "$" + input_val;
+    if (input_val < 4) {
+      if ($("#card-errors").length > 0) {
+        $("#card-errors").text('Amount must be at least $4');
+      } else {
+        $("#amount_input_err").text('Amount must be at least $4');
+      }
+      input_val = 4;
+    } else {
+      input_val = "$" + input_val;
+    }
 
     // final formatting
     if (blur === "blur") {
@@ -1559,6 +1568,7 @@ $closeBtnSub.click(function() {
 // Dashboard edit subscription price
 var $changeSubBtn = $(".monetizeChangeSub");
 var $changePriceContainer = $(".monetize_edit_price");
+var $deleteSub = $('.deleteSub');
 var $closeSubBtn = $(".sub_edit_cancel");
 var $subOptions = $(".sub_options_wrapper");
 var $changePriceBool = $("#monetize_edit_price_form #change_price");
@@ -1569,6 +1579,7 @@ $changeSubBtn.click(function() {
    $changePriceBool.val('true');
    $changeSubBtn.css({ "display": "none" });
    $subOptions.css({ "display": "none" });
+   $deleteSub.css({ "display": "none" });
 });
 
 $closeSubBtn.click(function() {
@@ -1577,6 +1588,7 @@ $closeSubBtn.click(function() {
    $changePriceBool.val('false');
    $changeSubBtn.css({ "display": "block" });
    $subOptions.css({ "display": "flex" });
+   $deleteSub.css({ "display": "block" });
 });
 /**********/
 

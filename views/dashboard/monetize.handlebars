@@ -17,13 +17,16 @@
         </div>
 
         <div class="monetize_sub_item">
-          <p class="sub_title">Followers</p>
+          <p class="sub_title">Follower(s)</p>
           <p class="sub_header">{{user.followers.length}}</p>
           <p class="sub_small">subscribed</p>
         </div>
       </div>
 
-      <div class="change_sub monetizeChangeSub">Change Price</div>
+      <div class="monetize_edit_price_btm">
+        <div class="change_sub monetizeChangeSub">Change Price</div>
+        <div class="change_sub modalBtn deleteSub" style="background: #fff; color: #000; border: 1px solid #000; margin-left: 15px;">Delete Subscription</div>
+      </div>
 
       <div class="monetize_edit_price">
         <form id="monetize_edit_price_form" method="post" action="/dashboard/creator-subscription">
@@ -31,6 +34,7 @@
           <input type="hidden" name="connected_id" id="connected_id" value="{{user.stripe_connected_account_id}}">
           <input type="hidden" name="change_price" id="change_price" value="">
           <input class="amount_input" type="text" name="amount" id="currency-field" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" value="" data-type="currency" placeholder="$ Amount" required>
+          <p id="amount_input_err"></p>
 
           <br>
 
@@ -48,46 +52,85 @@
 
         </form>
       </div>
+
+      <!-- Cancel Sub Modal -->
+      <div class="popModal modalBackground">
+         <div class="modal-content">
+           <div class="modal-header">
+             <p>Are You Sure?</p>
+           </div>
+           <div class="modal-body">
+             <p>
+               Your subscribers will remain following you, but they will no longer be charged. Your
+               profile will also remain private.
+             </p>
+           </div>
+           <div class="modal-footer">
+             <form method="post" action="/dashboard/delete-subscription">
+                <input type="hidden" name="user_username" value="{{user.username}}">
+                <button style="padding: 8px 35px; line-height: 35px;" class="btn__secondary" name="submit" type="submit">Yes, Delete</button>
+             </form>
+
+             <span class="closeModal btn__primary">Cancel</span>
+           </div>
+         </div>
+      </div>
+
       {{else}}
 
       <div class="mini-spacer"></div>
 
-      <p>
-        <em>You do not have subscriptions activated.</em>
-        <br>
-        <br>
-        You currently have {{user.followers.length}} follower(s). These existing followers will
-        continue following you, and will not be charged. Any new followers beyond this point will be asked for payment in order to subscribe to your profile.
-      </p>
+      {{#ifEquals user.premium_creator_account '3'}}
 
-      <div class="mini-spacer"></div>
-
-      <div class="change_sub monetizeChangeSub">Create Subscription</div>
-
-      <div class="monetize_edit_price">
-
-        <form method="post" action="/dashboard/creator-subscription">
-          <input type="hidden" name="sender_id" id="sender_id" value="{{user._id}}">
-          <input type="hidden" name="connected_id" id="connected_id" value="{{user.stripe_connected_account_id}}">
-          <input class="amount_input" type="text" name="amount" id="currency-field" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" value="" data-type="currency" placeholder="$ Amount" required>
-
+        <p>
+          <em>You do not have subscriptions activated.</em>
           <br>
-
-          <input type="radio" name="is_adult_content" value="true">
-          <label for="is_adult_content">Does this contain adult content?</label>
-          <p class="edit_price_small">
-            This information helps ensure that Hryzn can provide a safe, age-appropriate experience for the Hryzn community.
-          </p>
           <br>
+          You currently have {{user.followers.length}} follower(s). These existing followers will
+          continue following you, and will not be charged. Any new followers beyond this point will be asked for payment in order to subscribe to your profile.
+        </p>
 
-          <div class="monetize_edit_price_btm">
-            <div class="change_sub sub_edit_cancel">Cancel</div>
-            <input class="change_sub" type="submit" value="Submit">
-          </div>
+        <div class="mini-spacer"></div>
 
-        </form>
+        <div class="change_sub monetizeChangeSub">Create Subscription</div>
 
-      </div>
+        <div class="monetize_edit_price">
+
+          <form method="post" action="/dashboard/creator-subscription">
+            <input type="hidden" name="sender_id" id="sender_id" value="{{user._id}}">
+            <input type="hidden" name="connected_id" id="connected_id" value="{{user.stripe_connected_account_id}}">
+            <input class="amount_input" type="text" name="amount" id="currency-field" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" value="" data-type="currency" placeholder="$ Amount" required>
+            <p id="amount_input_err"></p>
+
+            <br>
+
+            <input type="radio" name="is_adult_content" value="true">
+            <label for="is_adult_content">Does this contain adult content?</label>
+            <p class="edit_price_small">
+              This information helps ensure that Hryzn can provide a safe, age-appropriate experience for the Hryzn community.
+            </p>
+            <br>
+
+            <div class="monetize_edit_price_btm">
+              <div class="change_sub sub_edit_cancel">Cancel</div>
+              <input class="change_sub" type="submit" value="Submit">
+            </div>
+
+          </form>
+
+        </div>
+
+      {{else}}
+
+        <p>
+          <em>Upgrade your plan to create a subscription.</em>
+          <br>
+          <br>
+          Your plan currently does support the ability to make a subscription to your profile. Please upgrade in order
+          to create a subscription.
+        </p>
+
+      {{/ifEquals}}
 
       {{/if}}
 

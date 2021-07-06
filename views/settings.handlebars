@@ -37,13 +37,16 @@
          <input class="form__input" type="text" placeholder="Enter your Instagram username" name="instagram_link" value="{{user.instagram}}" autocapitalize="none" />
          <input class="form__input" type="text" placeholder="Enter your Facebook username" name="facebook_link" value="{{user.facebook}}" autocapitalize="none" />
 
-         <div class="semi-spacer"></div>
-         {{#if user.is_private_profile}}
-         <input type="radio" name="make_profile_public" value="true">
-         <label for="make_profile_public">I'd like to make my profile public</label>
+         {{#if user.creator_subscription.is_active}}
          {{else}}
-         <input type="radio" name="make_profile_private" value="true">
-         <label for="make_profile_private">I'd like to make my profile private</label>
+           <div class="semi-spacer"></div>
+           {{#if user.is_private_profile}}
+           <input type="radio" name="make_profile_public" value="true">
+           <label for="make_profile_public">I'd like to make my profile public</label>
+           {{else}}
+           <input type="radio" name="make_profile_private" value="true">
+           <label for="make_profile_private">I'd like to make my profile private</label>
+           {{/if}}
          {{/if}}
 
          <input type="hidden" name="id" value="{{user.id}}">

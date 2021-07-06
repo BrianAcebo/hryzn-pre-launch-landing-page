@@ -498,3 +498,7 @@ button {
     margin: 15px 0;
     font-weight: 500;
 }
+
+#HP_in {
+  display: none;
+}

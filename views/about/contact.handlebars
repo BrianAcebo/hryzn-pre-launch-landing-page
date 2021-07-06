@@ -41,7 +41,7 @@
             {{#if form_submitted}}
                <h3 class="landing-title-faded">
                   Thank you for your feedback, we'll get back to you shortly.
-                  <br /> 
+                  <br />
                   <a href="/">Click here to go back.</a>
                </h3>
             {{else}}
@@ -51,6 +51,7 @@
                <input class="form__input" type="email" placeholder="Enter email address" name="contact_email" value="{{contact_email}}" required autocapitalize="none" />
                <input class="form__input" type="text" placeholder="Enter subject" name="contact_subject" value="{{contact_subject}}" required />
                <textarea class="form__textarea" type="text" placeholder="Enter message" name="contact_message" value="{{contact_message}}" required></textarea>
+               <input name="hp_name" type="text" id="HP_in" placeholder="Your Name" value="">
                <button class="form__sign-up-button" name="submit" type="submit">SEND</button>
             </form>
             {{/if}}

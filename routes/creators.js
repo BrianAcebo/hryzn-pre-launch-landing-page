@@ -395,72 +395,74 @@ router.post("/webhook", async (req, res) => {
 
            if (user) {
 
-             if (user.premium_creator_account >=  0 || typeof user.premium_creator_account != 'undefined') {
+             if (typeof user.premium_creator_account != 'undefined') {
 
-               if (user.creator_subscription.is_active) {
+               if (user.premium_creator_account >=  0) {
 
-                 User.find({ 'username': { $in: user.followers } }, (err, followers) => {
+                 if (user.creator_subscription.is_active) {
 
-                   var follower_count = 0;
+                   User.find({ 'username': { $in: user.followers } }, (err, followers) => {
 
-                   // Iterate through each of the user's followers
-                   for (let i = 0; i < followers.length; i++) {
+                     var follower_count = 0;
 
-                     follower_count += 1;
-                     var follower = followers[i];
+                     // Iterate through each of the user's followers
+                     for (let i = 0; i < followers.length; i++) {
 
-
-                     // Check if the followers have subscriptions
-                     if (typeof follower.following_subscriptions != 'undefined') {
-
-                       if (follower.following_subscriptions.length >= 1) {
+                       follower_count += 1;
+                       var follower = followers[i];
 
 
-                         // Iterate through a follower's subscriptions
-                         for (let f = 0; f < follower.following_subscriptions.length; f++) {
+                       // Check if the followers have subscriptions
+                       if (typeof follower.following_subscriptions != 'undefined') {
 
-                           var sub = follower.following_subscriptions[f];
+                         if (follower.following_subscriptions.length >= 1) {
 
 
-                           // Check if the subscription is the same as the current user's
-                           if (sub.user_following === user._id.toString()) {
+                           // Iterate through a follower's subscriptions
+                           for (let f = 0; f < follower.following_subscriptions.length; f++) {
 
-                             info = [];
-                             info['profileId'] = user._id;
-                             info['userId'] = follower._id;
-                             info['subId'] = sub.subscription_id;
+                             var sub = follower.following_subscriptions[f];
 
-                             (async function() {
 
-                               await stripe.subscriptions.del(sub.subscription_id).then(function() {
-                                 try {
+                             // Check if the subscription is the same as the current user's
+                             if (sub.user_following === user._id.toString()) {
 
-                                   User.removeSubscription(info, (err, user) => {
-                                     if(err) throw err;
+                               info = [];
+                               info['profileId'] = user._id;
+                               info['userId'] = follower._id;
+                               info['subId'] = sub.subscription_id;
 
-                                   });
+                               (async function() {
 
-                                 } catch {
-                                   return res.status(500).send({
-                                     error: err.message
-                                   });
-                                 }
-                               });
+                                 await stripe.subscriptions.del(sub.subscription_id).then(function() {
+                                   try {
 
-                             })();
+                                     User.removeSubscription(info, (err, user) => {
+                                       if(err) throw err;
+
+                                     });
+
+                                   } catch {
+                                     return res.status(500).send({
+                                       error: err.message
+                                     });
+                                   }
+                                 });
+
+                               })();
+
+                             }
 
                            }
-
                          }
+
                        }
 
                      }
 
-                   }
+                   });
 
-                 });
-
-               }
+                 }
 
                  User.findByIdAndUpdate(user._id, {
                     premium_creator_account: 5,
@@ -472,7 +474,10 @@ router.post("/webhook", async (req, res) => {
                     if (err) throw err;
                  });
 
+               }
+
              }
+
            }
 
         });

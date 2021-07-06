@@ -404,7 +404,7 @@ router.post('/creator-subscription', async (req, res) => {
               if (err) throw err;
 
               req.flash('success_msg', "Subscription was updated.");
-              res.redirect('/dashboard');
+              res.redirect('/dashboard/monetize');
 
             });
 
@@ -443,24 +443,120 @@ router.post('/creator-subscription', async (req, res) => {
 
         var project_counter = 0;
 
-        req.user.own_projects.forEach(function(proj, key) {
-          Project.findByIdAndUpdate(mongoose.Types.ObjectId(proj), {
-            project_owner_has_private_profile: true
-          }, (err, project) => {
-             if (err) throw err;
+        if (typeof req.user.own_projects != "undefined") {
 
-             project_counter += 1;
+          if (req.user.own_projects.length > 0) {
 
-             if (project_counter == req.user.own_projects.length) {
-               req.flash('success_msg', "Subscription was created.");
-               res.redirect('/dashboard');
-             }
-          });
-        });
+            req.user.own_projects.forEach(function(proj, key) {
+              Project.findByIdAndUpdate(mongoose.Types.ObjectId(proj), {
+                project_owner_has_private_profile: true
+              }, (err, project) => {
+                 if (err) throw err;
+
+                 project_counter += 1;
+
+                 if (project_counter == req.user.own_projects.length) {
+                   req.flash('success_msg', "Subscription was created.");
+                   res.redirect('/dashboard/monetize');
+                 }
+              });
+            });
+
+          } else {
+            req.flash('success_msg', "Subscription was created.");
+            res.redirect('/dashboard/monetize');
+          }
+
+        } else {
+          req.flash('success_msg', "Subscription was created.");
+          res.redirect('/dashboard/monetize');
+        }
 
       });
 
     }
+
+});
+
+
+router.post('/delete-subscription', (req, res) => {
+
+  User.findByIdAndUpdate(req.user._id, {
+    creator_subscription: {
+      is_active: false
+    }
+  }, (err, user) => {
+    if (err) throw err;
+
+    User.find({ 'username': { $in: req.user.followers } }, (err, followers) => {
+
+      var follower_count = 0;
+
+      // Iterate through each of the user's followers
+      for (let i = 0; i < followers.length; i++) {
+
+        follower_count += 1;
+        var follower = followers[i];
+
+
+        // Check if the followers have subscriptions
+        if (typeof follower.following_subscriptions != 'undefined') {
+
+          if (follower.following_subscriptions.length >= 1) {
+
+
+            // Iterate through a follower's subscriptions
+            for (let f = 0; f < follower.following_subscriptions.length; f++) {
+
+              var sub = follower.following_subscriptions[f];
+
+
+              // Check if the subscription is the same as the current user's
+              if (sub.user_following === user._id.toString()) {
+
+                info = [];
+                info['profileId'] = user._id;
+                info['userId'] = follower._id;
+                info['subId'] = sub.subscription_id;
+
+                (async function() {
+
+                  await stripe.subscriptions.del(sub.subscription_id).then(function() {
+                    try {
+
+                      User.removeSubscription(info, (err, user) => {
+                        if(err) throw err;
+
+                      });
+
+                    } catch {
+                      return res.status(500).send({
+                        error: err.message
+                      });
+                    }
+                  });
+
+                })();
+
+              }
+
+            }
+          }
+
+        }
+
+        if (follower_count == req.user.followers.length) {
+
+          req.flash('success_msg', "Subscription was deleted.");
+          res.redirect('/dashboard/monetize');
+
+        }
+
+      }
+
+    });
+
+  });
 
 });
 

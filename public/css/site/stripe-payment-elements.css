@@ -15,11 +15,16 @@
 }
 
 .stripe_form #card-errors,
-.stripe_form #card-errors_sub {
+.stripe_form #card-errors_sub,
+#amount_input_err {
   padding: 4px 0;
   color: #fa755a;
   font-size: 12px;
   font-weight: bold;
+}
+
+#amount_input_err {
+  font-size: 14px;
 }
 
 .stripe_form .token {
@@ -72,6 +77,7 @@
   border: 1px solid #ccc;
   -webkit-transition: box-shadow 150ms ease;
   transition: box-shadow 150ms ease;
+  max-height: 50px;
 }
 
 .stripe_form .btn-Stripe {

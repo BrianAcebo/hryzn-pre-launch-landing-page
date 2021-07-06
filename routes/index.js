@@ -95,8 +95,38 @@ router.get('/', (req, res, next) => {
           if(err) throw err;
 
           if(req.isAuthenticated()) {
+
+            if (req.user.date_of_birth) {
+              var user_dob = req.user.date_of_birth.split('/');
+
+              var dob_day = user_dob[0];
+              var dob_month = user_dob[1];
+              var dob_year = user_dob[2];
+
+              var curr_dateObj = new Date();
+              var curr_month = curr_dateObj.getUTCMonth() + 1; //months from 1-12
+              var curr_day = curr_dateObj.getUTCDate();
+              var curr_year = curr_dateObj.getUTCFullYear();
+
+              if (parseInt(curr_year) - parseInt(dob_year) > 18) {
+                 var can_view_adult_content = true;
+              } else if (parseInt(curr_month) - parseInt(dob_month) > 0 && parseInt(curr_year) - parseInt(dob_year) == 18) {
+                 var can_view_adult_content = true;
+              } else if (parseInt(curr_day) - parseInt(dob_day) >= 0 && parseInt(curr_month) - parseInt(dob_month) == 0 && parseInt(curr_year) - parseInt(dob_year) == 18) {
+                 var can_view_adult_content = true;
+              } else {
+                 var can_view_adult_content = false;
+              }
+
+            } else {
+
+              var can_view_adult_content = true;
+
+            }
+
           } else {
              var guestUser = true;
+             var can_view_adult_content = false;
           }
 
           if(req.isAuthenticated()) {
@@ -373,7 +403,8 @@ router.get('/', (req, res, next) => {
                                premium_creator_account: premium_creator_account,
                                main_page_nav: true,
                                unable_to_view_private_profile: unable_to_view_private_profile,
-                               viewer_has_pending_request: viewer_has_pending_request
+                               viewer_has_pending_request: viewer_has_pending_request,
+                               can_view_adult_content: can_view_adult_content
                             });
                          });
 
@@ -442,7 +473,8 @@ router.get('/', (req, res, next) => {
                          premium_creator_account: premium_creator_account,
                          main_page_nav: true,
                          unable_to_view_private_profile: unable_to_view_private_profile,
-                         viewer_has_pending_request: viewer_has_pending_request
+                         viewer_has_pending_request: viewer_has_pending_request,
+                         can_view_adult_content: can_view_adult_content
                       });
                    });
                 });
@@ -2829,9 +2861,40 @@ router.get('/profile/:username', (req, res, next) => {
 
          if(err) throw err;
 
+
          if(req.isAuthenticated()) {
+
+           if (req.user.date_of_birth) {
+             var user_dob = req.user.date_of_birth.split('/');
+
+             var dob_day = user_dob[0];
+             var dob_month = user_dob[1];
+             var dob_year = user_dob[2];
+
+             var curr_dateObj = new Date();
+             var curr_month = curr_dateObj.getUTCMonth() + 1; //months from 1-12
+             var curr_day = curr_dateObj.getUTCDate();
+             var curr_year = curr_dateObj.getUTCFullYear();
+
+             if (parseInt(curr_year) - parseInt(dob_year) > 18) {
+                var can_view_adult_content = true;
+             } else if (parseInt(curr_month) - parseInt(dob_month) > 0 && parseInt(curr_year) - parseInt(dob_year) == 18) {
+                var can_view_adult_content = true;
+             } else if (parseInt(curr_day) - parseInt(dob_day) >= 0 && parseInt(curr_month) - parseInt(dob_month) == 0 && parseInt(curr_year) - parseInt(dob_year) == 18) {
+                var can_view_adult_content = true;
+             } else {
+                var can_view_adult_content = false;
+             }
+
+           } else {
+
+             var can_view_adult_content = true;
+
+           }
+
          } else {
             var guestUser = true;
+            var can_view_adult_content = false;
          }
 
          if(req.isAuthenticated()) {
@@ -3107,7 +3170,8 @@ router.get('/profile/:username', (req, res, next) => {
                               premium_creator_account: premium_creator_account,
                               main_page_nav: true,
                               unable_to_view_private_profile: unable_to_view_private_profile,
-                              viewer_has_pending_request: viewer_has_pending_request
+                              viewer_has_pending_request: viewer_has_pending_request,
+                              can_view_adult_content: can_view_adult_content
                            });
                         });
 
@@ -3176,7 +3240,8 @@ router.get('/profile/:username', (req, res, next) => {
                         premium_creator_account: premium_creator_account,
                         main_page_nav: true,
                         unable_to_view_private_profile: unable_to_view_private_profile,
-                        viewer_has_pending_request: viewer_has_pending_request
+                        viewer_has_pending_request: viewer_has_pending_request,
+                        can_view_adult_content: can_view_adult_content
                      });
                   });
                });
@@ -3992,7 +4057,7 @@ router.post('/settings', upload.fields([{name: 'profile_project_backgroundimage'
 
                        if (typeof req.user.own_projects != "undefined") {
 
-                         if (req.user.own_projects.legnth > 0) {
+                         if (req.user.own_projects.length > 0) {
 
                            req.user.own_projects.forEach(function(proj, key) {
                              Project.findByIdAndUpdate(mongoose.Types.ObjectId(proj), {
@@ -4021,7 +4086,7 @@ router.post('/settings', upload.fields([{name: 'profile_project_backgroundimage'
 
                        if (typeof req.user.own_projects != "undefined") {
 
-                         if (req.user.own_projects.legnth > 0) {
+                         if (req.user.own_projects.length > 0) {
 
                            req.user.own_projects.forEach(function(proj, key) {
                              Project.findByIdAndUpdate(mongoose.Types.ObjectId(proj), {
@@ -4097,7 +4162,7 @@ router.post('/settings', upload.fields([{name: 'profile_project_backgroundimage'
 
                        if (typeof req.user.own_projects != "undefined") {
 
-                         if (req.user.own_projects.legnth > 0) {
+                         if (req.user.own_projects.length > 0) {
 
                            req.user.own_projects.forEach(function(proj, key) {
 
@@ -4116,8 +4181,6 @@ router.post('/settings', upload.fields([{name: 'profile_project_backgroundimage'
                              });
                            });
 
-                         } else {
-                           res.redirect('/profile/' + req.user.username);
                          }
 
                        } else {
@@ -4130,7 +4193,7 @@ router.post('/settings', upload.fields([{name: 'profile_project_backgroundimage'
 
                        if (typeof req.user.own_projects != "undefined") {
 
-                         if (req.user.own_projects.legnth > 0) {
+                         if (req.user.own_projects.length > 0) {
 
                            req.user.own_projects.forEach(function(proj, key) {
                              Project.findByIdAndUpdate(mongoose.Types.ObjectId(proj), {
@@ -5125,6 +5188,17 @@ router.post('/create-payment-intent', async (req, res) => {
 
           var amount = data.amount.replace("$", "");
           amount = parseFloat(amount) * 100;
+
+          // if (amount < 400) {
+          //
+          //   return res.status(500).send({
+          //     error: {
+          //       message: 'Amount must be at least $4'
+          //     }
+          //   });
+          //
+          // } else {
+          // }
 
           switch (connected_account.premium_creator_account) {
             case 1:

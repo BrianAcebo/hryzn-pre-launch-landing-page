@@ -135,7 +135,7 @@
       <!-- /Profile Theme Fonts -->
       {{/if}}
 
-      {{! For DEV }}
+      {{! For DEV
       <link rel="stylesheet" type="text/css" href="/css/site/style.css" />
       <link rel="stylesheet" type="text/css" href="/css/site/topnav.css" />
       <link rel="stylesheet" type="text/css" href="/css/site/forms.css" />
@@ -154,10 +154,10 @@
       <link rel="stylesheet" type="text/css" href="/css/site/profile.css" />
       <link rel="stylesheet" type="text/css" href="/css/site/setup-profile.css" />
       <link rel="stylesheet" type="text/css" href="/css/site/stripe-payment-elements.css" />
+      }}
 
-      {{! For PROD
+      {{! For PROD }}
       <link rel="stylesheet" type="text/css" href="/dist/css/style.min.css" />
-    }}
 
       <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
@@ -1047,12 +1047,12 @@
    <!-- Stripe Payment Intent -->
    <script src="/js/stripe-payment-intent.js"></script>
 
-   {{! For DEV }}
+   {{! For DEV
    <script src="/js/main.js" type="text/javascript"></script>
-
-   {{! For PROD
-  <script src="/dist/js/main.min.js" type="text/javascript"></script>
   }}
+
+   {{! For PROD }}
+  <script src="/dist/js/main.min.js" type="text/javascript"></script>
 
 </html>
 {{/if}}

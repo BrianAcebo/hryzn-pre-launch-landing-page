@@ -80,6 +80,10 @@ router.get('/forgot/thanks', (req, res, next) => {
 // Post Contact Form - Contact
 router.post('/contact', (req, res, next) => {
 
+  var honey = req.body.hp_name;
+
+  if (honey.length == 0) {
+
    // Gmail Credentials
    var transporter = nodemailer.createTransport({
       service: 'Gmail',
@@ -103,6 +107,10 @@ router.post('/contact', (req, res, next) => {
          res.redirect('/about/contact/thanks');
       }
    });
+
+ } else {
+   res.redirect('/');
+ }
 
 });
 

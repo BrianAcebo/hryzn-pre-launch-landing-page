@@ -33,6 +33,9 @@ tip_card.addEventListener('change', function(event) {
 var tip_was_clicked;
 var tip_form = document.getElementById('tip-form');
 tip_form.addEventListener('submit', function(event) {
+
+console.log('yee');
+
   event.preventDefault();
 
   tip_was_clicked = true;
@@ -74,6 +77,7 @@ var pay = function(stripe, card, clientSecret) {
       setup_future_usage: 'off_session'
     })
     .then(function(result) {
+      console.log(result);
       if (result.error) {
         // Show error to your customer
         var displayError = document.getElementById('card-errors');
