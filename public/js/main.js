@@ -1592,4 +1592,19 @@ $closeSubBtn.click(function() {
 });
 /**********/
 
+
+// Contact form prevent spam bots
+var $honey = $("#HP_in");
+var $honeyContactForm = $("#contactForm");
+
+$honeyContactForm.on('submit', function(e) {
+
+  if ($honey.val().length > 0) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+
+});
+/**********/
+
 });

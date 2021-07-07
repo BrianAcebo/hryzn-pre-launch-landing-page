@@ -46,7 +46,7 @@
                </h3>
             {{else}}
             <h3 class="landing-title-faded">We like conversation.</h3>
-            <form method="post" action="/about/contact">
+            <form id="contactForm" method="post" action="/about/contact">
                <input class="form__input" type="text" placeholder="Enter full name" name="contact_name" value="{{contact_name}}" required />
                <input class="form__input" type="email" placeholder="Enter email address" name="contact_email" value="{{contact_email}}" required autocapitalize="none" />
                <input class="form__input" type="text" placeholder="Enter subject" name="contact_subject" value="{{contact_subject}}" required />
