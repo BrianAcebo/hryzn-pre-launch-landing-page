@@ -28,9 +28,8 @@
 .topnav__logo {
    font-size: 20px;
    color: #31375A;
-   text-transform: uppercase;
    font-weight: bold;
-   letter-spacing: 3px;
+   letter-spacing: 2px;
    display: flex;
    flex-direction: row;
    justify-content: center;
