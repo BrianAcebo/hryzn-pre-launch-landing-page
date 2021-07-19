@@ -37,6 +37,8 @@ const Project = require('../models/projects');
 const Message = require('../models/messages');
 const Notification = require('../models/notifications');
 const Group = require('../models/groups');
+const Category = require('../models/categories');
+const Product = require('../models/products');
 
 
 // Onboard creators to setup payouts
@@ -208,20 +210,64 @@ router.get('/monetize', (req, res, next) => {
      var creator_plan = check_creator_plan(req.user.premium_creator_account);
      var page_title = 'Creators Account: ' + creator_plan.creator_plan_name + ' - Monetize';
 
-     if (creator_plan.has_creator_plan) {
-       res.render('dashboard/monetize', {
-         page_title: page_title,
-         notLoginPage: false,
-         welcomePage: false,
-         dashboard: true,
-         dash_nav_monetize: true,
-         dashboard_page_name: 'Monetize',
-         subscription_active: creator_plan.subscription_active,
-         creator_plan: creator_plan.creator_plan_name
-       });
+     if (typeof req.user.creator_products != 'undefined') {
+
+       if (req.user.creator_products.length > 0) {
+
+         Product.find({ '_id': { $in: req.user.creator_products } }, (err, products) => {
+
+           if (creator_plan.has_creator_plan) {
+             res.render('dashboard/monetize', {
+               page_title: page_title,
+               notLoginPage: false,
+               welcomePage: false,
+               dashboard: true,
+               dash_nav_monetize: true,
+               products: products,
+               dashboard_page_name: 'Monetize',
+               subscription_active: creator_plan.subscription_active,
+               creator_plan: creator_plan.creator_plan_name
+             });
+           } else {
+             res.redirect('/');
+           }
+
+         });
+
+       } else {
+         if (creator_plan.has_creator_plan) {
+           res.render('dashboard/monetize', {
+             page_title: page_title,
+             notLoginPage: false,
+             welcomePage: false,
+             dashboard: true,
+             dash_nav_monetize: true,
+             dashboard_page_name: 'Monetize',
+             subscription_active: creator_plan.subscription_active,
+             creator_plan: creator_plan.creator_plan_name
+           });
+         } else {
+           res.redirect('/');
+         }
+       }
+
      } else {
-       res.redirect('/');
+       if (creator_plan.has_creator_plan) {
+         res.render('dashboard/monetize', {
+           page_title: page_title,
+           notLoginPage: false,
+           welcomePage: false,
+           dashboard: true,
+           dash_nav_monetize: true,
+           dashboard_page_name: 'Monetize',
+           subscription_active: creator_plan.subscription_active,
+           creator_plan: creator_plan.creator_plan_name
+         });
+       } else {
+         res.redirect('/');
+       }
      }
+
 
    } else {
       res.redirect('/');
@@ -560,6 +606,378 @@ router.post('/delete-subscription', (req, res) => {
 
 });
 
+
+// POST Create Product
+router.post('/creator-products/add', upload.single('product_image'), (req, res, next) => {
+
+   if(req.isAuthenticated()) {
+
+      var product_title = req.body.product_title.replace(/\r\n/g,'')
+      var product_description = req.body.product_description.replace(/\r\n/g,'');
+      var product_ship_and_ret = req.body.product_ship_and_ret.replace(/\r\n/g,'');
+      var product_quantity = req.body.product_quantity;
+      var product_owner = req.user._id;
+      var product_price = req.body.product_price;
+
+      if (req.body.product_categories) {
+         if (req.body.product_categories.length > 0) {
+            var product_categories = req.body.product_categories;
+         } else {
+            var product_categories = [];
+         }
+      } else {
+         var product_categories = [];
+      }
+
+      if(req.file) {
+
+         // If user uploaded an image for project
+         var ext = path.extname(req.file.originalname);
+
+         // Check if file is an image
+         if(ext !== '.png' && ext !== '.PNG' && ext !== '.jpg' && ext !== '.JPG' && ext !== '.gif' && ext !== '.GIF' && ext !== '.jpeg' && ext !== '.JPEG') {
+
+            User.findById(product_owner, (err, user) => {
+               if(err) throw err;
+
+               var creator_plan = check_creator_plan(req.user.premium_creator_account);
+
+               res.render('dashboard/monetize', {
+                  error_msg: 'File Must End With .jpg .jpeg .png .gif',
+                  page_title: 'Creators Account: ' + creator_plan.creator_plan_name + ' - Monetize',
+                  product_title: product_title,
+                  product_description: product_description,
+                  product_ship_and_ret: product_ship_and_ret,
+                  product_quantity: product_quantity,
+                  user: user
+               });
+            });
+
+         } else {
+            // No errors have been made
+            // var fileExt = req.file.originalname.split('.').pop();
+
+            var filename = dateNow + req.file.originalname;
+            filename = filename.replace(/[^a-zA-Z0-9]/g, '').toLowerCase(); // replace everything except letters and numbers
+
+            var product_image = filename;
+
+            var newProduct = new Product({
+               title: product_title,
+               description: product_description,
+               image: product_image,
+               shipping_and_returns: product_ship_and_ret,
+               categories: product_categories,
+               availabilty: {
+                 is_in_stock: true,
+                 quantity: product_quantity
+               },
+               price: product_price,
+               owner: product_owner
+            });
+
+
+            product_categories.forEach(function(cat, key) {
+              Category.findOne({ 'category': { $in: cat} }, (err, category) => {
+                  if (err) throw err;
+
+                  if (!category) {
+                    var newCategory = new Category({
+                       category: cat
+                    });
+
+                    // Create category in database
+                    Category.saveCategory(newCategory, (err, category) => {
+                       if(err) throw err;
+                    });
+                  }
+               });
+             });
+
+
+
+            // Create product in database
+            Product.saveProduct(newProduct, (err, product) => {
+               if(err) throw err;
+
+               // Add product to User document
+               info = [];
+               info['profileUsername'] = req.user.username;
+               info['productId'] = product._id.toString();
+
+               User.findByIdAndUpdate(req.user._id, {
+                  creator_products_is_active: true
+               }, (err, user) => {
+                  if (err) throw err;
+
+                  User.addProduct(info, (err, user) => {
+                     if(err) throw err;
+
+                     req.flash('success_msg', "Product was created.");
+                     res.redirect('/dashboard/monetize');
+                  });
+
+               });
+
+            });
+
+         }
+       }
+
+  } else {
+     res.redirect('/users/register');
+  }
+
+});
+
+
+// Get Edit Product
+router.get('/monetize/products/edit/:id', (req, res, next) => {
+   if(req.isAuthenticated()) {
+
+     // Check to see if they have a plan and what plan it is
+     var creator_plan = check_creator_plan(req.user.premium_creator_account);
+     var page_title = 'Creators Account: ' + creator_plan.creator_plan_name + ' - Edit Product';
+
+     if (creator_plan.has_creator_plan) {
+
+       Product.findOne({ '_id': { $in: req.params.id} }, (err, product) => {
+           if (err) throw err;
+
+           if (product) {
+
+             res.render('dashboard/edit-product', {
+               page_title: page_title,
+               notLoginPage: false,
+               welcomePage: false,
+               dashboard: true,
+               dash_nav_monetize: true,
+               dashboard_page_name: 'Edit Product',
+               subscription_active: creator_plan.subscription_active,
+               creator_plan: creator_plan.creator_plan_name,
+               product: product
+             });
+
+           }  else {
+             res.redirect('/dashboard/monetize');
+           }
+
+        });
+
+     } else {
+       res.redirect('/');
+     }
+
+   } else {
+      res.redirect('/');
+   }
+});
+
+
+// POST Edit Product
+router.post('/monetize/products/edit/:id', upload.single('product_image'), (req, res, next) => {
+
+   if(req.isAuthenticated()) {
+
+      var product_title = req.body.product_title.replace(/\r\n/g,'')
+      var product_description = req.body.product_description.replace(/\r\n/g,'');
+      var product_ship_and_ret = req.body.product_ship_and_ret.replace(/\r\n/g,'');
+      var product_quantity = req.body.product_quantity;
+      var product_owner = req.user._id;
+      var product_price = req.body.product_price;
+
+      if (req.body.product_categories) {
+         if (req.body.product_categories.length > 0) {
+            var product_categories = req.body.product_categories;
+         } else {
+            var product_categories = [];
+         }
+      } else {
+         var product_categories = [];
+      }
+
+      if(req.file) {
+
+         // If user uploaded an image for project
+         var ext = path.extname(req.file.originalname);
+
+         // Check if file is an image
+         if(ext !== '.png' && ext !== '.PNG' && ext !== '.jpg' && ext !== '.JPG' && ext !== '.gif' && ext !== '.GIF' && ext !== '.jpeg' && ext !== '.JPEG') {
+
+            User.findById(product_owner, (err, user) => {
+               if(err) throw err;
+
+               var creator_plan = check_creator_plan(req.user.premium_creator_account);
+
+               res.render('dashboard/edit-product', {
+                  error_msg: 'File Must End With .jpg .jpeg .png .gif',
+                  page_title: 'Creators Account: ' + creator_plan.creator_plan_name + ' - Monetize',
+                  product_title: product_title,
+                  product_description: product_description,
+                  product_ship_and_ret: product_ship_and_ret,
+                  product_quantity: product_quantity,
+                  user: user
+               });
+            });
+
+         } else {
+            // No errors have been made
+            // var fileExt = req.file.originalname.split('.').pop();
+
+            var filename = dateNow + req.file.originalname;
+            filename = filename.replace(/[^a-zA-Z0-9]/g, '').toLowerCase(); // replace everything except letters and numbers
+
+            var product_image = filename;
+
+            Product.findByIdAndUpdate(req.params.id, {
+              title: product_title,
+              description: product_description,
+              image: product_image,
+              shipping_and_returns: product_ship_and_ret,
+              categories: product_categories,
+              availabilty: {
+                is_in_stock: true,
+                quantity: product_quantity
+              },
+              price: product_price,
+              owner: product_owner
+            }, (err, user) => {
+
+               if (err) throw err;
+
+               product_categories.forEach(function(cat, key) {
+                 Category.findOne({ 'category': { $in: cat} }, (err, category) => {
+                     if (err) throw err;
+
+                     if (!category) {
+                       var newCategory = new Category({
+                          category: cat
+                       });
+
+                       // Create category in database
+                       Category.saveCategory(newCategory, (err, category) => {
+                          if(err) throw err;
+                       });
+                     }
+                  });
+                });
+
+                req.flash('success_msg', "Product was updated.");
+                res.redirect('/dashboard/monetize');
+
+            });
+
+         }
+       } else {
+
+         Product.findByIdAndUpdate(req.params.id, {
+           title: product_title,
+           description: product_description,
+           shipping_and_returns: product_ship_and_ret,
+           categories: product_categories,
+           availabilty: {
+             is_in_stock: true,
+             quantity: product_quantity
+           },
+           price: product_price,
+           owner: product_owner
+         }, (err, user) => {
+
+            if (err) throw err;
+
+            product_categories.forEach(function(cat, key) {
+              Category.findOne({ 'category': { $in: cat} }, (err, category) => {
+                  if (err) throw err;
+
+                  if (!category) {
+                    var newCategory = new Category({
+                       category: cat
+                    });
+
+                    // Create category in database
+                    Category.saveCategory(newCategory, (err, category) => {
+                       if(err) throw err;
+                    });
+                  }
+               });
+             });
+
+             req.flash('success_msg', "Product was updated.");
+             res.redirect('/dashboard/monetize');
+
+         });
+
+       }
+
+  } else {
+     res.redirect('/users/register');
+  }
+
+});
+
+
+// POST Edit Product
+router.post('/monetize/products/delete/:id', (req, res, next) => {
+
+   if(req.isAuthenticated()) {
+
+     Product.findOne({ '_id': { $in: req.params.id} }, (err, product) => {
+         if (err) throw err;
+
+         if (product) {
+
+           if (product.owner == req.user._id.toString() || req.user.username === 'hryzn') {
+
+             // Delete project image
+             var s3_instance = new aws.S3();
+             var s3_params = {
+                Bucket: 'hryzn-app-static-assets',
+                Key: product.image
+             };
+             s3_instance.deleteObject(s3_params, (err, data) => {
+                if(data) {
+                   console.log("File deleted");
+                }
+                else {
+                   console.log("No delete : " + err);
+                }
+             });
+
+             // Delete the project
+             Product.findByIdAndRemove(req.params.id, (err) => {
+               if (err) throw err;
+
+               // Add product to User document
+               info = [];
+               info['userId'] = req.user._id;
+               info['productId'] = product._id;
+
+               User.removeProduct(info, (err, user) => {
+                  if(err) throw err;
+
+                  req.flash('success_msg', "Destroyed From Existence...");
+                  res.redirect('/dashboard/monetize');
+               });
+
+             });
+
+           } else {
+             // res.redirect('/dashboard/monetize');
+             console.log('name')
+           }
+
+         }  else {
+           // res.redirect('/dashboard/monetize');
+           console.log('product')
+         }
+
+      });
+
+   } else {
+      res.redirect('/users/register');
+   }
+
+});
 
 // Verify JS Web Token
 function verifyToken(req, res, next) {

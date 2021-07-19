@@ -16,14 +16,16 @@
 
 .stripe_form #card-errors,
 .stripe_form #card-errors_sub,
-#amount_input_err {
+#amount_input_err,
+#price_amount_err {
   padding: 4px 0;
   color: #fa755a;
   font-size: 12px;
   font-weight: bold;
 }
 
-#amount_input_err {
+#amount_input_err,
+#price_amount_err {
   font-size: 14px;
 }
 

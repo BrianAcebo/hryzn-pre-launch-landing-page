@@ -1,0 +1,20 @@
+.product_card .product_image {
+  width: 100%;
+}
+
+.product_card .product_info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: row;
+  padding: 15px 0;
+}
+
+.product_card .product_title {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.product_card .product_price {
+  font-size: 12px;
+}

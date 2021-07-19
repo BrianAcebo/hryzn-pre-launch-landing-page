@@ -154,6 +154,7 @@
       <link rel="stylesheet" type="text/css" href="/css/site/profile.css" />
       <link rel="stylesheet" type="text/css" href="/css/site/setup-profile.css" />
       <link rel="stylesheet" type="text/css" href="/css/site/stripe-payment-elements.css" />
+      <link rel="stylesheet" type="text/css" href="/css/site/products.css" />
       }}
 
       {{! For PROD }}
@@ -883,6 +884,12 @@
    {{#if projects}}
    {{#if linear_feed}}
    {{else}}
+   {{! Only necessary for masonry feed }}
+   <script src="/js/macy.js" type="text/javascript"></script>
+   <script src="/js/macy.init.js" type="text/javascript"></script>
+   {{/if}}
+   {{else}}
+   {{#if products}}
    {{! Only necessary for masonry feed }}
    <script src="/js/macy.js" type="text/javascript"></script>
    <script src="/js/macy.init.js" type="text/javascript"></script>

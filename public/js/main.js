@@ -1504,15 +1504,37 @@ function formatCurrency(input, blur) {
     // add commas to number
     // remove all non-digits
     input_val = formatNumber(input_val);
-    if (input_val < 4) {
-      if ($("#card-errors").length > 0) {
-        $("#card-errors").text('Amount must be at least $4');
+
+    if (input.attr('id') == 'product_price') {
+
+      if (input_val < 0.25) {
+
+        $("#price_amount_err").text('Amount must be at least $0.25');
+
+        input_val = 0.25;
+
       } else {
-        $("#amount_input_err").text('Amount must be at least $4');
+        input_val = "$" + input_val;
       }
-      input_val = 4;
+
     } else {
-      input_val = "$" + input_val;
+
+      if (input_val < 4) {
+
+        if ($("#card-errors").length > 0) {
+          $("#card-errors").text('Amount must be at least $4');
+        } else {
+          if (input_val < 0.01) {
+            $("#amount_input_err").text('Amount must be at least $4');
+          }
+        }
+
+        input_val = 4;
+
+      } else {
+        input_val = "$" + input_val;
+      }
+
     }
 
     // final formatting
@@ -1593,6 +1615,25 @@ $closeSubBtn.click(function() {
 /**********/
 
 
+// Dashboard add product
+var $addProductBtn = $(".monetizeAddProduct");
+var $addProductContainer = $(".monetize_add_product");
+var $closeProductBtn = $(".product_add_cancel");
+
+$addProductBtn.click(function() {
+   $addProductContainer.css({ "display": "block" });
+   $closeProductBtn.css({ "display": "block" });
+   $addProductBtn.css({ "display": "none" });
+});
+
+$closeProductBtn.click(function() {
+  $addProductContainer.css({ "display": "none" });
+  $closeProductBtn.css({ "display": "none" });
+  $addProductBtn.css({ "display": "block" });
+});
+/**********/
+
+
 // Contact form prevent spam bots
 var $honey = $("#HP_in");
 var $honeyContactForm = $("#contactForm");
@@ -1606,5 +1647,46 @@ $honeyContactForm.on('submit', function(e) {
 
 });
 /**********/
+
+
+// Contact form prevent spam bots
+var $honey = $("#HP_in");
+var $honeyContactForm = $("#contactForm");
+
+$honeyContactForm.on('submit', function(e) {
+
+  if ($honey.val().length > 0) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+
+});
+/**********/
+
+
+// File upload validation client side
+$("input[data-type='image']").change(function () {
+  var fileExtension = ['jpeg', 'jpg', 'png', 'gif'];
+
+  // ext !== '.png' && ext !== '.PNG' && ext !== '.jpg' && ext !== '.JPG' && ext !== '.gif' && ext !== '.GIF' && ext !== '.jpeg' && ext !== '.JPEG'
+
+  if ($.inArray($(this).val().split('.').pop().toLowerCase(), fileExtension) == -1) {
+    // alert("File Must End With : " + fileExtension.join(', '));
+
+    $(this).next('.input_err_msg').text("File Must End With : " + fileExtension.join(', '));
+    $(this).parents("form").on('submit', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+    });
+
+  } else {
+
+    $(this).next('.input_err_msg').text("");
+    $(this).parents("form").unbind('submit');
+
+  }
+});
+/**********/
+
 
 });

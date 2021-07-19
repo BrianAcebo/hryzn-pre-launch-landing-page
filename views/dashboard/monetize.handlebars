@@ -136,14 +136,114 @@
 
       <div class="spacer"></div>
 
-    <strong class="strong_title">Products (Coming Soon)</strong>
-    <div class="monetize_options_wrapper">
-      {{#if user.creator_products.is_active}}
 
-      {{else}}
-        You do not have any products.
-      {{/if}}
+      <!-- Products -->
+
+      <div class="product_heading_container">
+        <strong class="strong_title">Products</strong>
+        {{#ifEquals user.premium_creator_account '3'}}
+        <div class="dash_product_btn monetizeAddProduct">Add Product</div>
+        {{/ifEquals}}
+      </div>
+
+    {{#if user.creator_products_is_active}}
+
+    <div class="semi-spacer"></div>
+
+    {{#ifEquals user.premium_creator_account '3'}}
+
+      <div class="mini-spacer"></div>
+
+      <div class="monetize_add_product">
+
+        <form method="post" action="/dashboard/creator-products/add" class="product_form" enctype="multipart/form-data">
+
+          <label for="product_title" class="form__label">Product Title</label>
+          <input class="form__input" type="text" name="product_title" value="{{product_title}}" required/>
+
+          <label for="product_description" class="form__label">Description</label>
+          <textarea name="product_description" value="{{product_description}}" class="form__input product_text" required></textarea>
+
+          <label for="product_image" class="form__label">Add an image</label>
+          <input id="profileImage" class="form__input" type="file" name="product_image" value="" data-type='image' required/>
+          <p class="input_err_msg" ></p>
+
+          <div class="product_amount_row">
+
+            <div class="product_amount_col">
+            <label for="product_price" class="form__label">Price</label>
+            <input id="product_price" class="product_amount" type="text" name="product_price" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" value="" data-type="currency" required>
+            <p id="price_amount_err" ></p>
+            <!-- <input class="product_amount" type="number" name="product_price" min="1" required> -->
+            </div>
+
+            <div class="product_amount_col">
+            <label for="product_image" class="form__label">Quantity</label>
+            <input class="product_amount" type="number" name="product_quantity" min="1" value="{{product_quantity}}" required>
+            </div>
+
+          </div>
+
+          <label for="product_categories" class="form__label" style="margin-top: 25px;">Add Product Categories</label>
+          <select data-placeholder="Add categories..." multiple class="chosen-select form__input" name="product_categories[]" required>
+             <option value=""></option>
+             {{#each categories}}
+             <option>{{this.category}}</option>
+             {{/each}}
+          </select>
+
+          <label for="product_ship_and_ret" class="form__label">Shipping & Returns</label>
+          <textarea name="product_ship_and_ret" value="" class="form__input product_text" value="{{product_ship_and_ret}}" required></textarea>
+
+          <br>
+
+          <div class="monetize_edit_price_btm">
+            <div class="dash_product_btn product_add_cancel">Cancel</div>
+            <input class="dash_product_btn" type="submit" value="Submit">
+          </div>
+
+          <div class="spacer"></div>
+
+        </form>
+
+      </div>
+
+    {{else}}
+
+      <p>
+        <em>Upgrade your plan to create a subscription.</em>
+        <br>
+        <br>
+        Your plan currently does support the ability to make a subscription to your profile. Please upgrade in order
+        to create a subscription.
+      </p>
+
+    {{/ifEquals}}
+
+    <div id="masonryContainer" class="masonryContainer">
+
+      {{#each products}}
+      <div class="masonryItem" title="{{title}}">
+         <a href="/dashboard/monetize/products/edit/{{_id}}">
+            <div class="product_card">
+              <img src="https://ik.imagekit.io/w07am55tja/{{image}}?tr=w-500" class="img-responsive product_image" alt="{{title}}" />
+
+              <div class="product_info">
+                <p class="product_title">{{title}}</p>
+                <p class="product_price">{{price}}</p>
+              </div>
+            </div>
+         </a>
+      </div>
+      {{/each}}
+
     </div>
+
+    {{else}}
+
+    <p><em>You do not have any products.</em></p>
+
+    {{/if}}
 
   </div>
 

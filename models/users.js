@@ -166,7 +166,11 @@ const UserSchema = mongoose.Schema({
      subscription_id: {
        type: String
      }
-   }]
+   }],
+   creator_products_is_active: {
+     type: Boolean
+   },
+   creator_products: []
 });
 
 const User = module.exports = mongoose.model('User', UserSchema);
@@ -612,6 +616,36 @@ module.exports.removeSubscription = (info, callback) => {
 
    User.findOneAndUpdate(query,
       { $pull: { following_subscriptions: { 'subscription_id': subId } } },
+      { multi: true },
+      callback
+   );
+}
+
+// Add Product
+module.exports.addProduct = (info, callback) => {
+   productId = info['productId'];
+   profileUsername = info['profileUsername'];
+
+   const query = { username: profileUsername };
+
+   User.findOneAndUpdate(query,
+      {
+         $addToSet: {"creator_products": [productId]},
+      },
+      { safe: true, upsert: true },
+      callback
+   );
+}
+
+// Remove Product
+module.exports.removeProduct = (info, callback) => {
+   userId = info['userId'];
+   product_to_remove = info['productId'];
+
+   const query = { _id: userId };
+
+   User.findOneAndUpdate(query,
+      { $pull: { products: product_to_remove } },
       { multi: true },
       callback
    );

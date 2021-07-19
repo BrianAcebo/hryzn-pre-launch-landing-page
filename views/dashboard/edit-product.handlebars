@@ -1,0 +1,90 @@
+{{#if subscription_active}}
+
+  {{#if dash_nav_monetize}}
+  {{#if user.completed_onboard_payouts}}
+
+  <div class="dash_content">
+
+    <div class="product_heading_container">
+      <strong class="strong_title">Edit Product</strong>
+      <div class="dash_product_btn deleteProductBtn modalBtn">Delete This Product</div>
+    </div>
+
+    <form method="post" action="/dashboard/monetize/products/edit/{{product._id}}" class="product_form" enctype="multipart/form-data">
+
+      <label for="product_title" class="form__label">Product Title</label>
+      <input class="form__input" type="text" name="product_title" value="{{product.title}}" required/>
+
+      <label for="product_description" class="form__label">Description</label>
+      <textarea name="product_description" value="{{product.description}}" class="form__input product_text" required>{{product.description}}</textarea>
+
+      <label for="product_image" class="form__label">Change image</label>
+      <input id="profileImage" class="form__input" type="file" name="product_image" value="" data-type='image'/>
+      <p class="input_err_msg" ></p>
+
+      <div class="product_amount_row">
+
+        <div class="product_amount_col">
+        <label for="product_price" class="form__label">Price</label>
+        <input id="product_price" class="product_amount" type="text" name="product_price" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" value="{{product.price}}" data-type="currency" required>
+        <p id="price_amount_err" ></p>
+        <!-- <input class="product_amount" type="number" name="product_price" min="1" required> -->
+        </div>
+
+        <div class="product_amount_col">
+        <label for="product_image" class="form__label">Quantity</label>
+        <input class="product_amount" type="number" name="product_quantity" min="1" value="{{product.availabilty.quantity}}" required>
+        </div>
+
+      </div>
+
+      <label for="product_categories" class="form__label" style="margin-top: 25px;">Change Product Categories</label>
+      <select data-placeholder="Add categories..." multiple class="chosen-select form__input" name="product_categories[]">
+         <option value=""></option>
+         {{#each categories}}
+         <option>{{this.category}}</option>
+         {{/each}}
+      </select>
+
+      <label for="product_ship_and_ret" class="form__label">Shipping & Returns</label>
+      <textarea name="product_ship_and_ret" value="" class="form__input product_text" value="{{product.shipping_and_returns}}" required>{{product.shipping_and_returns}}</textarea>
+
+      <br>
+
+      <div class="monetize_edit_price_btm">
+        <a href="/dashboard/monetize">
+          <div class="dash_product_btn product_add_cancel">Cancel</div>
+        </a>
+        <input class="dash_product_btn" type="submit" value="Submit">
+      </div>
+
+      <div class="spacer"></div>
+
+    </form>
+
+    <!-- Hidden Delete Modal -->
+    <div class="popModal modalBackground">
+       <div class="modal-content">
+         <div class="modal-header">
+           <p>Are You Sure?</p>
+         </div>
+         <div class="modal-body">
+           <p>Deleting will remove this product for good.</p>
+         </div>
+         <div class="modal-footer">
+           <form method="post" action="/dashboard/monetize/products/delete/{{product._id}}">
+              <input type="hidden" name="user_username" value="{{user.username}}">
+              <button style="padding: 8px 35px; line-height: 35px;" class="btn__secondary" name="submit" type="submit">Yes, Delete</button>
+           </form>
+
+           <span class="closeModal btn__primary">Cancel</span>
+         </div>
+       </div>
+    </div>
+
+  </div>
+
+
+  {{/if}}
+  {{/if}}
+{{/if}}

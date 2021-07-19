@@ -502,3 +502,10 @@ button {
 #HP_in {
   display: none;
 }
+
+.input_err_msg {
+  padding: 4px 0;
+  color: #fa755a;
+  font-size: 14px;
+  font-weight: bold;
+}
