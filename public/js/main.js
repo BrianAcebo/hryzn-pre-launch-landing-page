@@ -955,738 +955,743 @@ $(document).ready(function() {
   $("#profile_project_background_color").on('change', function () {
      $("#color_was_chosen").val('true');
   });
-/**********/
-
-// Index feed AJAX post
-$('.project_action_btn.btn_p_submit').each(function() {
-   $(this).click(function() {
-
-      var $action = $(this).parent().children("input[name=action]").val();
-      var $projectUsername = $(this).parent().children("input[name=username]").val();
-      var $projectId = $(this).parent().children("input[name=project_id]").val();
-      var $projectOwner = $(this).parent().children("input[name=project_owner]").val();
-
-      var $btnIcon = $(this).children().children();
-
-      if ($btnIcon.hasClass('fa-heart')) {
-         $btnIcon.removeClass('fa-heart');
-         $btnIcon.addClass('fa-heart-o');
-      } else if ($btnIcon.hasClass('fa-heart-o')) {
-         $btnIcon.removeClass('fa-heart-o');
-         $btnIcon.addClass('fa-heart');
-      } else if ($btnIcon.hasClass('fa-bookmark')) {
-         $btnIcon.removeClass('fa-bookmark');
-         $btnIcon.addClass('fa-bookmark-o');
-      } else {
-         $btnIcon.removeClass('fa-bookmark-o');
-         $btnIcon.addClass('fa-bookmark');
-      }
-
-      $.post($action, {
-        username: $projectUsername,
-        project_id: $projectId,
-        project_owner: $projectOwner,
-        ajax: true
-      }, function(data, status) {
-
-      });
-
-   });
-});
-
-$("#repostForm").submit(function(e){
-   e.preventDefault();
-});
-
-$("#unrepostForm").submit(function(e){
-   e.preventDefault();
-});
-
-$("#repostForm .repost_submit").click(function() {
-
-   $(".detailsRepostModal").css({ "display": "none" });
-
-   var $repostFlashMsg = $('#flashMsg');
-   var $repostFlash = '<div class="success__msg"><p>Reposted project.</p><p class="error__exit">×</p></div>';
-
-   $repostFlashMsg.append($repostFlash);
-   setTimeout(function() {
-      $('.success__msg').parent().remove();
-   }, 3000);
-
-   $.post($('#repostForm').attr('action'), {
-     username: $('#repostUsername').val(),
-     project_id: $('#repostProjectId').val(),
-     project_owner: $('#repostProjectOwner').val(),
-     repost_to: $('#repostForm select').val(),
-     ajax: true
-   }, function(data, status) {
-
-   });
-});
-
-$("#unrepostForm .unrepost_btn").click(function() {
-
-   if ($('#unrepostForm').attr('action')) {
-
-      $(".detailsRepostModal").css({ "display": "none" });
-
-      var $unrepostFlashMsg = $('#flashMsg');
-      var $unrepostFlash = '<div><div class="success__msg"><p>Unreposted project.</p><p class="error__exit">×</p></div></div>';
-
-      $unrepostFlashMsg.append($unrepostFlash);
-      setTimeout(function() {
-         $('.success__msg').parent().remove();
-      }, 3000);
-
-      $.post($('#unrepostForm').attr('action'), {
-        username: $('#unrepostUsername').val(),
-        project_id: $('#unrepostProjectId').val(),
-        ajax: true
-      }, function(data, status) {
-
-      });
-   }
-});
-/**********/
-
-// Tabs for suggested index feed
-var $indexFollowingFeed = $(".following_index_feed");
-var $indexSuggestedFeed = $(".suggested_index_feed");
-var $indexFollowingBtn = $("#indexFollowingBtn");
-var $indexSuggestedBtn = $("#indexSuggestedBtn");
-
-$indexSuggestedBtn.click(function() {
-   $indexSuggestedFeed.css({ "display": "block" });
-   $indexFollowingFeed.css({ "display": "none" });
-   $indexFollowingBtn.css({ "font-weight": "normal", "font-size": "12px" });
-   $indexSuggestedBtn.css({ "font-weight": "bold", "font-size": "14px" });
-});
-
-$indexFollowingBtn.click(function() {
-   $indexFollowingFeed.css({ "display": "block" });
-   $indexSuggestedFeed.css({ "display": "none" });
-   $indexSuggestedBtn.css({ "font-weight": "normal", "font-size": "12px" });
-   $indexFollowingBtn.css({ "font-weight": "bold", "font-size": "14px" });
-});
-/**********/
-
-
-// Message Settings Btn
-var $msgSettingsBtn = $('.msg_settings_btn');
-var $searchContainer = $('.search-container');
-var $windowWidth = $window.width();
-
-if ($windowWidth <= 992 && $msgSettingsBtn.length >= 1) {
-  $searchContainer.css({ "display": "none"});
-  $msgSettingsBtn.css({ "display": "block"});
-}
-
-// Open settings nav on click
-var $chatSettingsOpen = $('.chatSettingsBtn');
-var $chatSettingsClose = $('#chatSettingsClose');
-var $chatSideNav = $('#chatSettingsNav');
-var $siteBody = $('body');
-
-$chatSettingsOpen.each(function() {
-  $(this).click(function() {
-    if($window.width() <= 768) {
-      $chatSideNav.css({ "width": "100%", "box-shadow": "0 2px 4px 0 rgba(0,0,0,0.2)" });
-    } else {
-      $chatSideNav.css({ "width": "350" });
-    }
-  });
-});
-
-$chatSettingsClose.click(function() {
-   $chatSideNav.css({ "width": "0" });
-});
-
-$siteBody.on('click', function(e){
-   if( !$(e.target).is('.settings_content, .settings__header, .settings__underline, .profile__sidenav a, .chatSettingsBtn, #settingsBtn .mobile-nav__icon, #profileSideNav, #profileSideNav p') ) {
-      $chatSideNav.css({ "width": "0" });
-   }
-});
-/**********/
-
-
-// Modal pop up for messaging
-var $msgPop = $("#msgPop");
-var $msgModalBtn = $(".msgModalBtn");
-var $msgPopClose = $("#msgPopClose");
-var $msgContentInput = $("#msgContentInput");
-var $user_followers = $(".user_autocomplete_self");
-var $user_auto_input = $(".user_autocomplete_input");
-var $user_autocomplete = $(".user_autocomplete");
-
-var $msgContentProjectValue = $('#msgContentProjectValue');
-
-if ($msgContentProjectValue.length >= 1) {
-  $msgContentInput.val($msgContentProjectValue.val());
-}
-
-var $all_followers = []
-
-$msgModalBtn.each(function() {
-   $(this).click(function() {
-
-     $msgPop.css({ "height": "275px", "box-shadow": "rgba(0,0,0,.1) 0 2px 10px 1px" });
-
-      $("body").css({ "overflow-y": "hidden" });
-      $(".following_index_feed").css({ "overflow-y": "hidden" });
-
-      if ($(this).parents(".project_content_right").length >= 1) {
-        var $msgContent = $(this).parents(".project_content_right").html().toString();
-
-        var $indexToRemove = $msgContent.indexOf('<div class="micro_action_btns">');
-
-        $msgContent = $msgContent.slice(0, $indexToRemove);
-
-        $msgContent = $msgContent + '</div>';
-
-        $msgContentInput.val($msgContent);
-      }
-
-   });
-});
-
-$msgPopClose.click(function() {
-   $msgPop.css({ "height": "0" });
-   $user_auto_input.attr('value', '');
-   $user_auto_input.empty();
-   $("body").css({ "overflow-y": "scroll" });
-   $(".following_index_feed").css({ "overflow-y": "scroll" });
-});
-
-var $sendBtn = $(".user_autocomplete_btn");
-var $sendFlashMsg = $('#flashMsg');
-var $sendFlash = '<div><div class="success__msg"><p>Message was sent.</p><p class="error__exit">×</p></div></div>';
-
-$($sendBtn).on("click", function(e) {
-  e.preventDefault();
-
-  var $sendAction = '/messages/direct/sendpost';
-  var $msgVal = $msgContentInput.val();
-  var $userVal = $user_auto_input.val();
-
-  if ($msgVal != '' && $userVal != '' ) {
-    $.post($sendAction, {
-      send_to_user: $userVal,
-      message: $msgVal
-    }, function(data, status) {
-
-    });
-
-    $sendFlashMsg.append($sendFlash);
-    setTimeout(function() {
-       $('.success__msg').parent().remove();
-    }, 3000);
-
-    $msgPop.css({ "height": "0" });
-    $user_auto_input.attr('value', '');
-    $user_auto_input.empty();
-    $("body").css({ "overflow-y": "scroll" });
-    $(".following_index_feed").css({ "overflow-y": "scroll" });
-  }
-});
-/**********/
-
-
-// Double click to like message
-var $msgLinks = $('.direct_msg_wrapper a');
-
-var firstClickTarget = null;
-
-var timer = 0;
-var delay = 200;
-var prevent = false;
-
-$(".direct_msg_wrapper").on("click", function(e) {
-
-  var $post_link = $(this).find('.micropost a').attr("href");
-
-  var $chatId = $(this).find('.chat_id').val();
-  var $msgId = $(this).find('.message_id').val();
-  var $msgAction = "/messages/direct/like/";
-  var $is_post_link = $(this).find('.msg_post_link');
-
-  e.preventDefault();
-
-  if (e.detail === 1) {
-
-    timer = setTimeout(function() {
-      if (!prevent) {
-        $(window).attr('location', $post_link)
-        console.log($post_link);
-      }
-      prevent = false;
-    }, delay);
-
-  } else if (e.detail === 2){
-
-    clearTimeout(timer);
-    prevent = true;
-
-    $.post($msgAction, {
-      chatId: $chatId,
-      messageId: $msgId
-    }, function(data, status) {
-
-    });
-
-    if ($is_post_link) {
-      $(this).append('<i style="font-weight: bold" class="fa fa-heart msg_post_liked msg_post_liked_post_link"></i>')
-    } else {
-      $(this).append('<i style="font-weight: bold" class="fa fa-heart msg_post_liked"></i>')
-    }
-
-    timer = setTimeout(function() {
-      prevent = false;
-    }, delay);
-
-  }
-
-});
-/**********/
-
-
-// // Direct Message Ajax
-// var $chatId = $("#chatId").val();
-// var $siteURL = $("#siteURL").val();
-// var $sendFlashMsg = $('#flashMsg');
-// var $sendFlash = '<div><div class="success__msg"><p>Message was sent.</p><p class="error__exit">×</p></div></div>';
-//
-// $("#sendBtn").click(function() {
-//
-//   var $msgContent = $("#msgContent").val();
-//
-//   sendMessage({
-//     username: $("#msgUsername").val(),
-//     message: $("#msgContent").val(),
-//     profileimage: $("#msgImg").val(),
-//   });
-//
-//   //getMessages()
-//
-// });
-//
-// function addMessages(message) {
-//   $('#all_msg_container').append(`<div class="direct_msg_wrapper user_own_msg"><p class="direct_msg_self">${message.message}</p><a href="/profile/${message.username}" style="align-self: flex-end"><div class="msg_user_container"><p class="direct_msg_username">${message.username}</p><div class="msg_profile_img_container"><img class="msg_profile_img" src="https://ik.imagekit.io/w07am55tja/${message.profileimage}?tr=w-100"></div></div></a></div>`)
-// }
-//
-// function getMessages() {
-//   // $.get($siteURL, (data) => {
-//   //   data.forEach(addMessages);
-//   // })
-// }
-//
-// function sendMessage(message){
-//   // $.post($siteURL, message)
-//
-//   console.log(message);
-//
-//   $sendFlashMsg.append($sendFlash);
-//   setTimeout(function() {
-//      $('.success__msg').parent().remove();
-//   }, 3000);
-// }
-/**********/
-
-
-// Ajax like comment
-var $commentLikeBtn = $(".commentLikeBtn");
-var $likeCommentFlashMsg = $('#flashMsg');
-var $likeCommentFlash = '<div><div class="success__msg"><p>Comment was liked.</p><p class="error__exit">×</p></div></div>';
-var $likeUnCommentFlash = '<div><div class="success__msg"><p>Comment like was removed.</p><p class="error__exit">×</p></div></div>';
-
-$commentLikeBtn.each(function() {
-  $(this).click(function() {
-    var $commentId = $(this).children('.likeCommentId').val();
-    var $commentContentId = $(this).children('.likeCommentContentId').val();
-    var $og_path = $(this).children('.og_path').val();
-    var $likeCommentAction = '/p/details/comment/like/' + $commentId;
-    var $likeIcon = $(this).children('i');
-
-    $.post($likeCommentAction, {
-      commentContentId: $commentContentId,
-      og_path: $og_path
-    }, function(data, status) {
-
-    });
-
-    if ($likeIcon.hasClass('commentNotLiked')) {
-      $likeIcon.removeClass('fa-heart-o commentNotLiked');
-      $likeIcon.addClass('fa-heart commentLiked');
-
-      $likeCommentFlashMsg.append($likeCommentFlash);
-      setTimeout(function() {
-         $('.success__msg').parent().remove();
-      }, 3000);
-    } else {
-      $likeIcon.removeClass('fa-heart commentLiked');
-      $likeIcon.addClass('fa-heart-o commentNotLiked');
-
-      $likeCommentFlashMsg.append($likeUnCommentFlash);
-      setTimeout(function() {
-         $('.success__msg').parent().remove();
-      }, 3000);
-    }
-
-  });
-});
-/**********/
-
-
-// Reply to comment
-var $sendCommentForm = $("form#comment");
-var $commentReplyBtn = $(".commentReplyBtn");
-var $likeCommentFlashMsg = $('#flashMsg');
-var $likeCommentFlash = '<div><div class="success__msg"><p>Comment was liked.</p><p class="error__exit">×</p></div></div>';
-
-$commentReplyBtn.each(function() {
-  $(this).click(function() {
-
-    var $commentId = $(this).prev().children('.likeCommentId').val();
-    var $commentContentId = $(this).prev().children('.likeCommentContentId').val();
-    var $commentOwner = $(this).prev().children('.commentOwner').val();
-    var $og_path = $(this).prev().children('.og_path').val();
-
-    $sendCommentForm.css({ "display": "none" });
-    $(this).parent().parent().append('<form id="replyComment" method="post" class="replyComment comment_form" action="/p/details/comment/reply/' + $commentId + '"><div class="replying_to_container">Replying to @' + $commentOwner + ' <i class="fa fa-times replyCancelBtn"></i></div><input type="hidden" name="og_path" value="' + $og_path + '"><input type="hidden" name="commentContentId" value="' + $commentContentId + '"><textarea type="text" name="reply" required></textarea><button class="comment_btn" name="submit" type="submit">Send Reply</button></form>')
-
-    checkReplyCancelBtn()
-
-  });
-});
-
-function checkReplyCancelBtn() {
-
-  var $replyCancelBtn = $(".replyCancelBtn");
-
-  $replyCancelBtn.each(function() {
-    $(this).click(function() {
-
-      $sendCommentForm.css({ "display": "flex" });
-      $(this).parent().parent().remove();
-
-    });
-  });
-}
-
-
-var $viewRepliesBtn = $(".viewRepliesBtn");
-
-$viewRepliesBtn.each(function() {
-  $(this).click(function() {
-
-    if ($(this).hasClass('openReplies')) {
-
-      $(this).next().css({ "display": "none" });
-      $(this).removeClass('openReplies');
-      $(this).text('- View Replies')
-
-    } else {
-
-      $(this).next().css({ "display": "flex" });
-      $(this).addClass('openReplies');
-      $(this).text('- Hide Replies');
-
-    }
-
-  });
-});
-/**********/
-
-// Settings nav in creator dashboard
-var $dashSettings = $("#dashSettings");
-var $dashSettingsContent = $(".dash_settings_content");
-
-if ($dashSettings.length >= 1) {
-
-  $dashSettings.on('click', function(e) {
-    if ($dashSettingsContent.hasClass('dash_settings_content_open')) {
-      $dashSettingsContent.removeClass('dash_settings_content_open')
-    } else {
-      $dashSettingsContent.addClass('dash_settings_content_open')
-    }
-  });
-
-  $('body').on('click', function(e) {
-     if( !$(e.target).is('#dashSettings, .dash_settings_nav, .dash_settings_content .dash_settings_content a') ) {
-        $dashSettingsContent.removeClass('dash_settings_content_open');
-     }
-  });
-}
-/**********/
-
-// Modal pop up for payments
-var $modalPayments = $(".paymentsModal");
-var $modalBtnPayments = $(".payments_modal_btn");
-var $stripeForm = $(".stripe_form");
-var $stripeResult = $(".stripe_result");
-var $closeBtnPayments = $(".closeModalPayments");
-
-$modalBtnPayments.each(function() {
-   $(this).click(function() {
-      $modalPayments.css({ "display": "block" });
-   });
-});
-
-$closeBtnPayments.click(function() {
-   $modalPayments.css({ "display": "none" });
-   $stripeForm.removeClass('stripe_hidden');
-   $stripeResult.addClass('stripe_hidden');
-});
-
-$("input[data-type='currency']").on({
-    keyup: function() {
-      formatCurrency($(this));
-    },
-    blur: function() {
-      formatCurrency($(this), "blur");
-    }
-});
-
-
-function formatNumber(n) {
-  // format number 1000000 to 1,234,567
-  return n.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-}
-
-
-function formatCurrency(input, blur) {
-  // appends $ to value, validates decimal side
-  // and puts cursor back in right position.
-
-  // get input value
-  var input_val = input.val();
-
-  // don't validate empty input
-  if (input_val === "") { return; }
-
-  // original length
-  var original_len = input_val.length;
-
-  // initial caret position
-  var caret_pos = input.prop("selectionStart");
-
-  // check for decimal
-  if (input_val.indexOf(".") >= 0) {
-
-    // get position of first decimal
-    // this prevents multiple decimals from
-    // being entered
-    var decimal_pos = input_val.indexOf(".");
-
-    // split number by decimal point
-    var left_side = input_val.substring(0, decimal_pos);
-    var right_side = input_val.substring(decimal_pos);
-
-    // add commas to left side of number
-    left_side = formatNumber(left_side);
-
-    // validate right side
-    right_side = formatNumber(right_side);
-
-    // On blur make sure 2 numbers after decimal
-    if (blur === "blur") {
-      right_side += "00";
-    }
-
-    // Limit decimal to only 2 digits
-    right_side = right_side.substring(0, 2);
-
-    // join number by .
-    input_val = "$" + left_side + "." + right_side;
-
-  } else {
-    // no decimal entered
-    // add commas to number
-    // remove all non-digits
-    input_val = formatNumber(input_val);
-
-    if (input.attr('id') == 'product_price') {
-
-      if (input_val < 0.25) {
-
-        $("#price_amount_err").text('Amount must be at least $0.25');
-
-        input_val = 0.25;
-
-      } else {
-        input_val = "$" + input_val;
-      }
-
-    } else {
-
-      if (input_val < 4) {
-
-        if ($("#card-errors").length > 0) {
-          $("#card-errors").text('Amount must be at least $4');
+  /**********/
+
+  // Index feed AJAX post
+  $('.project_action_btn.btn_p_submit').each(function() {
+     $(this).click(function() {
+
+        var $action = $(this).parent().children("input[name=action]").val();
+        var $projectUsername = $(this).parent().children("input[name=username]").val();
+        var $projectId = $(this).parent().children("input[name=project_id]").val();
+        var $projectOwner = $(this).parent().children("input[name=project_owner]").val();
+
+        var $btnIcon = $(this).children().children();
+
+        if ($btnIcon.hasClass('fa-heart')) {
+           $btnIcon.removeClass('fa-heart');
+           $btnIcon.addClass('fa-heart-o');
+        } else if ($btnIcon.hasClass('fa-heart-o')) {
+           $btnIcon.removeClass('fa-heart-o');
+           $btnIcon.addClass('fa-heart');
+        } else if ($btnIcon.hasClass('fa-bookmark')) {
+           $btnIcon.removeClass('fa-bookmark');
+           $btnIcon.addClass('fa-bookmark-o');
         } else {
-          if (input_val < 0.01) {
-            $("#amount_input_err").text('Amount must be at least $4');
-          }
+           $btnIcon.removeClass('fa-bookmark-o');
+           $btnIcon.addClass('fa-bookmark');
         }
 
-        input_val = 4;
+        $.post($action, {
+          username: $projectUsername,
+          project_id: $projectId,
+          project_owner: $projectOwner,
+          ajax: true
+        }, function(data, status) {
 
-      } else {
-        input_val = "$" + input_val;
-      }
+        });
 
-    }
+     });
+  });
 
-    // final formatting
-    if (blur === "blur") {
-      input_val += ".00";
-    }
+  $("#repostForm").submit(function(e){
+     e.preventDefault();
+  });
+
+  $("#unrepostForm").submit(function(e){
+     e.preventDefault();
+  });
+
+  $("#repostForm .repost_submit").click(function() {
+
+     $(".detailsRepostModal").css({ "display": "none" });
+
+     var $repostFlashMsg = $('#flashMsg');
+     var $repostFlash = '<div class="success__msg"><p>Reposted project.</p><p class="error__exit">×</p></div>';
+
+     $repostFlashMsg.append($repostFlash);
+     setTimeout(function() {
+        $('.success__msg').parent().remove();
+     }, 3000);
+
+     $.post($('#repostForm').attr('action'), {
+       username: $('#repostUsername').val(),
+       project_id: $('#repostProjectId').val(),
+       project_owner: $('#repostProjectOwner').val(),
+       repost_to: $('#repostForm select').val(),
+       ajax: true
+     }, function(data, status) {
+
+     });
+  });
+
+  $("#unrepostForm .unrepost_btn").click(function() {
+
+     if ($('#unrepostForm').attr('action')) {
+
+        $(".detailsRepostModal").css({ "display": "none" });
+
+        var $unrepostFlashMsg = $('#flashMsg');
+        var $unrepostFlash = '<div><div class="success__msg"><p>Unreposted project.</p><p class="error__exit">×</p></div></div>';
+
+        $unrepostFlashMsg.append($unrepostFlash);
+        setTimeout(function() {
+           $('.success__msg').parent().remove();
+        }, 3000);
+
+        $.post($('#unrepostForm').attr('action'), {
+          username: $('#unrepostUsername').val(),
+          project_id: $('#unrepostProjectId').val(),
+          ajax: true
+        }, function(data, status) {
+
+        });
+     }
+  });
+  /**********/
+
+  // Tabs for suggested index feed
+  var $indexFollowingFeed = $(".following_index_feed");
+  var $indexSuggestedFeed = $(".suggested_index_feed");
+  var $indexFollowingBtn = $("#indexFollowingBtn");
+  var $indexSuggestedBtn = $("#indexSuggestedBtn");
+
+  $indexSuggestedBtn.click(function() {
+     $indexSuggestedFeed.css({ "display": "block" });
+     $indexFollowingFeed.css({ "display": "none" });
+     $indexFollowingBtn.css({ "font-weight": "normal", "font-size": "12px" });
+     $indexSuggestedBtn.css({ "font-weight": "bold", "font-size": "14px" });
+  });
+
+  $indexFollowingBtn.click(function() {
+     $indexFollowingFeed.css({ "display": "block" });
+     $indexSuggestedFeed.css({ "display": "none" });
+     $indexSuggestedBtn.css({ "font-weight": "normal", "font-size": "12px" });
+     $indexFollowingBtn.css({ "font-weight": "bold", "font-size": "14px" });
+  });
+  /**********/
+
+
+  // Message Settings Btn
+  var $msgSettingsBtn = $('.msg_settings_btn');
+  var $searchContainer = $('.search-container');
+  var $windowWidth = $window.width();
+
+  if ($windowWidth <= 992 && $msgSettingsBtn.length >= 1) {
+    $searchContainer.css({ "display": "none"});
+    $msgSettingsBtn.css({ "display": "block"});
   }
 
-  // send updated string to input
-  input.val(input_val);
+  // Open settings nav on click
+  var $chatSettingsOpen = $('.chatSettingsBtn');
+  var $chatSettingsClose = $('#chatSettingsClose');
+  var $chatSideNav = $('#chatSettingsNav');
+  var $siteBody = $('body');
 
-  // put caret back in the right position
-  var updated_len = input_val.length;
-  caret_pos = updated_len - original_len + caret_pos;
-  input[0].setSelectionRange(caret_pos, caret_pos);
-}
-/**********/
-
-
-// Modal pop up for subscription payments
-var $modalSub = $(".subModal");
-var $modalBtnSub = $(".sub_modal_btn");
-var $stripeForm = $(".stripe_form");
-var $stripeResult = $(".stripe_result");
-var $closeBtnSub = $(".closeModalSub");
-var $subBtn = $(".creator_sub_btn");
-
-if ($subBtn.length > 0) {
-  $subBtn.each(function() {
-    $(this).parent().click(function(e) {
-      e.preventDefault();
-      e.stopPropagation();
-
-      $modalSub.css({ "display": "block" });
+  $chatSettingsOpen.each(function() {
+    $(this).click(function() {
+      if($window.width() <= 768) {
+        $chatSideNav.css({ "width": "100%", "box-shadow": "0 2px 4px 0 rgba(0,0,0,0.2)" });
+      } else {
+        $chatSideNav.css({ "width": "350" });
+      }
     });
   });
-}
 
-$modalBtnSub.each(function() {
-   $(this).click(function() {
-      $modalSub.css({ "display": "block" });
-   });
-});
+  $chatSettingsClose.click(function() {
+     $chatSideNav.css({ "width": "0" });
+  });
 
-$closeBtnSub.click(function() {
-   $modalSub.css({ "display": "none" });
-   $stripeForm.removeClass('stripe_hidden');
-   $stripeResult.addClass('stripe_hidden');
-});
-/**********/
+  $siteBody.on('click', function(e){
+     if( !$(e.target).is('.settings_content, .settings__header, .settings__underline, .profile__sidenav a, .chatSettingsBtn, #settingsBtn .mobile-nav__icon, #profileSideNav, #profileSideNav p') ) {
+        $chatSideNav.css({ "width": "0" });
+     }
+  });
+  /**********/
 
 
-// Dashboard edit subscription price
-var $changeSubBtn = $(".monetizeChangeSub");
-var $changePriceContainer = $(".monetize_edit_price");
-var $deleteSub = $('.deleteSub');
-var $closeSubBtn = $(".sub_edit_cancel");
-var $subOptions = $(".sub_options_wrapper");
-var $changePriceBool = $("#monetize_edit_price_form #change_price");
+  // Modal pop up for messaging
+  var $msgPop = $("#msgPop");
+  var $msgModalBtn = $(".msgModalBtn");
+  var $msgPopClose = $("#msgPopClose");
+  var $msgContentInput = $("#msgContentInput");
+  var $user_followers = $(".user_autocomplete_self");
+  var $user_auto_input = $(".user_autocomplete_input");
+  var $user_autocomplete = $(".user_autocomplete");
 
-$changeSubBtn.click(function() {
-   $changePriceContainer.css({ "display": "block" });
-   $closeSubBtn.css({ "display": "block" });
-   $changePriceBool.val('true');
-   $changeSubBtn.css({ "display": "none" });
-   $subOptions.css({ "display": "none" });
-   $deleteSub.css({ "display": "none" });
-});
+  var $msgContentProjectValue = $('#msgContentProjectValue');
 
-$closeSubBtn.click(function() {
-   $changePriceContainer.css({ "display": "none" });
-   $closeSubBtn.css({ "display": "none" });
-   $changePriceBool.val('false');
-   $changeSubBtn.css({ "display": "block" });
-   $subOptions.css({ "display": "flex" });
-   $deleteSub.css({ "display": "block" });
-});
-/**********/
-
-
-// Dashboard add product
-var $addProductBtn = $(".monetizeAddProduct");
-var $addProductContainer = $(".monetize_add_product");
-var $closeProductBtn = $(".product_add_cancel");
-
-$addProductBtn.click(function() {
-   $addProductContainer.css({ "display": "block" });
-   $closeProductBtn.css({ "display": "block" });
-   $addProductBtn.css({ "display": "none" });
-});
-
-$closeProductBtn.click(function() {
-  $addProductContainer.css({ "display": "none" });
-  $closeProductBtn.css({ "display": "none" });
-  $addProductBtn.css({ "display": "block" });
-});
-/**********/
-
-
-// Contact form prevent spam bots
-var $honey = $("#HP_in");
-var $honeyContactForm = $("#contactForm");
-
-$honeyContactForm.on('submit', function(e) {
-
-  if ($honey.val().length > 0) {
-    e.preventDefault();
-    e.stopPropagation();
+  if ($msgContentProjectValue.length >= 1) {
+    $msgContentInput.val($msgContentProjectValue.val());
   }
 
-});
-/**********/
+  var $all_followers = []
 
+  $msgModalBtn.each(function() {
+     $(this).click(function() {
 
-// Contact form prevent spam bots
-var $honey = $("#HP_in");
-var $honeyContactForm = $("#contactForm");
+       $msgPop.css({ "height": "275px", "box-shadow": "rgba(0,0,0,.1) 0 2px 10px 1px" });
 
-$honeyContactForm.on('submit', function(e) {
+        $("body").css({ "overflow-y": "hidden" });
+        $(".following_index_feed").css({ "overflow-y": "hidden" });
 
-  if ($honey.val().length > 0) {
+        if ($(this).parents(".project_content_right").length >= 1) {
+          var $msgContent = $(this).parents(".project_content_right").html().toString();
+
+          var $indexToRemove = $msgContent.indexOf('<div class="micro_action_btns">');
+
+          $msgContent = $msgContent.slice(0, $indexToRemove);
+
+          $msgContent = $msgContent + '</div>';
+
+          $msgContentInput.val($msgContent);
+        }
+
+     });
+  });
+
+  $msgPopClose.click(function() {
+     $msgPop.css({ "height": "0" });
+     $user_auto_input.attr('value', '');
+     $user_auto_input.empty();
+     $("body").css({ "overflow-y": "scroll" });
+     $(".following_index_feed").css({ "overflow-y": "scroll" });
+  });
+
+  var $sendBtn = $(".user_autocomplete_btn");
+  var $sendFlashMsg = $('#flashMsg');
+  var $sendFlash = '<div><div class="success__msg"><p>Message was sent.</p><p class="error__exit">×</p></div></div>';
+
+  $($sendBtn).on("click", function(e) {
     e.preventDefault();
-    e.stopPropagation();
+
+    var $sendAction = '/messages/direct/sendpost';
+    var $msgVal = $msgContentInput.val();
+    var $userVal = $user_auto_input.val();
+
+    if ($msgVal != '' && $userVal != '' ) {
+      $.post($sendAction, {
+        send_to_user: $userVal,
+        message: $msgVal
+      }, function(data, status) {
+
+      });
+
+      $sendFlashMsg.append($sendFlash);
+      setTimeout(function() {
+         $('.success__msg').parent().remove();
+      }, 3000);
+
+      $msgPop.css({ "height": "0" });
+      $user_auto_input.attr('value', '');
+      $user_auto_input.empty();
+      $("body").css({ "overflow-y": "scroll" });
+      $(".following_index_feed").css({ "overflow-y": "scroll" });
+    }
+  });
+  /**********/
+
+
+  // Double click to like message
+  var $msgLinks = $('.direct_msg_wrapper a');
+
+  var firstClickTarget = null;
+
+  var timer = 0;
+  var delay = 200;
+  var prevent = false;
+
+  $(".direct_msg_wrapper").on("click", function(e) {
+
+    var $post_link = $(this).find('.micropost a').attr("href");
+
+    var $chatId = $(this).find('.chat_id').val();
+    var $msgId = $(this).find('.message_id').val();
+    var $msgAction = "/messages/direct/like/";
+    var $is_post_link = $(this).find('.msg_post_link');
+
+    e.preventDefault();
+
+    if (e.detail === 1) {
+
+      timer = setTimeout(function() {
+        if (!prevent) {
+          $(window).attr('location', $post_link)
+          console.log($post_link);
+        }
+        prevent = false;
+      }, delay);
+
+    } else if (e.detail === 2){
+
+      clearTimeout(timer);
+      prevent = true;
+
+      $.post($msgAction, {
+        chatId: $chatId,
+        messageId: $msgId
+      }, function(data, status) {
+
+      });
+
+      if ($is_post_link) {
+        $(this).append('<i style="font-weight: bold" class="fa fa-heart msg_post_liked msg_post_liked_post_link"></i>')
+      } else {
+        $(this).append('<i style="font-weight: bold" class="fa fa-heart msg_post_liked"></i>')
+      }
+
+      timer = setTimeout(function() {
+        prevent = false;
+      }, delay);
+
+    }
+
+  });
+  /**********/
+
+
+  // // Direct Message Ajax
+  // var $chatId = $("#chatId").val();
+  // var $siteURL = $("#siteURL").val();
+  // var $sendFlashMsg = $('#flashMsg');
+  // var $sendFlash = '<div><div class="success__msg"><p>Message was sent.</p><p class="error__exit">×</p></div></div>';
+  //
+  // $("#sendBtn").click(function() {
+  //
+  //   var $msgContent = $("#msgContent").val();
+  //
+  //   sendMessage({
+  //     username: $("#msgUsername").val(),
+  //     message: $("#msgContent").val(),
+  //     profileimage: $("#msgImg").val(),
+  //   });
+  //
+  //   //getMessages()
+  //
+  // });
+  //
+  // function addMessages(message) {
+  //   $('#all_msg_container').append(`<div class="direct_msg_wrapper user_own_msg"><p class="direct_msg_self">${message.message}</p><a href="/profile/${message.username}" style="align-self: flex-end"><div class="msg_user_container"><p class="direct_msg_username">${message.username}</p><div class="msg_profile_img_container"><img class="msg_profile_img" src="https://ik.imagekit.io/w07am55tja/${message.profileimage}?tr=w-100"></div></div></a></div>`)
+  // }
+  //
+  // function getMessages() {
+  //   // $.get($siteURL, (data) => {
+  //   //   data.forEach(addMessages);
+  //   // })
+  // }
+  //
+  // function sendMessage(message){
+  //   // $.post($siteURL, message)
+  //
+  //   console.log(message);
+  //
+  //   $sendFlashMsg.append($sendFlash);
+  //   setTimeout(function() {
+  //      $('.success__msg').parent().remove();
+  //   }, 3000);
+  // }
+  /**********/
+
+
+  // Ajax like comment
+  var $commentLikeBtn = $(".commentLikeBtn");
+  var $likeCommentFlashMsg = $('#flashMsg');
+  var $likeCommentFlash = '<div><div class="success__msg"><p>Comment was liked.</p><p class="error__exit">×</p></div></div>';
+  var $likeUnCommentFlash = '<div><div class="success__msg"><p>Comment like was removed.</p><p class="error__exit">×</p></div></div>';
+
+  $commentLikeBtn.each(function() {
+    $(this).click(function() {
+      var $commentId = $(this).children('.likeCommentId').val();
+      var $commentContentId = $(this).children('.likeCommentContentId').val();
+      var $og_path = $(this).children('.og_path').val();
+      var $likeCommentAction = '/p/details/comment/like/' + $commentId;
+      var $likeIcon = $(this).children('i');
+
+      $.post($likeCommentAction, {
+        commentContentId: $commentContentId,
+        og_path: $og_path
+      }, function(data, status) {
+
+      });
+
+      if ($likeIcon.hasClass('commentNotLiked')) {
+        $likeIcon.removeClass('fa-heart-o commentNotLiked');
+        $likeIcon.addClass('fa-heart commentLiked');
+
+        $likeCommentFlashMsg.append($likeCommentFlash);
+        setTimeout(function() {
+           $('.success__msg').parent().remove();
+        }, 3000);
+      } else {
+        $likeIcon.removeClass('fa-heart commentLiked');
+        $likeIcon.addClass('fa-heart-o commentNotLiked');
+
+        $likeCommentFlashMsg.append($likeUnCommentFlash);
+        setTimeout(function() {
+           $('.success__msg').parent().remove();
+        }, 3000);
+      }
+
+    });
+  });
+  /**********/
+
+
+  // Reply to comment
+  var $sendCommentForm = $("form#comment");
+  var $commentReplyBtn = $(".commentReplyBtn");
+  var $likeCommentFlashMsg = $('#flashMsg');
+  var $likeCommentFlash = '<div><div class="success__msg"><p>Comment was liked.</p><p class="error__exit">×</p></div></div>';
+
+  $commentReplyBtn.each(function() {
+    $(this).click(function() {
+
+      var $commentId = $(this).prev().children('.likeCommentId').val();
+      var $commentContentId = $(this).prev().children('.likeCommentContentId').val();
+      var $commentOwner = $(this).prev().children('.commentOwner').val();
+      var $og_path = $(this).prev().children('.og_path').val();
+
+      $sendCommentForm.css({ "display": "none" });
+      $(this).parent().parent().append('<form id="replyComment" method="post" class="replyComment comment_form" action="/p/details/comment/reply/' + $commentId + '"><div class="replying_to_container">Replying to @' + $commentOwner + ' <i class="fa fa-times replyCancelBtn"></i></div><input type="hidden" name="og_path" value="' + $og_path + '"><input type="hidden" name="commentContentId" value="' + $commentContentId + '"><textarea type="text" name="reply" required></textarea><button class="comment_btn" name="submit" type="submit">Send Reply</button></form>')
+
+      checkReplyCancelBtn()
+
+    });
+  });
+
+  function checkReplyCancelBtn() {
+
+    var $replyCancelBtn = $(".replyCancelBtn");
+
+    $replyCancelBtn.each(function() {
+      $(this).click(function() {
+
+        $sendCommentForm.css({ "display": "flex" });
+        $(this).parent().parent().remove();
+
+      });
+    });
   }
 
-});
-/**********/
 
+  var $viewRepliesBtn = $(".viewRepliesBtn");
 
-// File upload validation client side
-$("input[data-type='image']").change(function () {
-  var fileExtension = ['jpeg', 'jpg', 'png', 'gif'];
+  $viewRepliesBtn.each(function() {
+    $(this).click(function() {
 
-  // ext !== '.png' && ext !== '.PNG' && ext !== '.jpg' && ext !== '.JPG' && ext !== '.gif' && ext !== '.GIF' && ext !== '.jpeg' && ext !== '.JPEG'
+      if ($(this).hasClass('openReplies')) {
 
-  if ($.inArray($(this).val().split('.').pop().toLowerCase(), fileExtension) == -1) {
-    // alert("File Must End With : " + fileExtension.join(', '));
+        $(this).next().css({ "display": "none" });
+        $(this).removeClass('openReplies');
+        $(this).text('- View Replies')
 
-    $(this).next('.input_err_msg').text("File Must End With : " + fileExtension.join(', '));
-    $(this).parents("form").on('submit', function(e) {
-      e.preventDefault();
-      e.stopPropagation();
+      } else {
+
+        $(this).next().css({ "display": "flex" });
+        $(this).addClass('openReplies');
+        $(this).text('- Hide Replies');
+
+      }
+
+    });
+  });
+  /**********/
+
+  // Settings nav in creator dashboard
+  var $dashSettings = $("#dashSettings");
+  var $dashSettingsContent = $(".dash_settings_content");
+
+  if ($dashSettings.length >= 1) {
+
+    $dashSettings.on('click', function(e) {
+      if ($dashSettingsContent.hasClass('dash_settings_content_open')) {
+        $dashSettingsContent.removeClass('dash_settings_content_open')
+      } else {
+        $dashSettingsContent.addClass('dash_settings_content_open')
+      }
     });
 
-  } else {
-
-    $(this).next('.input_err_msg').text("");
-    $(this).parents("form").unbind('submit');
-
+    $('body').on('click', function(e) {
+       if( !$(e.target).is('#dashSettings, .dash_settings_nav, .dash_settings_content .dash_settings_content a') ) {
+          $dashSettingsContent.removeClass('dash_settings_content_open');
+       }
+    });
   }
-});
-/**********/
+  /**********/
 
+  // Modal pop up for payments
+  var $modalPayments = $(".paymentsModal");
+  var $modalBtnPayments = $(".payments_modal_btn");
+  var $stripeForm = $(".stripe_form");
+  var $stripeResult = $(".stripe_result");
+  var $closeBtnPayments = $(".closeModalPayments");
+
+  $modalBtnPayments.each(function() {
+     $(this).click(function() {
+        $modalPayments.css({ "display": "block" });
+     });
+  });
+
+  $closeBtnPayments.click(function() {
+     $modalPayments.css({ "display": "none" });
+     $stripeForm.removeClass('stripe_hidden');
+     $stripeResult.addClass('stripe_hidden');
+  });
+
+  $("input[data-type='currency']").on({
+      keyup: function() {
+        formatCurrency($(this));
+      },
+      blur: function() {
+        formatCurrency($(this), "blur");
+      }
+  });
+
+
+  function formatNumber(n) {
+    // format number 1000000 to 1,234,567
+    return n.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+  }
+
+
+  function formatCurrency(input, blur) {
+    // appends $ to value, validates decimal side
+    // and puts cursor back in right position.
+
+    // get input value
+    var input_val = input.val();
+
+    // don't validate empty input
+    if (input_val === "") { return; }
+
+    // original length
+    var original_len = input_val.length;
+
+    // initial caret position
+    var caret_pos = input.prop("selectionStart");
+
+    // check for decimal
+    if (input_val.indexOf(".") >= 0) {
+
+      // get position of first decimal
+      // this prevents multiple decimals from
+      // being entered
+      var decimal_pos = input_val.indexOf(".");
+
+      // split number by decimal point
+      var left_side = input_val.substring(0, decimal_pos);
+      var right_side = input_val.substring(decimal_pos);
+
+      // add commas to left side of number
+      left_side = formatNumber(left_side);
+
+      // validate right side
+      right_side = formatNumber(right_side);
+
+      // On blur make sure 2 numbers after decimal
+      if (blur === "blur") {
+        right_side += "00";
+      }
+
+      // Limit decimal to only 2 digits
+      right_side = right_side.substring(0, 2);
+
+      // join number by .
+      input_val = "$" + left_side + "." + right_side;
+
+    } else {
+      // no decimal entered
+      // add commas to number
+      // remove all non-digits
+      input_val = formatNumber(input_val);
+
+      if (input.attr('id') == 'product_price') {
+
+        if (input_val < 0.25) {
+
+          $("#price_amount_err").text('Amount must be at least $0.25');
+
+          input_val = 0.25;
+
+        } else {
+          input_val = "$" + input_val;
+        }
+
+      } else {
+
+        if (input_val < 4) {
+
+          if ($("#card-errors").length > 0) {
+            $("#card-errors").text('Amount must be at least $4');
+          } else {
+            if (input_val < 0.01) {
+              $("#amount_input_err").text('Amount must be at least $4');
+            }
+          }
+
+          input_val = 4;
+
+        } else {
+          input_val = "$" + input_val;
+        }
+
+      }
+
+      // final formatting
+      if (blur === "blur") {
+        input_val += ".00";
+      }
+    }
+
+    // send updated string to input
+    input.val(input_val);
+
+    // put caret back in the right position
+    var updated_len = input_val.length;
+    caret_pos = updated_len - original_len + caret_pos;
+    input[0].setSelectionRange(caret_pos, caret_pos);
+  }
+  /**********/
+
+
+  // Modal pop up for subscription payments
+  var $modalSub = $(".subModal");
+  var $modalBtnSub = $(".sub_modal_btn");
+  var $stripeForm = $(".stripe_form");
+  var $stripeResult = $(".stripe_result");
+  var $closeBtnSub = $(".closeModalSub");
+  var $subBtn = $(".creator_sub_btn");
+
+  if ($subBtn.length > 0) {
+    $subBtn.each(function() {
+      $(this).parent().click(function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        $modalSub.css({ "display": "block" });
+      });
+    });
+  }
+
+  $modalBtnSub.each(function() {
+     $(this).click(function() {
+        $modalSub.css({ "display": "block" });
+     });
+  });
+
+  $closeBtnSub.click(function() {
+     $modalSub.css({ "display": "none" });
+     $stripeForm.removeClass('stripe_hidden');
+     $stripeResult.addClass('stripe_hidden');
+  });
+  /**********/
+
+
+  // Dashboard edit subscription price
+  var $changeSubBtn = $(".monetizeChangeSub");
+  var $changePriceContainer = $(".monetize_edit_price");
+  var $deleteSub = $('.deleteSub');
+  var $closeSubBtn = $(".sub_edit_cancel");
+  var $subOptions = $(".sub_options_wrapper");
+  var $changePriceBool = $("#monetize_edit_price_form #change_price");
+
+  $changeSubBtn.click(function() {
+     $changePriceContainer.css({ "display": "block" });
+     $closeSubBtn.css({ "display": "block" });
+     $changePriceBool.val('true');
+     $changeSubBtn.css({ "display": "none" });
+     $subOptions.css({ "display": "none" });
+     $deleteSub.css({ "display": "none" });
+  });
+
+  $closeSubBtn.click(function() {
+     $changePriceContainer.css({ "display": "none" });
+     $closeSubBtn.css({ "display": "none" });
+     $changePriceBool.val('false');
+     $changeSubBtn.css({ "display": "block" });
+     $subOptions.css({ "display": "flex" });
+     $deleteSub.css({ "display": "block" });
+  });
+  /**********/
+
+
+  // Dashboard add product
+  var $addProductBtn = $(".monetizeAddProduct");
+  var $addProductContainer = $(".monetize_add_product");
+  var $closeProductBtn = $(".product_add_cancel");
+
+  $addProductBtn.click(function() {
+     $addProductContainer.css({ "display": "block" });
+     $closeProductBtn.css({ "display": "block" });
+     $addProductBtn.css({ "display": "none" });
+  });
+
+  $closeProductBtn.click(function() {
+    $addProductContainer.css({ "display": "none" });
+    $closeProductBtn.css({ "display": "none" });
+    $addProductBtn.css({ "display": "block" });
+  });
+  /**********/
+
+
+  // Contact form prevent spam bots
+  var $honey = $("#HP_in");
+  var $honeyContactForm = $("#contactForm");
+
+  $honeyContactForm.on('submit', function(e) {
+
+    if ($honey.val().length > 0) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
+  });
+  /**********/
+
+
+  // File upload validation client side
+  $("input[data-type='image']").change(function () {
+    var fileExtension = ['jpeg', 'jpg', 'png', 'gif'];
+
+    // ext !== '.png' && ext !== '.PNG' && ext !== '.jpg' && ext !== '.JPG' && ext !== '.gif' && ext !== '.GIF' && ext !== '.jpeg' && ext !== '.JPEG'
+
+    if ($.inArray($(this).val().split('.').pop().toLowerCase(), fileExtension) == -1) {
+      // alert("File Must End With : " + fileExtension.join(', '));
+
+      $(this).next('.input_err_msg').text("File Must End With : " + fileExtension.join(', '));
+      $(this).parents("form").on('submit', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+      });
+
+    } else {
+
+      $(this).next('.input_err_msg').text("");
+      $(this).parents("form").unbind('submit');
+
+    }
+  });
+  /**********/
+
+  // Show products on profile
+  var $productsBtn = $(".show_products_btn");
+  var $allProjects = $(".masonryItem");
+  var $profileProducts = $('.profileProducts');
+  var $projectsBtn = $(".show_projects_btn");
+
+  $productsBtn.click(function() {
+     $allProjects.css({ "display": "none" });
+     $productsBtn.css({ "display": "none" });
+     $profileProducts.css({ "display": "block" });
+     $projectsBtn.css({ "display": "flex" });
+  });
+
+  $projectsBtn.click(function() {
+     $allProjects.css({ "display": "block" });
+     $productsBtn.css({ "display": "flex" });
+     $profileProducts.css({ "display": "none" });
+     $projectsBtn.css({ "display": "none" });
+  });
+  /**********/
 
 });

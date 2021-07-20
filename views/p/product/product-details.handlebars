@@ -1,0 +1,148 @@
+<!-- {{#if user}}
+<p id="current_user" style="display: none;">{{user.username}}</p>
+<p id="current_project" style="display: none;">{{project.id}}</p>
+<p id="current_admin" style="display: none;">{{#each project.admins}}{{this}}{{/each}}</p>
+{{else}}
+<div class="guestScroll">
+{{/if}} -->
+
+{{#if product}}
+
+<div class="product_detail_container">
+
+  <div class="product_detail_left">
+    <img src="https://ik.imagekit.io/w07am55tja/{{product.image}}?tr=w-1000" class="img-responsive" alt="{{product.title}}" />
+  </div>
+
+  <div class="product_detail_right">
+
+    <div class="product_detail_right_top">
+      <h1>{{product.title}}</h1>
+      <p>{{product.price}}</p>
+    </div>
+
+    <div class="product_detail_right_mid">
+      {{#if product.availability.is_in_stok}}
+      <input class="product_detail_quantity" type="number" name="product_quantity" min="1" value="1" required>
+      <div class="product_detail_atc_btn">Add To Cart</div>
+      {{else}}
+      <div class="product_detail_quantity">0</div>
+      <div class="product_detail_atc_btn out_of_stock">Out Of Stock</div>
+      {{/if}}
+    </div>
+
+    <div class="semi-spacer"></div>
+
+    <div class="product_detail_right_bottom">
+      <h3>Description</h3>
+      <p>{{product.description}}</p>
+
+      <div class="mini-spacer"></div>
+
+      <h3>Shipping & Returns</h3>
+      <p>{{product.shipping_and_returns}}</p>
+    </div>
+
+  </div>
+
+</div>
+
+{{/if}}
+
+<!-- Products By Same Owner -->
+{{#if products_by_owner}}
+
+<div class="spacer"></div>
+
+<div class="explore_main">
+    <h3>More By Owner</h3>
+
+    {{#each products_by_owner}}
+
+    <div class="masonryItem" title="{{this.title}}">
+       <a href="/p/product/{{this._id}}">
+          <div class="product_card">
+            <img src="https://ik.imagekit.io/w07am55tja/{{this.image}}?tr=w-500" class="img-responsive product_image" alt="{{this.title}}" />
+
+            <div class="product_info">
+              <p class="product_title">{{this.title}}</p>
+              <p class="product_price">{{this.price}}</p>
+            </div>
+          </div>
+       </a>
+    </div>
+
+    {{/each}}
+
+</div>
+{{/if}}
+<!-- /Products By Same Owner -->
+
+<!-- Similar Products -->
+{{#if similar_products}}
+
+<div class="spacer"></div>
+
+<div class="explore_main">
+  <h3>You May Also Like</h3>
+   <div id="masonryContainer" class="masonryContainer">
+
+      {{#each similar_products}}
+
+      <div class="masonryItem" title="{{this.title}}">
+         <a href="/p/product/{{this._id}}">
+            <div class="product_card">
+              <img src="https://ik.imagekit.io/w07am55tja/{{this.image}}?tr=w-500" class="img-responsive product_image" alt="{{this.title}}" />
+
+              <div class="product_info">
+                <p class="product_title">{{this.title}}</p>
+                <p class="product_price">{{this.price}}</p>
+              </div>
+            </div>
+         </a>
+      </div>
+
+      {{/each}}
+
+   </div>
+</div>
+{{/if}}
+<!-- /Similar Products -->
+
+{{#if user}}
+{{else}}
+
+{{! End of guestScroll }}
+<div class="guestScroll">
+</div>
+
+
+{{! Sign up pop up for users without an account }}
+<div class="signUpModal modalBackground">
+   <div class="modal-content">
+
+      <div class="form-container-2">
+         <div class="modal-header">
+            <a href="/" class="topnav__logo"><img src="/img/logos/hryzn-logo-v2-color-256x256.png" /></a>
+            <p>Please login in to continue viewing.</p>
+         </div>
+
+         <form method="post" action="/users/login">
+            <div class="container">
+              <input class="form__input" type="text" placeholder="Enter username" name="username" value="{{username}}" required autocapitalize="none" />
+              <input class="form__input" type="password" placeholder="Enter password" name="password" value="{{password}}" required  autocapitalize="none" />
+              <button class="form_submit_btn" name="submit" type="submit">Login</button>
+           </div>
+         </form>
+
+         <div class="form__href-container">
+            <a class ="form__href" href="/users/register">
+               Don't have an account? Click here to sign up.
+            </a>
+         </div>
+      </div>
+
+   </div>
+</div>
+
+{{/if}}

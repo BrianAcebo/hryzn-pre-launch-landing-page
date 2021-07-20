@@ -315,34 +315,45 @@
 
         {{else}}
 
-         {{#if collections}}
-         <div class="collections_dropdown">
-            <select name="input" id="selectCollection" onclick="adjust()">
-               {{#each collections}}
-               <option id="{{this.collection_slug}}" value="{{this.collection_slug}}">{{this.collection_name}} {{#if this.is_private}}(Private){{/if}}</option>
-               {{/each}}
-            </select>
-            {{#if viewing_own_profile}}
-            <div class="create_group_btn group_btn_blue create_collections_btn">
-               <img src="/icons/plus-white.png" class="main-topnav__icon" />
-            </div>
-            {{#each collections}}
-            {{#if collection_all}}
-            {{else}}
-            <a href="/collection/edit/{{this.id}}" class="edit_collection_btn edit_collection_btn_white edit_collection collection_project {{this.collection_slug}}">
-               <img src="/icons/project-menu.png" class="main-topnav__icon" />
-            </a>
-            {{/if}}
-            {{/each}}
-            {{/if}}
+        <div class="top_profile_flex_wrapper">
+           {{#if collections}}
+           <div class="collections_dropdown">
+              <select name="input" id="selectCollection" onclick="adjust()">
+                 {{#each collections}}
+                 <option id="{{this.collection_slug}}" value="{{this.collection_slug}}">{{this.collection_name}} {{#if this.is_private}}(Private){{/if}}</option>
+                 {{/each}}
+              </select>
+              {{#if viewing_own_profile}}
+              <div class="create_group_btn group_btn_blue create_collections_btn">
+                 <img src="/icons/plus-white.png" class="main-topnav__icon" />
+              </div>
+              {{#each collections}}
+              {{#if collection_all}}
+              {{else}}
+              <a href="/collection/edit/{{this.id}}" class="edit_collection_btn edit_collection_btn_white edit_collection collection_project {{this.collection_slug}}">
+                 <img src="/icons/project-menu.png" class="main-topnav__icon" />
+              </a>
+              {{/if}}
+              {{/each}}
+              {{/if}}
+           </div>
+           {{else}}
+              {{#if viewing_own_profile}}
+              <div class="create_group_btn group_btn_blue create_collections_btn">
+                 <img src="/icons/plus-white.png" class="main-topnav__icon" />
+              </div>
+              {{/if}}
+           {{/if}}
+
+           {{#if products}}
+           <div class="show_products_btn">
+              <img src="/icons/products.png" class="main-topnav__icon" />
+           </div>
+           <div class="show_projects_btn">
+              <img src="/icons/profile-content.png" class="main-topnav__icon" />
+           </div>
+           {{/if}}
          </div>
-         {{else}}
-            {{#if viewing_own_profile}}
-            <div class="create_group_btn group_btn_blue create_collections_btn">
-               <img src="/icons/plus-white.png" class="main-topnav__icon" />
-            </div>
-            {{/if}}
-         {{/if}}
 
          {{#if viewing_own_profile}}
          <div class="template_one_project_btn_wrapper edit_collection_btn collection_project all">
@@ -353,7 +364,6 @@
          {{/if}}
 
          <div id="masonryContainer" class="masonryContainer {{#if viewing_own_profile}}ownProfile{{/if}}">
-
 
             {{#if collections}}
 
@@ -906,6 +916,23 @@
 
                {{/if}}
 
+            {{/if}}
+
+            {{#if products}}
+            {{#each products}}
+            <div class="masonryItem profileProducts" title="{{this.title}}">
+               <a href="/p/product/{{this._id}}">
+                  <div class="product_card">
+                    <img src="https://ik.imagekit.io/w07am55tja/{{this.image}}?tr=w-500" class="img-responsive product_image" alt="{{this.title}}" />
+
+                    <div class="product_info">
+                      <p class="product_title">{{this.title}}</p>
+                      <p class="product_price">{{this.price}}</p>
+                    </div>
+                  </div>
+               </a>
+            </div>
+            {{/each}}
             {{/if}}
 
          </div>

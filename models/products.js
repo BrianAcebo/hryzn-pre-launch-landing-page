@@ -19,7 +19,7 @@ const ProductSchema = mongoose.Schema({
      type: String
    },
    categories: [],
-   availabilty: {
+   availability: {
      is_in_stock: {
        type: Boolean
      },

@@ -49,6 +49,7 @@ const Group = require('../models/groups');
 const Collection = require('../models/collections');
 const Email = require('../models/emails');
 const Category = require('../models/categories');
+const Product = require('../models/products');
 
 
 // To create csv file for email list
@@ -382,30 +383,38 @@ router.get('/', (req, res, next) => {
                               var premium_creator_account = false;
                             }
 
-                            res.render(pageRender, {
-                               page_title: '@' + profile.username,
-                               page_description: profile.bio,
-                               profile: profile,
-                               projects: reversed_projects,
-                               collections: all_collections.reverse(),
-                               saved_projects: reversed_saved_projects,
-                               reposted_projects: reversed_reposted_projects,
-                               user_follows_profile: user_follows_profile,
-                               amount_of_followers: amount_of_followers,
-                               amount_of_following: amount_of_following,
-                               amount_of_projects: amount_of_projects,
-                               viewing_own_profile: viewing_own_profile,
-                               guestUser: guestUser,
-                               hryznAdmin: hryznAdmin,
-                               profile_active: true,
-                               profilePage: true,
-                               followers: followers,
-                               premium_creator_account: premium_creator_account,
-                               main_page_nav: true,
-                               unable_to_view_private_profile: unable_to_view_private_profile,
-                               viewer_has_pending_request: viewer_has_pending_request,
-                               can_view_adult_content: can_view_adult_content
+                            Product.find({ '_id': { $in: profile.creator_products} }, (err, products) => {
+                               if (err) throw err;
+
+                              res.render(pageRender, {
+                                 page_title: '@' + profile.username,
+                                 page_description: profile.bio,
+                                 profile: profile,
+                                 projects: reversed_projects,
+                                 collections: all_collections.reverse(),
+                                 saved_projects: reversed_saved_projects,
+                                 reposted_projects: reversed_reposted_projects,
+                                 user_follows_profile: user_follows_profile,
+                                 amount_of_followers: amount_of_followers,
+                                 amount_of_following: amount_of_following,
+                                 amount_of_projects: amount_of_projects,
+                                 viewing_own_profile: viewing_own_profile,
+                                 guestUser: guestUser,
+                                 hryznAdmin: hryznAdmin,
+                                 profile_active: true,
+                                 profilePage: true,
+                                 followers: followers,
+                                 premium_creator_account: premium_creator_account,
+                                 main_page_nav: true,
+                                 unable_to_view_private_profile: unable_to_view_private_profile,
+                                 viewer_has_pending_request: viewer_has_pending_request,
+                                 can_view_adult_content: can_view_adult_content,
+                                 products: products,
+                                 payment_element: true
+                              });
+
                             });
+
                          });
 
                       });
@@ -453,28 +462,35 @@ router.get('/', (req, res, next) => {
                         var premium_creator_account = false;
                       }
 
-                      res.render(pageRender, {
-                         page_title: '@' + profile.username,
-                         page_description: profile.bio,
-                         profile: profile,
-                         projects: reversed_projects,
-                         saved_projects: reversed_saved_projects,
-                         reposted_projects: reversed_reposted_projects,
-                         user_follows_profile: user_follows_profile,
-                         amount_of_followers: amount_of_followers,
-                         amount_of_following: amount_of_following,
-                         amount_of_projects: amount_of_projects,
-                         viewing_own_profile: viewing_own_profile,
-                         guestUser: guestUser,
-                         hryznAdmin: hryznAdmin,
-                         profile_active: true,
-                         profilePage: true,
-                         noCollections: noCollections,
-                         premium_creator_account: premium_creator_account,
-                         main_page_nav: true,
-                         unable_to_view_private_profile: unable_to_view_private_profile,
-                         viewer_has_pending_request: viewer_has_pending_request,
-                         can_view_adult_content: can_view_adult_content
+                      Product.find({ '_id': { $in: profile.creator_products} }, (err, products) => {
+                         if (err) throw err;
+
+                        res.render(pageRender, {
+                           page_title: '@' + profile.username,
+                           page_description: profile.bio,
+                           profile: profile,
+                           projects: reversed_projects,
+                           saved_projects: reversed_saved_projects,
+                           reposted_projects: reversed_reposted_projects,
+                           user_follows_profile: user_follows_profile,
+                           amount_of_followers: amount_of_followers,
+                           amount_of_following: amount_of_following,
+                           amount_of_projects: amount_of_projects,
+                           viewing_own_profile: viewing_own_profile,
+                           guestUser: guestUser,
+                           hryznAdmin: hryznAdmin,
+                           profile_active: true,
+                           profilePage: true,
+                           noCollections: noCollections,
+                           premium_creator_account: premium_creator_account,
+                           main_page_nav: true,
+                           unable_to_view_private_profile: unable_to_view_private_profile,
+                           viewer_has_pending_request: viewer_has_pending_request,
+                           can_view_adult_content: can_view_adult_content,
+                           products: products,
+                           payment_element: true
+                        });
+
                       });
                    });
                 });
@@ -3149,29 +3165,36 @@ router.get('/profile/:username', (req, res, next) => {
                              var premium_creator_account = false;
                            }
 
-                           res.render(pageRender, {
-                              page_title: '@' + profile.username,
-                              page_description: profile.bio,
-                              profile: profile,
-                              projects: reversed_projects,
-                              collections: all_collections.reverse(),
-                              saved_projects: reversed_saved_projects,
-                              reposted_projects: reversed_reposted_projects,
-                              user_follows_profile: user_follows_profile,
-                              amount_of_followers: amount_of_followers,
-                              amount_of_following: amount_of_following,
-                              amount_of_projects: amount_of_projects,
-                              viewing_own_profile: viewing_own_profile,
-                              guestUser: guestUser,
-                              hryznAdmin: hryznAdmin,
-                              profile_active: true,
-                              profilePage: true,
-                              followers: followers,
-                              premium_creator_account: premium_creator_account,
-                              main_page_nav: true,
-                              unable_to_view_private_profile: unable_to_view_private_profile,
-                              viewer_has_pending_request: viewer_has_pending_request,
-                              can_view_adult_content: can_view_adult_content
+                           Product.find({ '_id': { $in: profile.creator_products} }, (err, products) => {
+                              if (err) throw err;
+
+                               res.render(pageRender, {
+                                  page_title: '@' + profile.username,
+                                  page_description: profile.bio,
+                                  profile: profile,
+                                  projects: reversed_projects,
+                                  collections: all_collections.reverse(),
+                                  saved_projects: reversed_saved_projects,
+                                  reposted_projects: reversed_reposted_projects,
+                                  user_follows_profile: user_follows_profile,
+                                  amount_of_followers: amount_of_followers,
+                                  amount_of_following: amount_of_following,
+                                  amount_of_projects: amount_of_projects,
+                                  viewing_own_profile: viewing_own_profile,
+                                  guestUser: guestUser,
+                                  hryznAdmin: hryznAdmin,
+                                  profile_active: true,
+                                  profilePage: true,
+                                  followers: followers,
+                                  premium_creator_account: premium_creator_account,
+                                  main_page_nav: true,
+                                  unable_to_view_private_profile: unable_to_view_private_profile,
+                                  viewer_has_pending_request: viewer_has_pending_request,
+                                  can_view_adult_content: can_view_adult_content,
+                                  products: products,
+                                  payment_element: true
+                               });
+
                            });
                         });
 
@@ -3220,29 +3243,35 @@ router.get('/profile/:username', (req, res, next) => {
                        var premium_creator_account = false;
                      }
 
-                     res.render(pageRender, {
-                        page_title: '@' + profile.username,
-                        page_description: profile.bio,
-                        profile: profile,
-                        projects: reversed_projects,
-                        saved_projects: reversed_saved_projects,
-                        reposted_projects: reversed_reposted_projects,
-                        user_follows_profile: user_follows_profile,
-                        amount_of_followers: amount_of_followers,
-                        amount_of_following: amount_of_following,
-                        amount_of_projects: amount_of_projects,
-                        viewing_own_profile: viewing_own_profile,
-                        guestUser: guestUser,
-                        hryznAdmin: hryznAdmin,
-                        profile_active: true,
-                        profilePage: true,
-                        noCollections: noCollections,
-                        premium_creator_account: premium_creator_account,
-                        main_page_nav: true,
-                        unable_to_view_private_profile: unable_to_view_private_profile,
-                        viewer_has_pending_request: viewer_has_pending_request,
-                        can_view_adult_content: can_view_adult_content
-                     });
+                     Product.find({ '_id': { $in: profile.creator_products} }, (err, products) => {
+                        if (err) throw err;
+
+                         res.render(pageRender, {
+                            page_title: '@' + profile.username,
+                            page_description: profile.bio,
+                            profile: profile,
+                            projects: reversed_projects,
+                            saved_projects: reversed_saved_projects,
+                            reposted_projects: reversed_reposted_projects,
+                            user_follows_profile: user_follows_profile,
+                            amount_of_followers: amount_of_followers,
+                            amount_of_following: amount_of_following,
+                            amount_of_projects: amount_of_projects,
+                            viewing_own_profile: viewing_own_profile,
+                            guestUser: guestUser,
+                            hryznAdmin: hryznAdmin,
+                            profile_active: true,
+                            profilePage: true,
+                            noCollections: noCollections,
+                            premium_creator_account: premium_creator_account,
+                            main_page_nav: true,
+                            unable_to_view_private_profile: unable_to_view_private_profile,
+                            viewer_has_pending_request: viewer_has_pending_request,
+                            can_view_adult_content: can_view_adult_content,
+                            products: products,
+                            payment_element: true
+                         });
+                      });
                   });
                });
             });

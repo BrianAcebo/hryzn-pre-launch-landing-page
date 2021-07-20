@@ -44,6 +44,7 @@ const Group = require('../models/groups');
 const Collection = require('../models/collections');
 const Category = require('../models/categories');
 const Comment = require('../models/comments');
+const Product = require('../models/products');
 
 
 // GET Create Project
@@ -4550,6 +4551,57 @@ router.get('/micro/edit/:id', (req, res, next) => {
    } else {
       res.redirect('/users/register');
    }
+});
+
+
+// Get Products
+router.get('/product/:id', (req, res, next) => {
+   Product.findById(req.params.id, (err, product) => {
+     if (err) throw err;
+
+     User.findById(product.owner, (err, product_owner) => {
+       if (err) throw err;
+
+       Product.find({ '_id': { $in: product_owner.creator_products} }, (err, products_by_owner) => {
+          if (err) throw err;
+
+          Product.find({ 'categories': { $in: product.categories} }, (err, similar_products) => {
+             if (err) throw err;
+
+             if (!similar_products || similar_products < 10) {
+
+               Product.find({}, (err, similar_products) => {
+                  if (err) throw err;
+
+                  res.render('p/product/product-details', {
+                     page_title: product.title,
+                     product: product,
+                     product_owner: product_owner,
+                     products_by_owner: products_by_owner,
+                     similar_products: similar_products
+                  });
+
+               });
+
+             } else {
+
+               res.render('p/product/product-details', {
+                  page_title: product.title,
+                  product: product,
+                  product_owner: product_owner,
+                  products_by_owner: products_by_owner,
+                  similar_products: similar_products
+               });
+
+             }
+
+          });
+
+       });
+
+     });
+
+   });
 });
 
 

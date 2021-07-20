@@ -317,3 +317,31 @@
 .sub_modal_btn {
   cursor: pointer;
 }
+
+.top_profile_flex_wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: row;
+}
+
+.top_profile_flex_wrapper:first-child {
+  margin-right: 25px;
+}
+
+.show_products_btn,
+.show_projects_btn {
+  cursor: pointer;
+  padding: 15px;
+  border-radius: 50%;
+  background: #31375A;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50px;
+  margin-bottom: 25px;
+}
+
+.show_projects_btn {
+  display: none;
+}

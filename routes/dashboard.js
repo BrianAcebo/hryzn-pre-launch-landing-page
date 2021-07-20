@@ -668,7 +668,7 @@ router.post('/creator-products/add', upload.single('product_image'), (req, res, 
                image: product_image,
                shipping_and_returns: product_ship_and_ret,
                categories: product_categories,
-               availabilty: {
+               availability: {
                  is_in_stock: true,
                  quantity: product_quantity
                },
@@ -789,11 +789,7 @@ router.post('/monetize/products/edit/:id', upload.single('product_image'), (req,
       if (req.body.product_categories) {
          if (req.body.product_categories.length > 0) {
             var product_categories = req.body.product_categories;
-         } else {
-            var product_categories = [];
          }
-      } else {
-         var product_categories = [];
       }
 
       if(req.file) {
@@ -835,7 +831,7 @@ router.post('/monetize/products/edit/:id', upload.single('product_image'), (req,
               image: product_image,
               shipping_and_returns: product_ship_and_ret,
               categories: product_categories,
-              availabilty: {
+              availability: {
                 is_in_stock: true,
                 quantity: product_quantity
               },
@@ -875,7 +871,7 @@ router.post('/monetize/products/edit/:id', upload.single('product_image'), (req,
            description: product_description,
            shipping_and_returns: product_ship_and_ret,
            categories: product_categories,
-           availabilty: {
+           availability: {
              is_in_stock: true,
              quantity: product_quantity
            },
