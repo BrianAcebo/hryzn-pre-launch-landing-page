@@ -334,7 +334,8 @@ blockquote {
    cursor: pointer;
 }
 
-.success__msg {
+.success__msg,
+.success__msg-example {
    width: 100%;
    background: #69c893;
    color: #fff;
@@ -349,6 +350,11 @@ blockquote {
    border-top: 3px solid #5eb484;
    top: 100px;
    z-index: 888888;
+}
+
+#mainDash .success__msg {
+  z-index: 999999;
+  top: 0;
 }
 
 @media screen and (max-width: 992px) {

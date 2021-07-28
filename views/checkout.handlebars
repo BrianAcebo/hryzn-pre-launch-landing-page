@@ -1,0 +1,214 @@
+{{#if checkout}}
+
+<div class="checkout_info_top">
+  <h3>Checkout</h3>
+  <div class="cart_detail_title_underline"></div>
+  <p>
+    <span>{{user.total_cart_items}} item{{#ifEquals user.total_cart_items '1'}}{{else}}s{{/ifEquals}}</span>
+    {{total}}
+  </p>
+</div>
+
+<div class="cart_detail_container checkout_container">
+
+  <div class="cart_detail_left">
+
+    <button class="checkout_acc bag_acc">Bag</button>
+    <div class="checkout_panel">
+
+      {{#each products}}
+      <div class="cart_detail_product">
+
+        <div class="cart_detail_product_one">
+          <img src="https://ik.imagekit.io/w07am55tja/{{this.image}}?tr=w-1000" class="img-responsive" alt="{{this.title}}" />
+        </div>
+
+        <div class="cart_detail_product_two">
+          <h3>{{this.title}}</h3>
+          <div class="cart_detail_product_two_mid">
+            <p>{{this.price}}</p>
+            <small>x {{this.quantity}}</small>
+          </div>
+        </div>
+
+      </div>
+      {{/each}}
+
+      <hr class="checkout_bag_underline">
+
+      <div class="checkout_bag_info">
+        <p>Subtotal</p>
+        <p>{{subtotal}}</p>
+      </div>
+      <div class="checkout_bag_info">
+        <p>Shipping & Handling</p>
+        <p>{{shipping_cost}}</p>
+      </div>
+      <div class="checkout_bag_info checkout_bag_info_total">
+        <p>Total</p>
+        <p class="checkout_bag_info_price">{{total}}</p>
+      </div>
+
+    </div>
+
+    <form id="checkoutForm" action="/checkout" method="post">
+      <div class="checkout_tab">
+        <div class="checkout_tab_top">
+            <h3>1. Contact</h3>
+        </div>
+
+        <div class="checkout_tab_panel">
+          <input class="checkout_input form__input" type="text" name="fname" value="{{checkout.fname}}" placeholder="First Name" required/>
+          <input class="checkout_input form__input" type="text" name="lname" value="{{checkout.lname}}" placeholder="Last Name" required/>
+
+          <input class="checkout_input form__input" type="email" name="email" value="{{checkout.email}}" placeholder="Email Address" required/>
+          <input class="checkout_input form__input" type="phone" name="phone" value="{{checkout.phone}}" placeholder="Phone Number" required/>
+        </div>
+      </div>
+
+      <div class="checkout_tab">
+        <div class="checkout_tab_top">
+          <h3>2. Delivery</h3>
+        </div>
+
+        <div class="checkout_tab_panel">
+          <input class="checkout_input form__input" type="text" name="address" value="{{checkout.address}}" placeholder="Deliver To Address" required/>
+          <input class="checkout_input form__input checkout_optional" type="text" name="apt" value="{{checkout.apt}}" placeholder="Apartment, Unit, Suite, or Floor #" />
+
+          <div class="checkout_four_col_row">
+            <div class="checkout_two_col_row">
+              <input class="checkout_input form__input" type="text" name="city" value="{{checkout.city}}" placeholder="City" />
+              <input class="checkout_input form__input" type="text" name="state" value="{{checkout.state}}" placeholder="State / Province" required/>
+            </div>
+
+            <div class="checkout_two_col_row">
+              <input class="checkout_input form__input" type="text" name="postal" value="{{checkout.postal}}" placeholder="Postal Code" required/>
+              <input class="checkout_input form__input" type="text" name="country" value="{{checkout.country}}" placeholder="Country / Region" required/>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="checkout_tab">
+        <div class="checkout_tab_top">
+          <h3>3. Payment</h3>
+        </div>
+
+        <div class="checkout_tab_panel stripe_panel">
+
+          <div class="checkout_tab_panel_top">
+            <div class="stripe_form">
+              <div class="stripe_form_wrapper">
+                <input type="hidden" name="customer" value="{{user._id}}">
+                <input type="hidden" name="cart_id" value="{{cart_id}}">
+                <input type="hidden" name="checkout_id" value="{{checkout_id}}">
+                <input id="intents" type="hidden" name="intents[]" value="{{intents}}">
+                <div id="card-element" class="form__input" style="max-height: 50px; margin: 0;"></div>
+                <div id="card-errors" role="alert"></div>
+              </div>
+            </div>
+
+            <label class="checkout_billing_check_container">
+              Billing address is the same as shipping
+              <input class="checkout_billing_check_checkbox" type="checkbox" checked="checked" value="true">
+              <span class="checkout_billing_check_checkmark"></span>
+            </label>
+
+            <div class="checkout_billing_check_wrapper">
+              <div class="checkout_row">
+                <input class="checkout_input form__input" type="text" name="billing_fname" value="{{checkout.fname}}" placeholder="First Name"/>
+                <input class="checkout_input form__input" type="text" name="billing_lname" value="{{checkout.lname}}" placeholder="Last Name"/>
+              </div>
+
+              <input class="checkout_input form__input" type="text" name="billing_address" value="{{checkout.address}}" placeholder="Deliver To Address"/>
+              <input class="checkout_input form__input checkout_optional" type="text" name="billing_apt" value="{{checkout.apt}}" placeholder="Apartment, Unit, Suite, or Floor #" />
+
+              <div class="checkout_four_col_row">
+                <div class="checkout_two_col_row">
+                  <input class="checkout_input form__input" type="text" name="billing_city" value="{{checkout.city}}" placeholder="City" />
+                  <input class="checkout_input form__input" type="text" name="billing_state" value="{{checkout.state}}" placeholder="State / Province"/>
+                </div>
+
+                <div class="checkout_two_col_row">
+                  <input class="checkout_input form__input" type="text" name="billing_postal" value="{{checkout.postal}}" placeholder="Postal Code"/>
+                  <input class="checkout_input form__input" type="text" name="billing_country" value="{{checkout.country}}" placeholder="Country / Region" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="stripe_result stripe_hidden">
+            <p>Order Complete<br /></p>
+            <img src="/icons/checked-data.png" class="stripe_checkmark" />
+          </div>
+        </div>
+      </div>
+
+      <div class="checkout_btns">
+        <button type="button" id="checkoutPrev">Previous</button>
+        <button type="button" id="checkoutNext" class="btn-Stripe">
+          <span id="stripe_button-text">Save & Continue</span>
+        </button>
+      </div>
+
+      <div style="text-align: center; margin-top: 25px;">
+        <span class="checkout_step"></span>
+        <span class="checkout_step"></span>
+        <span class="checkout_step"></span>
+      </div>
+
+    </form>
+
+  </div>
+  <div class="cart_detail_right">
+
+    <div class="checkout_total_info">
+
+      <div class="checkout_total_info_top">
+        <h3>Bag</h3>
+        <a href="/cart">Edit</a>
+      </div>
+
+      <div class="checkout_total_info_panel">
+
+        <div class="checkout_bag_info">
+          <p>Subtotal</p>
+          <p>{{subtotal}}</p>
+        </div>
+        <div class="checkout_bag_info">
+          <p>Shipping & Handling</p>
+          <p>{{shipping_cost}}</p>
+        </div>
+        <div class="checkout_bag_info checkout_bag_info_total">
+          <p>Total</p>
+          <p class="checkout_bag_info_price">{{total}}</p>
+        </div>
+
+        <hr class="checkout_bag_underline">
+
+        {{#each products}}
+        <div class="cart_detail_product">
+
+          <div class="cart_detail_product_one">
+            <img src="https://ik.imagekit.io/w07am55tja/{{this.image}}?tr=w-1000" class="img-responsive" alt="{{this.title}}" />
+          </div>
+
+          <div class="cart_detail_product_two">
+            <h3>{{this.title}}</h3>
+            <div class="cart_detail_product_two_mid">
+              <p>{{this.price}}</p>
+              <small>x {{this.quantity}}</small>
+            </div>
+          </div>
+
+        </div>
+        {{/each}}
+
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+{{/if}}

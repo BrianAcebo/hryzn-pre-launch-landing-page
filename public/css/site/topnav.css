@@ -1179,3 +1179,22 @@ nav.item-list {
 .hamburger_menu .ingredients::after {
    bottom: -9px;
 }
+
+.icon_bag_container {
+  position: relative;
+  line-height: 15px;
+}
+
+.icon_cart_items {
+  position: absolute;
+  background: #333;
+  border-radius: 50%;
+  padding: 6px;
+  color: #fff;
+  line-height: 5px;
+  font-size: 10px;
+  font-weight: bold;
+  right: -7px;
+  top: -7px;
+  text-align: center;
+}

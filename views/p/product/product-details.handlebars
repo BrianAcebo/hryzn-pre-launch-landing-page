@@ -21,14 +21,27 @@
       <p>{{product.price}}</p>
     </div>
 
-    <div class="product_detail_right_mid">
-      {{#if product.availability.is_in_stok}}
-      <input class="product_detail_quantity" type="number" name="product_quantity" min="1" value="1" required>
-      <div class="product_detail_atc_btn">Add To Cart</div>
+
+      {{#if product.availability.is_in_stock}}
+      <form method="post" action="/cart/add/{{product._id}}">
+        <div class="product_detail_right_mid">
+          <input class="product_detail_quantity" type="number" name="product_quantity" min="1" value="1" required>
+          <input type="submit" value="Add To Cart" class="product_detail_atc_btn">
+        </div>
+      </form>
       {{else}}
-      <div class="product_detail_quantity">0</div>
-      <div class="product_detail_atc_btn out_of_stock">Out Of Stock</div>
+      <div class="product_detail_right_mid">
+        <div class="product_detail_quantity">0</div>
+        <div class="product_detail_atc_btn out_of_stock">Out Of Stock</div>
+      </div>
       {{/if}}
+
+    <div class="semi-spacer"></div>
+
+    <div class="product_detail_categories">
+      {{#each product.categories}}
+      <a href="/explore/{{this}}">{{this}}</a>
+      {{/each}}
     </div>
 
     <div class="semi-spacer"></div>
@@ -54,41 +67,11 @@
 
 <div class="spacer"></div>
 
-<div class="explore_main">
+<div class="explore_main products_detail_explore">
     <h3>More By Owner</h3>
 
-    {{#each products_by_owner}}
-
-    <div class="masonryItem" title="{{this.title}}">
-       <a href="/p/product/{{this._id}}">
-          <div class="product_card">
-            <img src="https://ik.imagekit.io/w07am55tja/{{this.image}}?tr=w-500" class="img-responsive product_image" alt="{{this.title}}" />
-
-            <div class="product_info">
-              <p class="product_title">{{this.title}}</p>
-              <p class="product_price">{{this.price}}</p>
-            </div>
-          </div>
-       </a>
-    </div>
-
-    {{/each}}
-
-</div>
-{{/if}}
-<!-- /Products By Same Owner -->
-
-<!-- Similar Products -->
-{{#if similar_products}}
-
-<div class="spacer"></div>
-
-<div class="explore_main">
-  <h3>You May Also Like</h3>
-   <div id="masonryContainer" class="masonryContainer">
-
-      {{#each similar_products}}
-
+    <div class="products_detail_explore_container">
+      {{#each products_by_owner}}
       <div class="masonryItem" title="{{this.title}}">
          <a href="/p/product/{{this._id}}">
             <div class="product_card">
@@ -101,7 +84,33 @@
             </div>
          </a>
       </div>
+      {{/each}}
+    </div>
 
+</div>
+{{/if}}
+<!-- /Products By Same Owner -->
+
+<!-- Similar Products -->
+{{#if similar_products}}
+
+<div class="explore_main">
+  <h3>You May Also Like</h3>
+   <div id="masonryContainer" class="masonryContainer">
+
+      {{#each similar_products}}
+      <div class="masonryItem" title="{{this.title}}">
+         <a href="/p/product/{{this._id}}">
+            <div class="product_card">
+              <img src="https://ik.imagekit.io/w07am55tja/{{this.image}}?tr=w-500" class="img-responsive product_image" alt="{{this.title}}" />
+
+              <div class="product_info">
+                <p class="product_title">{{this.title}}</p>
+                <p class="product_price">{{this.price}}</p>
+              </div>
+            </div>
+         </a>
+      </div>
       {{/each}}
 
    </div>

@@ -346,10 +346,10 @@
            {{/if}}
 
            {{#if products}}
-           <div class="show_products_btn">
+           <div onclick="adjust()" class="show_products_btn">
               <img src="/icons/products.png" class="main-topnav__icon" />
            </div>
-           <div class="show_projects_btn">
+           <div onclick="adjust()" class="show_projects_btn">
               <img src="/icons/profile-content.png" class="main-topnav__icon" />
            </div>
            {{/if}}
@@ -972,6 +972,7 @@
       {{else}}
       <a href="/creatives">Become A Creator</a>
       {{/if}}
+      <a href="/orders">Review Purchased Orders</a>
       <a href="/about/contact">Contact Hryzn</a>
       <a target="_blank" style="font-weight: bold" href="https://{{user.username}}.myhryzn.com">{{user.username}}.myhryzn.com</a>
    </div>

@@ -170,7 +170,16 @@ const UserSchema = mongoose.Schema({
    creator_products_is_active: {
      type: Boolean
    },
-   creator_products: []
+   creator_products: [],
+   has_cart_items: {
+     type: Boolean
+   },
+   total_cart_items: {
+     type: Number
+   },
+   has_unfulfilled_items: {
+     type: Boolean
+   },
 });
 
 const User = module.exports = mongoose.model('User', UserSchema);

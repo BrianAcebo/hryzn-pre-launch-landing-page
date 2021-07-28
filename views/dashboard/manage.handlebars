@@ -1,0 +1,68 @@
+{{#if subscription_active}}
+
+<div class="dash_content">
+
+{{#if orders}}
+
+<div class="all_orders_container">
+
+  <a href="/dashboard/manage/orders/all-orders-complete" class="dash_all-orders-complete">Click here if all orders are fulfilled</a>
+
+  {{#each orders}}
+  <a href="/dashboard/manage/{{this._id}}">
+    <div class="order_info_wrapper">
+      <strong>Order Number</strong>
+      <p>{{this.order_number}}</p>
+    </div>
+
+    <div class="order_info_wrapper">
+      <strong>Date</strong>
+      <p>{{this.date_was_created}}</p>
+    </div>
+
+    <div class="order_info_wrapper order_info_mobile_total">
+      <strong>Total</strong>
+      <p>{{this.customer_total_amount}}</p>
+    </div>
+
+    <div class="order_info_wrapper order_info_elements_container">
+      <strong>Elements</strong>
+
+      <div class="order_info_elements_wrapper">
+        {{#each this.items}}
+        <div class="order_info_element">
+            {{#ifEquals this.fulfillment_status '0'}}<p class="order_info_element_processing">Processing</p>{{/ifEquals}}
+            {{#ifEquals this.fulfillment_status '1'}}<p class="order_info_element_shipped">Shipped</p>{{/ifEquals}}
+            {{#ifEquals this.fulfillment_status '2'}}<p class="order_info_element_delivered">Delivered</p>{{/ifEquals}}
+          <p class="order_info_element_items">{{this.products.length}} item{{#ifEquals this.products.length '1'}}{{else}}s{{/ifEquals}}</p>
+        </div>
+        {{/each}}
+      </div>
+    </div>
+  </a>
+  {{/each}}
+
+</div>
+
+{{else}}
+<div class="error__container">
+  <h1 class="main__title">You have no purchased orders</h1>
+  <div class="row main__info-container">
+     <a href="/explore" class="main__info" style="width: 100%; max-width: none; margin: 0 auto;"><strong>Let's go explore &#8594;</strong></a>
+  </div>
+</div>
+{{/if}}
+
+</div>
+
+{{else}}
+
+<div class="dash_content">
+   <h3>Subscription is no longer active.</h3>
+   <p>
+      We're sorry but this subscription is no longer active. This issue can arise due to a failed payment, or a paused/canceled subscription.
+      If you're looking to renew your subscription, go to the customer portal located in dashboard settings.
+   </p>
+</div>
+
+{{/if}}

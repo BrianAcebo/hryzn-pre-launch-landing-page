@@ -1,0 +1,48 @@
+{{#if orders}}
+
+<div class="all_orders_container">
+
+  {{#each orders}}
+  <a href="/orders/{{this._id}}">
+    <div class="order_info_wrapper">
+      <strong>Order Number</strong>
+      <p>{{this.order_number}}</p>
+    </div>
+
+    <div class="order_info_wrapper">
+      <strong>Date</strong>
+      <p>{{this.date_was_created}}</p>
+    </div>
+
+    <div class="order_info_wrapper order_info_mobile_total">
+      <strong>Total</strong>
+      <p>{{this.customer_total_amount}}</p>
+    </div>
+
+    <div class="order_info_wrapper order_info_elements_container">
+      <strong>Elements</strong>
+
+      <div class="order_info_elements_wrapper">
+        {{#each this.items}}
+        <div class="order_info_element">
+            {{#ifEquals this.fulfillment_status '0'}}<p class="order_info_element_processing">Processing</p>{{/ifEquals}}
+            {{#ifEquals this.fulfillment_status '1'}}<p class="order_info_element_shipped">Shipped</p>{{/ifEquals}}
+            {{#ifEquals this.fulfillment_status '2'}}<p class="order_info_element_delivered">Delivered</p>{{/ifEquals}}
+          <p class="order_info_element_items">{{this.products.length}} item{{#ifEquals this.products.length '1'}}{{else}}s{{/ifEquals}}</p>
+        </div>
+        {{/each}}
+      </div>
+    </div>
+  </a>
+  {{/each}}
+
+</div>
+
+{{else}}
+<div class="error__container">
+  <h1 class="main__title">You have no purchased orders</h1>
+  <div class="row main__info-container">
+     <a href="/explore" class="main__info" style="width: 100%; max-width: none; margin: 0 auto;"><strong>Let's go explore &#8594;</strong></a>
+  </div>
+</div>
+{{/if}}

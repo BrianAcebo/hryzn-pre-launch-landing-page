@@ -4559,7 +4559,7 @@ router.get('/product/:id', (req, res, next) => {
    Product.findById(req.params.id, (err, product) => {
      if (err) throw err;
 
-     User.findById(product.owner, (err, product_owner) => {
+     User.find({ 'stripe_connected_account_id': { $in: product.owner } }, (err, product_owner) => {
        if (err) throw err;
 
        Product.find({ '_id': { $in: product_owner.creator_products} }, (err, products_by_owner) => {
@@ -4597,7 +4597,7 @@ router.get('/product/:id', (req, res, next) => {
 
           });
 
-       });
+       }).limit(10);
 
      });
 

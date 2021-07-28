@@ -27,7 +27,7 @@
         <div class="product_amount_col">
         <label for="product_price" class="form__label">Price</label>
         <input id="product_price" class="product_amount" type="text" name="product_price" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" value="{{product.price}}" data-type="currency" required>
-        <p id="price_amount_err" ></p>
+        <p class="price_amount_err" ></p>
         <!-- <input class="product_amount" type="number" name="product_price" min="1" required> -->
         </div>
 
@@ -38,6 +38,15 @@
 
       </div>
 
+      {{#if product.availability.is_in_stock}}
+      <input type="radio" name="is_out_of_stock" value="true">
+      <label for="is_out_of_stock" class="input_out_of_stock">This product is out of stock</label>
+      {{else}}
+      <input type="radio" name="is_back_in_stock" value="true">
+      <label for="is_back_in_stock" class="input_out_of_stock">This product is back in stock</label>
+      {{/if}}
+      <br>
+
       <label for="product_categories" class="form__label" style="margin-top: 25px;">Change Product Categories</label>
       <select data-placeholder="Add categories..." multiple class="chosen-select form__input" name="product_categories[]">
          <option value=""></option>
@@ -45,6 +54,10 @@
          <option>{{this.category}}</option>
          {{/each}}
       </select>
+
+      <label for="product_price" class="form__label">Shipping Cost Per Unit</label>
+      <input id="product_shipping_price" class="product_amount" type="text" name="product_shipping_cost" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" value="{{product.shipping_cost}}" data-type="currency" required>
+      <p class="product_shipping_info">This is the individual price per unit to help calculate shipping costs. Shipping costs are accumulated by each product at checkout. For example, 5 units x $2 shipping equals a $10 shipping cost.</p>
 
       <label for="product_ship_and_ret" class="form__label">Shipping & Returns</label>
       <textarea name="product_ship_and_ret" value="" class="form__input product_text" value="{{product.shipping_and_returns}}" required>{{product.shipping_and_returns}}</textarea>

@@ -1,0 +1,105 @@
+{{#if cart}}
+
+<div class="cart_detail_container">
+
+  <div class="cart_detail_left">
+
+    <h3>Bag</h3>
+    <div class="cart_detail_title_underline"></div>
+
+    {{#each cart.products}}
+
+    <div class="cart_detail_product">
+
+      <div class="cart_detail_product_one">
+        <img src="https://ik.imagekit.io/w07am55tja/{{this.image}}?tr=w-1000" class="img-responsive" alt="{{this.title}}" />
+      </div>
+
+      <div class="cart_detail_product_two">
+        <h3>{{this.title}}</h3>
+        <div class="cart_detail_product_two_mid">
+          <a class="cart_detail_view_product" href="/p/product/{{this._id}}">View</a>
+          <a class="cart_detail_remove_product" href="/cart/remove/{{this._id}}">Remove</a>
+        </div>
+      </div>
+
+      <div class="cart_detail_product_three">
+        <p>{{this.price}}</p>
+        <small>x {{this.quantity}}</small>
+      </div>
+
+    </div>
+
+    <strong class="cart_detail_ship_and_ret_header">Shipping & Returns</strong>
+    <p class="cart_detail_ship_and_ret">{{this.shipping_and_returns}}</p>
+
+    {{#ifEquals cart.products.length '1'}}
+    {{else}}
+    <hr class="cart_detail_product_underline">
+    {{/ifEquals}}
+
+    {{/each}}
+
+  </div>
+
+  <div class="cart_detail_right">
+    <h3>Summary</h3>
+    <div class="cart_detail_title_underline"></div>
+
+    <div class="cart_detail_right_container">
+      <strong class="cart_detail_right_header">Subtotal</strong>
+      <p class="cart_detail_right_sub">{{subtotal}}</p>
+    </div>
+
+    <div class="cart_detail_right_container">
+      <strong class="cart_detail_right_header">Shipping & Handling</strong>
+      <p class="cart_detail_right_sub">{{shipping_cost}}</p>
+    </div>
+
+    <div class="cart_detail_right_container_border">
+      <strong class="cart_detail_right_header">Total</strong>
+      <p class="cart_detail_right_sub">{{total}}</p>
+    </div>
+
+    <a href="/checkout" type="submit" class="product_detail_atc_btn">Checkout</a>
+  </div>
+
+</div>
+
+<!-- Products By Same Owner -->
+{{#if similar_products}}
+
+<div class="explore_main products_detail_explore">
+    <h3>More By Owner</h3>
+
+    <div class="products_detail_explore_container">
+      {{#each similar_products}}
+      <div class="masonryItem" title="{{this.title}}">
+         <a href="/p/product/{{this._id}}">
+            <div class="product_card">
+              <img src="https://ik.imagekit.io/w07am55tja/{{this.image}}?tr=w-500" class="img-responsive product_image" alt="{{this.title}}" />
+
+              <div class="product_info">
+                <p class="product_title">{{this.title}}</p>
+                <p class="product_price">{{this.price}}</p>
+              </div>
+            </div>
+         </a>
+      </div>
+      {{/each}}
+    </div>
+
+</div>
+{{/if}}
+<!-- /Products By Same Owner -->
+
+{{else}}
+
+<div class="error__container">
+  <h1 class="main__title">Your bag seems to be empty</h1>
+  <div class="row main__info-container">
+     <a href="/explore" class="main__info" style="width: 100%; max-width: none; margin: 0 auto;"><strong>Let's go explore &#8594;</strong></a>
+  </div>
+</div>
+
+{{/if}}

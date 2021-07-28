@@ -155,7 +155,8 @@
       <link rel="stylesheet" type="text/css" href="/css/site/setup-profile.css" />
       <link rel="stylesheet" type="text/css" href="/css/site/stripe-payment-elements.css" />
       <link rel="stylesheet" type="text/css" href="/css/site/products.css" />
-    }}
+      <link rel="stylesheet" type="text/css" href="/css/site/orders.css" />
+      }}
 
       {{! For PROD }}
       <link rel="stylesheet" type="text/css" href="/dist/css/style.min.css" />
@@ -203,9 +204,12 @@
                  <img src="/icons/monetize.png" />
                  Monetize
                </a>
-               <a {{#if dash_nav_analytics}}class="dash_active"{{/if}} href="/dashboard/analytics">
+               <a {{#if dash_nav_manage}}class="dash_active"{{/if}} href="/dashboard/manage">
+                 {{#if user.has_unfulfilled_items}}
+                 <div class="has_unfulfilled_items_notif"></div>
+                 {{/if}}
                  <img src="/icons/analytics.png" />
-                 Analytics
+                 Manage
                </a>
             </div>
 
@@ -285,19 +289,13 @@
                         </div>
                      </a>
                      <div class="drop_nav dropNav">
+                       <a {{#if on_wildcard_profile}}href="https://www.myhryzn.com"{{else}}href="/"{{/if}}>Home</a>
                         <a href="/profile/{{user.username}}">Profile</a>
                         <a href="/messages">Messages</a>
                         <a href="/groups">Groups</a>
-                        <a href="/blog/hryzn-tutorial---site-walk-through">Help</a>
                         <a href="/logout">Logout</a>
                      </div>
                   </div>
-                  <a {{#if on_wildcard_profile}}href="https://www.myhryzn.com"{{else}}href="/"{{/if}}>
-                     <div class="tooltip">
-                        <img src="/icons/home.png" class="main-topnav__icon" />
-                        <span class="tooltiptext">Feed</span>
-                     </div>
-                  </a>
                   <a href="/explore">
                      <div class="tooltip">
                         <img src="/icons/explore-black.png" class="main-topnav__icon" />
@@ -316,6 +314,24 @@
                      <div class="tooltip">
                         <img src="/icons/notification.png" class="main-topnav__icon" />
                         <span class="tooltiptext">Notifications</span>
+                     </div>
+                  </a>
+                  {{/if}}
+                  {{#if user.has_cart_items}}
+                  <a href="/cart">
+                     <div class="tooltip">
+                        <div class="icon_bag_container">
+                          <img src="/icons/bag.png" class="main-topnav__icon" />
+                          <div class="icon_cart_items">{{user.total_cart_items}}</div>
+                        </div>
+                        <span class="tooltiptext">Cart</span>
+                     </div>
+                  </a>
+                  {{else}}
+                  <a href="/cart">
+                     <div class="tooltip">
+                        <img src="/icons/bag.png" class="main-topnav__icon" />
+                        <span class="tooltiptext">Cart</span>
                      </div>
                   </a>
                   {{/if}}
@@ -341,22 +357,8 @@
             <!-- Mobile Nav -->
             <nav class="mobile-nav">
                <ul class="mobile-nav__item-list">
-                  <li class="mobile-nav__item {{#if index_active}}mobile_active{{/if}}">
-                     <a {{#if on_wildcard_profile}}href="https://www.myhryzn.com"{{else}}href="/"{{/if}}><img src="/icons/home.png" class="mobile-nav__icon" /></a>
-                  </li>
-
                   <li class="mobile-nav__item {{#if explore_active}}mobile_active{{/if}}">
                      <a href="/explore"><img src="/icons/explore-black.png" class="mobile-nav__icon" /></a>
-                  </li>
-
-                  <li class="mobile-nav__item">
-                     <a class="create-icon"><img src="/icons/create-icon.png" class="mobile-nav__icon" /></a>
-                     <div class="post_container">
-                        <div href="/p/create-project" class="blog_post_btn">
-                           <a href="/p/create-project">Blog Post</a>
-                        </div>
-                        <div class="micro_post_btn">Micro Post</div>
-                     </div>
                   </li>
 
                   {{#if user.has_notification}}
@@ -369,14 +371,41 @@
                   </li>
                   {{/if}}
 
+                  <li class="mobile-nav__item">
+                     <a class="create-icon"><img src="/icons/create-icon.png" class="mobile-nav__icon" /></a>
+                     <div class="post_container">
+                        <div href="/p/create-project" class="blog_post_btn">
+                           <a href="/p/create-project">Blog Post</a>
+                        </div>
+                        <div class="micro_post_btn">Micro Post</div>
+                     </div>
+                  </li>
+
+                  {{#if user.has_cart_items}}
+                  <li class="mobile-nav__item {{#if cart_active}}mobile_active{{/if}}">
+                     <a href="/cart">
+                       <div class="icon_bag_container">
+                         <img src="/icons/bag.png" class="main-topnav__icon" />
+                         <div class="icon_cart_items">{{user.total_cart_items}}</div>
+                       </div>
+                     </a>
+                  </li>
+                  {{else}}
+                  <li class="mobile-nav__item {{#if cart_active}}mobile_active{{/if}}">
+                     <a href="/cart">
+                       <img src="/icons/bag.png" class="main-topnav__icon" />
+                     </a>
+                  </li>
+                  {{/if}}
+
                   <li class="mobile-nav__item {{#if profile_active}}mobile_active{{/if}}">
                      <div class="drop_menu">
                         <a class="dropBtn"><img src="/icons/user-black.png" class="mobile-nav__icon" /></a>
                         <div class="drop_nav dropNav">
+                          <a {{#if on_wildcard_profile}}href="https://www.myhryzn.com"{{else}}href="/"{{/if}}>Home</a>
                            <a href="/profile/{{user.username}}">Profile</a>
                            <a href="/messages">Messages</a>
                            <a href="/groups">Groups</a>
-                           <a href="/blog/hryzn-tutorial---site-walk-through">Help</a>
                            <a href="/logout">Logout</a>
                         </div>
                      </div>
@@ -893,6 +922,18 @@
    {{! Only necessary for masonry feed }}
    <script src="/js/macy.js" type="text/javascript"></script>
    <script src="/js/macy.init.js" type="text/javascript"></script>
+   {{else}}
+   {{#if product}}
+   {{! Only necessary for masonry feed }}
+   <script src="/js/macy.js" type="text/javascript"></script>
+   <script src="/js/macy.init.js" type="text/javascript"></script>
+   {{else}}
+   {{#if cart}}
+   {{! Only necessary for masonry feed }}
+   <script src="/js/macy.js" type="text/javascript"></script>
+   <script src="/js/macy.init.js" type="text/javascript"></script>
+   {{/if}}
+   {{/if}}
    {{/if}}
    {{/if}}
 
@@ -909,6 +950,8 @@
    <script>
    // Takes two arguments: user's input and array of possible titles
    function autocomplete(inp, arr) {
+
+     if (inp != null) {
 
       var currentFocus;
 
@@ -993,6 +1036,8 @@
       document.addEventListener("click", function (e) {
          closeAllLists(e.target);
       });
+
+    }
    }
 
 

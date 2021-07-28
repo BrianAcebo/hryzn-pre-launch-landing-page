@@ -1440,10 +1440,13 @@ $(document).ready(function() {
 
   $("input[data-type='currency']").on({
       keyup: function() {
-        formatCurrency($(this));
+        $(".price_amount_err").text('');
+        $("#card-errors").text('');
+        $("#amount_input_err").text('');
       },
       blur: function() {
         formatCurrency($(this), "blur");
+        $(this).parent().focus()
       }
   });
 
@@ -1455,6 +1458,7 @@ $(document).ready(function() {
 
 
   function formatCurrency(input, blur) {
+
     // appends $ to value, validates decimal side
     // and puts cursor back in right position.
 
@@ -1482,22 +1486,50 @@ $(document).ready(function() {
       var left_side = input_val.substring(0, decimal_pos);
       var right_side = input_val.substring(decimal_pos);
 
-      // add commas to left side of number
-      left_side = formatNumber(left_side);
+      if (input.attr('id') != 'product_price' && input.attr('id') != 'product_shipping_price' && parseInt(left_side) < 4) {
 
-      // validate right side
-      right_side = formatNumber(right_side);
+        // Subs and Tips need to be over $4
+        if ($("#card-errors").length > 0) {
+          $("#card-errors").text('Amount must be at least $4');
+        } else {
+          if (input_val < 0.01) {
+            $("#amount_input_err").text('Amount must be at least $4');
+          }
+        }
 
-      // On blur make sure 2 numbers after decimal
-      if (blur === "blur") {
-        right_side += "00";
+        input_val = 4;
+        input_val = '$' + input_val.toString();
+
+      } else if (input.attr('id') == 'product_price' && parseInt(left_side) == 0 && parseInt(right_side.replace(".", "")) < 25) {
+
+        // Products need to be over $0.25
+        input.next(".price_amount_err").text('Amount must be at least $0.25');
+
+        input_val = 0.25;
+        input_val = '$' + input_val.toString();
+
+      } else {
+
+        // All good
+
+        // add commas to left side of number
+        left_side = formatNumber(left_side);
+
+        // validate right side
+        right_side = formatNumber(right_side);
+
+        // On blur make sure 2 numbers after decimal
+        if (blur === "blur") {
+          right_side += "00";
+        }
+
+        // Limit decimal to only 2 digits
+        right_side = right_side.substring(0, 2);
+
+        // join number by .
+        input_val = "$" + left_side + "." + right_side;
+
       }
-
-      // Limit decimal to only 2 digits
-      right_side = right_side.substring(0, 2);
-
-      // join number by .
-      input_val = "$" + left_side + "." + right_side;
 
     } else {
       // no decimal entered
@@ -1505,16 +1537,26 @@ $(document).ready(function() {
       // remove all non-digits
       input_val = formatNumber(input_val);
 
-      if (input.attr('id') == 'product_price') {
+      if (input.attr('id') == 'product_price' || input.attr('id') == 'product_shipping_price') {
 
-        if (input_val < 0.25) {
+        if (input.attr('id') == 'product_price') {
 
-          $("#price_amount_err").text('Amount must be at least $0.25');
+          if (parseInt(input_val) <= 0) {
 
-          input_val = 0.25;
+            input.next(".price_amount_err").text('Amount must be at least $0.25');
 
-        } else {
-          input_val = "$" + input_val;
+            input_val = 0.25;
+            input_val = '$' + input_val.toString();
+
+          } else {
+            input_val = "$" + input_val;
+
+            // final formatting
+            if (blur === "blur") {
+              input_val += ".00";
+            }
+          }
+
         }
 
       } else {
@@ -1530,16 +1572,16 @@ $(document).ready(function() {
           }
 
           input_val = 4;
+          input_val = '$' + input_val.toString();
 
         } else {
           input_val = "$" + input_val;
+          // final formatting
+          if (blur === "blur") {
+            input_val += ".00";
+          }
         }
 
-      }
-
-      // final formatting
-      if (blur === "blur") {
-        input_val += ".00";
       }
     }
 
@@ -1550,6 +1592,21 @@ $(document).ready(function() {
     var updated_len = input_val.length;
     caret_pos = updated_len - original_len + caret_pos;
     input[0].setSelectionRange(caret_pos, caret_pos);
+
+    input.off('blur');
+    input.blur();
+
+    $("input[data-type='currency']").on({
+        keyup: function() {
+          $(".price_amount_err").text('');
+          $("#card-errors").text('');
+          $("#amount_input_err").text('');
+        },
+        blur: function() {
+          formatCurrency($(this), "blur");
+          $(this).parent().focus()
+        }
+    });
   }
   /**********/
 
@@ -1673,6 +1730,7 @@ $(document).ready(function() {
   });
   /**********/
 
+
   // Show products on profile
   var $productsBtn = $(".show_products_btn");
   var $allProjects = $(".masonryItem");
@@ -1693,5 +1751,248 @@ $(document).ready(function() {
      $projectsBtn.css({ "display": "none" });
   });
   /**********/
+
+
+  // Accordion for checkout
+  var $acc = $(".checkout_acc");
+
+  $acc.each(function() {
+    $(this).click(function() {
+       $(this).toggleClass('acc_active');
+       $(this).next('.checkout_panel').toggleClass('panel_active');
+    });
+  })
+  /**********/
+
+
+  // Accordion Tabs for checkout
+  var $currentTab = 0;
+  showTab($currentTab);
+
+  function showTab(n) {
+    var $checkout_tab = $(".checkout_tab");
+    $checkout_tab.eq(n).find('.checkout_tab_panel').addClass('panel_active');
+
+    if (n == 0) {
+      $("#checkoutPrev").css({ "display": "none" });
+    } else {
+      $("#checkoutPrev").css({ "display": "inline" });
+    }
+
+    if (n == ($checkout_tab.length - 1)) {
+      $("#checkoutNext span").text('Place Order');
+      $("#checkoutNext").css({ "background": "#31375A", "color": "#fff" });
+      $("#checkoutNext").attr('type', 'submit');
+    } else {
+      $("#checkoutNext span").text('Save & Continue');
+      $("#checkoutNext").css({ "background": "transparent", "color": "#31375A" });
+      $("#checkoutNext").attr('type', 'button');
+    }
+
+    fixStepIndicator(n)
+  }
+
+  function nextPrev(n) {
+    var $checkout_tab = $(".checkout_tab");
+
+    if (n == 1 && !validateForm()) {
+      return false;
+    }
+
+    var data = {
+      fname: $("input[name=fname]").val(),
+      lname: $("input[name=lname]").val(),
+      email: $("input[name=email]").val(),
+      phone: $("input[name=phone]").val(),
+      address: $("input[name=address]").val(),
+      apt: $("input[name=apt]").val(),
+      city: $("input[name=city]").val(),
+      state: $("input[name=state]").val(),
+      postal: $("input[name=postal]").val(),
+      country: $("input[name=country]").val()
+    }
+
+    if ($currentTab >= $checkout_tab.length - 1) {
+
+      $('.checkout_tab_panel.stripe_panel').addClass('panel_active');
+
+      $("#checkoutForm").submit();
+
+      return false;
+
+    } else {
+
+      $("#checkoutForm").on('submit', function(e) {
+        e.preventDefault();
+      });
+
+      $checkout_tab.eq($currentTab).find('.checkout_tab_panel').removeClass('panel_active');
+      $currentTab = $currentTab + n;
+
+      showTab($currentTab);
+
+      $.post('/save-checkout', {
+        data: data,
+        ajax: true
+      }, function(data, status) {
+
+      });
+    }
+  }
+
+  function validateForm() {
+    var $checkout_tab = $(".checkout_tab");
+    var $checkout_input = $checkout_tab.eq($currentTab).find('input');
+    var $checkout_stripe_form = $checkout_tab.eq($currentTab).find('.stripe_form');
+
+    var valid = true;
+
+    if ($checkout_stripe_form.length >= 1) {
+
+      if ($('#card-element').hasClass('StripeElement--empty') || $('#card-element').hasClass('StripeElement--invalid')) {
+        $('#card-element').addClass('invalid');
+        valid = false;
+      }
+
+      var $is_checked = $('.checkout_billing_check_checkbox').val();
+
+      if ($is_checked == 'false') {
+
+        var $checkout_input = $checkout_tab.eq($currentTab).find('input');
+
+        $checkout_input.each(function() {
+          if ($(this).hasClass('checkout_optional')) {
+            // Do nothing
+          } else {
+            if ($(this).val() == '') {
+              $(this).addClass('invalid');
+              valid = false;
+            }
+          }
+        });
+      }
+
+    } else {
+      $checkout_input.each(function() {
+        if ($(this).hasClass('checkout_optional')) {
+          // Do nothing
+        } else {
+          if ($(this).val() == '') {
+            $(this).addClass('invalid');
+            valid = false;
+          }
+        }
+      });
+    }
+
+    if (valid) {
+      var $checkout_step = $(".checkout_step");
+      $checkout_step.eq($currentTab).addClass('finish');
+    }
+
+    return valid;
+  }
+
+  function fixStepIndicator(n) {
+    var $checkout_step = $(".checkout_step");
+
+    $checkout_step.each(function() {
+      $(this).removeClass('active');
+    });
+
+    $checkout_step.eq(n).addClass('active');
+  }
+
+  $('#checkoutPrev').click(function() {
+    nextPrev(-1);
+  });
+
+  $('#checkoutNext').click(function() {
+    nextPrev(1);
+  });
+
+  $('.checkout_tab').each(function() {
+    $(this).find('input').each(function() {
+      $(this).on('keyup', function () {
+         $(this).removeClass('invalid')
+      });
+    });
+  });
+  /**********/
+
+
+  // Check if billing address is same as shipping in checkout
+  var $is_checked = $('.checkout_billing_check_checkbox').attr('checked');
+
+  if ($is_checked == 'checked') {
+    $('.checkout_billing_check_wrapper').css({ "display": "none" });
+    $('.checkout_billing_check_checkbox').val('true');
+  }
+
+  $('.checkout_billing_check_checkbox').click(function() {
+
+    $is_checked = $('.checkout_billing_check_checkbox').val();
+
+    if ($is_checked == 'true') {
+
+      $('.checkout_billing_check_checkbox').val('false');
+      $('.checkout_billing_check_wrapper').css({ "display": "block" });
+      $('.checkout_billing_check_wrapper').find('input').val("");
+
+    } else {
+
+      $('.checkout_billing_check_checkbox').val('true');
+      $('.checkout_billing_check_wrapper').css({ "display": "none" });
+      $('.checkout_billing_check_wrapper').find('input[name=billing_fname]').val($("input[name=fname]").val());
+      $('.checkout_billing_check_wrapper').find('input[name=billing_lname]').val($("input[name=lname]").val());
+      $('.checkout_billing_check_wrapper').find('input[name=billing_address]').val($("input[name=address]").val());
+      $('.checkout_billing_check_wrapper').find('input[name=billing_apt]').val($("input[name=apt]").val());
+      $('.checkout_billing_check_wrapper').find('input[name=billing_city]').val($("input[name=city]").val());
+      $('.checkout_billing_check_wrapper').find('input[name=billing_state]').val($("input[name=state]").val());
+      $('.checkout_billing_check_wrapper').find('input[name=billing_postal]').val($("input[name=postal]").val());
+      $('.checkout_billing_check_wrapper').find('input[name=billing_country]').val($("input[name=country]").val());
+
+    }
+  });
+  /**********/
+
+
+  // Add tracking info for order
+  $statusBtn = $(".order_detail_item_mark.owner_mark");
+  $addTracking = $(".order_detail_add_tracking");
+
+  $statusBtn.click(function() {
+    $addTracking.toggleClass('open_tracking');
+  });
+  /*********/
+
+
+  // Edit info for order
+  var $contactBtn = $(".order_detail_edit_contact");
+  var $shippingBtn = $(".order_detail_edit_shipping");
+  var $billingBtn = $(".order_detail_edit_billing");
+  var $openContact = $(".contact_was_clicked");
+  var $openShipping = $(".shipping_was_clicked");
+  var $openBilling = $(".billing_was_clicked");
+  var $closeBtn = $(".closeModal");
+
+  $contactBtn.click(function() {
+    $openContact.addClass('open_edit_info');
+  });
+
+  $shippingBtn.click(function() {
+    $openShipping.addClass('open_edit_info');
+  });
+
+  $billingBtn.click(function() {
+    $openBilling.addClass('open_edit_info');
+  });
+
+  $closeBtn.click(function() {
+    $openContact.removeClass('open_edit_info');
+    $openShipping.removeClass('open_edit_info');
+    $openBilling.removeClass('open_edit_info');
+  });
+  /*********/
 
 });

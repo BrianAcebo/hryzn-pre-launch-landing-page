@@ -17,15 +17,20 @@
 .stripe_form #card-errors,
 .stripe_form #card-errors_sub,
 #amount_input_err,
-#price_amount_err {
+.price_amount_err {
   padding: 4px 0;
   color: #fa755a;
   font-size: 12px;
   font-weight: bold;
 }
 
+.checkout_container .stripe_form #card-errors {
+  margin: 0;
+  line-height: 20px;
+}
+
 #amount_input_err,
-#price_amount_err {
+.price_amount_err {
   font-size: 14px;
 }
 
@@ -71,7 +76,8 @@
 }
 
 .stripe_form #card-element,
-.stripe_form #card-element_sub {
+.stripe_form #card-element_sub,
+.stripe_form #card-element_check {
   background-color: white;
   width: 100%;
   padding: 15px;
@@ -114,17 +120,20 @@
 }
 
 .stripe_form #card-element--focus,
-.stripe_form #card-element_sub--focus {
+.stripe_form #card-element_sub--focus,
+.stripe_form #card-element_check--focus {
   box-shadow: 0 1px 3px 0 #cfd7df;
 }
 
 .stripe_form #card-element--invalid,
-.stripe_form #card-element_sub--invalid {
+.stripe_form #card-element_sub--invalid,
+.stripe_form #card-element_check--invalid {
   border-color: #fa755a;
 }
 
 .stripe_form #card-element--webkit-autofill,
-.stripe_form #card-element_sub--webkit-autofill {
+.stripe_form #card-element_sub--webkit-autofill,
+.stripe_form #card-element_check--webkit-autofill {
   background-color: #fefde5 !important;
 }
 

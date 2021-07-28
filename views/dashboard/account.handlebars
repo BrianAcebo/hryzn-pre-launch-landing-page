@@ -1,7 +1,7 @@
 {{#if subscription_active}}
 
 <div class="dash_content">
-   <h3>{{dashboard_page_name}}</h3>
+   <h3>{{dashboard_page_name}} - Coming Soon</h3>
    <p>
       Our goal is to provide content creators with a platform that helps eliminate the difficulty of making a business through content.
       We are currently working on creating systems that build you websites, manage all forms of content, and automate your marketing.
@@ -10,6 +10,11 @@
       <br />
       <strong>Creating a business is hard, but we'll make it easy for you.</strong>
    </p>
+   {{#if user.completed_onboard_payouts}}
+     {{#if stripe_connected_account_link}}
+     <a target="_blank" style="margin: 25px 0; display: inline-block; font-size: 14px;" class="dash_stripe_btn" href="{{stripe_connected_account_link}}">View Stripe Account Dashboard</a>
+     {{/if}}
+   {{/if}}
 </div>
 
 {{else}}

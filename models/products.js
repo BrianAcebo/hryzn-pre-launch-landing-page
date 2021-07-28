@@ -19,6 +19,9 @@ const ProductSchema = mongoose.Schema({
      type: String
    },
    categories: [],
+   shipping_cost: {
+     type: String
+   },
    availability: {
      is_in_stock: {
        type: Boolean

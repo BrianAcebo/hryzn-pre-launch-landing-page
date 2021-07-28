@@ -10,6 +10,7 @@ const jwt = require('jsonwebtoken');
 const request = require('request');
 const cheerio = require('cheerio');
 const mongoose = require('mongoose');
+const nodemailer = require('nodemailer');
 
 var current_date = new Date();
 var current_date_and_time = current_date.toLocaleString()
@@ -50,6 +51,9 @@ const Collection = require('../models/collections');
 const Email = require('../models/emails');
 const Category = require('../models/categories');
 const Product = require('../models/products');
+const Cart = require('../models/cart');
+const Checkout = require('../models/checkout');
+const Order = require('../models/orders');
 
 
 // To create csv file for email list
@@ -4461,61 +4465,67 @@ router.get('/explore/:category', (req, res, next) => {
 router.get('/search', (req, res, next) => {
    var searchTerm = req.query.p;
 
-   User.find({$text: { $search: searchTerm }}, {score: { $meta: "textScore" }}, (err, user) => {
-      if (err) throw err;
+   if (typeof searchTerm != 'string') {
+     res.redirect('/');
+   } else {
 
-      Project.find({$text: { $search: searchTerm }}, {score: { $meta: "textScore" }}, (err, projects) => {
-         if (err) throw err;
+     User.find({$text: { $search: searchTerm }}, {score: { $meta: "textScore" }}, (err, user) => {
+        if (err) throw err;
 
-         var all_public_projects = [];
+        Project.find({$text: { $search: searchTerm }}, {score: { $meta: "textScore" }}, (err, projects) => {
+           if (err) throw err;
 
-         projects.forEach(function(project, key) {
+           var all_public_projects = [];
 
-            // Scan through every project
+           projects.forEach(function(project, key) {
 
-            var project = project.toObject();
+              // Scan through every project
 
-            if(project.posted_to_collection) {
-               if (project.posted_to_collection.length > 0) {
+              var project = project.toObject();
 
-                  // See if project has any collections
+              if(project.posted_to_collection) {
+                 if (project.posted_to_collection.length > 0) {
 
-                  project.posted_to_collection.forEach(function(project_collection, key) {
+                    // See if project has any collections
 
-                     if (project_collection.collection_is_private) {
+                    project.posted_to_collection.forEach(function(project_collection, key) {
 
-                        // If collection was private skip project
+                       if (project_collection.collection_is_private) {
 
-                     } else {
-                        // If collection was public mark that we scanned collection
-                        all_public_projects.push(project);
-                     }
-                  });
-               } else {
-                  // No collections so we mark that we scanned project
-                  all_public_projects.push(project);
-               }
-            } else {
-               // No collections so we mark that we scanned project
-               all_public_projects.push(project);
-            }
-         });
+                          // If collection was private skip project
 
-         Group.find({$text: { $search: searchTerm }}, {score: { $meta: "textScore" }}, (err, groups) => {
-            if (err) throw err;
+                       } else {
+                          // If collection was public mark that we scanned collection
+                          all_public_projects.push(project);
+                       }
+                    });
+                 } else {
+                    // No collections so we mark that we scanned project
+                    all_public_projects.push(project);
+                 }
+              } else {
+                 // No collections so we mark that we scanned project
+                 all_public_projects.push(project);
+              }
+           });
 
-            res.render('explore', {
-               page_title: 'Explore',
-               projects: all_public_projects,
-               group_search: groups,
-               user_search: user,
-               project_search: projects,
-               explore_default: false,
-               explore_active: true
-            });
-         }).sort({score: { $meta: "textScore" }});
-      }).sort({score: { $meta: "textScore" }});
-   }).sort({score: { $meta: "textScore" }});
+           Group.find({$text: { $search: searchTerm }}, {score: { $meta: "textScore" }}, (err, groups) => {
+              if (err) throw err;
+
+              res.render('explore', {
+                 page_title: 'Explore',
+                 projects: all_public_projects,
+                 group_search: groups,
+                 user_search: user,
+                 project_search: projects,
+                 explore_default: false,
+                 explore_active: true
+              });
+           }).sort({score: { $meta: "textScore" }});
+        }).sort({score: { $meta: "textScore" }});
+     }).sort({score: { $meta: "textScore" }});
+
+   }
 });
 
 // Get Sitemap
@@ -5103,12 +5113,14 @@ const calculateOrderAmount = (items, connected_id) => {
 
       if (items.id === 'tip') {
         var amount = items.amount.replace("$", "");
+        amount = amount.replace(",", "");
         amount = parseFloat(amount) * 100;
       }
 
       if (items.id === 'subscription') {
         var amount = connected_account.creator_subscription.current_price;
         amount = amount.replace("$", "");
+        amount = amount.replace(",", "");
         amount = parseFloat(amount) * 100;
 
         console.log('calculating order amount ' + amount);
@@ -5216,6 +5228,7 @@ router.post('/create-payment-intent', async (req, res) => {
         if (connected_account) {
 
           var amount = data.amount.replace("$", "");
+          amount = amount.replace(",", "");
           amount = parseFloat(amount) * 100;
 
           // if (amount < 400) {
@@ -5281,6 +5294,7 @@ router.post('/create-payment-intent', async (req, res) => {
 
             var amount = connected_account.creator_subscription.current_price;
             amount = amount.replace("$", "");
+            amount = amount.replace(",", "");
             amount = parseFloat(amount) * 100;
 
             switch (connected_account.premium_creator_account) {
@@ -5336,6 +5350,7 @@ router.post('/create-payment-intent', async (req, res) => {
 
                var amount = connected_account.creator_subscription.current_price;
                amount = amount.replace("$", "");
+               amount = amount.replace(",", "");
                amount = parseFloat(amount) * 100;
 
                switch (connected_account.premium_creator_account) {
@@ -5452,6 +5467,7 @@ router.post('/payment-success', (req, res) => {
 
         var amount = reciever.creator_subscription.current_price;
         amount = amount.replace("$", "");
+        amount = amount.replace(",", "");
         amount = parseFloat(amount) * 100;
 
         switch (reciever.premium_creator_account) {
@@ -5578,6 +5594,1572 @@ router.post('/payment-success', (req, res) => {
 
 });
 
+
+// Post Add to Cart
+router.post('/cart/add/:id', (req, res, next) => {
+
+    var quantity = req.body.product_quantity;
+
+    Cart.findOne({ 'owner': { $in: req.user._id } }, (err, cart) => {
+
+      if (err) throw err;
+
+      if (cart) {
+
+        // Add product to Cart document
+        info = [];
+        info['productId'] = req.params.id;
+        info['quantity'] = quantity;
+        info['cartId'] = cart._id;
+
+        var total_cart_items = req.user.total_cart_items + parseInt(quantity);
+
+        var product_exists = false;
+
+        cart.products.forEach(function(product, key) {
+          if (req.params.id == product.product_id) {
+            product_exists = true;
+            info['quantity'] = parseInt(info['quantity']) + parseInt(product.quantity);
+          }
+        });
+
+
+        if (product_exists) {
+
+          Cart.updateCartItem(info, (err, cart) => {
+            if(err) throw err;
+
+            User.findByIdAndUpdate(req.user._id, {
+               has_cart_items: true,
+               total_cart_items: total_cart_items
+            }, (err, user) => {
+               if (err) throw err;
+
+               req.flash('success_msg', "Added To Cart");
+               res.redirect('/p/product/' + req.params.id);
+            });
+
+          });
+
+        } else {
+
+          Cart.addCartItem(info, (err, cart) => {
+            if(err) throw err;
+
+            User.findByIdAndUpdate(req.user._id, {
+               has_cart_items: true,
+               total_cart_items: total_cart_items
+            }, (err, user) => {
+               if (err) throw err;
+
+               req.flash('success_msg', "Added To Cart");
+               res.redirect('/p/product/' + req.params.id);
+            });
+
+          });
+
+        }
+
+      } else {
+
+        var newCart = new Cart({
+           owner: req.user._id,
+           products: [{
+             product_id: req.params.id,
+             quantity: quantity
+           }]
+        });
+
+        // Create cart in database
+        Cart.saveCart(newCart, (err, cart) => {
+           if(err) throw err;
+
+           var newCheckout = new Checkout({
+              owner: req.user._id
+           });
+
+           // Create checkout in database
+           Checkout.saveCheckout(newCheckout, (err, checkout) => {
+              if(err) throw err;
+
+              User.findByIdAndUpdate(req.user._id, {
+                 has_cart_items: true,
+                 total_cart_items: 1
+              }, (err, user) => {
+                 if (err) throw err;
+
+                 req.flash('success_msg', "Added To Cart");
+                 res.redirect('/p/product/' + req.params.id);
+              });
+           });
+
+        });
+
+      }
+
+    });
+
+});
+
+
+function formatPrice(price) {
+
+  price = price.toString();
+  var decimal = price.indexOf(".");
+  var thous = price[decimal + 3]
+
+  if (decimal >= 0) {
+
+    var left_side = price.substring(0, decimal);
+    var right_side = price.substring(decimal, price.length);
+
+    if (right_side.length > 3) {
+
+      if (parseInt(thous) > 4) {
+        var num = parseInt(right_side[2]) + 1;
+        right_side = right_side.substring(0, 2) + num.toString();
+      } else {
+        right_side = right_side.substring(0, 2)
+      }
+
+    }
+
+    left_side = left_side.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    price = "$" + left_side + right_side;
+
+  } else {
+    price = "$" + price.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+  }
+
+  return price;
+
+}
+
+
+// Get Cart
+router.get('/cart', (req, res, next) => {
+  Cart.findOne({ 'owner': { $in: req.user._id } }, (err, cart) => {
+     if (err) throw err;
+
+     if (cart) {
+
+       if (cart.products.length > 0) {
+
+         var cart = cart.toObject();
+
+         var all_items = [];
+         var product_ids = [];
+
+         if (cart.products.length > 1) {
+           var all_count = 1;
+         } else {
+           var all_count = 0;
+         }
+
+         var product_owners = [];
+
+         cart.products.forEach(function(cart_item, key) {
+           product_ids.push(cart_item.product_id);
+         });
+
+         var already_checked = [];
+         var already_checked_indexes = [];
+         var subtotal = 0;
+         var shipping_cost = 0;
+
+         Product.find({ '_id': { $in: product_ids } }, (err, all_products) => {
+
+           all_products.forEach(function(product, key) {
+
+             all_count += 1;
+
+             var product = product.toObject();
+
+             for (var i = cart.products.length - 1; i >= 0; i--) {
+
+               if (already_checked.indexOf(product._id.toString()) === -1) {
+
+                 if (cart.products[i].product_id === product._id.toString()) {
+
+                  if (typeof product.quantity == 'undefined') {
+                    product.quantity = 0;
+                  }
+
+                  product_owners.push(product.owner);
+                  product.quantity = product.quantity + cart.products[i].quantity;
+                  cart.products[i] = product;
+                  already_checked.push(product._id.toString());
+                  already_checked.push(i);
+
+                  var new_price = cart.products[i].price.replace("$", "");
+                  new_price = new_price.replace(",", "");
+                  new_price = parseFloat(new_price) * cart.products[i].quantity;
+
+                  var unit_cost = product.shipping_cost.replace("$", "");
+                  unit_cost = unit_cost.replace(",", "");
+                  unit_cost = parseFloat(unit_cost) * cart.products[i].quantity;
+                  shipping_cost = shipping_cost + unit_cost;
+
+                  subtotal = subtotal + new_price;
+
+                  new_price = formatPrice(new_price)
+
+                  cart.products[i].price = new_price;
+
+                 }
+               } else {
+
+                 if (cart.products[i].product_id === product._id.toString()) {
+
+                   var index = already_checked.indexOf(product._id.toString());
+                   var arr = already_checked.slice(index + 1);
+                   var cart_index = arr[0];
+
+                   cart.products[cart_index].quantity = cart.products[i].quantity + cart.products[cart_index].quantity;
+
+                   var new_price = cart.products[cart_index].price.replace("$", "");
+                   new_price = new_price.replace(",", "");
+                   new_price = parseFloat(new_price) * cart.products[cart_index].quantity;
+
+                   var unit_cost = product.shipping_cost.replace("$", "");
+                   unit_cost = unit_cost.replace(",", "");
+                   unit_cost = parseFloat(unit_cost) * cart.products[i].quantity;
+                   shipping_cost = shipping_cost + unit_cost;
+
+                   subtotal = subtotal + new_price;
+
+                   new_price = formatPrice(new_price)
+
+                   cart.products[cart_index].price = new_price;
+
+                   cart.products.splice(i, 1);
+
+                 }
+
+               }
+             }
+
+             if (all_count == cart.products.length) {
+
+               Product.find({ 'owner': { $in: product_owners } }, (err, similar_products) => {
+                 if (err) throw err;
+
+                 var total = subtotal + shipping_cost;
+
+                 subtotal = formatPrice(subtotal)
+                 shipping_cost = formatPrice(shipping_cost)
+                 total = formatPrice(total)
+
+                 res.render('cart', {
+                    page_title: 'Cart',
+                    cart: cart,
+                    similar_products: similar_products,
+                    subtotal: subtotal,
+                    shipping_cost: shipping_cost,
+                    total: total,
+                    cart_active: true
+                 });
+
+               }).limit(10);
+
+             }
+
+           });
+
+         });
+
+      } else {
+        res.render('cart', {
+           page_title: 'Cart',
+           cart: false,
+           cart_active: true
+        });
+      }
+
+    } else {
+      res.render('cart', {
+         page_title: 'Cart',
+         cart: false,
+         cart_active: true
+      });
+    }
+
+  });
+});
+
+
+// Get Cart
+router.get('/cart/remove/:id', (req, res, next) => {
+  Cart.findOne({ 'owner': { $in: req.user._id } }, (err, cart) => {
+    if (err) throw err;
+
+    if (cart) {
+
+      var quantity = 0;
+
+      cart.products.forEach(function(product, key) {
+
+        if (product.product_id === req.params.id) {
+          quantity = quantity + product.quantity;
+        }
+
+      });
+
+      var total_cart_items = req.user.total_cart_items - parseInt(quantity);
+
+      if (total_cart_items == 0) {
+        var has_cart_items = false;
+      } else {
+        var has_cart_items = true;
+      }
+
+      // Remove cart item
+      info = [];
+      info['cartId'] = cart._id;
+      info['productId'] = req.params.id;
+
+      Cart.removeCartItem(info, (err, user) => {
+         if(err) throw err;
+
+         User.findByIdAndUpdate(req.user._id, {
+            has_cart_items: has_cart_items,
+            total_cart_items: total_cart_items
+         }, (err, user) => {
+            if (err) throw err;
+
+            req.flash('success_msg', "Removed From Cart");
+            res.redirect('/cart');
+         });
+
+      });
+
+    } else {
+      res.redirect('/cart');
+    }
+
+  });
+
+});
+
+
+// Get checkout
+router.get('/checkout', async (req, res, next) => {
+
+  Cart.findOne({ 'owner': { $in: req.user._id } }, (err, cart) => {
+    if (err) throw err;
+
+    if (cart) {
+
+      var cart_id = cart._id;
+
+      Checkout.findOne({ 'owner': { $in: req.user._id } }, (err, checkout) => {
+        if (err) throw err;
+
+        var checkout_id = checkout._id;
+
+        var product_ids = [];
+        var quantities = [];
+        var owners = [];
+        var payment_intents = [];
+        var products = [];
+
+        cart.products.forEach(function(product, key) {
+          product_ids.push(product.product_id);
+          quantities.push(product.product_id);
+          quantities.push(product.quantity);
+        });
+
+        Product.find({ '_id': { $in: product_ids } }, (err, all_products) => {
+
+          var subtotal = 0;
+          var shipping_cost = 0;
+          var total = 0;
+          var pi_count = 0;
+
+          all_products.forEach(function(product, key) {
+
+            product = product.toObject();
+
+            var amount = product.price.replace("$", "");
+            amount = amount.replace(",", "");
+            amount = parseFloat(amount) * 100;
+
+            var shipping = product.shipping_cost.replace("$", "");
+            shipping = shipping.replace(",", "");
+            shipping = parseFloat(shipping) * 100;
+
+            var owner = owners.indexOf(product.owner);
+
+            if (owner >= 0) {
+
+              var intent_index = owners[owner + 1];
+              var intent = payment_intents[intent_index];
+
+              var quantity = quantities.indexOf(product._id.toString()) + 1;
+              quantity = quantities[quantity];
+
+              product.quantity = quantity;
+              product.price = (amount / 100) * quantity;
+              product.price = formatPrice(product.price)
+              products.push(product);
+
+              subtotal = subtotal + ((amount / 100) * quantity);
+              shipping_cost = shipping_cost + ((shipping / 100) * quantity);
+
+              amount = amount + shipping;
+              amount = amount * quantity;
+
+              total = total + (amount / 100);
+
+              intent.amount = intent.amount + amount;
+
+            } else {
+
+              owners.push(product.owner);
+              owners.push(pi_count);
+              pi_count += 1;
+
+              var quantity = quantities.indexOf(product._id.toString()) + 1;
+              quantity = quantities[quantity];
+
+              product.quantity = quantity;
+              product.price = (amount / 100) * quantity;
+              product.price = formatPrice(product.price)
+              products.push(product);
+
+              subtotal = subtotal + ((amount / 100) * quantity);
+              shipping_cost = shipping_cost + ((shipping / 100) * quantity);
+
+              amount = amount + shipping;
+              amount = amount * quantity;
+
+              total = total + (amount / 100);
+
+              var intent = {
+                amount: amount,
+                owner: product.owner
+              }
+
+              payment_intents.push(intent);
+
+            }
+
+          });
+
+          total = formatPrice(total);
+          subtotal = formatPrice(subtotal);
+          shipping_cost = formatPrice(shipping_cost);
+
+          Product.find({ '_id': { $in: product_ids } }, async (err, all_products) => {
+
+            console.log(payment_intents);
+
+            var secrets = [];
+            var all_intents = 0;
+
+            for (var i = 0, len = payment_intents.length; i < len; i++) {
+
+              var app_fee = .04 * payment_intents[i].amount;
+              app_fee = parseInt(app_fee);
+
+              const paymentIntent = await stripe.paymentIntents.create({
+                payment_method_types: ['card'],
+                amount: payment_intents[i].amount,
+                currency: 'usd',
+                application_fee_amount: app_fee,
+                transfer_data: {
+                  destination: payment_intents[i].owner,
+                }
+              }).then(function(paymentIntent) {
+
+                all_intents += 1;
+                secrets.push(paymentIntent.client_secret);
+
+                if (all_intents == payment_intents.length) {
+                  res.render('checkout', {
+                     page_title: 'Checkout',
+                     checkout: true,
+                     payment_intents: payment_intents,
+                     cart_active: true,
+                     total: total,
+                     subtotal: subtotal,
+                     shipping_cost: shipping_cost,
+                     products: products,
+                     checkout: checkout,
+                     payment_element: true,
+                     intents: secrets,
+                     cart_id: cart_id,
+                     checkout_id: checkout_id
+                  });
+                }
+              });
+            }
+
+          });
+
+        });
+
+      });
+
+    } else {
+      res.redirect('/cart');
+    }
+
+  });
+
+});
+
+
+router.post('/save-checkout', (req, res) => {
+
+    var data = req.body.data;
+
+    var fname = data.fname.replace(/\r\n/g,'').trim();
+    var lname = data.lname.replace(/\r\n/g,'').trim();
+    var email = data.email.replace(/\r\n/g,'').trim();
+    var phone = data.phone.trim();
+    var address = data.address.replace(/\r\n/g,'').trim();
+    var apt = data.apt.replace(/\r\n/g,'').trim();
+    var city = data.city.replace(/\r\n/g,'').trim();
+    var state = data.state.replace(/\r\n/g,'').trim();
+    var postal = data.postal.replace(/\r\n/g,'').trim();
+    var country = data.country.replace(/\r\n/g,'').trim();
+
+
+    Checkout.findOne({ 'owner': { $in: req.user._id } }, (err, checkout) => {
+
+      if (err) throw err;
+
+      if (checkout) {
+
+        Checkout.findByIdAndUpdate(checkout._id, {
+          fname: fname,
+          lname: lname,
+          email: email,
+          phone: phone,
+          address: address,
+          apt: apt,
+          city: city,
+          state: state,
+          postal: postal,
+          country: country
+        }, (err, checkout) => {
+           if (err) throw err;
+
+           res.sendStatus(200);
+        });
+
+      } else {
+
+        var newCheckout = new Checkout({
+           owner: req.user._id,
+           fname: fname,
+           lname: lname,
+           email: email,
+           phone: phone,
+           address: address,
+           apt: apt,
+           city: city,
+           state: state,
+           postal: postal,
+           country: country
+        });
+
+        // Create checkout in database
+        Checkout.saveCheckout(newCheckout, (err, checkout) => {
+           if(err) throw err;
+
+           res.sendStatus(200);
+        });
+
+      }
+
+    });
+
+});
+
+
+// Post checkout
+router.post('/checkout-success', (req, res, next) => {
+
+  if (req.isAuthenticated()) {
+
+    const data = req.body;
+
+    if (data.customer == req.user._id.toString()) {
+
+      Cart.findOne({ 'owner': { $in: req.user._id } }, (err, cart) => {
+        if (err) throw err;
+
+        if (cart) {
+
+          var todaydate = new Date();
+          var day = todaydate.getDate();
+          var month = todaydate.getMonth() + 1;
+          var year = todaydate.getFullYear();
+
+          switch (month) {
+            case 01:
+              var month_text = 'January';
+              break;
+            case 02:
+              var month_text = 'February';
+              break;
+            case 03:
+              var month_text = 'March';
+              break;
+            case 04:
+              var month_text = 'April';
+              break;
+            case 05:
+              var month_text = 'May';
+              break;
+            case 06:
+              var month_text = 'June';
+              break;
+            case 07:
+              var month_text = 'July';
+              break;
+            case 08:
+              var month_text = 'August';
+              break;
+            case 09:
+              var month_text = 'September';
+              break;
+            case 10:
+              var month_text = 'October';
+              break;
+            case 11:
+              var month_text = 'November';
+              break;
+            case 12:
+              var month_text = 'December';
+              break;
+            default:
+          }
+
+          var date_was_created = month_text + " " + day + ", " + year;
+          var order_number = '#O'+(Math.random()*0xFFFFFF<<0).toString(16);
+          var customer = req.user._id;
+
+          var product_ids = [];
+          var quantities = [];
+          var owners = [];
+          var notif_owners = [];
+          var payment_intents = [];
+          var products = [];
+
+          cart.products.forEach(function(product, key) {
+            product_ids.push(product.product_id);
+            quantities.push(product.product_id);
+            quantities.push(product.quantity);
+          });
+
+          Product.find({ '_id': { $in: product_ids } }, (err, all_products) => {
+
+            var pi_count = 0;
+            var items = [];
+            var cus_total = 0;
+            var cus_subtotal = 0;
+            var cus_shipping_cost = 0;
+            var product_count = 0;
+
+            all_products.forEach(function(product, key) {
+
+              product_count += 1;
+
+              product = product.toObject();
+
+              var amount = product.price.replace("$", "");
+              amount = amount.replace(",", "");
+              amount = parseFloat(amount) * 100;
+
+              var shipping = product.shipping_cost.replace("$", "");
+              shipping = shipping.replace(",", "");
+              shipping = parseFloat(shipping) * 100;
+
+              var owner = owners.indexOf(product.owner);
+
+              if (owner >= 0) {
+
+                var item_index = owners[owner + 1];
+                var item = items[item_index];
+
+                var quantity = quantities.indexOf(product._id.toString()) + 1;
+                quantity = quantities[quantity];
+
+                product.quantity = quantity;
+                product.price = (amount / 100) * quantity;
+                product.price = formatPrice(product.price);
+
+                item.products.push(product);
+
+                subtotal = item.subtotal.replace("$", "");
+                subtotal = subtotal.replace(",", "");
+                subtotal = subtotal + ((amount / 100) * quantity);
+                item.subtotal = formatPrice(subtotal);
+
+                shipping_cost = item.shipping_cost.replace("$", "");
+                shipping_cost = shipping_cost.replace(",", "");
+                shipping_cost = shipping_cost + ((shipping / 100) * quantity);
+                item.shipping_cost = formatPrice(shipping_cost);
+
+                cus_subtotal = cus_subtotal + ((amount / 100) * quantity);
+                cus_shipping_cost = cus_shipping_cost + ((shipping / 100) * quantity);
+
+                amount = amount + shipping;
+
+                cus_total = cus_total + (amount / 100);
+
+                amount = amount * quantity;
+
+                total = item.total.replace("$", "");
+                total = total.replace(",", "");
+                total = total + (amount / 100);
+                item.total = formatPrice(total);
+
+              } else {
+
+                var subtotal = 0;
+                var shipping_cost = 0;
+                var total = 0;
+
+                var quantity = quantities.indexOf(product._id.toString()) + 1;
+                quantity = quantities[quantity];
+
+                product.quantity = quantity;
+                product.price = (amount / 100) * quantity;
+                product.price = formatPrice(product.price);
+
+                subtotal = subtotal + ((amount / 100) * quantity);
+                subtotal = formatPrice(subtotal);
+
+                shipping_cost = shipping_cost + ((shipping / 100) * quantity);
+                shipping_cost = formatPrice(shipping_cost);
+                product.shipping_cost = shipping_cost;
+
+                cus_subtotal = cus_subtotal + ((amount / 100) * quantity);
+                cus_shipping_cost = cus_shipping_cost + ((shipping / 100) * quantity);
+
+                amount = amount + shipping;
+
+                cus_total = cus_total + (amount / 100);
+
+                amount = amount * quantity;
+
+                total = total + (amount / 100);
+                total = formatPrice(total);
+
+                var item = {
+                  owner: product.owner,
+                  fulfillment_status: 0,
+                  tracking_info: "",
+                  subtotal: subtotal,
+                  shipping_cost: shipping_cost,
+                  total: total,
+                  products: [product]
+                }
+
+                owners.push(product.owner);
+                owners.push(pi_count);
+                notif_owners.push(product.owner);
+                items.push(item);
+                pi_count += 1;
+
+              }
+
+              if (product_count == all_products.length) {
+
+                cus_total = formatPrice(cus_total);
+                cus_subtotal = formatPrice(cus_subtotal);
+                cus_shipping_cost = formatPrice(cus_shipping_cost);
+
+                var newOrder = new Order({
+                  order_number: order_number,
+                  date_was_created: date_was_created,
+                  customer: customer,
+                  customer_total_amount: cus_total,
+                  customer_subtotal_amount: cus_subtotal,
+                  customer_shipping_amount: cus_shipping_cost,
+                  items: items,
+                  contact_info: {
+                    fname: data.fname,
+                    lname: data.lname,
+                    email: data.email,
+                    phone: data.phone
+                  },
+                  shipping_info: {
+                    address: data.address,
+                    apt: data.apt,
+                    city: data.city,
+                    state: data.state,
+                    postal: data.postal,
+                    country: data.country
+                  },
+                  billing_info: {
+                    billing_fname: data.billing_fname,
+                    billing_lname: data.billing_lname,
+                    billing_address: data.billing_address,
+                    billing_apt: data.billing_apt,
+                    billing_city: data.billing_city,
+                    billing_state: data.billing_state,
+                    billing_postal: data.billing_postal,
+                    billing_country: data.billing_country
+                  }
+                });
+
+                // Create order in database
+                Order.saveOrder(newOrder, (err, order) => {
+                   if(err) throw err;
+
+                   // Delete the Checkout
+                   Checkout.findByIdAndRemove(data.checkout_id, (err) => {
+                     if (err) throw err;
+
+                     // Delete the Cart
+                     Cart.findByIdAndRemove(data.cart_id, (err) => {
+                       if (err) throw err;
+
+                       User.findByIdAndUpdate(req.user._id, {
+                          has_cart_items: false,
+                          total_cart_items: 0
+                       }, (err, user) => {
+                          if (err) throw err;
+
+                          // Send notification to the user mentioned
+                          User.findOne({ '_id': { $in: req.user._id } }, (err, reciever) => {
+                             if (err) throw err;
+
+                             var newNotification = new Notification({
+                                sender: req.user._id,
+                                reciever: reciever._id,
+                                type: 'Thank you! Order confirmation for ' + order_number,
+                                link: '/orders/' + order._id,
+                                date_sent: current_date
+                             });
+
+                             // Create notification in database
+                             Notification.saveNotification(newNotification, (err, notification) => {
+                                if(err) throw err;
+
+                                // Add Notification for User
+                                User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+                                   if (err) throw err;
+
+                                   // Gmail Credentials
+                                   var transporter = nodemailer.createTransport({
+                                      service: 'Gmail',
+                                      auth: {
+                                         user: 'hello@myhryzn.com',
+                                         pass: '+ar+oo-55'
+                                      }
+                                   });
+
+                                   // Mail Body
+                                   var mailOptions = {
+                                      from: '"Hryzn" <hello@myhryzn.com>',
+                                      to: reciever.email,
+                                      subject: 'Order confirmation for ' + order_number,
+                                      html: '<h1>Thank you for shopping with us!</h1><br><p>Hey ' + data.fname + ',</p><br><p>Your order is now being processed. We will send you a shipping confirmation email as soon as your products are marked as shipped.</p><br><p>If you ordered from more than one shop, your products will be separated by shop to avoid any confusion between parties. These groups will be called "Items" and are numbered accordingly. Each Item is shipped by the shop, so products may arrive at separate times.</p><br><a href="https://myhryzn.com/orders/' + order._id + '">Click here to view your order</a><br><p>Enjoy your day!</p>',
+                                   }
+
+                                   transporter.sendMail(mailOptions, (error, info) => {
+                                      if(!error) {}
+                                   });
+
+                                   var owner_count = 0;
+
+                                   for (var i = 0, len = notif_owners.length; i < len; i++) {
+
+                                     owner_count += 1;
+
+                                     // Send notification to the user mentioned
+                                     User.findOne({ 'stripe_connected_account_id': { $in: notif_owners[i] } }, (err, reciever) => {
+                                        if (err) throw err;
+
+                                        var newNotification = new Notification({
+                                           sender: req.user._id,
+                                           reciever: reciever._id,
+                                           type: 'You have a new order! Order: ' + order_number,
+                                           link: '/orders/' + order._id,
+                                           date_sent: current_date
+                                        });
+
+                                        // Create notification in database
+                                        Notification.saveNotification(newNotification, (err, notification) => {
+                                           if(err) throw err;
+
+                                           // Add Notification for User
+                                           User.findByIdAndUpdate(reciever._id, { has_notification: true, has_unfulfilled_items: true }, (err, user) => {
+                                              if (err) throw err;
+
+                                              // Gmail Credentials
+                                              var transporter = nodemailer.createTransport({
+                                                 service: 'Gmail',
+                                                 auth: {
+                                                    user: 'hello@myhryzn.com',
+                                                    pass: '+ar+oo-55'
+                                                 }
+                                              });
+
+                                              // Mail Body
+                                              var mailOptions = {
+                                                 from: '"Hryzn" <hello@myhryzn.com>',
+                                                 to: reciever.email,
+                                                 subject: 'You have a new order! Order: ' + order_number,
+                                                 html: '<h1>Hello from Hryzn!</h1><br><p>Looks like your shop is doing pretty well! You have a new order: ' + order_number + '. Keep up the great work.</p><br><a href="https://myhryzn.com/orders/' + order._id + '">Click here to view your order</a><br><p>Enjoy your day!</p>',
+                                              }
+
+                                              transporter.sendMail(mailOptions, (error, info) => {
+                                                 if(!error) {}
+                                              });
+
+                                              if (owner_count == notif_owners.length) {
+                                                return res.send({
+                                                  success: true,
+                                                  order_id: order._id.toString()
+                                                });
+                                              }
+                                           });
+                                        });
+                                     });
+                                   }
+                                });
+                             });
+                          });
+                       });
+                     });
+                   });
+
+                });
+
+              }
+
+            });
+
+          });
+        } else {
+          return res.status(500).send({
+            success: false
+          });
+        }
+
+      });
+
+    } else {
+      return res.status(500).send({
+        success: false
+      });
+    }
+
+  } else {
+    return res.status(500).send({
+      success: false
+    });
+  }
+
+});
+
+
+// Get orders
+router.get('/orders', (req, res, next) => {
+
+  Order.find({ 'customer': { $in: req.user._id } }, (err, orders) => {
+    if (err) throw err;
+
+    res.render('orders', {
+       page_title: 'Review Purchased Orders',
+       orders: orders.reverse()
+    });
+
+  });
+});
+
+
+// Get order detail
+router.get('/orders/:id', (req, res, next) => {
+
+  Order.findOne({ '_id': { $in: req.params.id } }, (err, order) => {
+    if (err) throw err;
+
+    if (order) {
+      res.render('order-detail', {
+         page_title: 'Review Order' + ' ' + order.order_number,
+         order: order
+      });
+    } else {
+      res.redirect('/orders');
+    }
+
+  });
+});
+
+
+// POST Change order fulfillment status to shipped
+router.post('/orders/:id/status/:item/:dash', (req, res, next) => {
+
+  Order.findOne({ '_id': { $in: req.params.id } }, (err, order) => {
+    if (err) throw err;
+
+    if (order) {
+
+      if (req.params.dash == 'true') {
+        var order_url = '/dashboard/manage/' + req.params.id;
+      } else {
+        var order_url = '/orders/' + req.params.id;
+      }
+
+      var new_order = order.toObject();
+
+      var item = req.params.item;
+      var i = item.indexOf('-') + 1;
+      item = item.substring(i, item.length);
+
+      var tracking_info = req.body.tracking_info.replace(/\r\n/g,'');
+
+      new_order.items[item].fulfillment_status = parseInt(new_order.items[item].fulfillment_status) + 1;
+
+      if (new_order.items[item].tracking_info == "") {
+        new_order.items[item].tracking_info = tracking_info;
+      }
+
+      if (new_order.items[item].fulfillment_status == 1) {
+
+        // Send notification to the user mentioned
+        User.findOne({ '_id': { $in: order.customer } }, (err, reciever) => {
+           if (err) throw err;
+
+           var newNotification = new Notification({
+              sender: req.user._id,
+              reciever: reciever._id,
+              type: 'Item ' + item + ' from your order ' + order.order_number + ' has been shipped.' ,
+              link: '/orders/' + req.params.id,
+              date_sent: current_date
+           });
+
+           // Create notification in database
+           Notification.saveNotification(newNotification, (err, notification) => {
+              if(err) throw err;
+
+              // Add Notification for User
+              User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+                 if (err) throw err;
+
+
+                 // Verification email //
+                 // Gmail Credentials
+                 var transporter = nodemailer.createTransport({
+                    service: 'Gmail',
+                    auth: {
+                       user: 'hello@myhryzn.com',
+                       pass: '+ar+oo-55'
+                    }
+                 });
+
+                 // Mail Body
+                 var mailOptions = {
+                    from: '"Hryzn" <hello@myhryzn.com>',
+                    to: order.contact_info.email,
+                    subject: 'Your product has been shipped! Order number: ' + order.order_number,
+                    html: '<h1>Your order is on the way!</h1><br><a href="https://myhryzn.com/orders/' + order._id + '">Click here to view your order</a><br><p>Item ' + item + ' from your order has been marked as fulfilled and shipped. We’re happy you can be a part of the Hryzn community. If you have any questions or concerns feel free to <a href="https://myhryzn.com/about/contact">contact us.</a></p><br><a href="https://myhryzn.com/orders/' + order._id + '/status/item-' + item + '/false">Click here to mark your order as delivered</a><br><p>Enjoy your day!</p><br><p>Tracking Info:</p><br>' + tracking_info,
+                 }
+
+                 transporter.sendMail(mailOptions, (error, info) => {
+                    if(!error) {
+                    }
+                 });
+
+                 var product_count = 0;
+
+                 for (var i = 0, len = new_order.items[item].products.length; i < len; i++) {
+
+                   product_count += 1;
+
+                   var p = new_order.items[item].products[i];
+                   var qa = parseInt(p.availability.quantity);
+                   var q = parseInt(p.quantity);
+
+                   q = parseInt(qa) - q;
+
+                   if (q <= 0) {
+                     var is_in_stock = false;
+                   } else {
+                     var is_in_stock = true;
+                   }
+
+                   new_order.items[item].products[i].availability.is_in_stock = is_in_stock;
+                   new_order.items[item].products[i].availability.quantity = q;
+
+                   q = q.toString();
+
+                   var pl = new_order.items[item].products.length;
+
+                   Product.findByIdAndUpdate(p._id, {
+                        availability: {
+                          is_in_stock: is_in_stock,
+                          quantity: q
+                        }
+                     }, (err, user) => {
+                        if (err) throw err;
+
+                        if (product_count == pl) {
+                          Order.findByIdAndUpdate(req.params.id, {
+                             items: new_order.items
+                          }, (err, user) => {
+                             if (err) throw err;
+
+                             req.flash('success_msg', "Order was marked as shipped.");
+                             res.redirect(order_url);
+
+                          });
+                        }
+                    });
+                 }
+              });
+           });
+        });
+
+      } else {
+        res.sendStatus(500)
+      }
+
+    } else {
+      res.redirect('/orders');
+    }
+
+  });
+});
+
+
+// GET Change order fulfillment status to delivered
+router.get('/orders/:id/status/:item/:dash', (req, res, next) => {
+
+  Order.findOne({ '_id': { $in: req.params.id } }, (err, order) => {
+    if (err) throw err;
+
+    if (order) {
+
+      if (req.params.dash == 'true') {
+        var order_url = '/dashboard/manage/' + req.params.id;
+      } else {
+        var order_url = '/orders/' + req.params.id;
+      }
+
+      var new_order = order.toObject();
+
+      var item = req.params.item;
+      var i = item.indexOf('-') + 1;
+      item = item.substring(i, item.length);
+
+      new_order.items[item].fulfillment_status = parseInt(new_order.items[item].fulfillment_status) + 1;
+
+      if (new_order.items[item].fulfillment_status == 2) {
+
+        // Send notification to the user mentioned
+        User.findOne({ 'stripe_connected_account_id': { $in: new_order.items[item].owner } }, (err, reciever) => {
+           if (err) throw err;
+
+           var newNotification = new Notification({
+              sender: req.user._id,
+              reciever: reciever._id,
+              type: 'Item ' + item + ' from your order ' + order.order_number + ' has been marked as delivered.' ,
+              link: '/orders/' + req.params.id,
+              date_sent: current_date
+           });
+
+           // Create notification in database
+           Notification.saveNotification(newNotification, (err, notification) => {
+              if(err) throw err;
+
+              // Add Notification for User
+              User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+                 if (err) throw err;
+
+                 // Gmail Credentials
+                 var transporter = nodemailer.createTransport({
+                    service: 'Gmail',
+                    auth: {
+                       user: 'hello@myhryzn.com',
+                       pass: '+ar+oo-55'
+                    }
+                 });
+
+                 // Mail Body
+                 var mailOptions = {
+                    from: '"Hryzn" <hello@myhryzn.com>',
+                    to: reciever.email,
+                    subject: 'Your order has been delivered! Order number: ' + order.order_number,
+                    html: '<h1>Your order has been marked as delivered!</h1><br><a href="https://myhryzn.com/orders/' + order._id + '">Click here to view your order</a><br><p>Item ' + item + ' from your order has been marked as delivered. We’re happy to work with you and appreciate you being a part of our community. If you have any questions or concerns feel free to <a href="https://myhryzn.com/about/contact">contact us.</a></p><br><p>Enjoy your day!</p>',
+                 }
+
+                 transporter.sendMail(mailOptions, (error, info) => {
+                    if(!error) {
+                    }
+                 });
+
+
+                 Order.findByIdAndUpdate(req.params.id, {
+                    items: new_order.items
+                 }, (err, user) => {
+                    if (err) throw err;
+
+                    req.flash('success_msg', "Order was marked as delivered.");
+                    res.redirect(order_url);
+                 });
+              });
+           });
+        });
+
+      }
+
+    } else {
+      res.redirect('/orders');
+    }
+
+  });
+});
+
+
+// Resend confirmation email
+router.get('/orders/:id/resend-email/:dash', (req, res, next) => {
+
+  Order.findOne({ '_id': { $in: req.params.id } }, (err, order) => {
+    if (err) throw err;
+
+    if (order) {
+
+      if (req.params.dash == 'true') {
+        var order_url = '/dashboard/manage/' + req.params.id;
+      } else {
+        var order_url = '/orders/' + req.params.id;
+      }
+
+      if (order.customer == req.user._id) {
+
+        // Gmail Credentials
+        var transporter = nodemailer.createTransport({
+           service: 'Gmail',
+           auth: {
+              user: 'hello@myhryzn.com',
+              pass: '+ar+oo-55'
+           }
+        });
+
+        // Mail Body
+        var mailOptions = {
+           from: '"Hryzn" <hello@myhryzn.com>',
+           to: order.contact_info.email,
+           subject: 'Order confirmation for ' + order.order_number,
+           html: '<h1>Thank you for shopping with us!</h1><br><p>Hey ' + order.contact_info.fname + ',</p><br><p>Your order is now being processed. We will send you a shipping confirmation email as soon as your products are marked as shipped.</p><br><p>If you ordered from more than one shop, your products will be separated by shop to avoid any confusion between parties. These groups will be called "Items" and are numbered accordingly. Each Item is shipped by the shop, so products may arrive at separate times.</p><br><a href="https://myhryzn.com/orders/' + order._id + '">Click here to view your order</a><br><p>Enjoy your day!</p>',
+        }
+
+        transporter.sendMail(mailOptions, (error, info) => {
+           if(!error) {
+           }
+        });
+
+        req.flash('success_msg', "Confirmation email was sent.");
+        res.redirect(order_url);
+
+
+      } else {
+
+        for (var i = 0, len = order.items.length; i < len; i++) {
+           if (order.items[i].owner == req.user.stripe_connected_account_id) {
+
+             // Gmail Credentials
+             var transporter = nodemailer.createTransport({
+                service: 'Gmail',
+                auth: {
+                   user: 'hello@myhryzn.com',
+                   pass: '+ar+oo-55'
+                }
+             });
+
+             // Mail Body
+             var mailOptions = {
+                from: '"Hryzn" <hello@myhryzn.com>',
+                to: order.contact_info.email,
+                subject: 'Order confirmation for ' + order.order_number,
+                html: '<h1>Thank you for shopping with us!</h1><br><p>Hey ' + order.contact_info.fname + ',</p><br><p>Your order is now being processed. We will send you a shipping confirmation email as soon as your products are marked as shipped.</p><br><p>If you ordered from more than one shop, your products will be separated by shop to avoid any confusion between parties. These groups will be called "Items" and are numbered accordingly. Each Item is shipped by the shop, so products may arrive at separate times.</p><br><a href="https://myhryzn.com/orders/' + order._id + '">Click here to view your order</a><br><p>Enjoy your day!</p>',
+             }
+
+             transporter.sendMail(mailOptions, (error, info) => {
+                if(!error) {
+                }
+             });
+
+             req.flash('success_msg', "Confirmation email was sent.");
+             res.redirect(order_url);
+
+           } else {
+             res.redirect('/orders');
+           }
+        }
+
+      }
+
+    } else {
+      res.redirect('/orders');
+    }
+  });
+
+});
+
+
+// Change order customer info
+router.post('/orders/:id/customer-edit/:method/:dash', (req, res, next) => {
+
+  Order.findOne({ '_id': { $in: req.params.id } }, (err, order) => {
+    if (err) throw err;
+
+    if (order) {
+
+      var method = req.params.method;
+
+      if (req.params.dash == 'true') {
+        var order_url = '/dashboard/manage/' + req.params.id;
+      } else {
+        var order_url = '/orders/' + req.params.id;
+      }
+
+      if (method == 'contact') {
+
+        var contact_info = {
+          fname: req.body.fname,
+          lname: req.body.lname,
+          email: req.body.email,
+          phone: req.body.phone
+        }
+
+        Order.findByIdAndUpdate(req.params.id, {
+          contact_info: contact_info
+        }, (err, user) => {
+           if (err) throw err;
+
+           var owner_count = 0;
+
+           for (var i = 0, len = order.items.length; i < len; i++) {
+
+             owner_count += 1;
+
+             // Send notification to the user mentioned
+             User.findOne({ 'stripe_connected_account_id': { $in: order.items[i].owner } }, (err, reciever) => {
+                if (err) throw err;
+
+                var newNotification = new Notification({
+                   sender: req.user._id,
+                   reciever: reciever._id,
+                   type: 'The contact info from your order ' + order.order_number + ' has been updated.' ,
+                   link: '/orders/' + req.params.id,
+                   date_sent: current_date
+                });
+
+                // Create notification in database
+                Notification.saveNotification(newNotification, (err, notification) => {
+                   if(err) throw err;
+
+                   // Add Notification for User
+                   User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+                      if (err) throw err;
+
+                      // Gmail Credentials
+                      var transporter = nodemailer.createTransport({
+                         service: 'Gmail',
+                         auth: {
+                            user: 'hello@myhryzn.com',
+                            pass: '+ar+oo-55'
+                         }
+                      });
+
+                      // Mail Body
+                      var mailOptions = {
+                         from: '"Hryzn" <hello@myhryzn.com>',
+                         to: reciever.email,
+                         subject: 'Contact info updated for order number: ' + order.order_number,
+                         html: '<h1>Hello from Hryzn!</h1><br><p>The contact info from your order: ' + order.order_number + ' has been updated. Just letting you know in case you need to update anything.</p><br><a href="https://myhryzn.com/orders/' + order._id + '">Click here to view your order</a><br><p>Enjoy your day!</p>',
+                      }
+
+                      transporter.sendMail(mailOptions, (error, info) => {
+                         if(!error) {
+                         }
+                      });
+
+
+                      if (owner_count == order.items.length) {
+                        req.flash('success_msg', "Contact info was updated.");
+                        res.redirect(order_url);
+                      }
+                   });
+                });
+             });
+           }
+
+        });
+
+      } else if (method == 'shipping') {
+
+        var shipping_info = {
+          address: req.body.address,
+          apt: req.body.apt,
+          city: req.body.city,
+          state: req.body.state,
+          postal: req.body.postal,
+          country: req.body.country
+        }
+
+        Order.findByIdAndUpdate(req.params.id, {
+          shipping_info: shipping_info
+        }, (err, user) => {
+           if (err) throw err;
+
+           var owner_count = 0;
+
+           for (var i = 0, len = order.items.length; i < len; i++) {
+
+             owner_count += 1;
+
+             // Send notification to the user mentioned
+             User.findOne({ 'stripe_connected_account_id': { $in: order.items[i].owner } }, (err, reciever) => {
+                if (err) throw err;
+
+                var newNotification = new Notification({
+                   sender: req.user._id,
+                   reciever: reciever._id,
+                   type: 'The shipping info from your order ' + order.order_number + ' has been updated.' ,
+                   link: '/orders/' + req.params.id,
+                   date_sent: current_date
+                });
+
+                // Create notification in database
+                Notification.saveNotification(newNotification, (err, notification) => {
+                   if(err) throw err;
+
+                   // Add Notification for User
+                   User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+                      if (err) throw err;
+
+                      // Gmail Credentials
+                      var transporter = nodemailer.createTransport({
+                         service: 'Gmail',
+                         auth: {
+                            user: 'hello@myhryzn.com',
+                            pass: '+ar+oo-55'
+                         }
+                      });
+
+                      // Mail Body
+                      var mailOptions = {
+                         from: '"Hryzn" <hello@myhryzn.com>',
+                         to: reciever.email,
+                         subject: 'Shipping info updated for order number: ' + order.order_number,
+                         html: '<h1>Hello from Hryzn!</h1><br><p>The shipping info from your order: ' + order.order_number + ' has been updated. Just letting you know in case you need to update anything.</p><br><a href="https://myhryzn.com/orders/' + order._id + '">Click here to view your order</a><br><p>Enjoy your day!</p>',
+                      }
+
+                      transporter.sendMail(mailOptions, (error, info) => {
+                         if(!error) {
+                         }
+                      });
+
+
+                      if (owner_count == order.items.length) {
+                        req.flash('success_msg', "Shipping info was updated.");
+                        res.redirect(order_url);
+                      }
+                   });
+                });
+             });
+           }
+        });
+
+      } else if (method == 'billing') {
+
+        var billing_info = {
+          billing_fname: req.body.billing_fname,
+          billing_lname: req.body.billing_lname,
+          billing_address: req.body.billing_address,
+          billing_apt: req.body.billing_apt,
+          billing_city: req.body.billing_city,
+          billing_state: req.body.billing_state,
+          billing_postal: req.body.billing_postal,
+          billing_country: req.body.billing_country
+        }
+
+        Order.findByIdAndUpdate(req.params.id, {
+          billing_info: billing_info
+        }, (err, user) => {
+           if (err) throw err;
+
+           var owner_count = 0;
+
+           for (var i = 0, len = order.items.length; i < len; i++) {
+
+             owner_count += 1;
+
+             // Send notification to the user mentioned
+             User.findOne({ 'stripe_connected_account_id': { $in: order.items[i].owner } }, (err, reciever) => {
+                if (err) throw err;
+
+                var newNotification = new Notification({
+                   sender: req.user._id,
+                   reciever: reciever._id,
+                   type: 'The billing info from your order ' + order.order_number + ' has been updated.' ,
+                   link: '/orders/' + req.params.id,
+                   date_sent: current_date
+                });
+
+                // Create notification in database
+                Notification.saveNotification(newNotification, (err, notification) => {
+                   if(err) throw err;
+
+                   // Add Notification for User
+                   User.findByIdAndUpdate(reciever._id, { has_notification: true }, (err, user) => {
+                      if (err) throw err;
+
+                      // Gmail Credentials
+                      var transporter = nodemailer.createTransport({
+                         service: 'Gmail',
+                         auth: {
+                            user: 'hello@myhryzn.com',
+                            pass: '+ar+oo-55'
+                         }
+                      });
+
+                      // Mail Body
+                      var mailOptions = {
+                         from: '"Hryzn" <hello@myhryzn.com>',
+                         to: reciever.email,
+                         subject: 'Billing info updated for order number: ' + order.order_number,
+                         html: '<h1>Hello from Hryzn!</h1><br><p>The billing info from your order: ' + order.order_number + ' has been updated. Just letting you know in case you need to update anything.</p><br><a href="https://myhryzn.com/orders/' + order._id + '">Click here to view your order</a><br><p>Enjoy your day!</p>',
+                      }
+
+                      transporter.sendMail(mailOptions, (error, info) => {
+                         if(!error) {
+                         }
+                      });
+
+
+                      if (owner_count == order.items.length) {
+                        req.flash('success_msg', "Billing info was updated.");
+                        res.redirect(order_url);
+                      }
+                   });
+                });
+             });
+           }
+        });
+
+      } else {
+        res.redirect('/orders');
+      }
+
+    } else {
+      res.redirect('/orders');
+    }
+
+  });
+
+});
 
 
 // Verify JS Web Token

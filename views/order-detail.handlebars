@@ -1,0 +1,301 @@
+{{#if order}}
+
+<div class="order_info_top">
+  <h3>Order - {{order.order_number}}</h3>
+  <p>{{order.date_was_created}}</p>
+</div>
+
+<div class="order_detail_container order_container">
+
+  <div class="order_detail_left">
+
+    {{#each order.items}}
+    <div class="order_detail_item">
+      <div class="order_detail_title">
+        <h3>Item {{@index}}</h3>
+        {{#ifEquals this.fulfillment_status '0'}}<p class="order_detail_processing">Processing</p>{{/ifEquals}}
+        {{#ifEquals this.fulfillment_status '1'}}<p class="order_detail_shipped">Shipped</p>{{/ifEquals}}
+        {{#ifEquals this.fulfillment_status '2'}}<p class="order_detail_delivered">Delivered</p>{{/ifEquals}}
+      </div>
+
+      {{#each this.products}}
+
+      <div class="order_detail_product">
+
+        <div class="order_detail_product_one">
+          <img src="https://ik.imagekit.io/w07am55tja/{{this.image}}?tr=w-1000" class="img-responsive" alt="{{this.title}}" />
+        </div>
+
+        <div class="order_detail_product_two">
+          <h3>{{this.title}}</h3>
+          <div class="order_detail_product_two_mid">
+            <a class="order_detail_view_product" href="/p/product/{{this._id}}">View</a>
+          </div>
+        </div>
+
+        <div class="order_detail_product_three">
+          <p>{{this.price}}</p>
+          <small>x {{this.quantity}}</small>
+        </div>
+
+      </div>
+
+      {{/each}}
+
+      <hr class="order_detail_product_underline">
+
+      <div class="order_detail_left_container">
+        <strong class="order_detail_left_header">Subtotal</strong>
+        <p class="order_detail_left_sub">{{this.subtotal}}</p>
+      </div>
+
+      <div class="order_detail_left_container">
+        <strong class="order_detail_left_header">Shipping & Handling</strong>
+        <p class="order_detail_left_sub">{{this.shipping_cost}}</p>
+      </div>
+
+      <div class="order_detail_left_container">
+        <strong class="order_detail_left_header">Total</strong>
+        <p class="order_detail_left_sub">{{this.total}}</p>
+      </div>
+
+      {{#ifEquals this.fulfillment_status '0'}}
+        {{#ifEquals this.owner ../user.stripe_connected_account_id}}
+        <div class="order_detail_item_mark owner_mark">Mark As Fulfilled & Shipped</div>
+        <div class="order_detail_add_tracking">
+          <form action="/orders/{{../order._id}}/status/item-{{@index}}/false" method="post">
+            <label for="tracking_info" class="form__label">Add Tracking Info (Optional)</label>
+            <textarea name="tracking_info" class="form__input product_text" value=""></textarea>
+            <input type="submit" value="Submit" class="tracking_sub">
+          </form>
+        </div>
+        {{/ifEquals}}
+
+      {{else}}
+
+        {{#ifEquals this.fulfillment_status '2'}}
+
+        {{else}}
+
+          {{#ifEquals ../../order.customer user._id}}
+            {{#ifEquals this.tracking_info ''}}
+            <a href="/orders/{{../order._id}}/status/item-{{@index}}/false">
+              <div class="order_detail_item_mark customer_mark">Mark As Delivered</div>
+            </a>
+            {{else}}
+            <div class="semi-spacer"></div>
+            <label for="tracking_info" class="form__label">Tracking Info</label>
+            <div class="form__input product_text" value="" required>{{this.tracking_info}}</div>
+            <a href="/orders/{{../order._id}}/status/item-{{@index}}/false">
+              <div class="order_detail_item_mark customer_mark has_tracking">Mark As Delivered</div>
+            </a>
+            {{/ifEquals}}
+          {{/ifEquals}}
+
+        {{/ifEquals}}
+      {{/ifEquals}}
+
+    </div>
+    {{/each}}
+
+    <h3 class="order_detail_header order_detail_timeline_header">Timeline</h3>
+    <div class="order_detail_left_container order_detail_timeline_text">
+      <p>Order confirmation email was sent.</p>
+      <a href="/orders/{{order._id}}/resend-email/false" class="order_detail_left_sub resend_email">Resend Email</a>
+    </div>
+
+    {{#each order.items}}
+    {{#ifEquals this.fulfillment_status '0'}}
+    <div class="order_detail_left_container order_detail_timeline_text">
+      <p>Order Item {{@index}} is being processed.</p>
+      <img src="/icons/clock.png" class="mobile-nav__icon"/>
+    </div>
+    {{/ifEquals}}
+
+    {{#ifEquals this.fulfillment_status '1'}}
+    <div class="order_detail_left_container order_detail_timeline_text">
+      <p>Order Item {{@index}} has been processed.</p>
+      <img src="/icons/checkmark.png" class="mobile-nav__icon"/>
+    </div>
+    <div class="order_detail_left_container order_detail_timeline_text">
+      <p>Order Item {{@index}} has been shipped.</p>
+      <img src="/icons/checkmark.png" class="mobile-nav__icon"/>
+    </div>
+    <div class="order_detail_left_container order_detail_timeline_text">
+      <p>Order Item {{@index}} is being delivered.</p>
+      <img src="/icons/clock.png" class="mobile-nav__icon"/>
+    </div>
+    {{/ifEquals}}
+
+    {{#ifEquals this.fulfillment_status '2'}}
+    <div class="order_detail_left_container order_detail_timeline_text">
+      <p>Order Item {{@index}} has been processed.</p>
+      <img src="/icons/checkmark.png" class="mobile-nav__icon"/>
+    </div>
+    <div class="order_detail_left_container order_detail_timeline_text">
+      <p>Order Item {{@index}} has been shipped.</p>
+      <img src="/icons/checkmark.png" class="mobile-nav__icon"/>
+    </div>
+    <div class="order_detail_left_container order_detail_timeline_text">
+      <p>Order Item {{@index}} has been delivered.</p>
+      <img src="/icons/checkmark.png" class="mobile-nav__icon"/>
+    </div>
+    {{/ifEquals}}
+
+    <div class="mini-spacer"></div>
+    {{/each}}
+
+  </div>
+
+  <div class="order_detail_right">
+
+    <div class="order_detail_right_wrapper {{#ifEquals order.customer user._id}}customer_wrapper{{/ifEquals}}">
+      <h3 class="order_detail_header">Customer</h3>
+
+      <p>{{order.contact_info.fname}} {{order.contact_info.lname}}</p>
+
+      <p>{{order.contact_info.email}}</p>
+      <p>{{order.contact_info.phone}}</p>
+
+      {{#ifEquals order.customer user._id}}
+      <div class="order_detail_edit_contact modalBtn">Edit</div>
+      {{/ifEquals}}
+    </div>
+
+    <div class="order_detail_right_wrapper {{#ifEquals order.customer user._id}}customer_wrapper{{/ifEquals}}">
+      <h3 class="order_detail_header">Shipping</h3>
+
+      <p>{{order.fname}} {{order.lname}}</p>
+
+      <p>{{order.shipping_info.address}}</p>
+      <p>{{order.shipping_info.apt}}</p>
+      <p>{{order.shipping_info.city}}, {{order.shipping_info.state}}, {{order.shipping_info.postal}}</p>
+      <p>{{order.shipping_info.country}}</p>
+
+      {{#ifEquals order.customer user._id}}
+      <div class="order_detail_edit_shipping modalBtn">Edit</div>
+      {{/ifEquals}}
+    </div>
+
+    <div class="order_detail_right_wrapper {{#ifEquals order.customer user._id}}customer_wrapper{{/ifEquals}}">
+      <h3 class="order_detail_header">Billing</h3>
+
+      <p>{{order.billing_info.billing_fname}} {{order.billing_info.billing_lname}}</p>
+
+      <p>{{order.billing_info.billing_address}}</p>
+      <p>{{order.billing_info.billing_apt}}</p>
+      <p>{{order.billing_info.billing_city}}, {{order.billing_info.billing_state}}, {{order.billing_info.billing_postal}}</p>
+      <p>{{order.billing_info.billing_country}}</p>
+
+      {{#ifEquals order.customer user._id}}
+      <div class="order_detail_edit_billing modalBtn">Edit</div>
+      {{/ifEquals}}
+    </div>
+
+
+  </div>
+
+  </div>
+</div>
+
+<!-- Hidden Delete Modal -->
+<div class="popModal modalBackground">
+
+  <div class="modal-content contact_was_clicked">
+    <div class="modal-header">
+      <p>Edit Contact Info</p>
+    </div>
+
+    <div class="modal-body">
+      <form method="post" action="/orders/{{order._id}}/customer-edit/contact/false">
+        <input class="order_edit_input form__input" type="text" name="fname" value="{{order.contact_info.fname}}" placeholder="First Name" required/>
+        <input class="order_edit_input form__input" type="text" name="lname" value="{{order.contact_info.lname}}" placeholder="Last Name" required/>
+
+        <input class="order_edit_input form__input" type="email" name="email" value="{{order.contact_info.email}}" placeholder="Email Address" required/>
+        <input class="order_edit_input form__input" type="phone" name="phone" value="{{order.contact_info.phone}}" placeholder="Phone Number" required/>
+
+        <div class="order_detail_left_container">
+          <button class="order_edit_submit" name="submit" type="submit">Submit</button>
+          <span class="closeModal order_edit_close">Cancel</span>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <div class="modal-content shipping_was_clicked">
+    <div class="modal-header">
+      <p>Edit Shipping Info</p>
+    </div>
+
+    <div class="modal-body">
+      <form method="post" action="/orders/{{order._id}}/customer-edit/shipping/false">
+        <input class="order_edit_input form__input" type="text" name="address" value="{{order.shipping_info.address}}" placeholder="Deliver To Address" required/>
+        <input class="order_edit_input form__input checkout_optional" type="text" name="apt" value="{{order.shipping_info.apt}}" placeholder="Apartment, Unit, Suite, or Floor #" />
+
+        <div class="order_edit_input_four_col_row">
+          <div class="order_edit_input_two_col_row">
+            <input class="order_edit_input form__input" type="text" name="city" value="{{order.shipping_info.city}}" placeholder="City" />
+            <input class="order_edit_input form__input" type="text" name="state" value="{{order.shipping_info.state}}" placeholder="State / Province" required/>
+          </div>
+
+          <div class="order_edit_input_two_col_row">
+            <input class="order_edit_input form__input" type="text" name="postal" value="{{order.shipping_info.postal}}" placeholder="Postal Code" required/>
+            <input class="order_edit_input form__input" type="text" name="country" value="{{order.shipping_info.country}}" placeholder="Country / Region" required/>
+          </div>
+        </div>
+
+        <div class="order_detail_left_container">
+          <button class="order_edit_submit" name="submit" type="submit">Submit</button>
+          <span class="closeModal order_edit_close">Cancel</span>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <div class="modal-content billing_was_clicked">
+    <div class="modal-header">
+      <p>Edit Billing Info</p>
+    </div>
+
+    <div class="modal-body">
+      <form method="post" action="/orders/{{order._id}}/customer-edit/billing/false">
+        <div class="order_edit_input_row">
+          <input class="order_edit_input form__input" type="text" name="billing_fname" value="{{order.billing_info.billing_fname}}" placeholder="First Name"/>
+          <input class="order_edit_input form__input" type="text" name="billing_lname" value="{{order.billing_info.billing_lname}}" placeholder="Last Name"/>
+        </div>
+
+        <input class="order_edit_input form__input" type="text" name="billing_address" value="{{order.billing_info.billing_address}}" placeholder="Deliver To Address"/>
+        <input class="order_edit_input form__input billing_optional" type="text" name="billing_apt" value="{{order.billing_billing_info.apt}}" placeholder="Apartment, Unit, Suite, or Floor #" />
+
+        <div class="order_edit_input_four_col_row">
+          <div class="order_edit_input_two_col_row">
+            <input class="order_edit_input form__input" type="text" name="billing_city" value="{{order.billing_info.billing_city}}" placeholder="City" />
+            <input class="order_edit_input form__input" type="text" name="billing_state" value="{{order.billing_info.billing_state}}" placeholder="State / Province"/>
+          </div>
+
+          <div class="order_edit_input_two_col_row">
+            <input class="order_edit_input form__input" type="text" name="billing_postal" value="{{order.billing_info.billing_postal}}" placeholder="Postal Code"/>
+            <input class="order_edit_input form__input" type="text" name="billing_country" value="{{order.billing_info.billing_country}}" placeholder="Country / Region" />
+          </div>
+        </div>
+
+        <div class="order_detail_left_container">
+          <button class="order_edit_submit" name="submit" type="submit">Submit</button>
+          <span class="closeModal order_edit_close">Cancel</span>
+        </div>
+      </form>
+    </div>
+  </div>
+
+</div>
+
+{{else}}
+<div class="error__container">
+  <h1 class="main__title">This order does not exist</h1>
+  <div class="row main__info-container">
+     <a href="/orders" class="main__info" style="width: 100%; max-width: none; margin: 0 auto;"><strong>View other orders &#8594;</strong></a>
+  </div>
+</div>
+{{/if}}
