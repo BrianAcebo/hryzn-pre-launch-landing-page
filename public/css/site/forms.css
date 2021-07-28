@@ -5,7 +5,8 @@ input[type="text"],
 input[type="tel"],
 input[type="url"],
 input[type="password"],
-textarea {
+textarea,
+button {
    -webkit-appearance: none;
    -moz-appearance: none;
    -ms-appearance: none;
@@ -15,6 +16,7 @@ textarea {
 
 button {
    background: none;
+   border-radius: inherit;
 }
 
 .form-container {
