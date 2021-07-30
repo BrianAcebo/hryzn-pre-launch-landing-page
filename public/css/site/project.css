@@ -1564,6 +1564,20 @@ section.project {
    display: block;
 }
 
+.project_settings_wrapper .project_btn_wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: row;
+}
+
+.project_settings_wrapper .project_btn_wrapper .admin_btn {
+  border: 1px solid #333;
+  background: transparent;
+  padding: 8px 18px;
+  line-height: 16px;
+}
+
 @media screen and (max-width: 768px) {
    section.project {
       padding: 0;
@@ -2159,6 +2173,10 @@ section.project {
 
 .micro_active {
    display: block;
+}
+
+.projectSettingsBtn_ell {
+  cursor: pointer;
 }
 
 .suggested_index_feed .micropost_card .micro_body {

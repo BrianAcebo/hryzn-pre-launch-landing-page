@@ -463,6 +463,14 @@ blockquote {
    padding: 0;
 }
 
+.blog_project_guest #mainProject {
+   padding: 50px 15px;
+}
+
+.blog_project_guest #mainProject.mainBlogProject {
+   padding: 50px 15px;
+}
+
 #mainDash {
    padding: 0;
 }
@@ -474,7 +482,9 @@ blockquote {
       transition: 0.3s;
    }
 
-   #mainProject.mainBlogProject {
+   #mainProject.mainBlogProject,
+   .blog_project_guest #mainProject,
+   .blog_project_guest #mainProject.mainBlogProject {
       padding: 0 0 100px 0;
    }
 }

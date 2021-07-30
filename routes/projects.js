@@ -1637,7 +1637,9 @@ router.get('/details/:id/guest', (req, res, next) => {
                         user_liked: false,
                         admin_amount: admin_amount,
                         user_is_guest: true,
-                        blog_post_project: true
+                        blog_post_project: true,
+                        blog_project_guest: true
+
                      });
                   });
                } else {
@@ -1708,7 +1710,8 @@ router.get('/details/:id/guest', (req, res, next) => {
                         user_liked: false,
                         admin_amount: admin_amount,
                         user_is_guest: true,
-                        blog_post_project: true
+                        blog_post_project: true,
+                        blog_project_guest: true
                      });
                   });
                }
