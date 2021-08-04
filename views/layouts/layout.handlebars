@@ -439,7 +439,7 @@
                   <div class="autocomplete">
                      <input id="searchAuto" class="landing-nav_search" type="text" placeholder="Explore our universe..." name="p">
                   </div>
-                  <button type="submit"><img src="/icons/search-white.png" class="mobile-nav__icon"/></button>
+                  <button type="submit"><img src="/icons/search-blue.png" class="mobile-nav__icon"/></button>
                </form>
             </div>
             {{/if}}
@@ -460,7 +460,7 @@
                <a href="#0" class="side_nav__close" title="close"><span></span></a>
 
                <div class="side_nav__content">
-                  <h3>Find your voice</h3>
+                  <h3>Dream Big. Be Epic.</h3>
 
                   <div class="search-container mobile_search">
                      <form action="/search">
@@ -480,7 +480,7 @@
                      <li><a href="/users/login">Login</a> or <a href="/users/register">Sign Up</a></li>
                   </ul>
 
-                  <p>Create, explore, and share your ideas on a powerful social writing platform.</p>
+                  <p>The creator's marketplace with the simplest way to connect with your community and build your business.</p>
 
                   <ul class="side_nav__social">
                   <li><a href="https://twitter.com/myHryzn" target="_blank"><i class="fa fa-twitter"></i></a></li>
@@ -683,17 +683,47 @@
       {{else}}
       {{#if profilePage}}
       {{else}}
-      <footer class="footer__container">
-         <a {{#if on_wildcard_profile}}href="https://www.myhryzn.com"{{else}}href="/"{{/if}}>About</a>
-         <a href="/about/press">Press</a>
-         <a href="/creatives">Creatives</a>
-         <a href="/blog">Blog</a>
-         <a href="/about/terms">Terms Of Service</a>
-         <a href="/about/privacy">Privacy Policy</a>
-         {{! Not Ready Yet <a href="/about/copyright">Copyright</a> }}
-         <div style="width: 100%; text-align: center; font-size: 12px;">
-         Copyright &copy; <span style="display: inline; font-size: 12px;" id="copyrightYear"></span> Hryzn, Inc. All Rights Reserved.
-         </div>
+      <footer class="footer_container">
+
+        <div class="footer_wrapper">
+          <div class="footer_left">
+            <a {{#if on_wildcard_profile}}href="https://www.myhryzn.com"{{else}}href="/"{{/if}} class="footer_logo">Hryzn</a>
+
+            <p>Hryzn is an online marketplace where all people, creators, and brands can grow by connecting directly with their audience through niche topics and make money online. </p>
+
+            <ul class="footer_social">
+               <li><a href="https://twitter.com/myHryzn" target="_blank"><i class="fa fa-twitter"></i></a></li>
+               <li><a href="https://www.instagram.com/myHryzn/" target="_blank"><i class="fa fa-instagram"></i></a></li>
+               <li><a href="https://www.youtube.com/channel/UCHxZtvq7nc-cd9e88X9MHOQ" target="_blank"><i class="fa fa-youtube"></i></a></li>
+            </ul>
+          </div>
+
+          <div class="footer_right">
+            <div class="footer_links">
+              <strong>Community</strong>
+              <a href="/about/invest">Crowdfunding</a>
+              <a href="/about/faq">FAQ</a>
+              <a href="/about/press">Press</a>
+            </div>
+
+            <div class="footer_links">
+              <strong>Company</strong>
+              <a href="/about/story">About Us</a>
+              <a href="/about/contact">Contact Us</a>
+              <a href="/blog">Blog</a>
+              <a href="/creatives">Creatives</a>
+            </div>
+
+            <div class="footer_links">
+              <strong>Terms & Policies</strong>
+              <a href="/about/terms">Terms Of Service</a>
+              <a href="/about/cookies">Data / Cookies Policy</a>
+              <a href="/about/privacy">Privacy Policy</a>
+            </div>
+          </div>
+        </div>
+
+         <div class="footer_copyright">Copyright &copy; <span style="display: inline; font-size: 12px;" id="copyrightYear"></span> Hryzn, Inc. All Rights Reserved.</div>
       </footer>
       {{/if}}
       {{/if}}

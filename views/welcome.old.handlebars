@@ -1,0 +1,402 @@
+<!-- Welcome Page Preloader -->
+<div id="preloader">
+   <div id="loader">
+      <div class="line-scale-pulse-out">
+         <div></div>
+         <div></div>
+         <div></div>
+         <div></div>
+         <div></div>
+      </div>
+   </div>
+</div>
+<!-- /Preloader -->
+
+<div id="mouse">
+
+<!-- Hero Home Section -->
+{{#if projects}}
+<section id="home" class="section_home target-section slideshow-container">
+
+   {{#each projects}}
+      {{#if is_private}}
+      {{! Check if the project is a private project, we do not want to show private projects }}
+      {{else}}
+      <div class="section_home_projects fade section_home_hero" style="background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.3)), url('https://ik.imagekit.io/w07am55tja/{{#if this.project_image}}{{this.project_image}}{{else}}{{this.micro_image}}{{/if}}?tr=w-1920');">
+         <div class="section_home_content__scroll">
+            <a href="/p/details/{{this._id}}" class="home_hero_project_name"><span>@{{this.project_owner}}</span>{{this.project_title}}</a>
+         </div>
+      </div>
+      <span class="dot"></span>
+      {{/if}}
+   {{/each}}
+
+   <div class="section_home_content" style="display: flex; flex-direction: row;">
+
+      <div class="row section_home_content__main">
+         <div class="section_home_container">
+
+            <div class="section_home_title">
+               <h3>Your passion. Your people.</h3>
+               <!-- <h1>
+                  Join a hub of niches where your interests connect you with your community.
+               </h1> -->
+                <h1>
+                  The number one <span class="title_on_cross">people's<div class="title_arr_down"></div></span> <span class="title_cross">creator's</span> marketplace with the simplest way to make an income and create a life worth living.
+                </h1>
+            </div>
+
+         </div>
+
+         <div class="section_home_content__buttons">
+            <a href="/users/register" class="welcome_primary btn btn--stroke">Sign Up</a>
+            <!-- <a href="/explore" class="btn btn--stroke">Go Explore</a> -->
+            <a href="/users/login" class="btn btn--stroke">Login</a>
+         </div>
+
+      </div>
+
+      {{!<video preload="auto" controls controlsList="nodownload" style="width: 30%;">
+         <source src="/videos/ad-v2-final.mp4" type="video/mp4">
+         Your browser does not support the video tag.
+      </video> }}
+
+   </div>
+
+</section>
+{{/if}}
+<!-- /Hero Home -->
+
+
+<!-- About Section -->
+<section id='about' class="section_container section_about">
+
+   <div class="section_header has-bottom-sep light_sep" data-aos="fade-up">
+      <h3 class="section_sub light_sub">Explore Your Interests, Join A Community</h3>
+      <h2 class="section_title light_title">Where Voices Matter</h2>
+   </div>
+
+   <div class="section_about_desc" data-aos="fade-up">
+      <p>
+         <!--
+         Hryzn is a blogging social network where people are free to explore, create, and share their interests.
+         Whether you're looking to grow professionaly, or simply write privately to your friends and family, we've got you covered.
+         Our goal is to help those that are curious find their voice and express themselves, without all the hassle and commitment of a regular blog.
+         -->
+
+         <!-- Hryzn is a social network that allows you to explore, find your interests, and become a part of a community no matter whether its cooking, working out, cryptocurrency, art, business, etc. By doing this, we eliminate the aggravatingly time consuming hassle of creating a business through content,
+         giving creatives a platform to grow with a dedicated audience to showcase their content to.
+      </p> -->
+   </div>
+
+   <div class="section_about_row">
+      <div class="section_about_columns" data-aos="fade-up">
+         <img src="/icons/content.png" class="section_about_icon"/>
+         <p>
+            Share your choice of blogs, pictures, videos, text, or links for whatever you find interesting. The beauty is in your hands.
+         </p>
+      </div>
+
+      <div class="section_about_columns" data-aos="fade-up">
+         <img src="/icons/group.png" class="section_about_icon"/>
+         <p>
+            Join groups of like-minded people that care about the things your passionate about whether it's cooking, working out, cryptocurrency, art, etc.
+         </p>
+      </div>
+
+      <div class="section_about_columns" data-aos="fade-up">
+         <img src="/icons/algorithm.png" class="section_about_icon"/>
+         <p>
+            Unlike traditional social media, our ingrained methodology makes sure everyone has an equal chance to thrive and excel with good, quality content.
+         </p>
+      </div>
+   </div>
+
+   <div style="text-align: center" class="section_home_content__buttons">
+     <a href="https://youtu.be/mAeEKWw3vM4" style="margin: 0 auto; text-align: center" data-lity class="btn btn--stroke">Watch Video</a>
+   </div>
+
+   <div class="section_about__line"></div>
+
+</section>
+<!-- /About Section -->
+
+
+<!-- Top Picks-->
+<section id='works' class="section_works">
+
+   <div class="section_works_container">
+      <div class="section_works_left" style="background-image: url('/img/welcome/hero-img-colors.jpg');" data-aos="fade-right"></div>
+
+      <div class="section_works_right" data-aos="fade-left">
+         <div class="section_works_right_wrapper">
+            <h3 class="section_title">Your Creative Freedom</h3>
+            <p>
+               On Hryzn, people are free to explore, create, and share their interests.
+               Our goal is to be a creative outlet to find your voice and express yourself, giving you the freedom to explore what you're passionate about.
+               You can find topics on just about anything, whether it's cooking, anime, DIY, makeup, psychology, etc.
+               Follow amazing people, repost outstanding content, and connect with your friends and family.
+            </p>
+            <a href="/explore"><div class="hero_sign_up" style="margin: 35px 0 0 0; border-radius: 0; padding: 12px 15px; max-width: 150px; border: 1px solid #31375A; background: transparent; color: #31375A;">Discover</div></a>
+         </div>
+      </div>
+   </div>
+
+
+    <div class="top_picks_container" data-aos="fade-up">
+
+      {{#if projects}}
+      <div id="masonryContainer" class="masonryContainer">
+         {{#each projects}}
+            {{#if this.is_private}}
+            {{! Check if the project is a private project, we do not want to show private projects }}
+            {{else}}
+
+               {{#if is_micro_post}}
+
+               <div class="masonryItem ownProject" title="{{project_title}}">
+                  <a href="/p/micro/{{_id}}">
+                     <div class="micropost">
+                        <div class="micropost_card {{#if micro_image}}card_is_micro_image{{else}}{{#if micro_audio}}card_is_micro_audio{{else}}{{#if micro_video}}card_is_micro_video{{else}}card_is_micro_text{{/if}}{{/if}}{{/if}}">
+                           {{#if micro_image}}<img src="https://ik.imagekit.io/w07am55tja/{{micro_image}}?tr=w-450" class="img-responsive" alt="{{micro_body}}" />{{/if}}
+                           {{#if thumbnail_image}}<img src="https://ik.imagekit.io/w07am55tja/{{thumbnail_image}}?tr=w-450" class="img-responsive" alt="{{micro_body}}" />{{/if}}
+                           {{#if micro_video}}<div class="micro_play_btn"><img class="topnav__icon" src="/icons/play-button-white.png" /></div>{{/if}}
+                           {{#if micro_audio}}<div class="micro_play_btn"><img class="topnav__icon" src="/icons/audio-button-white.png" /></div>{{/if}}
+                           {{#if project_title}}<p class="micro_title">{{project_title}}</p>{{/if}}
+                           <p class="micro_body">
+                              {{{micro_body}}}
+                           </p>
+                        </div>
+                        <a class="micro_tag {{#if project_title}}micro_tag_w_title{{/if}}" href="/profile/{{project_owner}}">@{{project_owner}}</a>
+                     </div>
+                  </a>
+               </div>
+
+               {{else}}
+
+               <div class="masonryItem" title="{{this.project_title}}">
+                  <div class="project_card">
+                     <a href="/p/details/{{this._id}}/guest" class="project_link">
+                        <img src="https://ik.imagekit.io/w07am55tja/{{this.project_image}}?tr=w-450" class="img-responsive" alt="{{this.project_title}}" />
+                     </a>
+                     <div class="project_card_bottom">
+                        <div class="project_bottom_wrapper">
+                           <div class="bg_overlay"></div>
+                           <div class="project_bottom_details">
+                              <a href="/profile/{{this.project_owner}}"><p class="project_owner">@{{this.project_owner}}</p></a>
+                              <a href="/p/details/{{this._id}}/guest" class="project_link">
+                                 <p class="project_card_title">{{this.project_title}}</p>
+                              </a>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+
+               {{/if}}
+
+            {{/if}}
+         {{/each}}
+      </div>
+      {{else}}
+      {{! Something went wrong}}
+      <p class="error-message">
+         Sorry, we couldn't find any projects.
+      </p>
+      {{/if}}
+   </div>
+
+</section>
+<!-- /Top Picks -->
+
+
+<!-- Background Image -->
+<section class="section_bg_img">
+   <h2 class="section_title">Become a part of something you believe in.</h2>
+   <p>
+      Join groups of like-minded people that share your interests.
+   </p>
+
+   {{#if groups}}
+      <section class="explore_groups_container">
+         <div class="group_wrapper">
+            {{#each groups}}
+            {{#if this.is_private}}
+            {{else}}
+               <a href="/groups/{{this._id}}" class="follower__profile">
+                  <div class="follower__profile-img-container">
+                     <img class="profile__img" src="https://ik.imagekit.io/w07am55tja/{{this.group_image}}?tr=w-100" />
+                  </div>
+                  {{this.group_name}}
+               </a>
+            {{/if}}
+            {{/each}}
+         </div>
+      </section>
+   {{/if}}
+</section>
+<!-- /Background Image -->
+
+
+<!-- Features -->
+<section id="features" class="landing_content_container">
+   <div class="bg-square-01" data-aos="fade-up">
+      <div class="bg-square__wrapper">
+         <div class="bg-square_text bg-text-01" data-aos="fade-up">
+            <h3>Tradition Favors The Wrong Content</h3>
+            <p>
+               It seems that in today's day of age, traditional social media favors "questionable" content. Countless artists and other creative types,
+               who spend countless hours on their work, go unnoticed and unappreciated. These many powerful voices are left unheard in a place where they
+               shouldn't be silenced.
+            </p>
+         </div>
+      </div>
+      <div class="bg-square__wrapper">
+         <img src="/img/welcome/landing-hero.jpg" data-aos="fade-up" />
+      </div>
+   </div>
+
+   <div class="bg-square-02" data-aos="fade-up">
+      <div class="bg-square__wrapper">
+         <img src="/img/welcome/hero-phone.jpg" data-aos="fade-up"/>
+      </div>
+      <div class="bg-square__wrapper">
+         <div class="bg-square_text bg-text-02" data-aos="fade-up">
+            <h3>Quality Content Prospers Here</h3>
+            <p>
+               On Hryzn, we give the power back to those people. We aspire to give everybody the chance to be heard, and promote quality content. Feel free to express yourself and post what you please, no matter whether you're a visual artist, musician, blogger, business etc.
+               We love the creative type and we live to inspire creativity.
+            </p>
+            <a href="/creatives"><div class="hero_sign_up" style="margin: 35px 0 0 0; border-radius: 0; padding: 12px 15px;">Creators</div></a>
+         </div>
+      </div>
+   </div>
+</section>
+
+<div class="spacer desktop_spacer"></div>
+<div class="spacer desktop_spacer"></div>
+
+<div class="section_works_container container_reversed">
+   <div class="section_works_left" style="background-image: url('/img/about/hero-img-laptop.jpg');" data-aos="fade-right"></div>
+
+   <div class="section_works_right" data-aos="fade-left">
+      <div class="section_works_right_wrapper">
+         <ul>
+            <li>
+               <h3>Discovery Engine</h3>
+               Discover what you love and find your interests with our built in search engine. Posts can be optimized to rank higher for what people are searching for.
+            </li>
+            <li>
+               <h3>Sharing Communities</h3>
+               Join and become a part of groups for the things you enjoy. Follow and share with other users ideas and content for whatever resonates with you.
+            </li>
+            <li>
+               <h3>Free-Range Posting</h3>
+               Enjoy the multitude of options to post whatever you please. Post videos, pictures, text, links, or even blog posts. Repost to the groups you're a part of or for your followers to enjoy.
+            </li>
+         </ul>
+      </div>
+   </div>
+</div>
+
+<section class="section_container section_features">
+
+   <div class="section_header has-bottom-sep dark_sep" data-aos="fade-up">
+      <h3 class="section_sub">For Creatives</h3>
+      <h2 class="section_title">Your Box Of Resources</h2>
+   </div>
+
+   <div class="services_container">
+
+      <div class="services_list" data-aos="fade-up">
+         <p>Discover a world where people can share their thoughts about what interests them.</p>
+         <p>Simple setup to get up and running quickly and easily.</p>
+         <p>Built in search engine to help rank and find a multitude of topics and ideas.</p>
+         <p>Connect with our database of influencers, or become one to partner with brands.<br /><span>Coming Soon</span></p>
+      </div>
+
+      <div class="services_list" data-aos="fade-up">
+         <p>Experience the endless possibilities and subscribe to the people you enjoy the most.</p>
+         <p>Be easily discovered by an audience or write privately to friends and family.</p>
+         <p>Monetize your content, and sell or affiliate products.<br /><span>Coming Soon</span></p>
+         <p>Utilize management and automation tools to streamline your marketing.<br /><span>Coming Soon</span></p>
+      </div>
+
+   </div>
+
+   <div class="spacer"></div>
+
+   <div class="section_header" data-aos="fade-up">
+      <a href="/creatives"><div class="hero_sign_up" style="border-radius: 0; padding: 12px 15px; max-width: 150px; border: 1px solid #31375A; background: transparent; color: #31375A;">Learn More</div></a>
+   </div>
+
+</section>
+<!-- /Features Section -->
+
+
+<!-- CTA Section -->
+<section class="section_container section_cta">
+
+<div class="section_header" data-aos="fade-up">
+<h3 class="section_sub">Join Today</h3>
+<h2 class="section_title">Join a creative world of content, topics, and ideas.</h2>
+<a href="/users/register"><div class="hero_sign_up">Sign Up</div></a>
+</div>
+
+</section>
+<!-- /CTA Section -->
+
+
+<!-- Contact Section -->
+<section id="contact" class="section_container section_contact">
+
+   <div class="s-hero_overlay"></div>
+   <div class="contact__line"></div>
+
+   <div class="section_header" data-aos="fade-up">
+      <h3 class="section_sub">Contact Us</h3>
+      <h2 class="section_title">We Like Conversation</h2>
+   </div>
+
+   <div class="section_contact_content" data-aos="fade-up">
+
+      <div class="section_contact_primary">
+
+         <h3 class="send_message">Send Us A Message</h3>
+
+         {{#if form_submitted}}
+         <h3 class="landing-title-faded">Thank you for your feedback. <a href="/">Click here to go back.</a></h3>
+         {{else}}
+
+         <form name="contactForm" id="contactForm" method="post" action="/about/contact">
+         <fieldset>
+            <div class="form-field">
+               <input name="contact_name" type="text" id="contactName" placeholder="Your Name" value="{{contact_name}}" minlength="2" required="" aria-required="true" class="full-width">
+            </div>
+            <div class="form-field">
+               <input name="contact_email" type="email" id="contactEmail" placeholder="Your Email" value="{{contact_email}}" required="" aria-required="true" class="full-width">
+            </div>
+            <div class="form-field">
+               <input name="contact_subject" type="text" id="contactSubject" placeholder="Subject" value="{{contact_subject}}" class="full-width">
+            </div>
+            <div class="form-field">
+               <textarea name="contact_message" id="contactMessage" placeholder="Your Message" rows="10" cols="50" required="" aria-required="true" class="full-width"></textarea>
+            </div>
+
+            <input name="hp_name" type="text" id="HP_in" placeholder="Your Name" value="">
+
+            <div class="form-field">
+               <input type="submit" value="submit" />
+            </div>
+         </fieldset>
+         </form>
+         {{/if}}
+
+      </div>
+
+   </div>
+
+</section>
+<!-- /Contact Section -->
+
+</div>

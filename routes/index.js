@@ -54,6 +54,7 @@ const Product = require('../models/products');
 const Cart = require('../models/cart');
 const Checkout = require('../models/checkout');
 const Order = require('../models/orders');
+const Post = require('../models/blogs');
 
 
 // To create csv file for email list
@@ -865,13 +866,48 @@ router.get('/', (req, res, next) => {
 
              if (err) throw err;
 
-             res.render('welcome', {
-                page_title: "Everybody has something to say. We make it easy to say it. Find your voice.",
-                notLoginPage: false,
-                projects: projects,
-                groups: groups,
-                welcomePage: true
-             });
+             Post.findOne({ 'post_slug': { $in: 'briut-essentials-bettering-the-planet-while-bettering-ourselves.' } }, (err, case_study) => {
+
+                if (err) throw err;
+
+                Post.find({}, (err, posts) => {
+
+                   if (err) throw err;
+
+                   var blog_posts = []
+                   var rev_posts = posts.reverse();
+
+                   if (posts[0].post_slug == case_study.post_slug) {
+                     blog_posts.push(posts[1]);
+                     blog_posts.push(posts[2]);
+                     blog_posts.push(posts[3]);
+                   }
+
+                   if (posts[1].post_slug == case_study.post_slug) {
+                     blog_posts.push(posts[0]);
+                     blog_posts.push(posts[2]);
+                     blog_posts.push(posts[3]);
+                   }
+
+                   if (posts[2].post_slug == case_study.post_slug) {
+                     blog_posts.push(posts[0]);
+                     blog_posts.push(posts[1]);
+                     blog_posts.push(posts[3]);
+                   }
+
+                    res.render('welcome', {
+                       page_title: "Everybody has something to say. We make it easy to say it. Find your voice.",
+                       notLoginPage: false,
+                       projects: projects,
+                       groups: groups,
+                       welcomePage: true,
+                       case_study: case_study,
+                       blog_posts: blog_posts
+                    });
+
+               });
+
+            });
 
           });
 

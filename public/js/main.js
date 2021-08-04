@@ -1995,4 +1995,58 @@ $(document).ready(function() {
   });
   /*********/
 
+
+  // Horizontal movement on scroll for welcome page
+  $(window).scroll(function () {
+    var $img_yoga = $(".img_yoga img");
+    var $img_skate = $(".img_skate img");
+    var $img_mic = $(".img_mic img");
+    var $img_lady = $(".img_lady img");
+
+    var sY = $img_yoga.position().top - $(window).scrollTop();
+    var dY = window.innerHeight;
+    var wH = 0;
+    var scrollPercent = (sY / (dY - wH));
+
+    var position = (scrollPercent * ($img_yoga.parent().width() ));
+    $img_yoga.css("margin-left", position);
+
+    var sY = $img_skate.position().top - $(window).scrollTop();
+    var scrollPercent = (sY / (dY - wH));
+
+    var position = (scrollPercent * ($img_skate.parent().width()));
+    $img_skate.css("margin-top", position);
+
+    var $windowWidth = $window.width();
+
+    if ($windowWidth <= 768) {
+
+      var sY = $img_mic.position().top - $(window).scrollTop();
+      var scrollPercent = (sY / (dY - wH));
+
+      var position = (scrollPercent * ($img_mic.parent().width() ));
+      $img_mic.css("margin-left", position);
+
+      var sY = $img_lady.position().top - $(window).scrollTop();
+      var scrollPercent = (sY / (dY - wH));
+
+      var position = (scrollPercent * ($img_lady.parent().width() ));
+      $img_lady.css("margin-left", position);
+    } else {
+
+      var sY = $img_mic.position().top - $(window).scrollTop();
+      var scrollPercent = (sY / (dY - wH));
+
+      var position = (scrollPercent * ($img_mic.parent().width() ));
+      $img_mic.css("margin-left", position);
+
+      var sY = $img_lady.position().top - $(window).scrollTop();
+      var scrollPercent = (sY / (dY - wH));
+
+      var position = (scrollPercent * ($img_lady.parent().width() ));
+      $img_lady.css("margin-top", position);
+    }
+  });
+  /**********/
+
 });

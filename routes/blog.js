@@ -202,6 +202,7 @@ router.post('/create-post', upload.single('post_image'), (req, res, next) => {
                var post_slug = post_title.replace(/\s+/g, '-').toLowerCase();
                post_slug = post_slug.replace("?", "");
                post_slug = post_slug.replace("#", "");
+               post_slug = post_slug.replace(".", "");
 
                var newPost = new Post({
                   post_title: post_title,
@@ -357,6 +358,7 @@ router.post('/edit-post/:id', upload.single('post_image'), (req, res, next) => {
       var post_slug = post_title.replace(/\s+/g, '-').toLowerCase();
       post_slug = post_slug.replace("?", "");
       post_slug = post_slug.replace("#", "");
+      post_slug = post_slug.replace(".", "");
 
 
       // Form Validation

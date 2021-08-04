@@ -170,8 +170,8 @@
    width: 100%;
    min-width: 0;
    background: transparent;
-   border: 2px solid #fff;
-   color: #fff;
+   border: 1px solid #31375A;
+   color: #31375A;
 }
 
 .landing-nav .mobile_search input[type=text] {
@@ -182,7 +182,7 @@
 }
 
 .landing-nav_search::placeholder {
-  color: #fff;
+  color: #31375A;
   opacity: 1;
 }
 
@@ -214,7 +214,7 @@
 
 .landing-nav .search-container button {
    background: transparent;
-   border: 2px solid #fff;
+   border: 1px solid #31375A;
    border-left: none;
 }
 
@@ -808,13 +808,13 @@ nav.item-list {
    color: #31375A;
 }
 
-.welcome_header .header-logo a {
+/* .welcome_header .header-logo a {
    color: #fff;
 }
 
 .welcome_header .header-logo a:hover {
    color: #fff;
-}
+} */
 
 @media screen and (max-width: 768px) {
    .creatives_header .header-logo a {
@@ -908,10 +908,10 @@ nav.item-list {
    }
 }
 
-.welcome_header .nav_social i {
+/* .welcome_header .nav_social i {
    border: 2px solid #fff;
    color: #fff;
-}
+} */
 
 .creatives_header .nav_social i {
    border: 2px solid #fff;
@@ -992,6 +992,7 @@ nav.item-list {
 
 .side_nav p {
    margin-bottom: 25px;
+   line-height: 25px;
 }
 
 .side_nav__content {
@@ -1155,10 +1156,10 @@ nav.item-list {
    background-color: #fff;
 }
 
-.welcome_header .ingredients,
+/* .welcome_header .ingredients,
 .creatives_header .ingredients {
    background-color: #fff;
-}
+} */
 
 .hamburger_menu .ingredients::before,
 .hamburger_menu .ingredients::after {
