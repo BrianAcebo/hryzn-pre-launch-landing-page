@@ -896,7 +896,7 @@ router.get('/', (req, res, next) => {
                    }
 
                     res.render('welcome', {
-                       page_title: "Everybody has something to say. We make it easy to say it. Find your voice.",
+                       page_title: "The creator's marketplace with the simplest way to connect with your community and build your business.",
                        notLoginPage: false,
                        projects: projects,
                        groups: groups,
