@@ -2025,13 +2025,13 @@ $(document).ready(function() {
       var scrollPercent = (sY / (dY - wH));
 
       var position = (scrollPercent * ($img_mic.parent().width() ));
-      $img_mic.css("margin-left", position);
+      $img_mic.css("margin-right", position);
 
       var sY = $img_lady.position().top - $(window).scrollTop();
       var scrollPercent = (sY / (dY - wH));
 
       var position = (scrollPercent * ($img_lady.parent().width() ));
-      $img_lady.css("margin-left", position);
+      $img_lady.css("margin-top", position);
     } else {
 
       var sY = $img_mic.position().top - $(window).scrollTop();

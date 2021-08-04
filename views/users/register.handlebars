@@ -32,8 +32,8 @@
    {{/if}}
    <div class="form-container-2 auth_form">
       <h3 class="landing-title-faded">Sign Up</h3>
-      <p style="margin-top: 15px;">Hi there, Hryzn is currently private as we're still opening up. Only those with an invitation are granted exclusive access.
-      If you would like to request access, feel free to <a href="/about/contact" style="text-decoration: underline!important">contact us.</a></p>
+      {{!<p style="margin-top: 15px;">Hi there, Hryzn is currently private as we're still opening up. Only those with an invitation are granted exclusive access.
+      If you would like to request access, feel free to <a href="/about/contact" style="text-decoration: underline!important">contact us.</a></p>}}
       <form method="post" action="/users/register" enctype="multipart/form-data">
          <div class="container">
             <div class="form_row">
@@ -48,7 +48,7 @@
             <input class="form__input" type="password" placeholder="Enter password" name="password" value="{{password}}" required autocapitalize="none" />
             <input class="form__input" type="password" placeholder="Confirm password" name="password2" value="{{password2}}" required autocapitalize="none" />
 
-            <input class="form__input" type="text" placeholder="Enter invitation code" name="access_code" value="{{access_code}}" autocapitalize="none" />
+            <!-- <input class="form__input" type="text" placeholder="Enter invitation code" name="access_code" value="{{access_code}}" autocapitalize="none" /> -->
             <input class="form__input" type="hidden" name="creator_account" value="{{creator_account}}"/>
 
             <fieldset class="register_dob">
