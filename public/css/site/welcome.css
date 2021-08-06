@@ -227,6 +227,7 @@
 .welcome_benefit_section {
   padding: 150px 50px;
   width: 100%;
+  overflow: hidden;
 }
 
 .welcome_benefit_container {
