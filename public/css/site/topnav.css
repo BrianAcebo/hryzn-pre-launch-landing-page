@@ -1146,6 +1146,10 @@ nav.item-list {
    transition: all 0.5s ease-in-out;
 }
 
+.creatives_header .hamburger_menu .ingredients {
+  background-color: #fff;
+}
+
 @media screen and (max-width: 992px) {
    .guest_project .hamburger_menu .ingredients {
       background-color: #fff;
