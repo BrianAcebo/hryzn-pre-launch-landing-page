@@ -208,7 +208,7 @@
 
 .welcome_featured_section {
   width: 100%;
-  padding: 50px 25px;
+  padding: 50px 25px 35px 25px;
   background: #31375A;
   text-align: center;
 }
@@ -222,6 +222,32 @@
   color: #fff;
   text-transform: uppercase;
   letter-spacing: 2px;
+}
+
+.welcome_featured_logos {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1000px;
+  margin: 25px auto 0 auto;
+  flex-wrap: wrap;
+}
+
+.welcome_featured_logos img {
+  max-width: 150px;
+  min-width: 125px;
+  margin: 0 10px 15px 10px;
+}
+
+@media screen and (max-width: 768px) {
+  .welcome_featured_logos {
+    justify-content: center;
+  }
+
+  .welcome_featured_logos img {
+    width: 100px;
+    min-width: none;
+  }
 }
 
 .welcome_benefit_section {

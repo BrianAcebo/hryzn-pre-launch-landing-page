@@ -877,19 +877,19 @@ router.get('/', (req, res, next) => {
                    var blog_posts = []
                    var rev_posts = posts.reverse();
 
-                   if (posts[0].post_slug == case_study.post_slug) {
+                   if (posts[0].post_slug == case_study.post_slug || posts[0].is_draft) {
                      blog_posts.push(posts[1]);
                      blog_posts.push(posts[2]);
                      blog_posts.push(posts[3]);
                    }
 
-                   if (posts[1].post_slug == case_study.post_slug) {
+                   if (posts[1].post_slug == case_study.post_slug || posts[1].is_draft) {
                      blog_posts.push(posts[0]);
                      blog_posts.push(posts[2]);
                      blog_posts.push(posts[3]);
                    }
 
-                   if (posts[2].post_slug == case_study.post_slug) {
+                   if (posts[2].post_slug == case_study.post_slug || posts[2].is_draft) {
                      blog_posts.push(posts[0]);
                      blog_posts.push(posts[1]);
                      blog_posts.push(posts[3]);
