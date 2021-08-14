@@ -240,13 +240,17 @@
 }
 
 @media screen and (max-width: 768px) {
+  .welcome_featured_section {
+    padding: 50px 0 35px 0;
+  }
+
   .welcome_featured_logos {
     justify-content: center;
   }
 
   .welcome_featured_logos img {
     width: 100px;
-    min-width: none;
+    margin: 0 25px 15px 25px;
   }
 }
 
