@@ -86,6 +86,7 @@ const Post = require('../models/blogs');
 //
 // });
 
+
 // Get Welcome Landing Page
 router.get('/', (req, res, next) => {
 
