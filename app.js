@@ -189,6 +189,14 @@ app.get('*', function (req, res, next) {
       res.locals.username = req.user.username;
       res.locals.email = req.user.email;
       res.locals.profileimage = req.user.profileimage;
+
+      if (req.user.is_banned) {
+        req.logout();
+        req.session.destroy( (err) => {
+           res.clearCookie('connect.sid');
+           res.redirect('/users/login');
+        });
+      }
    }
 
    jwt.sign({user: req.user}, 'SuperSecretKey', { expiresIn: "1h" }, (err, token) => {

@@ -180,6 +180,9 @@ const UserSchema = mongoose.Schema({
    has_unfulfilled_items: {
      type: Boolean
    },
+   is_banned: {
+      type: Boolean
+   },
 });
 
 const User = module.exports = mongoose.model('User', UserSchema);
