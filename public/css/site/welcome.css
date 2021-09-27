@@ -49,6 +49,7 @@
 .welcome_hero_left h1 .title_on_cross {
   position: absolute;
   top: -50px;
+  margin-left: 75px;
   font-size: 30px;
   line-height: 50px;
   letter-spacing: -2px;
@@ -62,7 +63,7 @@
 .welcome_hero_left h1 .title_on_cross .title_arr_down {
   position: absolute;
   right: 35px;
-  top: 30px;
+  top: 25px;
 }
 
 .welcome_hero_left h1 .title_on_cross .title_arr_down::after {
@@ -148,14 +149,15 @@
   }
 
   .welcome_hero_left h1 .title_on_cross {
-    top: -45px;
+    top: -35px;
+    margin-left: 45px;
     font-size: 18px;
     line-height: 35px;
   }
 
   .welcome_hero_left h1 .title_on_cross .title_arr_down {
     right: 10px;
-    top: 15px;
+    top: 18px;
   }
 
   .welcome_hero_left h1 .title_on_cross .title_arr_down::after {
