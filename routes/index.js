@@ -897,7 +897,7 @@ router.get('/', (req, res, next) => {
                    }
 
                     res.render('welcome', {
-                       page_title: "The creator's marketplace with the simplest way to connect with your community and build your business.",
+                       page_title: "Find your people and make money doing what you love.",
                        notLoginPage: false,
                        projects: projects,
                        groups: groups,
