@@ -62,6 +62,9 @@ const UserSchema = mongoose.Schema({
    completed_modal_walkthrough: {
       type: Boolean
    },
+   completed_profile_share: {
+     type: Boolean
+   },
    has_notification: {
       type: Boolean
    },

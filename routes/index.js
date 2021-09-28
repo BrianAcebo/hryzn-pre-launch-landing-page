@@ -1060,7 +1060,7 @@ router.get('/setup-profile/:answer', (req, res, next) => {
                completed_profile_setup: true
             }, (err, user) => {
                if (err) throw err;
-               res.redirect('/walkthrough/interests');
+               res.redirect('/share-profile');
             });
 
          } else if (answer === 'next') {
@@ -1256,7 +1256,7 @@ router.post('/setup-profile/next',  upload.fields([{name: 'profileimage', maxCou
                if (err) throw err;
             });
 
-            res.redirect('/walkthrough/interests');
+            res.redirect('/share-profile');
 
          } else {
 
@@ -1273,8 +1273,55 @@ router.post('/setup-profile/next',  upload.fields([{name: 'profileimage', maxCou
                if (err) throw err;
             });
 
-            res.redirect('/walkthrough/interests');
+            res.redirect('/share-profile');
          }
+      }
+
+   } else {
+      res.redirect('/');
+   }
+});
+
+// Get Share Profile
+router.get('/share-profile', (req, res, next) => {
+   if(req.isAuthenticated()) {
+
+      User.find({ '_id': { $in: req.user._id} }, (err, user) => {
+
+         if (err) throw err;
+
+         if (user.completed_profile_share) {
+            res.redirect('/settings');
+         } else {
+            res.render('share-profile', {
+              page_title: 'Share Your Profile',
+              notLoginPage: false,
+              setupProfilePage: true,
+              shareProfilePage: true
+            });
+         }
+
+      });
+
+   } else {
+      res.redirect('/');
+   }
+});
+
+// Get Profile Share Complete
+router.get('/share-complete', (req, res, next) => {
+   if(req.isAuthenticated()) {
+
+      if (req.user.completed_profile_share) {
+         res.redirect('/settings');
+      } else {
+
+        User.findByIdAndUpdate(req.user._id, {
+           completed_profile_share: true
+        }, (err, user) => {
+           if (err) throw err;
+           res.redirect('/walkthrough/interests');
+        });
       }
 
    } else {
@@ -5190,13 +5237,13 @@ const calculateApplicationFeeAmount = (amount, connected_id, calculateOrderAmoun
       if (connected_account) {
         switch (connected_account.premium_creator_account) {
           case 1:
-            var percentage = .1 * amount;
+            var percentage = .14 * amount;
             break;
           case 2:
-            var percentage = .07 * amount;
+            var percentage = .1 * amount;
             break;
           case 3:
-            var percentage = .04 * amount;
+            var percentage = .06 * amount;
             break;
           default:
         }
@@ -5281,13 +5328,13 @@ router.post('/create-payment-intent', async (req, res) => {
 
           switch (connected_account.premium_creator_account) {
             case 1:
-              var percentage = .1 * amount;
+              var percentage = .14 * amount;
               break;
             case 2:
-              var percentage = .07 * amount;
+              var percentage = .1 * amount;
               break;
             case 3:
-              var percentage = .04 * amount;
+              var percentage = .06 * amount;
               break;
             default:
           }
@@ -5336,13 +5383,13 @@ router.post('/create-payment-intent', async (req, res) => {
 
             switch (connected_account.premium_creator_account) {
               case 1:
-                var percentage = .1 * amount;
+                var percentage = .14 * amount;
                 break;
               case 2:
-                var percentage = .07 * amount;
+                var percentage = .1 * amount;
                 break;
               case 3:
-                var percentage = .04 * amount;
+                var percentage = .06 * amount;
                 break;
               default:
             }
@@ -5392,13 +5439,13 @@ router.post('/create-payment-intent', async (req, res) => {
 
                switch (connected_account.premium_creator_account) {
                  case 1:
-                   var percentage = .1 * amount;
+                   var percentage = .14 * amount;
                    break;
                  case 2:
-                   var percentage = .07 * amount;
+                   var percentage = .1 * amount;
                    break;
                  case 3:
-                   var percentage = .04 * amount;
+                   var percentage = .06 * amount;
                    break;
                  default:
                }

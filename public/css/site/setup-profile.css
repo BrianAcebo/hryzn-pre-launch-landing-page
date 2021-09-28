@@ -458,3 +458,148 @@
       bottom: 50px;
    }
 }
+
+.share_hidden {
+  display: none;
+}
+
+.share_svg {
+  width: 20px;
+  height: 20px;
+  margin-right: 7px;
+}
+
+.share_btn,
+.share_profile_button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: auto;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  color: #777;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: 2px;
+  text-transform: capitalize;
+  text-decoration: none;
+  white-space: nowrap;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  cursor: pointer;
+}
+
+.share_btn:hover, .share_profile_button:hover {
+  border-color: #cdd;
+}
+
+.share-button, .copy-link {
+  padding-left: 30px;
+  padding-right: 30px;
+}
+
+.share_profile_button {
+  margin: 0 5px;
+  padding: 12px 18px;
+}
+
+.share_profile_button i {
+  font-size: 22px;
+  margin-right: 10px;
+}
+
+.share_profile_button span {
+  font-size: 18px;
+}
+
+.share-dialog {
+  display: none;
+  width: 95%;
+  max-width: 500px;
+  box-shadow: 0 8px 16px rgba(0,0,0,.15);
+  z-index: -1;
+  border: 1px solid #ddd;
+  padding: 20px;
+  border-radius: 4px;
+  background-color: #fff;
+}
+
+.share-dialog.is-open {
+  display: block;
+  z-index: 2;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.share_header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.share_profile_targets {
+  margin-bottom: 20px;
+}
+
+.share_close-button {
+  background-color: transparent;
+  border: none;
+  padding: 0;
+}
+
+.share_close-button .share_svg {
+  margin-right: 0;
+}
+
+.share_link {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  border-radius: 4px;
+  background-color: #eee;
+}
+
+.share_url {
+  margin-right: 15px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.copy-link {
+  cursor: pointer;
+}
+
+.share_bottom {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-between;
+  max-width: 300px;
+  margin: 0 auto;
+}
+
+.share_complete {
+  padding: 10px 18px;
+  color: #000;
+  cursor: pointer;
+  margin-left: 15px;
+  font-size: 14px;
+  border: 1px solid #ddd;
+  color: #777;
+  line-height: 14px;
+}
+
+.share-button {
+  background: #7f7fff;
+  color: #fff;
+  cursor: pointer;
+  margin-left: 15px;
+  font-size: 14px;
+  border: none;
+}

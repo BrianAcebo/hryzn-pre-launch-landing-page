@@ -1,0 +1,108 @@
+<div class="setup_profile_container">
+
+   <h3 class="setup_h3">Hryzn is better with friends!</h3>
+
+   <p class="setup_p">
+      Hryzn is pretty cool by itself, but what's better than having your friends join in on the fun? Share it with your friends
+      to show off your cool new profile.
+   </p>
+
+
+  <div class="share-dialog">
+    <header class="share_header">
+      <h3 class="dialog-title">Share the fun!</h3>
+      <button class="share_close-button share_btn"><svg class="share_svg"><use href="#close"></use></svg></button>
+    </header>
+
+    <div class="share_profile_targets">
+      <a target="_blank" href="http://www.facebook.com/sharer.php?u={{site_url}}/profile/{{user.username}}&amp;t=Come%20join%20me%20on%20the%20coolest%20new%20social%20platform!" title="Share on Facebook" class="facebook">
+        <div class="share_profile_button">
+          <i class="fa fa-facebook"></i>
+          <span>Facebook</span>
+        </div>
+      </a>
+
+      <a target="_blank" href="https://twitter.com/intent/tweet?original_referer=https%3A%2F%2Fmyhryzn%3A5000%2Fprofile%2F{{user.username}}&ref_src=twsrc%5Etfw&text=Come%20join%20me%20on%20the%20coolest%20new%20social%20platform!&tw_p=tweetbutton&url=https%3A%2F%2Fwww.myhryzn.com%2Fprofile%2F{{user.username}}&via=hryznApp" title="Share on Twitter" class="twitter">
+        <div class="share_profile_button">
+          <i class="fa fa-twitter"></i>
+          <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+          <span>Twitter</span>
+        </div>
+      </a>
+    </div>
+
+    <a class="check" class="copy-link" onclick="copyLink('{{site_url}}/profile/{{user.username}}')">
+      <div class="share_link">
+        <div class="share_url">https://myhryzn.com/profile/{{user.username}}</div>
+        <button class="copy-link share_btn">Copy Link</button>
+      </div>
+    </a>
+  </div>
+
+  <div class="share_bottom">
+    <a class="share_complete" href="/share-complete">All Done!</a>
+
+    <button class="share-button share_btn" type="button" title="Share this article">
+      <svg class="share_svg">
+        <use href="#share-icon"></use>
+      </svg>
+      <span>Share</span>
+    </button>
+  </div>
+
+  <svg class="share_profile_hidden share_svg">
+    <defs>
+      <symbol id="share-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-share"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path><polyline points="16 6 12 2 8 6"></polyline><line x1="12" y1="2" x2="12" y2="15"></line></symbol>
+
+      <symbol id="facebook" viewBox="0 0 24 24" fill="#3b5998" stroke="#3b5998" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-facebook"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></symbol>
+
+      <symbol id="twitter" viewBox="0 0 24 24" fill="#1da1f2" stroke="#1da1f2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-twitter"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></symbol>
+
+      <symbol id="email" viewBox="0 0 24 24" fill="#777" stroke="#fafafa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-mail"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></symbol>
+
+      <symbol id="linkedin" viewBox="0 0 24 24" fill="#0077B5" stroke="#0077B5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-linkedin"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></symbol>
+
+      <symbol id="close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x-square"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="9" x2="15" y2="15"></line><line x1="15" y1="9" x2="9" y2="15"></line></symbol>
+    </defs>
+  </svg>
+
+</div>
+
+<script>
+ var shareButton = document.querySelector('.share-button');
+ var shareDialog = document.querySelector('.share-dialog');
+ var closeButton = document.querySelector('.share_close-button');
+
+ shareButton.addEventListener('click', event => {
+   if (navigator.share) {
+     navigator.share({
+       title: 'Come join me on the coolest new social platform!',
+       url: 'https://myhryzn.com/profile/' + {{user.username}}
+     }).then(() => {
+       console.log('Thanks for sharing!');
+     })
+     .catch(console.error);
+   } else {
+     shareDialog.classList.add('is-open');
+   }
+ });
+
+ closeButton.addEventListener('click', event => {
+   shareDialog.classList.remove('is-open');
+ });
+
+// Copy project details link
+function copyLink(text) {
+   var pawn = document.createElement("input");
+   document.body.appendChild(pawn);
+   pawn.setAttribute('value', text);
+   pawn.select();
+   document.execCommand("copy");
+   document.body.removeChild(pawn);
+
+   var check = document.querySelectorAll(".check");
+   check.forEach(function(i) {
+      i.innerHTML = "&check;"
+   });
+}
+</script>
