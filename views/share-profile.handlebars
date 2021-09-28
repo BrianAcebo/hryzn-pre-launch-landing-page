@@ -74,17 +74,18 @@
  var closeButton = document.querySelector('.share_close-button');
 
  shareButton.addEventListener('click', event => {
-   if (navigator.share) {
-     navigator.share({
-       title: 'Come join me on the coolest new social platform!',
-       url: 'https://myhryzn.com/profile/' + {{user.username}}
-     }).then(() => {
-       console.log('Thanks for sharing!');
-     })
-     .catch(console.error);
-   } else {
-     shareDialog.classList.add('is-open');
-   }
+   shareDialog.classList.add('is-open');
+   // if (navigator.share) {
+   //   navigator.share({
+   //     title: 'Come join me on the coolest new social platform!',
+   //     url: 'https://myhryzn.com/profile/' + {{user.username}}
+   //   }).then(() => {
+   //     console.log('Thanks for sharing!');
+   //   })
+   //   .catch(console.error);
+   // } else {
+   //   shareDialog.classList.add('is-open');
+   // }
  });
 
  closeButton.addEventListener('click', event => {
