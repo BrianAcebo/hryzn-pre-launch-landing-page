@@ -7246,6 +7246,12 @@ router.post('/orders/:id/customer-edit/:method/:dash', (req, res, next) => {
 });
 
 
+// GET Contribute
+router.get('/contribute', (req, res, next) => {
+   res.redirect('https://wefunder.com/hryzninc')
+});
+
+
 // Verify JS Web Token
 function verifyToken(req, res, next) {
 

@@ -757,6 +757,7 @@ nav.item-list {
    transition: 0.3s;
    display: flex;
    align-items: center;
+   flex-direction: column; /* If contribute bar is present */
 }
 
 .landing-nav_wrapper {
@@ -1202,4 +1203,34 @@ nav.item-list {
   right: -7px;
   top: -7px;
   text-align: center;
+}
+
+.contribute_bar {
+  width: 100%;
+  padding: 15px 0;
+  text-align: center;
+  background: linear-gradient(to right, #7f7fff, #ff9999)!important;
+  cursor: pointer;
+  margin-bottom: 35px;
+  max-width: 1100px;
+  border-bottom-left-radius: 35px;
+  border-bottom-right-radius: 35px;
+}
+
+.contribute_bar a {
+  font-size: 14px;
+  line-height: 18px;
+  font-weight: bold;
+  color: #fff;
+  display: block;
+}
+
+@media screen and (max-width: 768px) {
+  .contribute_bar {
+    margin-bottom: 15px;
+  }
+
+  .contribute_bar a {
+    font-size: 12px;
+  }
 }
