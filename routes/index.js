@@ -9,6 +9,7 @@ const isEmail = require('validator/lib/isEmail');
 
 const Email = require('../models/emails');
 const Blog = require('../models/blogs');
+const Post = require('../models/post');
 
 
 // To create csv file for email list
@@ -58,56 +59,54 @@ router.get('/', (req, res, next) => {
 
   }
 
-  Blog.find({}, (err, posts) => {
+  Post.find({}, (err, posts) => {
 
      if (err) throw err;
 
      const blog_posts = []
      const rev_posts = posts.reverse();
 
-
      // Check if first 4 posts are drafts and skip over them
+     if (typeof posts != 'undefined') {
 
-     // if (typeof posts != 'undefined') {
-     //
-     //   if (posts[0].is_draft) {
-     //
-     //     blog_posts.push(posts[1]);
-     //     blog_posts.push(posts[2]);
-     //     blog_posts.push(posts[3]);
-     //     blog_posts.push(posts[4]);
-     //
-     //   } else if (posts[1].is_draft) {
-     //
-     //     blog_posts.push(posts[0]);
-     //     blog_posts.push(posts[2]);
-     //     blog_posts.push(posts[3]);
-     //     blog_posts.push(posts[4]);
-     //
-     //   } else if (posts[2].is_draft) {
-     //
-     //     blog_posts.push(posts[0]);
-     //     blog_posts.push(posts[1]);
-     //     blog_posts.push(posts[3]);
-     //     blog_posts.push(posts[4]);
-     //
-     //   } else if (posts[3].is_draft) {
-     //
-     //     blog_posts.push(posts[0]);
-     //     blog_posts.push(posts[1]);
-     //     blog_posts.push(posts[2]);
-     //     blog_posts.push(posts[4]);
-     //
-     //   } else {
-     //
-     //     blog_posts.push(posts[0]);
-     //     blog_posts.push(posts[1]);
-     //     blog_posts.push(posts[2]);
-     //     blog_posts.push(posts[3]);
-     //
-     //   }
-     //
-     // }
+       if (posts[0].is_draft) {
+
+         blog_posts.push(posts[1]);
+         blog_posts.push(posts[2]);
+         blog_posts.push(posts[3]);
+         blog_posts.push(posts[4]);
+
+       } else if (posts[1].is_draft) {
+
+         blog_posts.push(posts[0]);
+         blog_posts.push(posts[2]);
+         blog_posts.push(posts[3]);
+         blog_posts.push(posts[4]);
+
+       } else if (posts[2].is_draft) {
+
+         blog_posts.push(posts[0]);
+         blog_posts.push(posts[1]);
+         blog_posts.push(posts[3]);
+         blog_posts.push(posts[4]);
+
+       } else if (posts[3].is_draft) {
+
+         blog_posts.push(posts[0]);
+         blog_posts.push(posts[1]);
+         blog_posts.push(posts[2]);
+         blog_posts.push(posts[4]);
+
+       } else {
+
+         blog_posts.push(posts[0]);
+         blog_posts.push(posts[1]);
+         blog_posts.push(posts[2]);
+         blog_posts.push(posts[3]);
+
+       }
+
+     }
 
       res.render('index', {
          page_title: "Find your people with the power of Web 3.0",
