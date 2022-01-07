@@ -4,39 +4,44 @@ const keys = require('../config/keys');
 mongoose.connect(keys.mongoURI);
 
 // Blog Schema
-const PostSchema = mongoose.Schema({
-   post_title: {
-      type: String
-   },
-   is_draft: {
-      type: Boolean
-   },
-   post_image: {
-      type: String
-   },
-   post_description: {
-      type: String
-   },
-   post_owner: {
-      type: String
-   },
-   post_notes: {
-      type: String
-   },
-   post_categories: [],
-   post_date: {
-      type: String
-   },
-   post_slug: {
-      type: String
-   }
-});
+const BlogSchema = mongoose.Schema({
+  blog_title: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  is_draft: {
+    type: Boolean
+  },
+  blog_image: {
+    type: String
+  },
+  blog_description: {
+    type: String
+  },
+  written_by: {
+    type: String
+  },
+  blog_notes: {
+    type: String
+  },
+  blog_categories: [],
+  date_created: {
+    type: String
+  },
+  blog_slug: {
+    type: String,
+    unique: true,
+    required: true,
+    trim: true
+  }
+}, { timestamps: true });
 
-const Post = module.exports = mongoose.model('Post', PostSchema);
+const Blog = module.exports = mongoose.model('Blog', BlogSchema);
 
 // Get All Blog Posts
 module.exports.getAllPosts = (callback, limit) => {
-   Post.find(callback).limit(limit);
+   Blog.find(callback).limit(limit);
 }
 
 // Create Blog Post

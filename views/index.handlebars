@@ -1,1363 +1,402 @@
-{{! Water Loader }}
-<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" style="display: none;">
-  <symbol id="wave">
-    <path d="M420,20c21.5-0.4,38.8-2.5,51.1-4.5c13.4-2.2,26.5-5.2,27.3-5.4C514,6.5,518,4.7,528.5,2.7c7.1-1.3,17.9-2.8,31.5-2.7c0,0,0,0,0,0v20H420z"></path>
-    <path d="M420,20c-21.5-0.4-38.8-2.5-51.1-4.5c-13.4-2.2-26.5-5.2-27.3-5.4C326,6.5,322,4.7,311.5,2.7C304.3,1.4,293.6-0.1,280,0c0,0,0,0,0,0v20H420z"></path>
-    <path d="M140,20c21.5-0.4,38.8-2.5,51.1-4.5c13.4-2.2,26.5-5.2,27.3-5.4C234,6.5,238,4.7,248.5,2.7c7.1-1.3,17.9-2.8,31.5-2.7c0,0,0,0,0,0v20H140z"></path>
-    <path d="M140,20c-21.5-0.4-38.8-2.5-51.1-4.5c-13.4-2.2-26.5-5.2-27.3-5.4C46,6.5,42,4.7,31.5,2.7C24.3,1.4,13.6-0.1,0,0c0,0,0,0,0,0l0,20H140z"></path>
-  </symbol>
-</svg>
-<div class="loader_overlay">
-   <div class="loader_wrapper">
-      <div class="box">
-        <div id="water" class="water">
-          <svg viewBox="0 0 560 20" class="water_wave water_wave_back">
-            <use xlink:href="#wave"></use>
-          </svg>
-          <svg viewBox="0 0 560 20" class="water_wave water_wave_front">
-            <use xlink:href="#wave"></use>
-          </svg>
-        </div>
-      </div>
-      <p class="loader_text loader_text-1">Our robots are looking for the cool stuff.</p>
-      <p class="loader_text loader_text-2">I hope you're having a nice day.</p>
-      <p class="loader_text loader_text-3">Soon the computers will just take over.</p>
-      <p class="loader_text loader_text-4">The things are doing the stuff.</p>
-      <p class="loader_text loader_text-5">Your hair looks pretty.</p>
-   </div>
-</div>
-{{! /Water Loader }}
-
-<div id="flashMsg"></div>
-
-{{#if projects}}
-{{else}}
-<div class="feed__container">
-   <div class="feed__container-text">
-      <h1 class="main__title">{{greeting}} {{user.username}},</h1>
-      <p class="main__info feed__text">We see you're not following anyone, <a href="/explore"><strong>let's go explore.</strong></a></p>
-   </div>
-</div>
-{{/if}}
-
-<div class="explore_main index_feed_container">
-
-   <div class="profile_index_feed">
-      <div class="profile_index_info" style="background-image: url('https://ik.imagekit.io/w07am55tja/{{#if user.backgroundimage}}{{user.backgroundimage}}{{else}}hryzn-placeholder-01.jpg{{/if}}?tr=w-600')">
-         <a href="/profile/{{user.username}}" class="profile_index_info_wrapper">
-            <div class="profile_index_img_container">
-               <img class="profile__img" src="https://ik.imagekit.io/w07am55tja/{{#if user.profileimage}}{{user.profileimage}}{{else}}hryzn-placeholder-01.jpg{{/if}}?tr=w-600" />
-            </div>
-            @{{user.username}}
-         </a>
-         <div class="bg_overlay"></div>
-      </div>
-
-      <div class="profile_index_sub_info_container">
-         {{#if user.firstname}}{{else}}<a href="/settings"><div class="profile_missing_info_wrapper"><div class="missing_info_btn"><img class="topnav__icon" src="/icons/add-white.png" /></div><p class="profile_missing_info">Missing first name</p></div></a>{{/if}}
-         {{#if user.lastname}}{{else}}<a href="/settings"><div class="profile_missing_info_wrapper"><div class="missing_info_btn"><img class="topnav__icon" src="/icons/add-white.png" /></div><p class="profile_missing_info">Missing last name</p></div></a>{{/if}}
-         {{#if user.bio}}{{else}}<a href="/settings"><div class="profile_missing_info_wrapper"><div class="missing_info_btn"><img class="topnav__icon" src="/icons/add-white.png" /></div><p class="profile_missing_info">Missing bio</p></div></a>{{/if}}
-         {{#if user.profileimage}}{{else}}<a href="/settings"><div class="profile_missing_info_wrapper"><div class="missing_info_btn"><img class="topnav__icon" src="/icons/add-white.png" /></div><p class="profile_missing_info">Missing profile image</p></div></a>{{/if}}
-         {{#if user.backgroundimage}}{{else}}<a href="/settings"><div class="profile_missing_info_wrapper"><div class="missing_info_btn"><img class="topnav__icon" src="/icons/add-white.png" /></div><p class="profile_missing_info">Missing background header</p></div></a>{{/if}}
-         {{#if user.music_link}}{{else}}<a href="/settings"><div class="profile_missing_info_wrapper"><div class="missing_info_btn"><img class="topnav__icon" src="/icons/add-white.png" /></div><p class="profile_missing_info">Missing favorite song</p></div></a>{{/if}}
-      </div>
-
-      <!-- {{#if user.interests}}
-      <div class="profile_index_interests_container">
-         {{#each user.interests}}
-         <a href="/explore/{{this}}">{{this}}</a>
-         {{/each}}
-      </div>
-      {{/if}} -->
-
-      <div class="profile_index_sub_info_container">
-         <a href="/p/create-project" class="profile_index_link"><img class="topnav__icon" src="/icons/create-icon.png" />Create</a>
-         <a href="/explore" class="profile_index_link"><img class="topnav__icon" src="/icons/explore-black.png" />Explore</a>
-         <a href="/messages" class="profile_index_link"><img class="topnav__icon" src="/icons/messages-envelope.png" />Messages</a>
-         <a href="/groups" class="profile_index_link"><img class="topnav__icon" src="/icons/group-black.png" />Groups</a>
-
-         <div class="semi-spacer"></div>
-
-         <a href="/settings" class="profile_index_link">Settings</a>
-         <a href="/blog/hryzn-tutorial---site-walk-through" class="profile_index_link">Help</a>
-      </div>
-
-   </div>
-
-   <div class="following_index_feed">
-
-   {{#if groups}}
-      <section class="explore_groups_container">
-         <div class="group_wrapper">
-            {{#each groups}}
-            {{#if this.is_private}}
-            {{else}}
-               <a href="/groups/{{this._id}}" class="group_bg" style="background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.3)), url('https://ik.imagekit.io/w07am55tja/{{this.group_image}}?tr=w-300')">
-                  {{this.group_name}}
-               </a>
-            {{/if}}
-            {{/each}}
-         </div>
-      </section>
-   {{/if}}
-
-   {{#if projects}}
-
-
-
-   {{!---------- Index Feed ----------}}
-
-
-
-   <div class="index_feed">
-
-     <!-- <p class="top_results">{{greeting}} {{user.username}}</p>
-     <hr class="top_results_underline" /> -->
-
-      {{#each projects}}
-
-         {{#if this.is_private}}
-         {{! Check if the project is a private project, we do not want to show private projects }}
-         {{else}}
-
-            {{#if is_micro_post}}
-
-            {{#if posted_to_group}}
-               {{#each posted_to_group}}
-                  {{#ifEquals this.group_is_private "true"}}
-                     {{! Don't show projects in private groups }}
-                  {{else}}
-                  <div class="masonryItem ownProject" title="{{../project_title}}" >
-                     <div class="project_avatar_left">
-                        <a href="/profile/{{../project_owner}}">
-                           <img class="project_avatar_img" src="https://ik.imagekit.io/w07am55tja/{{../project_owner_profile_image}}?tr=w-75" />
-                        </a>
-                     </div>
-
-                     <div class="project_content_right">
-                        <div style="flex-direction: row; justify-content: space-between; align-items: flex-start;">
-                           <a class="micro_tag {{#if ../project_title}}micro_tag_w_title{{/if}}" href="/profile/{{../project_owner}}">@{{../project_owner}}</a>
-                           {{#if ../private_collection_name}}<span style="margin-left: 15px;color: #555; font-weight: bold; font-size: 12px;">"{{../private_collection_name}}" (Private)</span>{{/if}}
-                        </div>
-                        <div class="micropost">
-                           <div class="micropost_card {{#if ../micro_image}}card_is_micro_image{{else}}{{#if ../micro_audio}}card_is_micro_audio{{else}}{{#if ../micro_video}}card_is_micro_video{{else}}card_is_micro_text{{/if}}{{/if}}{{/if}}">
-                              <a href="/p/micro/{{../_id}}">
-                                 {{#if ../project_title}}<p class="micro_title">{{../project_title}}</p>{{/if}}
-                                 {{#if ../micro_body}}<p class="micro_body">{{{../micro_body}}}</p>{{/if}}
-                              </a>
-
-                              <a href="/p/micro/{{../_id}}">
-                                 {{#if ../micro_image}}<img src="https://ik.imagekit.io/w07am55tja/{{../micro_image}}?tr=w-650" class="img-responsive" alt="{{../micro_body}}" />{{/if}}
-                                 {{#if ../micro_video}}
-                                 <video  preload="auto" controls controlsList="nodownload" class="micro_video">
-                                    <source src="https://ik.imagekit.io/w07am55tja/{{project.micro_video}}" type="video/mp4">
-                                    <source src="https://ik.imagekit.io/w07am55tja/{{project.micro_video}}" type="video/ogg">
-                                    <source src="https://ik.imagekit.io/w07am55tja/{{project.micro_video}}" type="video/webm">
-                                    Your browser does not support the video tag.
-                                 </video>
-                                 {{/if}}
-                                 {{#if ../micro_audio}}
-                                 {{#if ../thumbnail_image}}<img src="https://ik.imagekit.io/w07am55tja/{{../thumbnail_image}}?tr=w-650" class="img-responsive" alt="{{../micro_body}}" />{{/if}}
-                                 <audio controls controlsList="nodownload" class="micro_audio">
-                                    <source src="https://ik.imagekit.io/w07am55tja/{{project.micro_audio}}" type="audio/ogg">
-                                    <source src="https://ik.imagekit.io/w07am55tja/{{project.micro_audio}}" type="audio/mpeg">
-                                    <source src="https://ik.imagekit.io/w07am55tja/{{project.micro_audio}}" type="audio/wav">
-                                     Your browser does not support the audio element.
-                                 </audio>
-                                 {{/if}}
-                              </a>
-                           </div>
-                           <div class="micro_action_btns">
-                              {{#if ../../user}}
-                                 {{#if ../../user_liked}}
-
-                                 {{! Like / Unlike Project }}
-
-                                 <div title="unlike">
-                                    <input type="hidden" name="action" value="/p/details/micro/like/{{../_id}}">
-                                    <input type="hidden" name="username" value="{{../../user.username}}">
-                                    <input type="hidden" name="project_id" value="{{../_id}}">
-                                    <input type="hidden" name="project_owner" value="{{../project_owner}}">
-                                    <input type="hidden" name="og_path" value="" class="og_path"/>
-                                    <button class="project_action_btn btn_p_submit" name="submit" type="submit">
-                                       <a><i style="font-weight: bold" class="fa fa-heart"></i></a>
-                                    </button>
-                                 </div>
-
-                                 {{else}}
-
-                                 <div title="like">
-                                    <input type="hidden" name="action" value="/p/details/micro/like/{{../_id}}">
-                                    <input type="hidden" name="username" value="{{../../user.username}}">
-                                    <input type="hidden" name="project_id" value="{{../_id}}">
-                                    <input type="hidden" name="og_path" value="" class="og_path"/>
-                                    <input type="hidden" name="project_owner" value="{{../project_owner}}">
-                                    <button class="project_action_btn btn_p_submit" name="submit" type="submit">
-                                       <a><i style="font-weight: bold" class="fa fa-heart-o"></i></a>
-                                    </button>
-                                 </div>
-
-                                 {{/if}}
-
-                              {{else}}
-
-                              <button class="project_action_btn" name="submit" type="submit">
-                                 <a><i style="font-weight: bold" class="fa fa-heart-o"></i></a>
-                              </button>
-
-                              {{/if}}
-
-                              <button class="project_action_btn" name="submit" type="submit">
-                                 <a {{#if ../../user}}class="detailsRepostModalBtn"{{/if}}>
-                                    <i class="fa fa-retweet"></i>
-                                    <input type="hidden" name="username" value="{{../../user.username}}">
-                                    <input type="hidden" name="project_id" value="{{../_id}}">
-                                    <input type="hidden" name="project_owner" value="{{../project_owner}}">
-                                    <input type="hidden" name="user_reposted" value="{{../user_reposted}}">
-                                 </a>
-                              </button>
-
-
-                              {{#if ../../user}}
-                                 {{#if ../user_saved}}
-
-                                 {{! Save / Unsave Project }}
-
-                                 <div title="unsave">
-                                    <input type="hidden" name="action" value="/p/details/micro/save/{{../_id}}">
-                                    <input type="hidden" name="username" value="{{../../user.username}}">
-                                    <input type="hidden" name="project_id" value="{{../_id}}">
-                                    <input type="hidden" name="project_owner" value="{{../project_owner}}">
-                                    <input type="hidden" name="og_path" value="" class="og_path"/>
-                                    <button class="project_action_btn btn_p_submit" name="submit" type="submit">
-                                       <a><i style="font-weight: bold" class="fa fa-bookmark"></i></a>
-                                    </button>
-                                 </div>
-
-                                 {{else}}
-
-                                 <div title="save">
-                                    <input type="hidden" name="action" value="/p/details/micro/save/{{../_id}}">
-                                    <input type="hidden" name="username" value="{{../../user.username}}">
-                                    <input type="hidden" name="project_id" value="{{../_id}}">
-                                    <input type="hidden" name="og_path" value="" class="og_path"/>
-                                    <input type="hidden" name="project_owner" value="{{../project_owner}}">
-                                    <button class="project_action_btn btn_p_submit" name="submit" type="submit">
-                                       <a><i style="font-weight: bold" class="fa fa-bookmark-o"></i></a>
-                                    </button>
-                                 </div>
-
-                                 {{/if}}
-
-                              {{else}}
-
-                              <button class="project_action_btn" name="submit" type="submit">
-                                 <a><i style="font-weight: bold" class="fa fa-bookmark-o"></i></a>
-                              </button>
-
-                              {{/if}}
-
-                              <button class="project_action_btn" name="submit" type="submit">
-                                 <a {{#if ../../user}}class="msgModalBtn"{{/if}}>
-                                    <i class="fa fa-paper-plane-o"></i>
-                                 </a>
-                              </button>
-                           </div>
-                           {{#if ../reposted_by}}<a href="/profile/{{../reposted_by}}" style="display: block;margin-top: 25px;color: #555; font-weight: bold; font-size: 12px;">Reposted by @{../reposted_by}}</a>{{/if}}
-                        </div>
-                     </div>
-                  </div>
-                  {{/ifEquals}}
-               {{/each}}
-            {{else}}
-               <div class="masonryItem ownProject" title="{{project_title}}" >
-                  <div class="project_avatar_left">
-                     <a href="/profile/{{project_owner}}">
-                        <img class="project_avatar_img" src="https://ik.imagekit.io/w07am55tja/{{project_owner_profile_image}}?tr=w-75" />
-                     </a>
-                  </div>
-
-                  <div class="project_content_right">
-                     <div style="flex-direction: row; justify-content: space-between; align-items: flex-start;">
-                        <a class="micro_tag {{#if project_title}}micro_tag_w_title{{/if}}" href="/profile/{{project_owner}}">@{{project_owner}}</a>
-                        {{#if private_collection_name}}<span style="margin-left: 15px;color: #555; font-weight: bold; font-size: 12px;">"{{private_collection_name}}" (Private)</span>{{/if}}
-                     </div>
-                     <div class="micropost">
-                        <div class="micropost_card {{#if micro_image}}card_is_micro_image{{else}}{{#if micro_audio}}card_is_micro_audio{{else}}{{#if micro_video}}card_is_micro_video{{else}}card_is_micro_text{{/if}}{{/if}}{{/if}}">
-                           <a href="/p/micro/{{_id}}" style="width: 100%;">
-                              {{#if project_title}}<p class="micro_title">{{project_title}}</p>{{/if}}
-                              {{#if micro_body}}<p class="micro_body">{{{micro_body}}}</p>{{/if}}
-                           </a>
-                           <a href="/p/micro/{{_id}}" style="width: 100%;">
-                              {{#if micro_image}}<img src="https://ik.imagekit.io/w07am55tja/{{micro_image}}?tr=w-650" class="img-responsive" alt="{{micro_body}}" />{{/if}}
-                              {{#if micro_video}}
-                              <video  preload="auto" controls controlsList="nodownload" class="micro_video">
-                                 <source src="https://ik.imagekit.io/w07am55tja/{{micro_video}}" type="video/mp4">
-                                 <source src="https://ik.imagekit.io/w07am55tja/{{micro_video}}" type="video/ogg">
-                                 <source src="https://ik.imagekit.io/w07am55tja/{{micro_video}}" type="video/webm">
-                                 Your browser does not support the video tag.
-                              </video>
-                              {{/if}}
-                              {{#if micro_audio}}
-                              {{#if thumbnail_image}}<img src="https://ik.imagekit.io/w07am55tja/{{thumbnail_image}}?tr=w-650" class="img-responsive" alt="{{micro_body}}" />{{/if}}
-                              <audio controls controlsList="nodownload" class="micro_audio">
-                                 <source src="https://ik.imagekit.io/w07am55tja/{{micro_audio}}" type="audio/ogg">
-                                 <source src="https://ik.imagekit.io/w07am55tja/{{micro_audio}}" type="audio/mpeg">
-                                 <source src="https://ik.imagekit.io/w07am55tja/{{micro_audio}}" type="audio/wav">
-                                  Your browser does not support the audio element.
-                              </audio>
-                              {{/if}}
-                           </a>
-                        </div>
-                        <div class="micro_action_btns">
-                           {{#if ../user}}
-                              {{#if user_liked}}
-
-                              {{! Like / Unlike Project }}
-
-                              <div title="unlike">
-                                 <input type="hidden" name="action" value="/p/details/micro/like/{{_id}}">
-                                 <input type="hidden" name="username" value="{{../user.username}}">
-                                 <input type="hidden" name="project_id" value="{{_id}}">
-                                 <input type="hidden" name="project_owner" value="{{project_owner}}">
-                                 <input type="hidden" name="og_path" value="" class="og_path"/>
-                                 <button class="project_action_btn btn_p_submit" name="submit" type="submit">
-                                    <a><i style="font-weight: bold" class="fa fa-heart"></i></a>
-                                 </button>
-                              </div>
-
-                              {{else}}
-
-                              <div title="like">
-                                 <input type="hidden" name="action" value="/p/details/micro/like/{{_id}}">
-                                 <input type="hidden" name="username" value="{{../user.username}}">
-                                 <input type="hidden" name="project_id" value="{{_id}}">
-                                 <input type="hidden" name="og_path" value="" class="og_path"/>
-                                 <input type="hidden" name="project_owner" value="{{project_owner}}">
-                                 <button class="project_action_btn btn_p_submit" name="submit" type="submit">
-                                    <a><i style="font-weight: bold" class="fa fa-heart-o"></i></a>
-                                 </button>
-                              </div>
-
-
-                              {{/if}}
-
-                           {{else}}
-
-                           <button class="project_action_btn" name="submit" type="submit">
-                              <a><i style="font-weight: bold" class="fa fa-heart-o"></i></a>
-                           </button>
-
-                           {{/if}}
-
-                           <button class="project_action_btn" name="submit" type="submit">
-                              <a {{#if ../user}}class="detailsRepostModalBtn"{{/if}}>
-                                 <i class="fa fa-retweet"></i>
-                                 <input type="hidden" name="username" value="{{../user.username}}">
-                                 <input type="hidden" name="project_id" value="{{_id}}">
-                                 <input type="hidden" name="project_owner" value="{{project_owner}}">
-                                 <input type="hidden" name="user_reposted" value="{{user_reposted}}">
-                              </a>
-                           </button>
-
-
-                           {{#if ../user}}
-                              {{#if user_saved}}
-
-                              {{! Save / Unsave Project }}
-
-                              <div title="unsave">
-                                 <input type="hidden" name="action" value="/p/details/micro/save/{{_id}}">
-                                 <input type="hidden" name="username" value="{{../user.username}}">
-                                 <input type="hidden" name="project_id" value="{{_id}}">
-                                 <input type="hidden" name="project_owner" value="{{project_owner}}">
-                                 <input type="hidden" name="og_path" value="" class="og_path"/>
-                                 <button class="project_action_btn btn_p_submit" name="submit" type="submit">
-                                    <a><i style="font-weight: bold" class="fa fa-bookmark"></i></a>
-                                 </button>
-                              </div>
-
-                              {{else}}
-
-                              <div title="save">
-                                 <input type="hidden" name="action" value="/p/details/micro/save/{{_id}}">
-                                 <input type="hidden" name="username" value="{{../user.username}}">
-                                 <input type="hidden" name="project_id" value="{{_id}}">
-                                 <input type="hidden" name="og_path" value="" class="og_path"/>
-                                 <input type="hidden" name="project_owner" value="{{project_owner}}">
-                                 <button class="project_action_btn btn_p_submit" name="submit" type="submit">
-                                    <a><i style="font-weight: bold" class="fa fa-bookmark-o"></i></a>
-                                 </button>
-                              </div>
-
-                              {{/if}}
-
-                           {{else}}
-
-                           <button class="project_action_btn" name="submit" type="submit">
-                              <a><i style="font-weight: bold" class="fa fa-bookmark-o"></i></a>
-                           </button>
-
-                           {{/if}}
-
-                           <button class="project_action_btn" name="submit" type="submit">
-                              <a {{#if ../user}}class="msgModalBtn"{{/if}}>
-                                 <i class="fa fa-paper-plane-o"></i>
-                                 <input type="hidden" name="username" value="{{../../user.username}}">
-                                 <input type="hidden" name="project_id" value="{{../_id}}">
-                                 <input type="hidden" name="project_owner" value="{{../project_owner}}">
-                                 <input type="hidden" name="user_reposted" value="{{../user_reposted}}">
-                              </a>
-                           </button>
-                        </div>
-                        {{#if reposted_by}}<a href="/profile/{{reposted_by}}" style="display: block;margin-top: 25px;color: #555; font-weight: bold; font-size: 12px;">Reposted by @{{reposted_by}}</a>{{/if}}
-                     </div>
-                  </div>
-               </div>
-            {{/if}}
-
-            {{else}}
-
-               {{#if posted_to_group}}
-                  {{#each posted_to_group}}
-                     {{#ifEquals this.group_is_private "true"}}
-                        {{! Don't show projects in private groups }}
-                     {{else}}
-                        <div class="masonryItem ownProject index_feed_blog_post" title="{{../project_title}}" >
-                           <div class="project_avatar_left">
-                              <a href="/profile/{{../project_owner}}">
-                                 <img class="project_avatar_img" src="https://ik.imagekit.io/w07am55tja/{{../project_owner_profile_image}}?tr=w-75" />
-                              </a>
-                           </div>
-
-                           <div class="project_content_right">
-                              <div style="flex-direction: row; justify-content: space-between; align-items: flex-start;">
-                                 <a class="micro_tag {{#if ../project_title}}micro_tag_w_title{{/if}}" href="/profile/{{../project_owner}}">@{{../project_owner}}</a>
-                                 {{#if ../private_collection_name}}<span style="margin-left: 15px;color: #555; font-weight: bold; font-size: 12px;">"{{../private_collection_name}}" (Private)</span>{{/if}}
-                              </div>
-                              <div class="project_card">
-                                 <a href="/p/details/{{../_id}}" class="project_link">
-                                    <img src="https://ik.imagekit.io/w07am55tja/{{#if ../thumbnail_image}}{{../thumbnail_image}}{{else}}{{../project_image}}{{/if}}?tr=w-650" class="img-responsive" alt="{{../project_title}}" />
-                                 </a>
-                                 <div class="project_card_bottom">
-                                    <div class="project_bottom_wrapper">
-                                       <div class="bg_overlay"></div>
-                                       <div class="project_bottom_details">
-                                          <a href="/profile/{{../project_owner}}"><p class="project_owner">@{{../project_owner}}</p></a>
-                                          <a href="/p/details/{{../_id}}" class="project_link">
-                                             <p class="project_card_title">{{../project_title}}</p>
-                                          </a>
-                                       </div>
-                                    </div>
-                                 </div>
-                              </div>
-                              {{#if ../reposted_by}}<a href="/profile/{{../reposted_by}}" style="display: block;margin-top: 25px;color: #555; font-weight: bold; font-size: 12px;">Reposted by @{{../reposted_by}}</a>{{/if}}
-                           </div>
-                        </div>
-                     {{/ifEquals}}
-                  {{/each}}
-               {{else}}
-                  <div class="masonryItem ownProject index_feed_blog_post" title="{{project_title}}" >
-                     <div class="project_avatar_left">
-                        <a href="/profile/{{project_owner}}">
-                           <img class="project_avatar_img" src="https://ik.imagekit.io/w07am55tja/{{project_owner_profile_image}}?tr=w-75" />
-                        </a>
-                     </div>
-
-                     <div class="project_content_right">
-                        <div style="flex-direction: row; justify-content: space-between; align-items: flex-start;">
-                           <a class="micro_tag {{#if project_title}}micro_tag_w_title{{/if}}" href="/profile/{{project_owner}}">@{{project_owner}}</a>
-                           {{#if private_collection_name}}<span style="margin-left: 15px;color: #555; font-weight: bold; font-size: 12px;">"{{private_collection_name}}" (Private)</span>{{/if}}
-                        </div>
-                        <div class="project_card">
-                           <a href="/p/details/{{_id}}" class="project_link">
-                              <img src="https://ik.imagekit.io/w07am55tja/{{#if thumbnail_image}}{{thumbnail_image}}{{else}}{{project_image}}{{/if}}?tr=w-650" class="img-responsive" alt="{{project_title}}" />
-                           </a>
-                           <div class="project_card_bottom">
-                              <div class="project_bottom_wrapper">
-                                 <div class="bg_overlay"></div>
-                                 <div class="project_bottom_details">
-                                    <a href="/profile/{{project_owner}}"><p class="project_owner">@{{project_owner}}</p></a>
-                                    <a href="/p/details/{{id}}" class="project_link">
-                                       <p class="project_card_title">{{project_title}}</p>
-                                    </a>
-                                 </div>
-                              </div>
-                           </div>
-                        </div>
-                        {{#if reposted_by}}<a href="/profile/{{reposted_by}}" style="display: block;margin-top: 25px;color: #555; font-weight: bold; font-size: 12px;">Reposted by @{{reposted_by}}</a>{{/if}}
-                     </div>
-                  </div>
-               {{/if}}
-
-            {{/if}}
-
-         {{/if}}
-      {{/each}}
-
-   </div>
-
-   {{/if}}
-
-   </div>
-
-
-
-
-    {{!---------- Suggested Index Feed ----------}}
-
-
-
-     <div class="suggested_index_feed">
-
-      <p class="suggested_results">Suggested</p>
-
-      <div class="suggested_user_container">
-         {{#if suggested_profiles}}
-         {{#each suggested_profiles}}
-         <a href="/profile/{{this.username}}" class="group_user">
-            <div class="suggested_user" style="background-image: url('https://ik.imagekit.io/w07am55tja/{{#if this.backgroundimage}}{{this.backgroundimage}}{{else}}hryzn-placeholder-01.jpg{{/if}}?tr=w-300')">
-               <div class="suggested_user_img_container">
-                  <img class="profile__img" src="https://ik.imagekit.io/w07am55tja/{{#if this.profileimage}}{{this.profileimage}}{{else}}hryzn-placeholder-01.jpg{{/if}}?tr=w-100">
-               </div>
-               <small class="suggested_username">@{{this.username}}</small>
-               <div class="suggested_view_btn">View</div>
-               <div class="bg_overlay"></div>
-            </div>
-         </a>
-         {{/each}}
-         {{/if}}
-      </div>
-
-
-      {{#if suggested_projects}}
-
-      <div class="index_feed">
-
-        {{#each suggested_projects}}
-
-           {{#if this.is_private}}
-           {{! Check if the project is a private project, we do not want to show private projects }}
-           {{else}}
-
-              {{#if is_micro_post}}
-
-              {{#if posted_to_group}}
-                 {{#each posted_to_group}}
-                    {{#ifEquals this.group_is_private "true"}}
-                       {{! Don't show projects in private groups }}
-                    {{else}}
-                    <div class="masonryItem ownProject" title="{{../project_title}}" >
-                       <div class="project_avatar_left">
-                          <a href="/profile/{{../project_owner}}">
-                             <img class="project_avatar_img" src="https://ik.imagekit.io/w07am55tja/{{../project_owner_profile_image}}?tr=w-75" />
-                          </a>
-                       </div>
-
-                       <div class="project_content_right">
-                          <div style="flex-direction: row; justify-content: space-between; align-items: flex-start;">
-                             <a class="micro_tag {{#if ../project_title}}micro_tag_w_title{{/if}}" href="/profile/{{../project_owner}}">@{{../project_owner}}</a>
-                             {{#if ../private_collection_name}}<span style="margin-left: 15px;color: #555; font-weight: bold; font-size: 12px;">"{{../private_collection_name}}" (Private)</span>{{/if}}
-                          </div>
-                          <div class="micropost">
-                             <div class="micropost_card {{#if ../micro_image}}card_is_micro_image{{else}}{{#if ../micro_audio}}card_is_micro_audio{{else}}{{#if ../micro_video}}card_is_micro_video{{else}}card_is_micro_text{{/if}}{{/if}}{{/if}}">
-                                <a href="/p/micro/{{../_id}}">
-                                   {{#if ../project_title}}<p class="micro_title">{{../project_title}}</p>{{/if}}
-                                   {{#if ../micro_body}}<p class="micro_body">{{{../micro_body}}}</p>{{/if}}
-                                </a>
-
-                                <a href="/p/micro/{{../_id}}">
-                                   {{#if ../micro_image}}<img src="https://ik.imagekit.io/w07am55tja/{{../micro_image}}?tr=w-650" class="img-responsive" alt="{{../micro_body}}" />{{/if}}
-                                   {{#if ../micro_video}}
-                                   <video  preload="auto" controls controlsList="nodownload" class="micro_video">
-                                      <source src="https://ik.imagekit.io/w07am55tja/{{project.micro_video}}" type="video/mp4">
-                                      <source src="https://ik.imagekit.io/w07am55tja/{{project.micro_video}}" type="video/ogg">
-                                      <source src="https://ik.imagekit.io/w07am55tja/{{project.micro_video}}" type="video/webm">
-                                      Your browser does not support the video tag.
-                                   </video>
-                                   {{/if}}
-                                   {{#if ../micro_audio}}
-                                   {{#if ../thumbnail_image}}<img src="https://ik.imagekit.io/w07am55tja/{{../thumbnail_image}}?tr=w-650" class="img-responsive" alt="{{../micro_body}}" />{{/if}}
-                                   <audio controls controlsList="nodownload" class="micro_audio">
-                                      <source src="https://ik.imagekit.io/w07am55tja/{{project.micro_audio}}" type="audio/ogg">
-                                      <source src="https://ik.imagekit.io/w07am55tja/{{project.micro_audio}}" type="audio/mpeg">
-                                      <source src="https://ik.imagekit.io/w07am55tja/{{project.micro_audio}}" type="audio/wav">
-                                       Your browser does not support the audio element.
-                                   </audio>
-                                   {{/if}}
-                                </a>
-                             </div>
-                          </div>
-                       </div>
-                    </div>
-                    {{/ifEquals}}
-                 {{/each}}
-              {{else}}
-                 <div class="masonryItem ownProject" title="{{project_title}}" >
-                    <div class="project_avatar_left">
-                       <a href="/profile/{{project_owner}}">
-                          <img class="project_avatar_img" src="https://ik.imagekit.io/w07am55tja/{{project_owner_profile_image}}?tr=w-75" />
-                       </a>
-                    </div>
-
-                    <div class="project_content_right">
-                       <div style="flex-direction: row; justify-content: space-between; align-items: flex-start;">
-                          <a class="micro_tag {{#if project_title}}micro_tag_w_title{{/if}}" href="/profile/{{project_owner}}">@{{project_owner}}</a>
-                          {{#if private_collection_name}}<span style="margin-left: 15px;color: #555; font-weight: bold; font-size: 12px;">"{{private_collection_name}}" (Private)</span>{{/if}}
-                       </div>
-                       <div class="micropost">
-                          <div class="micropost_card {{#if micro_image}}card_is_micro_image{{else}}{{#if micro_audio}}card_is_micro_audio{{else}}{{#if micro_video}}card_is_micro_video{{else}}card_is_micro_text{{/if}}{{/if}}{{/if}}">
-                             <a href="/p/micro/{{_id}}" style="width: 100%;">
-                                {{#if project_title}}<p class="micro_title">{{project_title}}</p>{{/if}}
-                                {{#if micro_body}}<p class="micro_body">{{{micro_body}}}</p>{{/if}}
-                             </a>
-                             <a href="/p/micro/{{_id}}" style="width: 100%;">
-                                {{#if micro_image}}<img src="https://ik.imagekit.io/w07am55tja/{{micro_image}}?tr=w-650" class="img-responsive" alt="{{micro_body}}" />{{/if}}
-                                {{#if micro_video}}
-                                <video  preload="auto" controls controlsList="nodownload" class="micro_video">
-                                   <source src="https://ik.imagekit.io/w07am55tja/{{micro_video}}" type="video/mp4">
-                                   <source src="https://ik.imagekit.io/w07am55tja/{{micro_video}}" type="video/ogg">
-                                   <source src="https://ik.imagekit.io/w07am55tja/{{micro_video}}" type="video/webm">
-                                   Your browser does not support the video tag.
-                                </video>
-                                {{/if}}
-                                {{#if micro_audio}}
-                                {{#if thumbnail_image}}<img src="https://ik.imagekit.io/w07am55tja/{{thumbnail_image}}?tr=w-650" class="img-responsive" alt="{{micro_body}}" />{{/if}}
-                                <audio controls controlsList="nodownload" class="micro_audio">
-                                   <source src="https://ik.imagekit.io/w07am55tja/{{micro_audio}}" type="audio/ogg">
-                                   <source src="https://ik.imagekit.io/w07am55tja/{{micro_audio}}" type="audio/mpeg">
-                                   <source src="https://ik.imagekit.io/w07am55tja/{{micro_audio}}" type="audio/wav">
-                                    Your browser does not support the audio element.
-                                </audio>
-                                {{/if}}
-                             </a>
-                          </div>
-                        </div>
-                    </div>
-                 </div>
-              {{/if}}
-
-              {{else}}
-
-                 {{#if posted_to_group}}
-                    {{#each posted_to_group}}
-                       {{#ifEquals this.group_is_private "true"}}
-                          {{! Don't show projects in private groups }}
-                       {{else}}
-                          <div class="masonryItem ownProject index_feed_blog_post" title="{{../project_title}}" >
-                             <div class="project_avatar_left">
-                                <a href="/profile/{{../project_owner}}">
-                                   <img class="project_avatar_img" src="https://ik.imagekit.io/w07am55tja/{{../project_owner_profile_image}}?tr=w-75" />
-                                </a>
-                             </div>
-
-                             <div class="project_content_right">
-                                <div style="flex-direction: row; justify-content: space-between; align-items: flex-start;">
-                                   <a class="micro_tag {{#if ../project_title}}micro_tag_w_title{{/if}}" href="/profile/{{../project_owner}}">@{{../project_owner}}</a>
-                                   {{#if ../private_collection_name}}<span style="margin-left: 15px;color: #555; font-weight: bold; font-size: 12px;">"{{../private_collection_name}}" (Private)</span>{{/if}}
-                                </div>
-                                <div class="project_card">
-                                   <a href="/p/details/{{../_id}}" class="project_link">
-                                      <img src="https://ik.imagekit.io/w07am55tja/{{#if ../thumbnail_image}}{{../thumbnail_image}}{{else}}{{../project_image}}{{/if}}?tr=w-650" class="img-responsive" alt="{{../project_title}}" />
-                                   </a>
-                                   <div class="project_card_bottom">
-                                      <div class="project_bottom_wrapper">
-                                         <div class="bg_overlay"></div>
-                                         <div class="project_bottom_details">
-                                            <a href="/profile/{{../project_owner}}"><p class="project_owner">@{{../project_owner}}</p></a>
-                                            <a href="/p/details/{{../_id}}" class="project_link">
-                                               <p class="project_card_title">{{../project_title}}</p>
-                                            </a>
-                                         </div>
-                                      </div>
-                                   </div>
-                                </div>
-                             </div>
-                          </div>
-                       {{/ifEquals}}
-                    {{/each}}
-                 {{else}}
-                    <div class="masonryItem ownProject index_feed_blog_post" title="{{project_title}}" >
-                       <div class="project_avatar_left">
-                          <a href="/profile/{{project_owner}}">
-                             <img class="project_avatar_img" src="https://ik.imagekit.io/w07am55tja/{{project_owner_profile_image}}?tr=w-75" />
-                          </a>
-                       </div>
-
-                       <div class="project_content_right">
-                          <div style="flex-direction: row; justify-content: space-between; align-items: flex-start;">
-                             <a class="micro_tag {{#if project_title}}micro_tag_w_title{{/if}}" href="/profile/{{project_owner}}">@{{project_owner}}</a>
-                             {{#if private_collection_name}}<span style="margin-left: 15px;color: #555; font-weight: bold; font-size: 12px;">"{{private_collection_name}}" (Private)</span>{{/if}}
-                          </div>
-                          <div class="project_card">
-                             <a href="/p/details/{{_id}}" class="project_link">
-                                <img src="https://ik.imagekit.io/w07am55tja/{{#if thumbnail_image}}{{thumbnail_image}}{{else}}{{project_image}}{{/if}}?tr=w-650" class="img-responsive" alt="{{project_title}}" />
-                             </a>
-                             <div class="project_card_bottom">
-                                <div class="project_bottom_wrapper">
-                                   <div class="bg_overlay"></div>
-                                   <div class="project_bottom_details">
-                                      <a href="/profile/{{project_owner}}"><p class="project_owner">@{{project_owner}}</p></a>
-                                      <a href="/p/details/{{id}}" class="project_link">
-                                         <p class="project_card_title">{{project_title}}</p>
-                                      </a>
-                                   </div>
-                                </div>
-                             </div>
-                          </div>
-                       </div>
-                    </div>
-                 {{/if}}
-
-              {{/if}}
-
-           {{/if}}
-        {{/each}}
-
-      </div>
-
-      {{/if}}
-
-      {{#if suggested_groups}}
-         <section class="explore_groups_container">
-            <div class="group_wrapper">
-               {{#each suggested_groups}}
-               {{#if this.is_private}}
-               {{else}}
-                  <a href="/groups/{{this._id}}" class="group_bg" style="background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.3)), url('https://ik.imagekit.io/w07am55tja/{{this.group_image}}?tr=w-300')">
-                     {{this.group_name}}
-                  </a>
-               {{/if}}
-               {{/each}}
-            </div>
-         </section>
-      {{/if}}
-
-
-
-      {{!---------- Suggested Index Feed #2 ----------}}
-
-
-
-      <div class="suggested_user_container">
-         {{#if suggested_profiles_num2}}
-         {{#each suggested_profiles_num2}}
-         <a href="/profile/{{this.username}}" class="group_user">
-            <div class="suggested_user" style="background-image: url('https://ik.imagekit.io/w07am55tja/{{#if this.backgroundimage}}{{this.backgroundimage}}{{else}}hryzn-placeholder-01.jpg{{/if}}?tr=w-300')">
-               <div class="suggested_user_img_container">
-                  <img class="profile__img" src="https://ik.imagekit.io/w07am55tja/{{#if this.profileimage}}{{this.profileimage}}{{else}}hryzn-placeholder-01.jpg{{/if}}?tr=w-100">
-               </div>
-               <small class="suggested_username">@{{this.username}}</small>
-               <div class="suggested_view_btn">View</div>
-               <div class="bg_overlay"></div>
-            </div>
-         </a>
-         {{/each}}
-         {{/if}}
-      </div>
-
-      {{#if suggested_projects_num2}}
-
-      <div class="index_feed">
-
-        {{#each suggested_projects_num2}}
-
-           {{#if this.is_private}}
-           {{! Check if the project is a private project, we do not want to show private projects }}
-           {{else}}
-
-              {{#if is_micro_post}}
-
-              {{#if posted_to_group}}
-                 {{#each posted_to_group}}
-                    {{#ifEquals this.group_is_private "true"}}
-                       {{! Don't show projects in private groups }}
-                    {{else}}
-                    <div class="masonryItem ownProject" title="{{../project_title}}" >
-                       <div class="project_avatar_left">
-                          <a href="/profile/{{../project_owner}}">
-                             <img class="project_avatar_img" src="https://ik.imagekit.io/w07am55tja/{{../project_owner_profile_image}}?tr=w-75" />
-                          </a>
-                       </div>
-
-                       <div class="project_content_right">
-                          <div style="flex-direction: row; justify-content: space-between; align-items: flex-start;">
-                             <a class="micro_tag {{#if ../project_title}}micro_tag_w_title{{/if}}" href="/profile/{{../project_owner}}">@{{../project_owner}}</a>
-                             {{#if ../private_collection_name}}<span style="margin-left: 15px;color: #555; font-weight: bold; font-size: 12px;">"{{../private_collection_name}}" (Private)</span>{{/if}}
-                          </div>
-                          <div class="micropost">
-                             <div class="micropost_card {{#if ../micro_image}}card_is_micro_image{{else}}{{#if ../micro_audio}}card_is_micro_audio{{else}}{{#if ../micro_video}}card_is_micro_video{{else}}card_is_micro_text{{/if}}{{/if}}{{/if}}">
-                                <a href="/p/micro/{{../_id}}">
-                                   {{#if ../project_title}}<p class="micro_title">{{../project_title}}</p>{{/if}}
-                                   {{#if ../micro_body}}<p class="micro_body">{{{../micro_body}}}</p>{{/if}}
-                                </a>
-
-                                <a href="/p/micro/{{../_id}}">
-                                   {{#if ../micro_image}}<img src="https://ik.imagekit.io/w07am55tja/{{../micro_image}}?tr=w-650" class="img-responsive" alt="{{../micro_body}}" />{{/if}}
-                                   {{#if ../micro_video}}
-                                   <video  preload="auto" controls controlsList="nodownload" class="micro_video">
-                                      <source src="https://ik.imagekit.io/w07am55tja/{{project.micro_video}}" type="video/mp4">
-                                      <source src="https://ik.imagekit.io/w07am55tja/{{project.micro_video}}" type="video/ogg">
-                                      <source src="https://ik.imagekit.io/w07am55tja/{{project.micro_video}}" type="video/webm">
-                                      Your browser does not support the video tag.
-                                   </video>
-                                   {{/if}}
-                                   {{#if ../micro_audio}}
-                                   {{#if ../thumbnail_image}}<img src="https://ik.imagekit.io/w07am55tja/{{../thumbnail_image}}?tr=w-650" class="img-responsive" alt="{{../micro_body}}" />{{/if}}
-                                   <audio controls controlsList="nodownload" class="micro_audio">
-                                      <source src="https://ik.imagekit.io/w07am55tja/{{project.micro_audio}}" type="audio/ogg">
-                                      <source src="https://ik.imagekit.io/w07am55tja/{{project.micro_audio}}" type="audio/mpeg">
-                                      <source src="https://ik.imagekit.io/w07am55tja/{{project.micro_audio}}" type="audio/wav">
-                                       Your browser does not support the audio element.
-                                   </audio>
-                                   {{/if}}
-                                </a>
-                             </div>
-                          </div>
-                       </div>
-                    </div>
-                    {{/ifEquals}}
-                 {{/each}}
-              {{else}}
-                 <div class="masonryItem ownProject" title="{{project_title}}" >
-                    <div class="project_avatar_left">
-                       <a href="/profile/{{project_owner}}">
-                          <img class="project_avatar_img" src="https://ik.imagekit.io/w07am55tja/{{project_owner_profile_image}}?tr=w-75" />
-                       </a>
-                    </div>
-
-                    <div class="project_content_right">
-                       <div style="flex-direction: row; justify-content: space-between; align-items: flex-start;">
-                          <a class="micro_tag {{#if project_title}}micro_tag_w_title{{/if}}" href="/profile/{{project_owner}}">@{{project_owner}}</a>
-                          {{#if private_collection_name}}<span style="margin-left: 15px;color: #555; font-weight: bold; font-size: 12px;">"{{private_collection_name}}" (Private)</span>{{/if}}
-                       </div>
-                       <div class="micropost">
-                          <div class="micropost_card {{#if micro_image}}card_is_micro_image{{else}}{{#if micro_audio}}card_is_micro_audio{{else}}{{#if micro_video}}card_is_micro_video{{else}}card_is_micro_text{{/if}}{{/if}}{{/if}}">
-                             <a href="/p/micro/{{_id}}" style="width: 100%;">
-                                {{#if project_title}}<p class="micro_title">{{project_title}}</p>{{/if}}
-                                {{#if micro_body}}<p class="micro_body">{{{micro_body}}}</p>{{/if}}
-                             </a>
-                             <a href="/p/micro/{{_id}}" style="width: 100%;">
-                                {{#if micro_image}}<img src="https://ik.imagekit.io/w07am55tja/{{micro_image}}?tr=w-650" class="img-responsive" alt="{{micro_body}}" />{{/if}}
-                                {{#if micro_video}}
-                                <video  preload="auto" controls controlsList="nodownload" class="micro_video">
-                                   <source src="https://ik.imagekit.io/w07am55tja/{{micro_video}}" type="video/mp4">
-                                   <source src="https://ik.imagekit.io/w07am55tja/{{micro_video}}" type="video/ogg">
-                                   <source src="https://ik.imagekit.io/w07am55tja/{{micro_video}}" type="video/webm">
-                                   Your browser does not support the video tag.
-                                </video>
-                                {{/if}}
-                                {{#if micro_audio}}
-                                {{#if thumbnail_image}}<img src="https://ik.imagekit.io/w07am55tja/{{thumbnail_image}}?tr=w-650" class="img-responsive" alt="{{micro_body}}" />{{/if}}
-                                <audio controls controlsList="nodownload" class="micro_audio">
-                                   <source src="https://ik.imagekit.io/w07am55tja/{{micro_audio}}" type="audio/ogg">
-                                   <source src="https://ik.imagekit.io/w07am55tja/{{micro_audio}}" type="audio/mpeg">
-                                   <source src="https://ik.imagekit.io/w07am55tja/{{micro_audio}}" type="audio/wav">
-                                    Your browser does not support the audio element.
-                                </audio>
-                                {{/if}}
-                             </a>
-                          </div>
-                       </div>
-                    </div>
-                 </div>
-              {{/if}}
-
-              {{else}}
-
-                 {{#if posted_to_group}}
-                    {{#each posted_to_group}}
-                       {{#ifEquals this.group_is_private "true"}}
-                          {{! Don't show projects in private groups }}
-                       {{else}}
-                          <div class="masonryItem ownProject index_feed_blog_post" title="{{../project_title}}" >
-                             <div class="project_avatar_left">
-                                <a href="/profile/{{../project_owner}}">
-                                   <img class="project_avatar_img" src="https://ik.imagekit.io/w07am55tja/{{../project_owner_profile_image}}?tr=w-75" />
-                                </a>
-                             </div>
-
-                             <div class="project_content_right">
-                                <div style="flex-direction: row; justify-content: space-between; align-items: flex-start;">
-                                   <a class="micro_tag {{#if ../project_title}}micro_tag_w_title{{/if}}" href="/profile/{{../project_owner}}">@{{../project_owner}}</a>
-                                   {{#if ../private_collection_name}}<span style="margin-left: 15px;color: #555; font-weight: bold; font-size: 12px;">"{{../private_collection_name}}" (Private)</span>{{/if}}
-                                </div>
-                                <div class="project_card">
-                                   <a href="/p/details/{{../_id}}" class="project_link">
-                                      <img src="https://ik.imagekit.io/w07am55tja/{{#if ../thumbnail_image}}{{../thumbnail_image}}{{else}}{{../project_image}}{{/if}}?tr=w-650" class="img-responsive" alt="{{../project_title}}" />
-                                   </a>
-                                   <div class="project_card_bottom">
-                                      <div class="project_bottom_wrapper">
-                                         <div class="bg_overlay"></div>
-                                         <div class="project_bottom_details">
-                                            <a href="/profile/{{../project_owner}}"><p class="project_owner">@{{../project_owner}}</p></a>
-                                            <a href="/p/details/{{../_id}}" class="project_link">
-                                               <p class="project_card_title">{{../project_title}}</p>
-                                            </a>
-                                         </div>
-                                      </div>
-                                   </div>
-                                </div>
-                                {{#if ../reposted_by}}<a href="/profile/{{../reposted_by}}" style="display: block;margin-top: 25px;color: #555; font-weight: bold; font-size: 12px;">Reposted by @{{../reposted_by}}</a>{{/if}}
-                             </div>
-                          </div>
-                       {{/ifEquals}}
-                    {{/each}}
-                 {{else}}
-                    <div class="masonryItem ownProject index_feed_blog_post" title="{{project_title}}" >
-                       <div class="project_avatar_left">
-                          <a href="/profile/{{project_owner}}">
-                             <img class="project_avatar_img" src="https://ik.imagekit.io/w07am55tja/{{project_owner_profile_image}}?tr=w-75" />
-                          </a>
-                       </div>
-
-                       <div class="project_content_right">
-                          <div style="flex-direction: row; justify-content: space-between; align-items: flex-start;">
-                             <a class="micro_tag {{#if project_title}}micro_tag_w_title{{/if}}" href="/profile/{{project_owner}}">@{{project_owner}}</a>
-                             {{#if private_collection_name}}<span style="margin-left: 15px;color: #555; font-weight: bold; font-size: 12px;">"{{private_collection_name}}" (Private)</span>{{/if}}
-                          </div>
-                          <div class="project_card">
-                             <a href="/p/details/{{_id}}" class="project_link">
-                                <img src="https://ik.imagekit.io/w07am55tja/{{#if thumbnail_image}}{{thumbnail_image}}{{else}}{{project_image}}{{/if}}?tr=w-650" class="img-responsive" alt="{{project_title}}" />
-                             </a>
-                             <div class="project_card_bottom">
-                                <div class="project_bottom_wrapper">
-                                   <div class="bg_overlay"></div>
-                                   <div class="project_bottom_details">
-                                      <a href="/profile/{{project_owner}}"><p class="project_owner">@{{project_owner}}</p></a>
-                                      <a href="/p/details/{{id}}" class="project_link">
-                                         <p class="project_card_title">{{project_title}}</p>
-                                      </a>
-                                   </div>
-                                </div>
-                             </div>
-                          </div>
-                          {{#if reposted_by}}<a href="/profile/{{reposted_by}}" style="display: block;margin-top: 25px;color: #555; font-weight: bold; font-size: 12px;">Reposted by @{{reposted_by}}</a>{{/if}}
-                       </div>
-                    </div>
-                 {{/if}}
-
-              {{/if}}
-
-           {{/if}}
-        {{/each}}
-
-      </div>
-
-      {{/if}}
-
-      {{#if suggested_groups_num2}}
-         <section class="explore_groups_container">
-            <div class="group_wrapper">
-               {{#each suggested_groups_num2}}
-               {{#if this.is_private}}
-               {{else}}
-                  <a href="/groups/{{this._id}}" class="group_bg" style="background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.3)), url('https://ik.imagekit.io/w07am55tja/{{this.group_image}}?tr=w-300')">
-                     {{this.group_name}}
-                  </a>
-               {{/if}}
-               {{/each}}
-            </div>
-         </section>
-      {{/if}}
-
-
-
-      {{!---------- Suggested Index Feed #3 ----------}}
-
-
-
-      <div class="suggested_user_container">
-         {{#if suggested_profiles_num3}}
-         {{#each suggested_profiles_num3}}
-         <a href="/profile/{{this.username}}" class="group_user">
-            <div class="suggested_user" style="background-image: url('https://ik.imagekit.io/w07am55tja/{{#if this.backgroundimage}}{{this.backgroundimage}}{{else}}hryzn-placeholder-01.jpg{{/if}}?tr=w-300')">
-               <div class="suggested_user_img_container">
-                  <img class="profile__img" src="https://ik.imagekit.io/w07am55tja/{{#if this.profileimage}}{{this.profileimage}}{{else}}hryzn-placeholder-01.jpg{{/if}}?tr=w-100">
-               </div>
-               <small class="suggested_username">@{{this.username}}</small>
-               <div class="suggested_view_btn">View</div>
-               <div class="bg_overlay"></div>
-            </div>
-         </a>
-         {{/each}}
-         {{/if}}
-      </div>
-
-      {{#if suggested_projects_num3}}
-
-      <div class="index_feed">
-
-        {{#each suggested_projects_num3}}
-
-           {{#if this.is_private}}
-           {{! Check if the project is a private project, we do not want to show private projects }}
-           {{else}}
-
-              {{#if is_micro_post}}
-
-              {{#if posted_to_group}}
-                 {{#each posted_to_group}}
-                    {{#ifEquals this.group_is_private "true"}}
-                       {{! Don't show projects in private groups }}
-                    {{else}}
-                    <div class="masonryItem ownProject" title="{{../project_title}}" >
-                       <div class="project_avatar_left">
-                          <a href="/profile/{{../project_owner}}">
-                             <img class="project_avatar_img" src="https://ik.imagekit.io/w07am55tja/{{../project_owner_profile_image}}?tr=w-75" />
-                          </a>
-                       </div>
-
-                       <div class="project_content_right">
-                          <div style="flex-direction: row; justify-content: space-between; align-items: flex-start;">
-                             <a class="micro_tag {{#if ../project_title}}micro_tag_w_title{{/if}}" href="/profile/{{../project_owner}}">@{{../project_owner}}</a>
-                             {{#if ../private_collection_name}}<span style="margin-left: 15px;color: #555; font-weight: bold; font-size: 12px;">"{{../private_collection_name}}" (Private)</span>{{/if}}
-                          </div>
-                          <div class="micropost">
-                             <div class="micropost_card {{#if ../micro_image}}card_is_micro_image{{else}}{{#if ../micro_audio}}card_is_micro_audio{{else}}{{#if ../micro_video}}card_is_micro_video{{else}}card_is_micro_text{{/if}}{{/if}}{{/if}}">
-                                <a href="/p/micro/{{../_id}}">
-                                   {{#if ../project_title}}<p class="micro_title">{{../project_title}}</p>{{/if}}
-                                   {{#if ../micro_body}}<p class="micro_body">{{{../micro_body}}}</p>{{/if}}
-                                </a>
-
-                                <a href="/p/micro/{{../_id}}">
-                                   {{#if ../micro_image}}<img src="https://ik.imagekit.io/w07am55tja/{{../micro_image}}?tr=w-650" class="img-responsive" alt="{{../micro_body}}" />{{/if}}
-                                   {{#if ../micro_video}}
-                                   <video  preload="auto" controls controlsList="nodownload" class="micro_video">
-                                      <source src="https://ik.imagekit.io/w07am55tja/{{project.micro_video}}" type="video/mp4">
-                                      <source src="https://ik.imagekit.io/w07am55tja/{{project.micro_video}}" type="video/ogg">
-                                      <source src="https://ik.imagekit.io/w07am55tja/{{project.micro_video}}" type="video/webm">
-                                      Your browser does not support the video tag.
-                                   </video>
-                                   {{/if}}
-                                   {{#if ../micro_audio}}
-                                   {{#if ../thumbnail_image}}<img src="https://ik.imagekit.io/w07am55tja/{{../thumbnail_image}}?tr=w-650" class="img-responsive" alt="{{../micro_body}}" />{{/if}}
-                                   <audio controls controlsList="nodownload" class="micro_audio">
-                                      <source src="https://ik.imagekit.io/w07am55tja/{{project.micro_audio}}" type="audio/ogg">
-                                      <source src="https://ik.imagekit.io/w07am55tja/{{project.micro_audio}}" type="audio/mpeg">
-                                      <source src="https://ik.imagekit.io/w07am55tja/{{project.micro_audio}}" type="audio/wav">
-                                       Your browser does not support the audio element.
-                                   </audio>
-                                   {{/if}}
-                                </a>
-                             </div>
-                          </div>
-                       </div>
-                    </div>
-                    {{/ifEquals}}
-                 {{/each}}
-              {{else}}
-                 <div class="masonryItem ownProject" title="{{project_title}}" >
-                    <div class="project_avatar_left">
-                       <a href="/profile/{{project_owner}}">
-                          <img class="project_avatar_img" src="https://ik.imagekit.io/w07am55tja/{{project_owner_profile_image}}?tr=w-75" />
-                       </a>
-                    </div>
-
-                    <div class="project_content_right">
-                       <div style="flex-direction: row; justify-content: space-between; align-items: flex-start;">
-                          <a class="micro_tag {{#if project_title}}micro_tag_w_title{{/if}}" href="/profile/{{project_owner}}">@{{project_owner}}</a>
-                          {{#if private_collection_name}}<span style="margin-left: 15px;color: #555; font-weight: bold; font-size: 12px;">"{{private_collection_name}}" (Private)</span>{{/if}}
-                       </div>
-                       <div class="micropost">
-                          <div class="micropost_card {{#if micro_image}}card_is_micro_image{{else}}{{#if micro_audio}}card_is_micro_audio{{else}}{{#if micro_video}}card_is_micro_video{{else}}card_is_micro_text{{/if}}{{/if}}{{/if}}">
-                             <a href="/p/micro/{{_id}}" style="width: 100%;">
-                                {{#if project_title}}<p class="micro_title">{{project_title}}</p>{{/if}}
-                                {{#if micro_body}}<p class="micro_body">{{{micro_body}}}</p>{{/if}}
-                             </a>
-                             <a href="/p/micro/{{_id}}" style="width: 100%;">
-                                {{#if micro_image}}<img src="https://ik.imagekit.io/w07am55tja/{{micro_image}}?tr=w-650" class="img-responsive" alt="{{micro_body}}" />{{/if}}
-                                {{#if micro_video}}
-                                <video  preload="auto" controls controlsList="nodownload" class="micro_video">
-                                   <source src="https://ik.imagekit.io/w07am55tja/{{micro_video}}" type="video/mp4">
-                                   <source src="https://ik.imagekit.io/w07am55tja/{{micro_video}}" type="video/ogg">
-                                   <source src="https://ik.imagekit.io/w07am55tja/{{micro_video}}" type="video/webm">
-                                   Your browser does not support the video tag.
-                                </video>
-                                {{/if}}
-                                {{#if micro_audio}}
-                                {{#if thumbnail_image}}<img src="https://ik.imagekit.io/w07am55tja/{{thumbnail_image}}?tr=w-650" class="img-responsive" alt="{{micro_body}}" />{{/if}}
-                                <audio controls controlsList="nodownload" class="micro_audio">
-                                   <source src="https://ik.imagekit.io/w07am55tja/{{micro_audio}}" type="audio/ogg">
-                                   <source src="https://ik.imagekit.io/w07am55tja/{{micro_audio}}" type="audio/mpeg">
-                                   <source src="https://ik.imagekit.io/w07am55tja/{{micro_audio}}" type="audio/wav">
-                                    Your browser does not support the audio element.
-                                </audio>
-                                {{/if}}
-                             </a>
-                          </div>
-                       </div>
-                    </div>
-                 </div>
-              {{/if}}
-
-              {{else}}
-
-                 {{#if posted_to_group}}
-                    {{#each posted_to_group}}
-                       {{#ifEquals this.group_is_private "true"}}
-                          {{! Don't show projects in private groups }}
-                       {{else}}
-                          <div class="masonryItem ownProject index_feed_blog_post" title="{{../project_title}}" >
-                             <div class="project_avatar_left">
-                                <a href="/profile/{{../project_owner}}">
-                                   <img class="project_avatar_img" src="https://ik.imagekit.io/w07am55tja/{{../project_owner_profile_image}}?tr=w-75" />
-                                </a>
-                             </div>
-
-                             <div class="project_content_right">
-                                <div style="flex-direction: row; justify-content: space-between; align-items: flex-start;">
-                                   <a class="micro_tag {{#if ../project_title}}micro_tag_w_title{{/if}}" href="/profile/{{../project_owner}}">@{{../project_owner}}</a>
-                                   {{#if ../private_collection_name}}<span style="margin-left: 15px;color: #555; font-weight: bold; font-size: 12px;">"{{../private_collection_name}}" (Private)</span>{{/if}}
-                                </div>
-                                <div class="project_card">
-                                   <a href="/p/details/{{../_id}}" class="project_link">
-                                      <img src="https://ik.imagekit.io/w07am55tja/{{#if ../thumbnail_image}}{{../thumbnail_image}}{{else}}{{../project_image}}{{/if}}?tr=w-650" class="img-responsive" alt="{{../project_title}}" />
-                                   </a>
-                                   <div class="project_card_bottom">
-                                      <div class="project_bottom_wrapper">
-                                         <div class="bg_overlay"></div>
-                                         <div class="project_bottom_details">
-                                            <a href="/profile/{{../project_owner}}"><p class="project_owner">@{{../project_owner}}</p></a>
-                                            <a href="/p/details/{{../_id}}" class="project_link">
-                                               <p class="project_card_title">{{../project_title}}</p>
-                                            </a>
-                                         </div>
-                                      </div>
-                                   </div>
-                                </div>
-                                {{#if ../reposted_by}}<a href="/profile/{{../reposted_by}}" style="display: block;margin-top: 25px;color: #555; font-weight: bold; font-size: 12px;">Reposted by @{{../reposted_by}}</a>{{/if}}
-                             </div>
-                          </div>
-                       {{/ifEquals}}
-                    {{/each}}
-                 {{else}}
-                    <div class="masonryItem ownProject index_feed_blog_post" title="{{project_title}}" >
-                       <div class="project_avatar_left">
-                          <a href="/profile/{{project_owner}}">
-                             <img class="project_avatar_img" src="https://ik.imagekit.io/w07am55tja/{{project_owner_profile_image}}?tr=w-75" />
-                          </a>
-                       </div>
-
-                       <div class="project_content_right">
-                          <div style="flex-direction: row; justify-content: space-between; align-items: flex-start;">
-                             <a class="micro_tag {{#if project_title}}micro_tag_w_title{{/if}}" href="/profile/{{project_owner}}">@{{project_owner}}</a>
-                             {{#if private_collection_name}}<span style="margin-left: 15px;color: #555; font-weight: bold; font-size: 12px;">"{{private_collection_name}}" (Private)</span>{{/if}}
-                          </div>
-                          <div class="project_card">
-                             <a href="/p/details/{{_id}}" class="project_link">
-                                <img src="https://ik.imagekit.io/w07am55tja/{{#if thumbnail_image}}{{thumbnail_image}}{{else}}{{project_image}}{{/if}}?tr=w-650" class="img-responsive" alt="{{project_title}}" />
-                             </a>
-                             <div class="project_card_bottom">
-                                <div class="project_bottom_wrapper">
-                                   <div class="bg_overlay"></div>
-                                   <div class="project_bottom_details">
-                                      <a href="/profile/{{project_owner}}"><p class="project_owner">@{{project_owner}}</p></a>
-                                      <a href="/p/details/{{id}}" class="project_link">
-                                         <p class="project_card_title">{{project_title}}</p>
-                                      </a>
-                                   </div>
-                                </div>
-                             </div>
-                          </div>
-                          {{#if reposted_by}}<a href="/profile/{{reposted_by}}" style="display: block;margin-top: 25px;color: #555; font-weight: bold; font-size: 12px;">Reposted by @{{reposted_by}}</a>{{/if}}
-                       </div>
-                    </div>
-                 {{/if}}
-
-              {{/if}}
-
-           {{/if}}
-        {{/each}}
-
-      </div>
-
-      {{/if}}
-
-      {{#if suggested_groups_num3}}
-         <section class="explore_groups_container">
-            <div class="group_wrapper">
-               {{#each suggested_groups_num3}}
-               {{#if this.is_private}}
-               {{else}}
-                  <a href="/groups/{{this._id}}" class="group_bg" style="background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.3)), url('https://ik.imagekit.io/w07am55tja/{{this.group_image}}?tr=w-300')">
-                     {{this.group_name}}
-                  </a>
-               {{/if}}
-               {{/each}}
-            </div>
-         </section>
-      {{/if}}
-
-   </div>
-
-</div>
-
-<div class="detailsRepostModal modalBackground">
-   <div class="modal-content">
-
-   <div class="modal-header ">
-   <p>Where would you like to repost to?</p>
-   </div>
-
-   <form id="repostForm" title="repost" method="post" action="/p/details/micro/repost/{{project._id}}">
-      <input id="repostUsername" type="hidden" name="username" value="{{user.username}}">
-      <input id="repostProjectId" type="hidden" name="project_id" value="{{project.id}}">
-      <input id="repostProjectOwner" type="hidden" name="project_owner" value="{{project.project_owner}}">
-      <input type="hidden" name="og_path" value="" class="og_path"/>
-      <select data-placeholder="Repost to..." class="chosen-select form__input" name="repost_to">
-         <option value=""></option>
-         <option value="followers">Followers</option>
-         {{#each user.groups}}
-         <option value="{{this.group_id}}">Your Group "{{this.group_name}}"</option>
-         {{/each}}
-      </select>
-      <div class="modal-footer">
-         <input class="btn__secondary repost_submit" type="submit" value="Repost"/>
-         <span class="closeModal btn__primary">Cancel</span>
-      </div>
-   </form>
-
-   <form id="unrepostForm" title="unrepost" method="post">
-      <input id="unrepostUsername" type="hidden" name="username" value="">
-      <input id="unrepostProjectId" type="hidden" name="project_id" value="">
-      <input type="hidden" name="og_path" value="" class="og_path"/>
-      <input class="btn__secondary unrepost_btn" type="submit" value="I'm actually trying to unrepost this"/>
-   </form>
-
-   </div>
-
-</div>
-
-{{! Message Post Modal }}
-<div id="msgPop" class="project__settingsNav">
-   <div class="msgPop_wrapper">
-      <a href="javascript:void(0)" id="msgPopClose">&times;</a>
-
-      <p>Type in one of your follower's username</p>
-
-      <form autocomplete="off">
-        <input id="msgContentInput" type="hidden" name="message" value=``>
-        <div class="user_autocomplete">
-          <input class="user_autocomplete_input" type="text" name="send_to_user" placeholder="Send to...">
-        </div>
-        <input type="submit" class="user_autocomplete_btn" value="Send">
+<!-- Hero -->
+<div class="section center wf-section"><img src="/img/arrow.svg" alt="" class="arrow">
+  <div data-w-id="6b220cb1-4b9c-7fb0-75b9-53ff4a6c35a2" style="-webkit-transform:translate3d(0, 30PX, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-moz-transform:translate3d(0, 30PX, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-ms-transform:translate3d(0, 30PX, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);transform:translate3d(0, 30PX, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);opacity:0" class="hero-content">
+    <h1 class="heading-3 hero-heading">The <span id="main" data-words="revolutionary, futuristic, cutting-edge, innovative, brand new" data-delay="150" data-deletedelay="2000" class="typer">revolutionary</span><span data-owner="main" class="cursor"> </span> <br>way to connect with your people.</h1>
+    <h3 class="hero-subhead">Hryzn is a social platform where people can connect with their communities through niche topics, using the future of Web 3.0</h3>
+
+    <div class="w-form">
+      <form id="email-form-2" name="email-form-2" data-name="Email Form 2" action="/" method="post" class="form-3 hero-form">
+        <input type="email" class="text-field w-input" maxlength="256" name="email" data-name="Email 3" placeholder="Enter your email address to join our waiting list..." id="email-3" required>
+        <input type="hidden" name="hp_name" id="hp_name-3">
+        <input type="submit" value="Join" data-wait="Please wait..." class="button hero-email-submit w-button">
       </form>
 
-      <!-- {{#each user.followers}}
-      <a class="follower__profile user_autocomplete_self">
-         @{{this}}
-      </a>
-      {{/each}} -->
-   </div>
+      {{#if email_success}}
+      <div class="email-success">Thank you! We appreciate you being a part of our journey.</div>
+      {{/if}}
+
+      {{#if email_error}}
+      <div class="email-fail">{{email_error}}</div>
+      {{/if}}
+    </div>
+  </div>
+
+  <img src="/img/Happy-Bunch---Astronaut.png" style="-webkit-transform:translate3d(0, 60PX, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-moz-transform:translate3d(0, 60PX, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-ms-transform:translate3d(0, 60PX, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);transform:translate3d(0, 60PX, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);opacity:0" data-w-id="77e69727-c455-8e07-0990-833a661c94ea" sizes="(max-width: 479px) 80vw, (max-width: 991px) 70vw, 100vw" srcset="/img/Happy-Bunch---Astronaut-p-500.png 500w, /img/Happy-Bunch---Astronaut-p-800.png 800w, /img/Happy-Bunch---Astronaut-p-1080.png 1080w, /img/Happy-Bunch---Astronaut-p-1600.png 1600w, /img/Happy-Bunch---Astronaut-p-2000.png 2000w, /img/Happy-Bunch---Astronaut.png 2334w" alt="" class="hero-image">
 </div>
+<!-- /Hero -->
 
-<script>
-function user_autocomplete(inp, arr) {
-  /*the user_autocomplete function takes two arguments,
-  the text field element and an array of possible user_autocompleted values:*/
-  var currentFocus;
-  /*execute a function when someone writes in the text field:*/
-  inp.addEventListener("input", function(e) {
-      var a, b, i, val = this.value;
-      /*close any already open lists of autocompleted values*/
-      closeAllLists();
-      if (!val) { return false;}
-      currentFocus = -1;
-      /*create a DIV element that will contain the items (values):*/
-      a = document.createElement("DIV");
-      a.setAttribute("id", this.id + "user_autocomplete_list");
-      a.setAttribute("class", "user_autocomplete_items");
-      /*append the DIV element as a child of the user_autocomplete container:*/
-      this.parentNode.appendChild(a);
-      /*for each item in the array...*/
-      for (i = 0; i < arr.length; i++) {
-        /*check if the item starts with the same letters as the text field value:*/
-        if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase()) {
-          /*create a DIV element for each matching element:*/
-          b = document.createElement("DIV");
-          /*make the matching letters bold:*/
-          b.innerHTML = "<strong>" + arr[i].substr(0, val.length) + "</strong>";
-          b.innerHTML += arr[i].substr(val.length);
-          /*insert a input field that will hold the current array item's value:*/
-          b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
-          /*execute a function when someone clicks on the item value (DIV element):*/
-          b.addEventListener("click", function(e) {
-              /*insert the value for the user_autocomplete text field:*/
-              inp.value = this.getElementsByTagName("input")[0].value;
-              /*close the list of user_autocompleted values,
-              (or any other open lists of user_autocompleted values:*/
-              closeAllLists();
-          });
-          a.appendChild(b);
+
+<!-- Full Image Feature Section-->
+<div id="about" class="section wide img wf-section">
+  <div data-w-id="b126983d-9126-fc06-c81d-1318685e2add" style="-webkit-transform:translate3d(0, 40PX, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-moz-transform:translate3d(0, 40PX, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-ms-transform:translate3d(0, 40PX, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);transform:translate3d(0, 40PX, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);opacity:0" class="wrap">
+    <div class="title title-red-bg">Your passion. Your people.</div>
+    <h2 class="heading-4">Join a hub of niches from recipes, to workouts, to crypto, and much more...</h2>
+  </div>
+
+  <div class="wrapper">
+    <img src="/img/Tech-Life---Blockchain.png" srcset="/img/Tech-Life---Blockchain-p-500.png 500w, /img/Tech-Life---Blockchain-p-800.png 800w, /img/Tech-Life---Blockchain-p-1080.png 1080w, /img/Tech-Life---Blockchain-p-1600.png 1600w, /img/Tech-Life---Blockchain-p-2000.png 2000w, /img/Tech-Life---Blockchain.png 2500w" height="" sizes="90vw" alt="" class="image-6">
+  </div>
+</div>
+<!-- /Feature Section-->
+
+
+<!-- Features Section-->
+<div class="section wf-section">
+  <div id="features" data-w-id="8cf6045f-077b-7b4e-c286-9ad55bed81cd" style="-webkit-transform:translate3d(0, 40PX, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-moz-transform:translate3d(0, 40PX, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-ms-transform:translate3d(0, 40PX, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);transform:translate3d(0, 40PX, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);opacity:0" class="wrap">
+    <div class="title title-white-bg">Our Features</div>
+    <h2 class="heading-4 whtie-bg">Besides the web 3.0 stuff, we're also a pretty cool social platform.</h2>
+  </div>
+
+  <div class="feature-wrap">
+    <div data-w-id="4593c4b7-56e8-060a-be57-648b0e08fc65" style="-webkit-transform:translate3d(0, 40PX, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-moz-transform:translate3d(0, 40PX, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-ms-transform:translate3d(0, 40PX, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);transform:translate3d(0, 40PX, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);opacity:0" class="feature-content">
+      <div class="title">CONNECT WITH YOUR COMMUNITY.</div>
+      <h2 class="black">Your Passion. Your People.</h2>
+      <p class="paragraph-2">Join a hub of niches where your interests connect you with your community. From recipes, to workouts, to crypto, people can discover what they love and connect with their people. Even if it&#x27;s a little weird, it&#x27;s probably on here.</p>
+    </div>
+
+    <div class="feature-image"><img src="/img/Yuppies---Exercising.png" width="341" sizes="(max-width: 479px) 90vw, (max-width: 767px) 50vw, (max-width: 991px) 40vw, 24vw" srcset="/img/Yuppies---Exercising-p-500.png 500w, /img/Yuppies---Exercising-p-800.png 800w, /img/Yuppies---Exercising-p-1080.png 1080w, /img/Yuppies---Exercising-p-1600.png 1600w, /img/Yuppies---Exercising-p-2000.png 2000w, /img/Yuppies---Exercising.png 2500w" alt="" class="image-2"></div>
+  </div>
+
+  <div class="feature-wrap reverse">
+    <div data-w-id="cafe0045-d304-79d9-8f68-af3adaed06e9" style="-webkit-transform:translate3d(0, 40PX, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-moz-transform:translate3d(0, 40PX, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-ms-transform:translate3d(0, 40PX, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);transform:translate3d(0, 40PX, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);opacity:0" class="feature-content">
+      <div class="title">Explore &amp; Discover</div>
+      <h2 class="black-text">Built for those that love to discover</h2>
+      <p class="paragraph-3">With a built-in search engine and a vast array of niches, you can explore endless amounts of content until your heart&#x27;s content. Pretty similar to how cool Youtube, Pinterest, and Google are.</p>
+    </div>
+
+    <div class="feature-image"><img src="/img/Amigos---Fresh-Air.png" width="386" sizes="(max-width: 479px) 90vw, (max-width: 767px) 50vw, (max-width: 991px) 40vw, 24vw" srcset="/img/Amigos---Fresh-Air-p-800.png 800w, /img/Amigos---Fresh-Air-p-1080.png 1080w, /img/Amigos---Fresh-Air-p-1600.png 1600w, /img/Amigos---Fresh-Air-p-2000.png 2000w, /img/Amigos---Fresh-Air.png 2388w" alt="" class="image-2"></div>
+  </div>
+
+  <div class="feature-wrap">
+    <div data-w-id="88086931-0bbf-a2f5-1fc3-58d79ba19b7e" style="-webkit-transform:translate3d(0, 40PX, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-moz-transform:translate3d(0, 40PX, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-ms-transform:translate3d(0, 40PX, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);transform:translate3d(0, 40PX, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);opacity:0" class="feature-content">
+      <div class="title">The Hryzn Metaverse</div>
+      <h2 class="black-text">Connect with your people in a 3D virtual world.</h2>
+      <p class="paragraph-4">Join groups of like minded people in a fully customizable 3D experience. From a hub of niches to choose from, let your interests connect you with your people in an animated virtual world. Like if Discord and Facebook groups became 3D.</p>
+    </div>
+
+    <div class="feature-image"><img src="/img/Tutto-Ricco---Alone-Time.png" width="341" sizes="(max-width: 479px) 90vw, (max-width: 767px) 50vw, (max-width: 991px) 40vw, 24vw" srcset="/img/Tutto-Ricco---Alone-Time-p-800.png 800w, /img/Tutto-Ricco---Alone-Time-p-1080.png 1080w, /img/Tutto-Ricco---Alone-Time-p-1600.png 1600w, /img/Tutto-Ricco---Alone-Time-p-2000.png 2000w, /img/Tutto-Ricco---Alone-Time.png 2500w" alt="" class="image-2"></div>
+  </div>
+</div>
+<!-- /Features Section-->
+
+
+<!-- Horizontal Features Section-->
+<div class="section wf-section">
+  <div class="feature-wrap icons wrap-w-bg">
+    <div class="feature-content icons first-ft-content"><img src="/img/icon-burger-magenta.svg" width="80" alt="" class="feature-icon">
+      <h4 class="black-text wrap-w-bg-text">On the blockchain</h4>
+      <p class="paragraph-5">Your data is your&#x27;s to own, not our&#x27;s to take control of. That means your content can&#x27;t be censored, altered, or destroyed by those mean companies anymore.</p>
+    </div>
+
+    <div class="feature-content icons"><img src="/img/icon-silverware-magenta.svg" width="74" alt="" class="feature-icon">
+      <h4 class="black-text wrap-w-bg-text">Anti-Capitalism</h4>
+      <p class="paragraph-6">From the bottom of our hearts, we hate Facebook and those like them. We really despise what they&#x27;ve become. So it&#x27;s in our every being not to screw you over for that &quot;profit at all costs&quot; mentality.</p>
+    </div>
+
+    <div class="feature-content icons"><img src="/img/icon-data-magenta.svg" alt="" class="feature-icon">
+      <h4 class="black-text wrap-w-bg-text">Democratic Governance</h4>
+      <p class="paragraph-7">In addition to the whole anti-capitalism thing, Hryzn offers a decentralized autonomous organization (DAO). Runners of the DAO are promoted through earned democratic governance tokens.</p>
+    </div>
+  </div>
+</div>
+<!-- /Horizontal Features Section-->
+
+
+<!-- Monetize Section-->
+<div class="section wf-section">
+  <div id="money" data-w-id="8cf6045f-077b-7b4e-c286-9ad55bed81cd" style="-webkit-transform:translate3d(0, 40PX, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-moz-transform:translate3d(0, 40PX, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-ms-transform:translate3d(0, 40PX, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);transform:translate3d(0, 40PX, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);opacity:0" class="wrap">
+    <div class="title title-white-bg">The Creator Economy</div>
+    <h2 class="heading-4 whtie-bg">We also want creators to get paid. We&#x27;re excited for the new creator economy.</h2>
+  </div>
+
+  <div id="how-to-use" class="feature-wrap wrap-less-padding">
+    <div data-w-id="0585a81c-ee42-8b56-bc8e-bd582946320a" style="-webkit-transform:translate3d(0, 40PX, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-moz-transform:translate3d(0, 40PX, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-ms-transform:translate3d(0, 40PX, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);transform:translate3d(0, 40PX, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);opacity:0" class="feature-content ft-bigger">
+      <h2 class="black-text text-bigger">Here&#x27;s all of the cool ways to make money</h2>
+
+      <ul role="list" class="list-2">
+        <li class="list-item">Setup a social token and have your supporters invest in you like shares of stock.</li>
+        <li class="list-item-2">Sell your products online.</li>
+        <li class="list-item-3">Collect tips from fans.</li>
+        <li class="list-item-4">Play to earn credits and rare NFT&#x27;s.</li>
+        <li class="list-item-5">Create and sell anything as a NFT, from profile themes, avatars, content, or even virtual groups.</li>
+      </ul>
+    </div>
+
+    <div class="feature-image ft-img-content"><img src="/img/Brazuca---UI-Design.png" width="519" sizes="(max-width: 767px) 83vw, (max-width: 991px) 34vw, (max-width: 7142px) 35vw, 2500px" srcset="/img/Brazuca---UI-Design-p-500.png 500w, /img/Brazuca---UI-Design-p-800.png 800w, /img/Brazuca---UI-Design-p-1080.png 1080w, /img/Brazuca---UI-Design-p-1600.png 1600w, /img/Brazuca---UI-Design-p-2000.png 2000w, /img/Brazuca---UI-Design.png 2500w" alt="" class="image-2 img-ft-content"></div>
+  </div>
+
+  <div class="div-block-13 video-container">
+    <div class="title title-white-bg">Watch our cool marketing video</div>
+
+    <a href="#" class="lightbox-link w-inline-block w-lightbox"><img src="/img/The-Little-Things---Video-Streaming.png" loading="lazy" srcset="/img/The-Little-Things---Video-Streaming-p-500.png 500w, /img/The-Little-Things---Video-Streaming-p-800.png 800w, /img/The-Little-Things---Video-Streaming-p-1080.png 1080w, /img/The-Little-Things---Video-Streaming-p-1600.png 1600w, /img/The-Little-Things---Video-Streaming-p-2000.png 2000w, /img/The-Little-Things---Video-Streaming.png 2500w" sizes="(max-width: 991px) 80vw, 640px" alt="" class="video-img">
+      <script type="application/json" class="w-json">
+        {
+          "items": [{
+            "url": "https://www.youtube.com/watch?v=CtPQG_1MIv0",
+            "originalUrl": "https://www.youtube.com/watch?v=CtPQG_1MIv0",
+            "width": 940,
+            "height": 528,
+            "thumbnailUrl": "https://i.ytimg.com/vi/CtPQG_1MIv0/hqdefault.jpg",
+            "html": "<iframe class=\"embedly-embed\" src=\"//cdn.embedly.com/widgets/media.html?src=https%3A%2F%2Fwww.youtube.com%2Fembed%2FCtPQG_1MIv0%3Ffeature%3Doembed&display_name=YouTube&url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DCtPQG_1MIv0&image=https%3A%2F%2Fi.ytimg.com%2Fvi%2FCtPQG_1MIv0%2Fhqdefault.jpg&key=c4e54deccf4d4ec997a64902e9a30300&type=text%2Fhtml&schema=youtube\" width=\"940\" height=\"528\" scrolling=\"no\" title=\"YouTube embed\" frameborder=\"0\" allow=\"autoplay; fullscreen\" allowfullscreen=\"true\"></iframe>",
+            "type": "video"
+          }],
+          "group": ""
         }
-      }
-  });
-  /*execute a function presses a key on the keyboard:*/
-  inp.addEventListener("keydown", function(e) {
-      var x = document.getElementById(this.id + "user_autocomplete_list");
-      if (x) x = x.getElementsByTagName("div");
-      if (e.keyCode == 40) {
-        /*If the arrow DOWN key is pressed,
-        increase the currentFocus variable:*/
-        currentFocus++;
-        /*and and make the current item more visible:*/
-        addActive(x);
-      } else if (e.keyCode == 38) { //up
-        /*If the arrow UP key is pressed,
-        decrease the currentFocus variable:*/
-        currentFocus--;
-        /*and and make the current item more visible:*/
-        addActive(x);
-      } else if (e.keyCode == 13) {
-        /*If the ENTER key is pressed, prevent the form from being submitted,*/
-        e.preventDefault();
-        if (currentFocus > -1) {
-          /*and simulate a click on the "active" item:*/
-          if (x) x[currentFocus].click();
-        }
-      }
-  });
-  function addActive(x) {
-    /*a function to classify an item as "active":*/
-    if (!x) return false;
-    /*start by removing the "active" class on all items:*/
-    removeActive(x);
-    if (currentFocus >= x.length) currentFocus = 0;
-    if (currentFocus < 0) currentFocus = (x.length - 1);
-    /*add class "user_autocomplete_active":*/
-    x[currentFocus].classList.add("user_autocomplete_active");
-  }
-  function removeActive(x) {
-    /*a function to remove the "active" class from all user_autocomplete items:*/
-    for (var i = 0; i < x.length; i++) {
-      x[i].classList.remove("user_autocomplete_active");
-    }
-  }
-  function closeAllLists(elmnt) {
-    /*close all user_autocomplete lists in the document,
-    except the one passed as an argument:*/
-    var x = document.getElementsByClassName("user_autocomplete_items");
-    for (var i = 0; i < x.length; i++) {
-      if (elmnt != x[i] && elmnt != inp) {
-        x[i].parentNode.removeChild(x[i]);
-      }
-    }
-  }
-  /*execute a function when someone clicks in the document:*/
-  document.addEventListener("click", function (e) {
-      closeAllLists(e.target);
-  });
-}
+      </script>
+    </a>
+  </div>
+</div>
+<!-- /Monetize Section-->
 
-var user_followers = [];
 
-{{#if user.followers}}
-{{#each user.followers}}
-user_followers.push(`{{{this}}}`)
-{{/each}}
-{{/if}}
+<!-- Timeline Section-->
+  <div class="section wf-section">
+    <div id="roadmap" class="timeline-header">
+      <div data-w-id="64703c24-fab1-6ef9-e6d2-7a5762bdaf45" style="-webkit-transform:translate3d(0, 40PX, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-moz-transform:translate3d(0, 40PX, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-ms-transform:translate3d(0, 40PX, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);transform:translate3d(0, 40PX, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);opacity:0" class="wrap timeline-wrap">
+        <div class="title timeline-title">our roadmap</div>
+        <h2 class="heading-4">We want to be transparent as much as possible with everyone. So here&#x27;s an inside look at what&#x27;s to come.</h2>
+      </div>
+    </div>
 
-/*initiate the user_autocomplete function on the "user_autocomplete_input" element, and pass along the user_followers array as possible user_autocomplete values:*/
-user_autocomplete(document.getElementsByClassName("user_autocomplete_input")[0], user_followers);
-</script>
+    <div class="timeline">
+      <div class="timeline-container">
+        <div class="timeline-wrapper">
+          <div class="timeline-progress">
+            <div class="timeline-progress-bar"></div>
+          </div>
+
+          <div data-w-id="c9044e7c-9365-951e-edc1-cec90c677b46" class="w-layout-grid timeline-item">
+            <div class="timeline-left">
+              <div class="text-block-3 timeline-date-text">January 2022</div>
+            </div>
+
+            <div class="timeline-center">
+              <div class="timeline-circle"></div>
+            </div>
+
+            <div class="timeline-right">
+              <div class="timeline-text-right">Waitlist up and running!</div>
+            </div>
+          </div>
+
+          <div data-w-id="fbb3d49b-f8b4-034e-bc35-c8a0af24f104" class="w-layout-grid timeline-item">
+            <div class="timeline-left">
+                <div class="text-block-3 timeline-date-text">February 2022</div>
+            </div>
+
+            <div class="timeline-center">
+              <div class="timeline-circle"></div>
+            </div>
+
+            <div class="timeline-right">
+              <div class="timeline-text-right">Launch of equity crowdfunding campaign, giving users a chance to invest for as little as $100.</div>
+            </div>
+          </div>
+
+          <div data-w-id="d7d3bec5-3de8-8203-9975-5752b4d6312e" class="w-layout-grid timeline-item">
+            <div class="timeline-left">
+              <div class="text-block-3 timeline-date-text">April 2022</div>
+            </div>
+
+            <div class="timeline-center">
+              <div class="timeline-circle"></div>
+            </div>
+
+            <div class="timeline-right">
+              <div class="timeline-text-right">Launch of Hryzn V1. Features include custom profiles, posts, search engine, messaging, 2D groups, sell products, collect tips, and Hryzn in-app credits.</div>
+            </div>
+          </div>
+
+          <div data-w-id="61dd00a3-3446-bdad-9641-98e2139e2ea6" class="w-layout-grid timeline-item">
+            <div class="timeline-left">
+              <div class="text-block-3 timeline-date-text">May 2022</div>
+            </div>
+
+            <div class="timeline-center">
+              <div class="timeline-circle"></div>
+            </div>
+
+            <div class="timeline-right">
+              <div class="timeline-text-right">Initial DEX Offering (IDO) launch.</div>
+            </div>
+          </div>
+
+          <div data-w-id="61dd00a3-3446-bdad-9641-98e2139e2ea6" class="w-layout-grid timeline-item">
+            <div class="timeline-left">
+              <div class="text-block-3 timeline-date-text">June 2022</div>
+            </div>
+
+            <div class="timeline-center">
+              <div class="timeline-circle"></div>
+            </div>
+
+            <div class="timeline-right">
+              <div class="timeline-text-right">Launch of Hryzn V2 and private beta testing. Features include social tokens, 3D groups, NFT marketplace, and NFT avatars.</div>
+            </div>
+          </div>
+
+          <div data-w-id="61dd00a3-3446-bdad-9641-98e2139e2ea6" class="w-layout-grid timeline-item">
+            <div class="timeline-left">
+              <div class="text-block-3 timeline-date-text">July 2022</div>
+            </div>
+
+            <div class="timeline-center">
+              <div class="timeline-circle"></div>
+            </div>
+
+            <div class="timeline-right">
+              <div class="timeline-text-right">Rewards are given out to the first 1,000 in waitlist with private beta testing access.</div>
+            </div>
+          </div>
+
+          <div data-w-id="61dd00a3-3446-bdad-9641-98e2139e2ea6" class="w-layout-grid timeline-item">
+            <div class="timeline-left">
+              <div class="text-block-3 timeline-date-text">August 2022</div>
+            </div>
+
+            <div class="timeline-center">
+              <div class="timeline-circle"></div>
+            </div>
+
+            <div class="timeline-right">
+              <div class="timeline-text-right">Hryzn is launched to the public!</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<!-- /Timeline Section-->
+
+
+<!-- Insider CTA Section-->
+<div id="insider" class="section wide purple wf-section" style="background-image: url('../img/wavy-bg.svg'), linear-gradient(135deg, #fc0a7e, #602bb6);">
+  <div data-w-id="376e2a1f-ec70-0dab-11ea-b1863101e37b" style="-webkit-transform:translate3d(0, 40PX, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-moz-transform:translate3d(0, 40PX, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-ms-transform:translate3d(0, 40PX, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);transform:translate3d(0, 40PX, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);opacity:0" class="wrap">
+    <h2 class="heading-5">Want early insider access?</h2>
+
+    <div class="insider-text">Yeah, entering your email and receiving updates from us is cool and all that. But, it would be even cooler if you got to skip the line and be one of the first few insiders that got to experience the platform firsthand before anyone else. And I also overheard our CEO talking about a limited edition NFT and earning some governance tokens or something like that. Only the first 1,000 get these benefits so be sure not to miss out.</div>
+
+    <div class="button-wrap"></div>
+
+    <div class="form-block-2 w-form">
+      <form id="email-form-2" name="email-form-2" data-name="Email Form 2" action="/" method="post" class="form-3">
+        <input type="email" class="text-field email-btm w-input" maxlength="256" name="email" data-name="Email 3" placeholder="Enter your email address to join our waiting list..." id="email-3" required>
+        <input type="hidden" name="hp_name" id="hp_name-3">
+        <input type="submit" value="Join" data-wait="Please wait..." class="button hero-email-submit w-button">
+      </form>
+
+      {{#if email_success}}
+      <div class="email-success email-success-btm">Thank you! We appreciate you being a part of our journey.</div>
+      {{/if}}
+
+      {{#if email_error}}
+      <div class="email-fail email-fail-btm">{{email_error}}</div>
+      {{/if}}
+    </div>
+  </div>
+</div>
+<!-- /Insider CTA Section-->
+
+
+<!-- Blog Section -->
+<div id="download" class="section wide purple blog-section wf-section">
+  <div data-w-id="beaac106-9638-f7ab-f2a0-205fd3af8a3b" style="-webkit-transform:translate3d(0, 40PX, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-moz-transform:translate3d(0, 40PX, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-ms-transform:translate3d(0, 40PX, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);transform:translate3d(0, 40PX, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);opacity:0" class="wrap">
+    <div class="title title-white-bg">Blog Posts helps our seo</div>
+    <h2 class="heading-4 whtie-bg">Read some of the stuff we wrote about the things we know.</h2>
+  </div>
+
+  <div class="w-layout-grid grid blog-grid">
+
+    {{#if blog_posts}}
+    {{#each blog_posts}}
+    <a href="/blog/{{post_slug}}" style="text-decoration: none!important;">
+      <div class="blog-post">
+        <img src="https://ik.imagekit.io/w07am55tja/{{post_image}}?tr=w-600" alt="" class="image-2">
+        <div class="text-block-4 blog-title">{{post_title}}</div>
+      </div>
+    </a>
+    {{/each}}
+    {{/if}}
+
+  </div>
+</div>
+<!-- /Blog Section -->
+
+
+<!-- FAQ -->
+<div class="faq-card">
+  <div id="faq" class="faq">
+    <div class="faq-headline">
+      <h2 class="heading-6">FAQ</h2>
+      <p class="faq-paragraph">If you have any questions, we may have some answers for you. Here&#x27;s some of our frequently asked questions.</p>
+    </div>
+
+    <div data-hover="false" data-delay="0" data-w-id="d1656dd1-776d-88e6-454f-3f70176cfb6f" style="height:80px" class="accordion-item w-dropdown">
+      <div class="accordion-toggle w-dropdown-toggle">
+        <div style="-webkit-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0deg) skew(0, 0);-moz-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0deg) skew(0, 0);-ms-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0deg) skew(0, 0);transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0deg) skew(0, 0)" class="accordion-icon w-icon-dropdown-toggle"></div>
+        <div class="text-block-5">What exactly is Hryzn?</div>
+      </div>
+
+      <nav class="dropdown-list w-dropdown-list">
+        <div class="dropdown-text">Hryzn is simply a social platform designed to help connect you with your people. Rather than a network-based approach, we oriented our site around the idea of micro-communities and how sharing similar interests with others can drive us together.</div>
+      </nav>
+    </div>
+
+    <div data-hover="false" data-delay="0" data-w-id="d1656dd1-776d-88e6-454f-3f70176cfb7b" style="height:80px" class="accordion-item w-dropdown">
+      <div class="accordion-toggle w-dropdown-toggle">
+        <div style="-webkit-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0deg) skew(0, 0);-moz-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0deg) skew(0, 0);-ms-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0deg) skew(0, 0);transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0deg) skew(0, 0)" class="accordion-icon w-icon-dropdown-toggle"></div>
+        <div>Why Web 3.0?</div>
+      </div>
+
+      <nav class="dropdown-list w-dropdown-list">
+        <div class="dropdown-text">Well, we firmly believe that Web 3.0 is going to be the new standard of the internet. We want to be a part of the ecosystem that will eradicate corporate greed and one day make the world a better place.</div>
+      </nav>
+    </div>
+
+    <div data-hover="false" data-delay="0" data-w-id="6e4ceb98-c1ee-ea9f-259e-a714e160fa0d" style="height:80px" class="accordion-item w-dropdown">
+      <div class="accordion-toggle w-dropdown-toggle">
+        <div style="-webkit-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0deg) skew(0, 0);-moz-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0deg) skew(0, 0);-ms-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0deg) skew(0, 0);transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0deg) skew(0, 0)" class="accordion-icon w-icon-dropdown-toggle"></div>
+        <div class="text-block-5">What makes Hryzn different?</div>
+      </div>
+
+      <nav class="dropdown-list w-dropdown-list">
+        <div class="dropdown-text">Not only is Hryzn a cool social platform, but with a Web 3.0 approach we are providing new ways for people to protect their data, take back control, and make some money doing so.</div>
+      </nav>
+    </div>
+
+    <div data-hover="false" data-delay="0" data-w-id="7a2e0d44-ba54-3a48-4e50-54ca0309ae50" style="height:80px" class="accordion-item w-dropdown">
+      <div class="accordion-toggle w-dropdown-toggle">
+        <div style="-webkit-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0deg) skew(0, 0);-moz-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0deg) skew(0, 0);-ms-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0deg) skew(0, 0);transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0deg) skew(0, 0)" class="accordion-icon w-icon-dropdown-toggle"></div>
+        <div class="text-block-5">What the $%*# is a NFT?</div>
+      </div>
+
+      <nav class="dropdown-list w-dropdown-list">
+        <div class="dropdown-text">In simple terms, think of an NFT as a way to create something with unique value and provable scarcity, and sell ownership without the data being messed around with since it&#x27;s on the blockchain. A NFT can be anything no matter if it&#x27;s content, plots of virtual land, profile themes, or even a 3D virtual Hryzn group. It may sound a little confusing at first, but think of it as supply and demand: the less there is of something and the more people want it, the value of it will rise. Plus, you have the power of Crypto technology backing it up.</div>
+      </nav>
+    </div>
+
+    <div data-hover="false" data-delay="0" data-w-id="cb492ffd-e9ef-edda-6ca7-f474a8f4c0ee" style="height:80px" class="accordion-item w-dropdown">
+      <div class="accordion-toggle w-dropdown-toggle">
+        <div style="-webkit-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0deg) skew(0, 0);-moz-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0deg) skew(0, 0);-ms-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0deg) skew(0, 0);transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0deg) skew(0, 0)" class="accordion-icon w-icon-dropdown-toggle"></div>
+        <div class="text-block-5">Now, what the $%*# is a social token?</div>
+      </div>
+      <nav class="dropdown-list w-dropdown-list">
+        <div class="dropdown-text">Again in simple terms, a social token is a new concept coming out that will allow creators the opportunity of having their supporters invest in them similar to shares of stock. A creator can do something called tokenize, where they can create their own crypto token. Think of this similar to how cryptocurrencies and shares of stock work. The token of that creator can be listed at a set price of X U.S. dollars per token, and to follow a creator, a supporter simply purchases their token. Now, when the creator gets more popular and has more supporters, the value of the token rises as well, similar to when a company is doing good and their stock price goes up. Those original supporters who bought a token at a low price, now reap the benefits of that creator&#x27;s value rising. So, social tokens are a new way to literally invest in your favorite creators.</div>
+      </nav>
+    </div>
+
+    <div data-hover="false" data-delay="0" data-w-id="d1656dd1-776d-88e6-454f-3f70176cfb87" style="height:80px" class="accordion-item w-dropdown">
+      <div class="accordion-toggle w-dropdown-toggle">
+        <div style="-webkit-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0deg) skew(0, 0);-moz-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0deg) skew(0, 0);-ms-transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0deg) skew(0, 0);transform:translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0deg) skew(0, 0)" class="accordion-icon w-icon-dropdown-toggle"></div>
+        <div>What type of dog do you have?</div>
+      </div>
+
+      <nav class="dropdown-list w-dropdown-list">
+        <div class="dropdown-text">An English bulldog</div><img src="/img/IMG_1594.JPG" loading="lazy" sizes="160.703125px" height="300" srcset="/img/IMG_1594-p-500.jpeg 500w, /img/IMG_1594-p-800.jpeg 800w, /img/IMG_1594.JPG 960w" alt="" class="faq-img">
+      </nav>
+    </div>
+  </div>
+
+  <div class="div-block" style="background-image: url('/img/Tech-Life---Virtual-Reality-1.png');"></div>
+</div>
+<!-- /FAQ -->

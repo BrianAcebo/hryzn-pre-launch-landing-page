@@ -1,14 +1,19 @@
-<div class="error__container">
-   {{#if error_404}}
-   <h1 class="main__title">404</h1>
-   <div class="row main__info-container">
-      <p class="main__info" style="width: 100%; max-width: none; margin: 0 auto;"><strong>Sorry, we couldn't find that page anywhere.</strong></p>
-   </div>
-   {{else}}
-   <h1 class="main__title">Darn!</h1>
-   <div class="row main__info-container">
-      {{!message}}
-      <p class="main__info" style="width: 100%; max-width: none; margin: 0 auto;"><strong>We're sorry, but there seems to be an error.</strong></p>
-   </div>
-   {{/if}}
+<!-- Full Image Feature Section-->
+<div class="section wide img wf-section error-section">
+  {{#if error_404}}
+  <div style="padding: 100px 50px 0 50px;">
+    <div class="title title-red-bg">Uh oh...</div>
+    <h2 class="heading-4">Sorry, we couldn't find that page anywhere.</h2>
+  </div>
+  {{else}}
+  <div style="padding: 100px 50px 0 50px;">
+    <div class="title title-red-bg">Uh oh...</div>
+    <h2 class="heading-4">{{message}}Sorry, but there seems to be an error.</h2>
+  </div>
+  {{/if}}
+
+  <div class="wrapper">
+    <img src="/img/The-Little-Things---Sitting-on-Floor.png" height="450px" alt="" class="image-6">
+  </div>
 </div>
+<!-- /Feature Section-->

@@ -9,6 +9,8 @@ const keys = require('../config/keys');
 const aws = require('aws-sdk');
 const multerS3 = require('multer-s3');
 const dateNow = Date.now().toString();
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 // AWS S3 Access
 aws.config.update({
@@ -32,32 +34,31 @@ const multipleUpload = multer({storage: multerS3(storage)});
 
 
 // Connection to Models
-const User = require('../models/users');
-const Post = require('../models/blogs')
+const Blog = require('../models/blogs');
+const Post = require('../models/post');
 
 
 // GET All Blog Posts
 router.get('/', (req, res, next) => {
-   Post.find({}, (err, posts) => {
+   Post.find({}, async (err, posts) => {
       if (err) throw err;
 
-      var reversed_posts = posts.reverse();
-      var most_recent_posts = []
+      const blogPosts = [];
 
-      var break_count = 0;
-
-      for (let post of reversed_posts) {
-         if (break_count < 2) {
-            if (!post.is_draft) {
-               most_recent_posts.push(post);
-               break_count += 1;
-            }
-         } else {
-            break;
-         }
+      // Check if blog post is a draft
+      for (let post of posts) {
+        if (!post.is_draft) blogPosts.push(post);
       }
 
-      if(req.isAuthenticated()) {
+      const lastPost = blogPosts.length - 1;
+      const secondToLastPost = blogPosts.length - 2;
+
+      let mostRecentBlogPosts = [];
+      mostRecentBlogPosts.push(blogPosts[lastPost]);
+      mostRecentBlogPosts.push(blogPosts[secondToLastPost]);
+
+
+      if (req.isAuthenticated()) {
          if (req.user.username === 'hryzn') {
             var hryznAdmin = true;
          } else {
@@ -67,9 +68,9 @@ router.get('/', (req, res, next) => {
 
       res.render('blog/all-posts', {
          page_title: 'Blog',
-         posts: reversed_posts,
+         blog_posts: blogPosts.reverse(),
          blog: true,
-         most_recent_posts: most_recent_posts,
+         most_recent_blog_posts: mostRecentBlogPosts,
          hryznAdmin: hryznAdmin
       });
    });
@@ -102,21 +103,87 @@ router.get('/category/:category', (req, res, next) => {
 
 
 // GET Create Blog Post
-router.get('/create-post', (req, res, next) => {
-   if(req.isAuthenticated()) {
+router.get('/create', async (req, res, next) => {
 
-      if (req.user.username === 'hryzn') {
-         res.render('blog/create-post', {
-            page_title: 'Create Post',
-            editProject: true
-         });
-      } else {
-         res.redirect('/');
-      }
+  const { blogToken } = req.cookies;
 
-   } else {
-      res.redirect('/');
-   }
+  if (blogToken) {
+
+    res.redirect('/blog/protected/create-post');
+
+  } else {
+
+    res.render('blog/create-post', {
+       page_title: 'Protected',
+       protected: true
+    });
+
+  }
+
+});
+
+
+// GET Create Blog Post
+router.get('/protected/create-post', async (req, res, next) => {
+
+  const { blogToken } = req.cookies;
+
+  if (blogToken) {
+
+    res.render('blog/create-post', {
+       page_title: 'Protected',
+       protected: false,
+       logoutOption: true,
+       editor: true
+    });
+
+  } else {
+    res.redirect('/blog/create');
+  }
+
+});
+
+
+// Post to check for admin
+router.post('/protected/create-post', (req, res, next) => {
+
+  const { admin, pass } = req.body;
+  const isPassword = bcrypt.compare(pass, '$2a$10$liLz0gCoIOC9zCp8DJeZHeQoXLrkYgZhbBVO0eZsUjRDkK6ykNwnW');
+
+  if (admin === 'brianBlogAdmin' && isPassword) {
+
+    // If all good, set cookie for login
+    const payload = { userId: admin };
+
+    jwt.sign(payload, 'brianJWTSecretKey', { expiresIn: "2d" }, (err, token) => {
+      if (err) throw err;
+
+      res.cookie('blogToken', token, {expire: 21600000 + Date.now()}); // 6 hours
+
+      res.redirect('/blog/protected/create-post');
+    });
+
+  } else {
+    res.redirect('/blog/create');
+  }
+
+});
+
+
+// GET logout
+router.get('/protected/logout', async (req, res, next) => {
+
+  const { blogToken } = req.cookies;
+
+  if (blogToken) {
+
+    res.clearCookie('blogToken');
+    res.redirect('/blog');
+
+  } else {
+    res.redirect('/blog');
+  }
+
 });
 
 
@@ -255,7 +322,7 @@ router.post('/create-post', upload.single('post_image'), (req, res, next) => {
 // Get Post Detail
 router.get('/:title', (req, res, next) => {
 
-   var slug = req.params.title.replace("?", "");
+   const slug = req.params.title.replace("?", "");
 
    Post.findOne({ 'post_slug': { $in: slug} }, (err, post) => {
       if (err) throw err;
@@ -273,28 +340,26 @@ router.get('/:title', (req, res, next) => {
          Post.find({}, (err, posts) => {
             if (err) throw err;
 
-            var reversed_posts = posts.reverse();
-            var most_recent_posts = []
+            const blogPosts = [];
 
-            var break_count = 0;
-
-            for (let post of reversed_posts) {
-               if (break_count < 2) {
-                  if (!post.is_draft) {
-                     most_recent_posts.push(post);
-                     break_count += 1;
-                  }
-               } else {
-                  break;
-               }
+            // Check if blog post is a draft
+            for (let post of posts) {
+              if (!post.is_draft) blogPosts.push(post);
             }
+
+            const lastPost = blogPosts.length - 1;
+            const secondToLastPost = blogPosts.length - 2;
+
+            let mostRecentBlogPosts = [];
+            mostRecentBlogPosts.push(blogPosts[lastPost]);
+            mostRecentBlogPosts.push(blogPosts[secondToLastPost]);
 
             res.render('blog/post', {
                post: post,
                page_title: post.post_title,
                hryznAdmin: hryznAdmin,
                blog: true,
-               most_recent_posts: most_recent_posts
+               most_recent_posts: mostRecentBlogPosts
             });
          });
 

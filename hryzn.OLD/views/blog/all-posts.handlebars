@@ -1,0 +1,87 @@
+{{#if posts}}
+
+   <h1 class="blog_welcome_title" {{#if user}}style="padding: 100px 25px 0 25px;"{{/if}}>Welcome to the Hryzn <span>Blog</span></h1>
+   <p class="blog_welcome_sub" {{#if user}}style="padding: 0 25px;"{{/if}}>Learn how to find your voice and grow your blog into business</p>
+
+   {{#if most_recent_posts}}
+   <div class="most_recent_posts_container">
+      <h3 class="posts_h3">Recent Posts</h3>
+      {{#each most_recent_posts}}
+      <a href="/blog/{{post_slug}}">
+         <div class="most_recent_post_card">
+            <div class="most_recent_img_container">
+               <img src="https://ik.imagekit.io/w07am55tja/{{post_image}}?tr=w-600" class="img-responsive" alt="{{post_title}}" />
+            </div>
+
+            <div class="post_info_container">
+               <p class="post_date">{{post_date}}</p>
+               <h3 class="post_title">{{post_title}}</h3>
+               <div class="post_btn">view</div>
+            </div>
+         </div>
+      </a>
+      {{/each}}
+   </div>
+   {{/if}}
+
+   <ul class="post_cat_container" {{#if user}}style="padding: 0 25px;"{{/if}}>
+      <a href="/blog"><li>All Posts</li></a>
+      <a href="/blog/category/Growth Strategies"><li>Growth Strategies</li></a>
+      <a href="/blog/category/Marketing"><li>Marketing</li></a>
+      <a href="/blog/category/Content Strategy"><li>Content Strategy</li></a>
+      <a href="/blog/category/Writer Spotlight"><li>Writer Spotlight</li></a>
+      <a href="/blog/category/Starting"><li>Starting</li></a>
+      <a href="/blog/category/Managing"><li>Managing</li></a>
+      <a href="/blog/category/Hryzn"><li>Hryzn</li></a>
+      <a href="/blog/category/How-To"><li>How-To</li></a>
+      <a href="/blog/category/Stories"><li>Stories</li></a>
+      <a href="/blog/category/Entertainment"><li>Entertainment</li></a>
+   </ul>
+
+   <div class="all_posts_container">
+      <h3 class="posts_h3">All Posts</h3>
+   {{#each posts}}
+
+      {{#if is_draft}}
+      {{! Check if the project is a private project, we do not want to show private projects }}
+      {{#if ../hryznAdmin}}
+      <a href="/blog/{{post_slug}}">
+         <div class="post_card">
+            <div class="post_card_img_container">
+               <img src="https://ik.imagekit.io/w07am55tja/{{post_image}}?tr=w-600" class="img-responsive" alt="{{post_title}}" />
+            </div>
+
+            <div class="post_info_container">
+               <strong>DRAFT</strong>
+               <p class="post_date">{{post_date}}</p>
+               <h3 class="post_title">{{post_title}}</h3>
+               <div class="post_btn">view</div>
+            </div>
+         </div>
+      </a>
+      {{/if}}
+      {{else}}
+      <a href="/blog/{{post_slug}}">
+         <div class="post_card">
+            <div class="post_card_img_container">
+               <img src="https://ik.imagekit.io/w07am55tja/{{post_image}}?tr=w-600" class="img-responsive" alt="{{post_title}}" />
+            </div>
+
+            <div class="post_info_container">
+               <p class="post_date">{{post_date}}</p>
+               <h3 class="post_title">{{post_title}}</h3>
+               <div class="post_btn">view</div>
+            </div>
+         </div>
+      </a>
+      {{/if}}
+
+   {{/each}}
+   </div>
+
+{{else}}
+
+   {{! Something went wrong }}
+   <p class="error-message">Sorry, we couldn't find any posts.</p>
+
+{{/if}}

@@ -7,9 +7,22 @@ mongoose.connect(keys.mongoURI);
 // Email Schema
 const EmailSchema = mongoose.Schema({
    email: {
-      type: String
+     type: String,
+     unique: true,
+     required: true,
+     trim: true
+   },
+   share_ref: {
+     type: String,
+     unique: true,
+     required: true
+   },
+   place_in_wait_list: {
+     type: Number,
+     unique: true,
+     required: true
    }
-});
+}, { timestamps: true });
 
 const Email = module.exports = mongoose.model('Email', EmailSchema);
 

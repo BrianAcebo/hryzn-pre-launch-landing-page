@@ -1,12 +1,11 @@
-{{#if posts}}
+{{#if blog_posts}}
 
-   <h1 class="blog_welcome_title" {{#if user}}style="padding: 100px 25px 0 25px;"{{/if}}>Welcome to the Hryzn <span>Blog</span></h1>
-   <p class="blog_welcome_sub" {{#if user}}style="padding: 0 25px;"{{/if}}>Learn how to find your voice and grow your blog into business</p>
+<section class="blog_section">
 
-   {{#if most_recent_posts}}
+   {{#if most_recent_blog_posts}}
    <div class="most_recent_posts_container">
       <h3 class="posts_h3">Recent Posts</h3>
-      {{#each most_recent_posts}}
+      {{#each most_recent_blog_posts}}
       <a href="/blog/{{post_slug}}">
          <div class="most_recent_post_card">
             <div class="most_recent_img_container">
@@ -24,7 +23,7 @@
    </div>
    {{/if}}
 
-   <ul class="post_cat_container" {{#if user}}style="padding: 0 25px;"{{/if}}>
+   <ul class="post_cat_container">
       <a href="/blog"><li>All Posts</li></a>
       <a href="/blog/category/Growth Strategies"><li>Growth Strategies</li></a>
       <a href="/blog/category/Marketing"><li>Marketing</li></a>
@@ -40,27 +39,8 @@
 
    <div class="all_posts_container">
       <h3 class="posts_h3">All Posts</h3>
-   {{#each posts}}
+   {{#each blog_posts}}
 
-      {{#if is_draft}}
-      {{! Check if the project is a private project, we do not want to show private projects }}
-      {{#if ../hryznAdmin}}
-      <a href="/blog/{{post_slug}}">
-         <div class="post_card">
-            <div class="post_card_img_container">
-               <img src="https://ik.imagekit.io/w07am55tja/{{post_image}}?tr=w-600" class="img-responsive" alt="{{post_title}}" />
-            </div>
-
-            <div class="post_info_container">
-               <strong>DRAFT</strong>
-               <p class="post_date">{{post_date}}</p>
-               <h3 class="post_title">{{post_title}}</h3>
-               <div class="post_btn">view</div>
-            </div>
-         </div>
-      </a>
-      {{/if}}
-      {{else}}
       <a href="/blog/{{post_slug}}">
          <div class="post_card">
             <div class="post_card_img_container">
@@ -74,10 +54,11 @@
             </div>
          </div>
       </a>
-      {{/if}}
 
    {{/each}}
    </div>
+
+</section>
 
 {{else}}
 

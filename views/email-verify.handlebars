@@ -1,0 +1,24 @@
+<div class="section wide img wf-section error-section">
+
+  <div style="padding: 100px 50px 100px 50px; text-align: center; max-width: 1100px; margin: 0 auto;">
+    <h2 class="heading-4">Let's make sure your not a robot or something...</h2>
+    <p style="color: #fff; text-align: center;">
+      We sent a hidden secret message to your email. If you're human, which we sure hope you are, then it should be easy to verify.
+      If you got lost along the way, you can always hit this resend email button down below.
+    </p>
+
+    <br>
+    <br>
+
+    <a href="/resend/{{email}}" style="color: #fff; text-align: center; text-decoration: none!important;">
+      <div class="email-btn-primary">
+        Resend Email
+      </div>
+    </a>
+
+    {{#if resend}}
+    <div class="email-success email-success-btm">We sent you another email.</div>
+    {{/if}}
+  </div>
+
+</div>
