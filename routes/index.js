@@ -15,11 +15,11 @@ const Post = require('../models/post');
 // To create csv file for email list
 
 // const createCsvWriter = require('csv-writer').createObjectCsvWriter;
-// var emails = [];
+// let emails = [];
 //
 // User.find({}, (err, users) => {
 //   users.forEach(function(user, key) {
-//     var emailObject = {
+//     const emailObject = {
 //       email: user.email
 //     }
 //     emails.push(emailObject);
@@ -108,11 +108,11 @@ router.get('/', (req, res, next) => {
 
      }
 
-      res.render('index', {
-         page_title: "Find your people with the power of Web 3.0",
-         blog_posts: blog_posts,
-         email_error: emailErrorMsg
-      });
+    res.render('index', {
+      page_title: "Find your people and discover what you love on a social platform where communities can connect through niche topics.",
+      blog_posts: blog_posts,
+      email_error: emailErrorMsg
+    });
 
  });
 
