@@ -45,7 +45,7 @@ const Post = require('../models/post');
 // Get Home Landing Page
 router.get('/', (req, res, next) => {
 
-  const { email_error } = req.query;
+  const { email_error, share_ref } = req.query;
 
   let emailErrorMsg = false;
 
@@ -111,7 +111,8 @@ router.get('/', (req, res, next) => {
     res.render('index', {
       page_title: "Find your people and discover what you love on a social platform where communities can connect through niche topics.",
       blog_posts: blog_posts,
-      email_error: emailErrorMsg
+      email_error: emailErrorMsg,
+      share_ref: share_ref
     });
 
  });
@@ -119,11 +120,12 @@ router.get('/', (req, res, next) => {
 });
 
 
-// POST Create Post
+// POST Sign up to email list
 router.post('/', (req, res, next) => {
 
   const email = req.body.email.trim();
   const honeyPot = req.body.hp_name;
+  const share_ref = req.body.share_ref;
 
   // Form Validation
   req.checkBody('email', 'Please Enter An Email Address').notEmpty();
@@ -134,7 +136,7 @@ router.post('/', (req, res, next) => {
   if (!errors && !honeyPot) {
 
     // Check to see if the email already exists
-    Email.findOne({ email: email }, async (err, emailInDataBase) => {
+    Email.findOne({ email: email }, (err, emailInDataBase) => {
 
       if (!emailInDataBase) {
 
@@ -142,7 +144,8 @@ router.post('/', (req, res, next) => {
         const emailData = {
           templateName: 'confirmation_verify_email', // email template
           sender: 'Hryzn <hello@myhryzn.com>', // sender email
-          receiver: email // receiver email
+          receiver: email, // receiver email
+          using_another_share_ref_code: share_ref
         };
 
         sendEmail.sendEmail(emailData);
@@ -150,7 +153,8 @@ router.post('/', (req, res, next) => {
         // Send them to verify page
         res.render('email-verify', {
            page_title: "Let's verify your email",
-           email: email
+           email: email,
+           share_ref: share_ref
         });
 
       } else {
@@ -168,15 +172,20 @@ router.post('/', (req, res, next) => {
 
 
 // Get resend verify email
-router.get('/resend/:email', (req, res, next) => {
+router.get('/resend/:email/:share_ref', (req, res, next) => {
 
-  const { email } = req.params;
+  let { email, share_ref } = req.params;
+
+  if (share_ref.charAt(0) != 'H' && share_ref.length != 7) {
+    share_ref = null;
+  }
 
   // Send confirmation email to new sign up with send grid
   const emailData = {
     templateName: 'confirmation_verify_email', // email template
     sender: 'Hryzn <hello@myhryzn.com>', // sender email
-    receiver: email // receiver email
+    receiver: email, // receiver email
+    using_another_share_ref_code: share_ref
   };
 
   sendEmail.sendEmail(emailData);
@@ -185,16 +194,17 @@ router.get('/resend/:email', (req, res, next) => {
   res.render('email-verify', {
      page_title: "Let's verify your email",
      email: email,
-     resend: true
+     resend: true,
+     share_ref: share_ref
   });
 
 });
 
 
 // Get success after confirmed email address
-router.get('/success/:email', (req, res, next) => {
+router.get('/success/:email/:other_share_ref_code', (req, res, next) => {
 
-  const { email } = req.params;
+  const { email, other_share_ref_code } = req.params;
 
   if (!isEmail(email)) {
 
@@ -226,7 +236,7 @@ router.get('/success/:email', (req, res, next) => {
         if (!shareRefExists) {
 
           // Find the last email in line
-          const lastInLine = await Email.find().sort({ _id:-1 }).limit(1);
+          const lastInLine = await Email.find().sort({ place_in_wait_list: -1 }).limit(1);
 
           if (lastInLine[0].place_in_wait_list) {
 
@@ -251,7 +261,52 @@ router.get('/success/:email', (req, res, next) => {
         }).save();
 
 
+        // All good in the db
         if (emailSuccess) {
+
+          // If they used another reference code let's reward the person
+          if (other_share_ref_code) {
+
+            // Find the user that has the reference code
+            // Find the user that has the reference code
+            const referencedEmail = await Email.findOne({ share_ref: other_share_ref_code });
+            const currentSpot = referencedEmail.place_in_wait_list;
+            const futureSpot = referencedEmail.place_in_wait_list - 20;
+
+            // Only move places when place in line is above 21
+            // There's no point in skipping the line when your spots 1-20
+            if (currentSpot - 20 > 1) {
+
+              await Email.findOneAndUpdate({ share_ref: other_share_ref_code }, { place_in_wait_list: 0 });
+
+              let toBeMoved = [];
+
+              let count = 20;
+
+              for (let i = currentSpot - 1; i > futureSpot - 1; i--) {
+
+                count -= 1;
+
+                await Email.findOneAndUpdate({ place_in_wait_list: i }, { place_in_wait_list: i + 1 });
+
+                if (count == 0) {
+                  await Email.findOneAndUpdate({ share_ref: other_share_ref_code }, { place_in_wait_list: futureSpot });
+                }
+              }
+
+              // Send email to say someone used your reference code
+              const emailData = {
+                templateName: 'reference_code', // email template
+                sender: 'Hryzn <hello@myhryzn.com>', // sender email
+                receiver: referencedEmail.email, // reciever email
+                new_email: email,
+              };
+
+              sendEmail.sendEmail(emailData);
+
+            }
+
+          }
 
           // Send confirmation email to new sign up with send grid
           const emailData = {
@@ -310,6 +365,7 @@ router.get('/success/:email', (req, res, next) => {
              share_ref: share_ref,
              people_ahead: place_in_wait_list - 1
           });
+
         }
 
       } else {
