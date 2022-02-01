@@ -177,7 +177,7 @@ router.get('/resend/:email/:share_ref', (req, res, next) => {
   let { email, share_ref } = req.params;
 
   if (share_ref.charAt(0) != 'H' && share_ref.length != 7) {
-    share_ref = null;
+    share_ref = false;
   }
 
   // Send confirmation email to new sign up with send grid
