@@ -47,6 +47,8 @@ router.get('/', (req, res, next) => {
 
   const { email_error, share_ref } = req.query;
 
+
+  // Check if there were any errors from post email sign up
   let emailErrorMsg = false;
 
   if (email_error && email_error === 'exists') {
@@ -59,6 +61,8 @@ router.get('/', (req, res, next) => {
 
   }
 
+
+  // Get the blog posts
   Post.find({}, (err, posts) => {
 
      if (err) throw err;
@@ -125,7 +129,23 @@ router.post('/', (req, res, next) => {
 
   const email = req.body.email.trim();
   const honeyPot = req.body.hp_name;
-  const share_ref = req.body.share_ref;
+  let share_ref = req.body.share_ref;
+
+
+  // Check for share ref
+  if (!share_ref) {
+
+    // There's no share ref
+    share_ref = false;
+
+  } else {
+
+    // There is a share ref so let's make sure its valid
+    if (share_ref.charAt(0) != 'H' && share_ref.length != 7) {
+      share_ref = false;
+    }
+  }
+
 
   // Form Validation
   req.checkBody('email', 'Please Enter An Email Address').notEmpty();
@@ -176,8 +196,18 @@ router.get('/resend/:email/:share_ref', (req, res, next) => {
 
   let { email, share_ref } = req.params;
 
-  if (share_ref.charAt(0) != 'H' && share_ref.length != 7) {
+  // Check for share ref
+  if (!share_ref) {
+
+    // There's no share ref
     share_ref = false;
+
+  } else {
+
+    // There is a share ref so let's make sure its valid
+    if (share_ref.charAt(0) != 'H' && share_ref.length != 7) {
+      share_ref = false;
+    }
   }
 
   // Send confirmation email to new sign up with send grid
@@ -218,7 +248,7 @@ router.get('/success/:email/:other_share_ref_code', (req, res, next) => {
 
       if (!emailInDataBase) {
 
-        // Check to see if the share link reference already exists
+        // Check to see if the share link reference going to be given already exists
         let share_ref;
         let shareRefExists;
 

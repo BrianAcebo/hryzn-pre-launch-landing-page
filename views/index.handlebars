@@ -283,7 +283,8 @@
       <form id="email-form-2" name="email-form-2" data-name="Email Form 2" action="/" method="post" class="form-3">
         <input type="email" class="text-field email-btm w-input" maxlength="256" name="email" data-name="Email 3" placeholder="Enter your email address to join our waiting list..." id="email-3" required>
         <input type="hidden" name="hp_name" id="hp_name-3">
-        <input type="hidden" name="share_ref" {{#if share_ref}}value="{{share_ref}}"{{else}}value="false"{{/if}}>
+        {{#if share_ref}}<input type="hidden" name="share_ref" value="{{share_ref}}">{{/if}}
+        <!-- <input type="hidden" name="share_ref" {{#if share_ref}}value="{{share_ref}}"{{else}}value="false"{{/if}}> -->
         <input type="submit" value="Join" data-wait="Please wait..." class="button hero-email-submit w-button">
       </form>
 
