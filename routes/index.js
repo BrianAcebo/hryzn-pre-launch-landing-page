@@ -294,49 +294,53 @@ router.get('/success/:email/:other_share_ref_code', (req, res, next) => {
         // All good in the db
         if (emailSuccess) {
 
-          // If they used another reference code let's reward the person
-          if (other_share_ref_code) {
 
-            // Find the user that has the reference code
-            // Find the user that has the reference code
-            const referencedEmail = await Email.findOne({ share_ref: other_share_ref_code });
-            const currentSpot = referencedEmail.place_in_wait_list;
-            const futureSpot = referencedEmail.place_in_wait_list - 20;
+          ////////// Need to fix //////////
 
-            // Only move places when place in line is above 21
-            // There's no point in skipping the line when your spots 1-20
-            if (currentSpot - 20 > 1) {
 
-              await Email.findOneAndUpdate({ share_ref: other_share_ref_code }, { place_in_wait_list: 0 });
-
-              let toBeMoved = [];
-
-              let count = 20;
-
-              for (let i = currentSpot - 1; i > futureSpot - 1; i--) {
-
-                count -= 1;
-
-                await Email.findOneAndUpdate({ place_in_wait_list: i }, { place_in_wait_list: i + 1 });
-
-                if (count == 0) {
-                  await Email.findOneAndUpdate({ share_ref: other_share_ref_code }, { place_in_wait_list: futureSpot });
-                }
-              }
-
-              // Send email to say someone used your reference code
-              const emailData = {
-                templateName: 'reference_code', // email template
-                sender: 'Hryzn <hello@myhryzn.com>', // sender email
-                receiver: referencedEmail.email, // reciever email
-                new_email: email,
-              };
-
-              sendEmail.sendEmail(emailData);
-
-            }
-
-          }
+          // // If they used another reference code let's reward the person
+          // if (other_share_ref_code) {
+          //
+          //   // Find the user that has the reference code
+          //   // Find the user that has the reference code
+          //   const referencedEmail = await Email.findOne({ share_ref: other_share_ref_code });
+          //   const currentSpot = referencedEmail.place_in_wait_list;
+          //   const futureSpot = referencedEmail.place_in_wait_list - 20;
+          //
+          //   // Only move places when place in line is above 21
+          //   // There's no point in skipping the line when your spots 1-20
+          //   if (currentSpot - 20 > 1) {
+          //
+          //     await Email.findOneAndUpdate({ share_ref: other_share_ref_code }, { place_in_wait_list: 0 });
+          //
+          //     let toBeMoved = [];
+          //
+          //     let count = 20;
+          //
+          //     for (let i = currentSpot - 1; i > futureSpot - 1; i--) {
+          //
+          //       count -= 1;
+          //
+          //       await Email.findOneAndUpdate({ place_in_wait_list: i }, { place_in_wait_list: i + 1 });
+          //
+          //       if (count == 0) {
+          //         await Email.findOneAndUpdate({ share_ref: other_share_ref_code }, { place_in_wait_list: futureSpot });
+          //       }
+          //     }
+          //
+          //     // Send email to say someone used your reference code
+          //     const emailData = {
+          //       templateName: 'reference_code', // email template
+          //       sender: 'Hryzn <hello@myhryzn.com>', // sender email
+          //       receiver: referencedEmail.email, // reciever email
+          //       new_email: email,
+          //     };
+          //
+          //     sendEmail.sendEmail(emailData);
+          //
+          //   }
+          //
+          // }
 
           // Send confirmation email to new sign up with send grid
           const emailData = {
