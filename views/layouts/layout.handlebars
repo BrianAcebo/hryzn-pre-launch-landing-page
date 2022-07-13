@@ -73,12 +73,6 @@
       <link href="/css/normalize.css" rel="stylesheet" type="text/css" />
       <link href="/css/webflow.css" rel="stylesheet" type="text/css" />
 
-      {{#if blog}}
-      {{#if post}}
-      <link rel="canonical" href="https://{{site_url}}/blog/{{post.blog_slug}}"/>
-      {{/if}}
-      {{/if}}
-
       {{#if editor}}
       <!-- Quill JS Editor CSS -->
       <link href="//cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
@@ -126,7 +120,6 @@
              <a href="/#money" class="nav-link w-nav-link">Make Money</a>
              <a href="/#insider" class="nav-link w-nav-link">Early Access</a>
              <a href="/#faq" class="nav-link w-nav-link">FAQ</a>
-             <a href="/blog" class="nav-link w-nav-link">Blog</a>
            </nav>
 
            <div class="menu-button w-nav-button">

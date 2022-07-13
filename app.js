@@ -8,12 +8,9 @@ const exphbs = require('express-handlebars');
 const expressValidator = require('express-validator');
 const flash = require('connect-flash');
 const session = require('express-session');
-const mongo = require('mongodb');
-const mongoose = require('mongoose');
 
 
 const indexRouter = require('./routes/index'); // General site usage
-const blogRouter = require('./routes/blog'); // Main Hryzn Blog
 
 
 const app = express();
@@ -155,7 +152,6 @@ app.use(function (req, res, next) {
 
 
 app.use('/', indexRouter); // General site usage
-app.use('/blog', blogRouter); // Main Hryzn Blog
 
 
 // Catch 404

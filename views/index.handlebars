@@ -5,7 +5,7 @@
     <h3 class="hero-subhead">Hryzn is a social platform where people can connect with their communities through niche topics, using the future of Web 3.0</h3>
 
     <div class="w-form">
-      <form id="email-form-2" name="email-form-2" data-name="Email Form 2" action="/" method="post" class="form-3 hero-form">
+      <form id="email-form-2" name="email-form-2" data-name="Email Form 2" class="form-3 hero-form">
         <input type="email" class="text-field w-input" maxlength="256" name="email" data-name="Email 3" placeholder="Enter your email address to join our waiting list..." id="email-3" required>
         <input type="hidden" name="hp_name" id="hp_name-3">
         {{#if share_ref}}<input type="hidden" name="share_ref" value="{{share_ref}}">{{/if}}
@@ -280,7 +280,7 @@
     <div class="button-wrap"></div>
 
     <div class="form-block-2 w-form">
-      <form id="email-form-2" name="email-form-2" data-name="Email Form 2" action="/" method="post" class="form-3">
+      <form id="email-form-2" name="email-form-2" data-name="Email Form 2" class="form-3">
         <input type="email" class="text-field email-btm w-input" maxlength="256" name="email" data-name="Email 3" placeholder="Enter your email address to join our waiting list..." id="email-3" required>
         <input type="hidden" name="hp_name" id="hp_name-3">
         {{#if share_ref}}<input type="hidden" name="share_ref" value="{{share_ref}}">{{/if}}
@@ -308,9 +308,9 @@
     <h2 class="heading-4 whtie-bg">Read some of the stuff we wrote about the things we know.</h2>
   </div>
 
+  {{#if blog_posts}}
   <div class="w-layout-grid grid blog-grid">
 
-    {{#if blog_posts}}
     {{#each blog_posts}}
     <a href="/blog/{{post_slug}}" style="text-decoration: none!important;">
       <div class="blog-post">
@@ -319,9 +319,11 @@
       </div>
     </a>
     {{/each}}
-    {{/if}}
 
   </div>
+  {{else}}
+  <p class="title title-white-bg" style="text-transform: capitalize;">No posts yet.</p>
+  {{/if}}
 </div>
 <!-- /Blog Section -->
 
